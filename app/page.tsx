@@ -215,6 +215,7 @@ const styles = `
   .er-comfort-list { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px 18px; margin:0; padding:0; list-style:none; }
   .er-comfort-list li { color:#BFC3C8; font-size:14px; line-height:1.45; border-top:1px solid #2e2e2e; padding-top:10px; display:flex; align-items:flex-start; gap:10px; }
   .er-comfort-icon { color:#C8A46B; width:18px; min-width:18px; text-align:center; font-size:16px; line-height:1.15; }
+  .er-comfort-icon svg { display:block; width:16px; height:16px; stroke:currentColor; }
   .er-legal { text-align:center; font-size:11px; color:#666; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
 
   .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
@@ -441,11 +442,21 @@ export default function Home() {
                     Safety, comfort and <span>confidence</span> in every ride.
                   </h2>
                   <ul className="er-comfort-list">
-                    <li><span className="er-comfort-icon">💧</span>Botella de agua de cortesia</li>
+                    <li>
+                      <span className="er-comfort-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                          <path d="M9 2h6" />
+                          <path d="M10 2v4l-2 3v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V2" />
+                          <path d="M8 13h8" />
+                          <path d="M8 18h8" />
+                        </svg>
+                      </span>
+                      Complimentary water bottle
+                    </li>
                     <li><span className="er-comfort-icon">⚡</span>Phone chargers</li>
                     <li><span className="er-comfort-icon">♪</span>Music connection</li>
                     <li><span className="er-comfort-icon">❄</span>Vehicle with A/C</li>
-                    <li><span className="er-comfort-icon">✦</span>Chouffer amable y servicial</li>
+                    <li><span className="er-comfort-icon">✦</span>Friendly, service-minded chauffeur</li>
                   </ul>
                 </section>
               </div>

@@ -428,8 +428,8 @@ export default function Home() {
                 <div className="er-kicker">EliteRoute Mexico City</div>
                 <h1 className="er-hero-title">We move your level.</h1>
                 <p className="er-hero-copy">
-                  Premium chauffeur service in Mexico City, AICM, AIFA and Toluca.
-                  Airport transfers, hourly rides and executive transportation.
+                  Your private chauffeur in Mexico City. Airport transfers, hourly service and
+                  executive transportation across AICM, AIFA and Toluca.
                 </p>
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">Reserve Now</a>

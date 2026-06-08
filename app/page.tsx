@@ -213,8 +213,8 @@ const styles = `
   .er-comfort-title { color:#fff; font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1.05; font-weight:300; margin:0; }
   .er-comfort-title span { color:#C8A46B; }
   .er-comfort-list { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px 18px; margin:0; padding:0; list-style:none; }
-  .er-comfort-list li { color:#BFC3C8; font-size:14px; line-height:1.45; border-top:1px solid #2e2e2e; padding-top:10px; }
-  .er-comfort-list li::before { content:""; display:inline-block; width:6px; height:6px; margin-right:9px; border-radius:50%; background:#C8A46B; vertical-align:middle; }
+  .er-comfort-list li { color:#BFC3C8; font-size:14px; line-height:1.45; border-top:1px solid #2e2e2e; padding-top:10px; display:flex; align-items:flex-start; gap:10px; }
+  .er-comfort-icon { color:#C8A46B; width:18px; min-width:18px; text-align:center; font-size:16px; line-height:1.15; }
   .er-legal { text-align:center; font-size:11px; color:#666; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
 
   .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
@@ -441,11 +441,11 @@ export default function Home() {
                     Safety, comfort and <span>confidence</span> in every ride.
                   </h2>
                   <ul className="er-comfort-list">
-                    <li>Complimentary beverage</li>
-                    <li>Phone chargers available</li>
-                    <li>Music connection</li>
-                    <li>Climate-controlled vehicle</li>
-                    <li>Attentive and service-minded driver</li>
+                    <li><span className="er-comfort-icon">🥂</span>Complimentary beverage</li>
+                    <li><span className="er-comfort-icon">⚡</span>Phone chargers available</li>
+                    <li><span className="er-comfort-icon">♪</span>Music connection</li>
+                    <li><span className="er-comfort-icon">❄</span>Climate-controlled vehicle</li>
+                    <li><span className="er-comfort-icon">✦</span>Attentive and service-minded driver</li>
                   </ul>
                 </section>
               </div>

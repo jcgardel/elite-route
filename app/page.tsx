@@ -11,10 +11,10 @@ const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 const tariffs = {
-  sedan: { name: "Sedan", km: 25, hour: 450, min: 600, cap: "1-3 passengers · 2 bags", tag: "Executive" },
-  executive: { name: "Executive", km: 40, hour: 650, min: 850, cap: "1-3 passengers · 3 bags", tag: "Premium" },
-  minivan: { name: "Minivan", km: 35, hour: 600, min: 800, cap: "4-6 passengers · 4 bags", tag: "Group" },
-  suv: { name: "HIGH SUV", km: 70, hour: 990, min: 1450, cap: "1-6 passengers · 6 bags", tag: "Suburban" },
+  sedan: { name: "Sedan", km: 25, hour: 450, min: 700, cap: "1-3 passengers · 2 bags", tag: "Executive" },
+  executive: { name: "Executive", km: 40, hour: 650, min: 950, cap: "1-3 passengers · 3 bags", tag: "Premium" },
+  minivan: { name: "Minivan", km: 45, hour: 700, min: 1100, cap: "4-6 passengers · 4 bags", tag: "Group" },
+  suv: { name: "HIGH SUV", km: 70, hour: 990, min: 1600, cap: "1-6 passengers · 6 bags", tag: "Suburban" },
 };
 
 const vehicleImages: Record<string, string> = {

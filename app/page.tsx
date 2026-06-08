@@ -429,7 +429,7 @@ export default function Home() {
                 <h1 className="er-hero-title">We move your level.</h1>
                 <p className="er-hero-copy">
                   Your private chauffeur in Mexico City. Airport transfers, hourly service and
-                  executive transportation across AICM, AIFA and Toluca.
+                  executive transportation.
                 </p>
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">Reserve Now</a>

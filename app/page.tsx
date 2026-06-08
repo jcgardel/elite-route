@@ -87,33 +87,38 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
 
   * { box-sizing:border-box; }
-  .er-root { background:#050505; color:#fff; min-height:100vh; font-family:'Barlow',sans-serif; font-weight:300; }
+  .er-root { background:#0A0A0A; color:#fff; min-height:100vh; font-family:'Barlow',sans-serif; font-weight:300; }
   .er-shell { min-height:100vh; }
-  .er-hero { position:relative; min-height:640px; background-image:linear-gradient(90deg, rgba(0,0,0,0.86) 0%, rgba(0,0,0,0.58) 45%, rgba(0,0,0,0.12) 100%), url('/executive.jpg'); background-size:cover; background-position:center 55%; display:flex; flex-direction:column; }
-  .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:180px; background:linear-gradient(180deg, transparent, #050505); pointer-events:none; }
+  .er-hero { position:relative; min-height:720px; background-image:linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.76) 48%, rgba(0,0,0,0.68) 100%), url('/high-suv.jpg'); background-size:cover; background-position:center 48%; display:flex; flex-direction:column; }
+  .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
   .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); }
-  .er-nav-links { display:flex; gap:28px; align-items:center; color:#d8d8d8; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; }
-  .er-nav-chip { border:1px solid rgba(255,255,255,0.36); border-radius:2px; padding:10px 14px; color:#fff; }
+  .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
+  .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; }
   .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 92px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
-  .er-kicker { color:#c8c8c8; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
-  .er-hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(46px, 7vw, 82px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:680px; }
-  .er-hero-copy { max-width:560px; color:#d7d7d7; font-size:18px; line-height:1.7; margin:0; }
+  .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
+  .er-hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; }
+  .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
+  .er-hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
+  .er-hero-btn { display:inline-flex; min-height:46px; align-items:center; justify-content:center; border:1px solid #C8A46B; color:#fff; background:rgba(10,10,10,0.58); text-decoration:none; padding:13px 20px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
+  .er-hero-btn:hover { background:#C8A46B; color:#0A0A0A; }
+  .er-hero-mail { color:#BFC3C8; border-color:rgba(200,164,107,0.58); text-transform:none; letter-spacing:0.05em; font-size:14px; }
+  .er-hero-footer { margin-top:30px; color:#BFC3C8; border-left:2px solid #C8A46B; padding-left:16px; max-width:560px; font-size:15px; line-height:1.6; }
   .er-proof { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; max-width:620px; margin-top:34px; }
   .er-proof-item { border-top:1px solid rgba(255,255,255,0.32); padding-top:14px; }
   .er-proof-value { font-family:'Barlow Condensed',sans-serif; font-size:24px; font-weight:700; letter-spacing:0.08em; }
-  .er-proof-label { color:#a8a8a8; font-size:12px; line-height:1.4; margin-top:4px; }
-  .er-booking-card { background:#f7f5f0; color:#111; border-radius:2px; padding:26px; box-shadow:0 28px 70px rgba(0,0,0,0.48); }
-  .er-booking-title { font-size:23px; font-weight:600; margin:0 0 18px; letter-spacing:0; }
+  .er-proof-label { color:#BFC3C8; font-size:12px; line-height:1.4; margin-top:4px; }
+  .er-booking-card { background:rgba(10,10,10,0.74); color:#FFFFFF; border:1px solid rgba(200,164,107,0.45); border-radius:2px; padding:26px; box-shadow:0 28px 70px rgba(0,0,0,0.58); backdrop-filter:blur(12px); }
+  .er-booking-title { font-size:23px; font-weight:600; margin:0 0 18px; letter-spacing:0; color:#FFFFFF; }
   .er-main { max-width:1180px; margin:-56px auto 0; padding:0 28px 90px; position:relative; z-index:2; }
   .er-workspace { display:grid; grid-template-columns:minmax(0, 1fr); gap:26px; }
 
-  .er-progress { height:2px; background:#e1ded5; margin-bottom:0; }
-  .er-progress-fill { height:100%; background:#111; transition:width 0.4s ease; }
-  .er-steps { display:flex; border:1px solid #ded8cd; border-top:none; margin-bottom:24px; background:#fff; }
-  .er-step-tab { flex:1; padding:14px 10px; text-align:center; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8b8378; cursor:pointer; border:none; border-right:1px solid #ece7dd; background:none; font-family:'Barlow',sans-serif; font-weight:600; transition:all 0.25s; }
+  .er-progress { height:2px; background:rgba(255,255,255,0.14); margin-bottom:0; }
+  .er-progress-fill { height:100%; background:#C8A46B; transition:width 0.4s ease; }
+  .er-steps { display:flex; border:1px solid rgba(200,164,107,0.38); border-top:none; margin-bottom:24px; background:rgba(0,0,0,0.28); }
+  .er-step-tab { flex:1; padding:14px 10px; text-align:center; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; cursor:pointer; border:none; border-right:1px solid rgba(200,164,107,0.24); background:none; font-family:'Barlow',sans-serif; font-weight:600; transition:all 0.25s; }
   .er-step-tab:last-child { border-right:none; }
-  .er-step-tab.active { color:#111; background:#efebe2; }
+  .er-step-tab.active { color:#0A0A0A; background:#C8A46B; }
   .er-step-tab:disabled { cursor:default; opacity:0.55; }
   .er-step-num { display:inline-block; width:18px; height:18px; border-radius:50%; border:1px solid currentColor; font-size:10px; line-height:18px; text-align:center; margin-right:7px; }
 
@@ -121,17 +126,18 @@ const styles = `
   .er-panel.active { display:block; }
   @keyframes erFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-  .er-service-tabs { display:flex; border:1px solid #d9d2c4; overflow:hidden; margin-bottom:22px; background:#fff; }
-  .er-svc-tab { flex:1; padding:13px 10px; background:#fff; border:none; color:#69645d; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; border-right:1px solid #e5dfd3; transition:all 0.2s; }
+  .er-service-tabs { display:flex; border:1px solid rgba(200,164,107,0.45); overflow:hidden; margin-bottom:22px; background:rgba(255,255,255,0.04); }
+  .er-svc-tab { flex:1; padding:13px 10px; background:transparent; border:none; color:#BFC3C8; font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; border-right:1px solid rgba(200,164,107,0.24); transition:all 0.2s; }
   .er-svc-tab:last-child { border-right:none; }
-  .er-svc-tab.active { background:#111; color:#fff; }
-  .er-svc-tab:hover:not(.active) { background:#eee9df; color:#111; }
+  .er-svc-tab.active { background:#C8A46B; color:#0A0A0A; }
+  .er-svc-tab:hover:not(.active) { background:rgba(200,164,107,0.12); color:#fff; }
 
   .er-field { margin-bottom:17px; }
-  .er-label { display:block; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#5f5951; margin-bottom:8px; font-weight:600; }
-  .er-input { width:100%; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:14px 15px; color:#111; font-family:'Barlow',sans-serif; font-size:15px; font-weight:400; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
-  .er-input:focus { border-color:#111; box-shadow:0 0 0 1px #111; }
-  .er-input::placeholder { color:#9a9389; }
+  .er-label { display:block; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; margin-bottom:8px; font-weight:600; }
+  .er-input { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:'Barlow',sans-serif; font-size:15px; font-weight:400; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
+  .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
+  .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
+  .er-input option { background:#0A0A0A; color:#FFFFFF; }
   .er-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:580px) { .er-row { grid-template-columns:1fr; } }
 
@@ -168,8 +174,8 @@ const styles = `
 
   .er-urgent-note { color:#ef4444; font-size:12px; margin:8px 0; text-align:center; }
 
-  .er-btn-primary { width:100%; background:#111; color:#fff; border:none; border-radius:2px; padding:16px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
-  .er-btn-primary:hover { background:#2a2a2a; }
+  .er-btn-primary { width:100%; background:#0A0A0A; color:#fff; border:1px solid #C8A46B; border-radius:2px; padding:16px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; transition:background 0.2s, color 0.2s; }
+  .er-btn-primary:hover { background:#C8A46B; color:#0A0A0A; }
   .er-btn-primary:disabled { opacity:0.5; cursor:default; }
   .er-btn-secondary { width:100%; background:transparent; color:#d8d8d8; border:1px solid #363636; border-radius:2px; padding:13px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:500; letter-spacing:0.1em; cursor:pointer; transition:border 0.2s; margin-top:10px; }
   .er-btn-secondary:hover { border-color:#8a8a8a; }
@@ -188,17 +194,17 @@ const styles = `
   .er-summary-val { color:#fff; text-align:right; max-width:65%; line-height:1.4; }
   .er-summary-total { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:400; }
 
-  .er-benefits { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:22px; margin-top:58px; }
+  .er-benefits { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:22px; margin-top:58px; }
   .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
   .er-benefit-title { font-weight:600; font-size:17px; margin-bottom:8px; }
-  .er-benefit-copy { color:#aaa; line-height:1.6; font-size:14px; }
+  .er-benefit-copy { color:#BFC3C8; line-height:1.6; font-size:14px; }
   .er-legal { text-align:center; font-size:11px; color:#666; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
 
-  .PhoneInput { display:flex; align-items:center; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:0 16px; }
-  .PhoneInput:focus-within { border-color:#111; box-shadow:0 0 0 1px #111; }
+  .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
+  .PhoneInput:focus-within { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .PhoneInputCountry { margin-right:10px; }
-  .PhoneInputInput { flex:1; background:transparent; border:none; color:#111; font-family:'Barlow',sans-serif; font-size:15px; font-weight:400; outline:none; padding:14px 0; }
-  .PhoneInputInput::placeholder { color:#9a9389; }
+  .PhoneInputInput { flex:1; background:transparent; border:none; color:#FFFFFF; font-family:'Barlow',sans-serif; font-size:15px; font-weight:400; outline:none; padding:14px 0; }
+  .PhoneInputInput::placeholder { color:#BFC3C8; opacity:0.72; }
 
   @media (max-width:980px) {
     .er-hero-inner { grid-template-columns:1fr; padding-bottom:70px; }
@@ -388,39 +394,49 @@ export default function Home() {
             <nav className="er-nav" aria-label="Elite Route">
               <img className="er-logo-img" src="/elite-route-logo.jpg" alt="Elite Route" />
               <div className="er-nav-links">
-                <span>CDMX</span>
-                <span>AIFA</span>
-                <span>Toluca</span>
-                <span className="er-nav-chip">Reservar</span>
+                <span>Services</span>
+                <span>Airports</span>
+                <span>Corporate</span>
+                <span>Contact</span>
+                <span className="er-nav-chip">Reserve Now</span>
               </div>
             </nav>
 
             <div className="er-hero-inner">
               <div>
-                <div className="er-kicker">Chofer privado en Ciudad de México</div>
-                <h1 className="er-hero-title">Transporte ejecutivo a tu medida</h1>
+                <div className="er-kicker">EliteRoute Mexico City</div>
+                <h1 className="er-hero-title">We move your level.</h1>
                 <p className="er-hero-copy">
-                  Reserva traslados premium, servicios por hora o disponibilidad por día con
-                  atención personalizada, unidades elegantes y confirmación directa por WhatsApp.
+                  Premium chauffeur service in Mexico City, AICM, AIFA and Toluca.
+                  Airport transfers, hourly rides and executive transportation.
                 </p>
+                <div className="er-hero-actions">
+                  <a className="er-hero-btn" href="#quote">Reserve Now</a>
+                  <a className="er-hero-btn er-hero-mail" href="mailto:business@eliteroute.mx">
+                    business@eliteroute.mx
+                  </a>
+                </div>
                 <div className="er-proof">
                   <div className="er-proof-item">
+                    <div className="er-proof-value">AICM</div>
+                    <div className="er-proof-label">Airport arrivals and departures</div>
+                  </div>
+                  <div className="er-proof-item">
+                    <div className="er-proof-value">AIFA</div>
+                    <div className="er-proof-label">Executive transfers to Felipe Angeles</div>
+                  </div>
+                  <div className="er-proof-item">
                     <div className="er-proof-value">24/7</div>
-                    <div className="er-proof-label">Servicio bajo disponibilidad</div>
+                    <div className="er-proof-label">Subject to availability</div>
                   </div>
-                  <div className="er-proof-item">
-                    <div className="er-proof-value">IVA</div>
-                    <div className="er-proof-label">Estimación transparente</div>
-                  </div>
-                  <div className="er-proof-item">
-                    <div className="er-proof-value">MX</div>
-                    <div className="er-proof-label">CDMX, AIFA, Toluca y foráneo</div>
-                  </div>
+                </div>
+                <div className="er-hero-footer">
+                  Trusted executive transportation for business travelers, families and airport transfers.
                 </div>
               </div>
 
-              <div className="er-booking-card">
-                <h2 className="er-booking-title">Reserva tu viaje</h2>
+              <div className="er-booking-card" id="quote">
+                <h2 className="er-booking-title">Get your quote</h2>
 
                 <div className="er-progress">
                   <div className="er-progress-fill" style={{ width:`${(step/3)*100}%` }}/>
@@ -445,9 +461,9 @@ export default function Home() {
             {/* TABS SERVICIO */}
             <div className="er-service-tabs">
               {([
-                ["route", "Traslado",  "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"],
-                ["hour",  "Por Horas", "M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm1-10V7h-2v6l4.28 2.54.72-1.21-3-1.79z"],
-                ["day",   "Por Día",   "M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"],
+                ["route", "Transfer",  "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"],
+                ["hour",  "Hourly", "M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm1-10V7h-2v6l4.28 2.54.72-1.21-3-1.79z"],
+                ["day",   "Full Day",   "M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"],
               ] as const).map(([val, label, d]) => (
                 <button key={val} type="button"
                   className={`er-svc-tab${serviceType===val?" active":""}`}
@@ -492,12 +508,12 @@ export default function Home() {
 
             {/* ORIGEN */}
             <div className="er-field">
-              <label className="er-label">Punto de partida</label>
+                <label className="er-label">Pickup Location</label>
               <Autocomplete
                 onLoad={(a) => { originRef.current = a; }}
                 onPlaceChanged={onOriginChanged}
                 options={{ componentRestrictions:{ country:"mx" }, fields:["formatted_address","geometry","name"] }}>
-                <input className="er-input" placeholder="Hotel, aeropuerto, dirección..."
+                <input className="er-input" placeholder="Hotel, airport, address..."
                   value={origin} onChange={(e) => setOrigin(e.target.value)}/>
               </Autocomplete>
             </div>
@@ -505,12 +521,12 @@ export default function Home() {
             {/* DESTINO — solo traslado */}
             {serviceType === "route" && (
               <div className="er-field">
-                <label className="er-label">Destino</label>
+                <label className="er-label">Destination</label>
                 <Autocomplete
                   onLoad={(a) => { destinationRef.current = a; }}
                   onPlaceChanged={onDestinationChanged}
                   options={{ componentRestrictions:{ country:"mx" }, fields:["formatted_address","geometry","name"] }}>
-                  <input className="er-input" placeholder="¿A dónde te llevamos?"
+                  <input className="er-input" placeholder="Where are we taking you?"
                     value={destination} onChange={(e) => setDestination(e.target.value)}/>
                 </Autocomplete>
               </div>
@@ -519,21 +535,36 @@ export default function Home() {
             {/* FECHA Y HORA */}
             <div className="er-row">
               <div className="er-field">
-                <label className="er-label">Fecha del servicio</label>
+                <label className="er-label">Date</label>
                 <input className="er-input" type="date" min={getMinDate()}
                   value={serviceDate} onChange={(e) => setServiceDate(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">Hora de recogida</label>
+                <label className="er-label">Time</label>
                 <input className="er-input" type="time"
                   value={serviceTime} onChange={(e) => setServiceTime(e.target.value)}/>
               </div>
             </div>
 
+            <div className="er-field">
+              <label className="er-label">Vehicle Category</label>
+              <select
+                className="er-input"
+                value={category}
+                onChange={(e) => setCategory(e.target.value as Category)}
+              >
+                {(Object.keys(tariffs) as Category[]).map((cat) => (
+                  <option key={cat} value={cat}>
+                    {tariffs[cat].name} · {tariffs[cat].cap}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {alert1 && <div className="er-alert er-alert-err">{alert1}</div>}
 
             <button className="er-btn-primary" onClick={validateStep1} disabled={loading} type="button">
-              {loading ? "Calculando ruta..." : "Ver vehículos disponibles →"}
+              {loading ? "Calculating route..." : "Get Quote →"}
             </button>
           </div>
               </div>
@@ -657,21 +688,27 @@ export default function Home() {
 
               <section className="er-benefits" aria-label="Beneficios Elite Route">
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Chofer profesional</div>
+                  <div className="er-benefit-title">Professional Chauffeurs</div>
                   <div className="er-benefit-copy">
-                    Atención discreta, puntual y enfocada en una experiencia ejecutiva desde el primer contacto.
+                    Licensed and professionally trained.
                   </div>
                 </div>
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Reserva flexible</div>
+                  <div className="er-benefit-title">Fixed Pricing</div>
                   <div className="er-benefit-copy">
-                    Traslados punto a punto, servicio por hora o día completo para reuniones, eventos y aeropuertos.
+                    Transparent fares with no surprises.
                   </div>
                 </div>
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Confirmación directa</div>
+                  <div className="er-benefit-title">24/7 Availability</div>
                   <div className="er-benefit-copy">
-                    El resumen se envía por WhatsApp para validar disponibilidad y cerrar los detalles del viaje.
+                    Airport and executive transportation.
+                  </div>
+                </div>
+                <div className="er-benefit">
+                  <div className="er-benefit-title">Direct Confirmation</div>
+                  <div className="er-benefit-copy">
+                    Instant WhatsApp assistance.
                   </div>
                 </div>
               </section>

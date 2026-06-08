@@ -11,10 +11,10 @@ const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 const tariffs = {
-  sedan: { name: "Sedan", km: 25, hour: 450, min: 600, cap: "1-3 pasajeros · 2 maletas", tag: "Ejecutivo" },
-  executive: { name: "Executive", km: 40, hour: 650, min: 850, cap: "1-3 pasajeros · 3 maletas", tag: "Premium" },
-  minivan: { name: "Minivan", km: 35, hour: 600, min: 800, cap: "4-6 pasajeros · 4 maletas", tag: "Grupal" },
-  suv: { name: "HIGH SUV", km: 70, hour: 990, min: 1450, cap: "1-6 pasajeros · 6 maletas", tag: "Suburban" },
+  sedan: { name: "Sedan", km: 25, hour: 450, min: 600, cap: "1-3 passengers · 2 bags", tag: "Executive" },
+  executive: { name: "Executive", km: 40, hour: 650, min: 850, cap: "1-3 passengers · 3 bags", tag: "Premium" },
+  minivan: { name: "Minivan", km: 35, hour: 600, min: 800, cap: "4-6 passengers · 4 bags", tag: "Group" },
+  suv: { name: "HIGH SUV", km: 70, hour: 990, min: 1450, cap: "1-6 passengers · 6 bags", tag: "Suburban" },
 };
 
 const vehicleImages: Record<string, string> = {
@@ -36,10 +36,20 @@ function detectZone(origin: string, destination: string, km: number): Zone {
 }
 
 function zoneLabel(z: Zone) {
+  return z === "cdmx" ? "Mexico City" : z === "semi_foraneo" ? "AIFA / Toluca" : "Out-of-town";
+}
+
+function zoneLabelEs(z: Zone) {
   return z === "cdmx" ? "CDMX" : z === "semi_foraneo" ? "AIFA / Toluca" : "Foráneo";
 }
 
 function serviceTypeLabel(serviceType: ServiceType, rentalHours: number) {
+  if (serviceType === "hour") return `Hourly ride (${rentalHours} hrs)`;
+  if (serviceType === "day") return "Full day (10 hrs)";
+  return "Point-to-point transfer";
+}
+
+function serviceTypeLabelEs(serviceType: ServiceType, rentalHours: number) {
   if (serviceType === "hour") return `Por horas (${rentalHours} hrs)`;
   if (serviceType === "day") return "Por día (10 hrs)";
   return "Traslado por ruta";
@@ -144,10 +154,10 @@ const styles = `
   .er-hours-selector { display:flex; align-items:center; gap:0; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:10px 16px; }
   .er-hr-btn { width:32px; height:32px; border-radius:50%; border:1px solid #bdb4a5; background:transparent; color:#111; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
   .er-hr-btn:hover { border-color:#111; background:#f0ece3; }
-  .er-hr-count { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; width:52px; text-align:center; }
-  .er-hr-unit { font-size:13px; color:#6f675d; letter-spacing:0.08em; }
+  .er-hr-count { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; }
+  .er-hr-unit { font-size:13px; color:#0A0A0A; letter-spacing:0.08em; }
 
-  .er-service-note { font-size:12px; color:#5f5951; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
+  .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
 
   .er-section-title { color:#fff; font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:300; margin:42px 0 20px; }
   .er-vehicles { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
@@ -266,16 +276,16 @@ export default function Home() {
   const price = priceFor(category);
 
   const summaryRows: Array<[string, string]> = [
-    ["Tipo de servicio", serviceTypeLabel(serviceType, rentalHours)],
-    ...(serviceType !== "route" ? [["Km incluidos", `${maxAllowedKm} km`] as [string, string]] : []),
-    ["Fecha y hora", formatDateTime(serviceDate, serviceTime)],
-    ["Origen", origin || "—"],
-    ["Destino", serviceType === "route" ? (destination || "—") : "Disposición libre"],
-    ["Vehículo", tariffs[category].name],
+    ["Service type", serviceTypeLabel(serviceType, rentalHours)],
+    ...(serviceType !== "route" ? [["Included km", `${maxAllowedKm} km`] as [string, string]] : []),
+    ["Date & time", formatDateTime(serviceDate, serviceTime)],
+    ["Pickup", origin || "—"],
+    ["Destination", serviceType === "route" ? (destination || "—") : "Open itinerary"],
+    ["Vehicle", tariffs[category].name],
     serviceType === "route"
-      ? ["Distancia", `${km} km · ${minutes} min`]
-      : ["Duración", serviceTypeLabel(serviceType, rentalHours)],
-    ["Zona", zoneLabel(zone)],
+      ? ["Distance", `${km} km · ${minutes} min`]
+      : ["Duration", serviceTypeLabel(serviceType, rentalHours)],
+    ["Zone", zoneLabel(zone)],
   ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
@@ -291,15 +301,15 @@ export default function Home() {
   }
 
   async function validateStep1() {
-    if (!origin) { setAlert1("Ingresa el punto de partida."); return; }
-    if (serviceType === "route" && !destination) { setAlert1("Ingresa el destino."); return; }
-    if (!serviceDate || !serviceTime) { setAlert1("Selecciona la fecha y hora del servicio."); return; }
-    if (serviceType === "hour" && rentalHours < 2) { setAlert1("Mínimo 2 horas de servicio."); return; }
+    if (!origin) { setAlert1("Enter the pickup location."); return; }
+    if (serviceType === "route" && !destination) { setAlert1("Enter the destination."); return; }
+    if (!serviceDate || !serviceTime) { setAlert1("Select the service date and time."); return; }
+    if (serviceType === "hour" && rentalHours < 2) { setAlert1("Minimum hourly service is 2 hours."); return; }
 
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
-    if (diff <= 0) { setAlert1("Selecciona una fecha y hora futura."); return; }
-    if (diff < 2) { setAlert1("Se requieren mínimo 2 horas de anticipación."); return; }
+    if (diff <= 0) { setAlert1("Select a future date and time."); return; }
+    if (diff < 2) { setAlert1("At least 2 hours of advance notice are required."); return; }
 
     setAlert1("");
     setLoading(true);
@@ -311,12 +321,12 @@ export default function Home() {
         body: JSON.stringify({ origin, destination: dest }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) { setAlert1("No se pudo calcular la ruta. Verifica las direcciones."); return; }
+      if (!res.ok || data.error) { setAlert1("We could not calculate the route. Please verify the addresses."); return; }
 
       const routeKm = Number(data.km.toFixed(1));
       const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;
       if (serviceType !== "route" && routeKm > allowedKm) {
-        setAlert1(`Máximo ${allowedKm} km para este servicio. La ruta es de ${routeKm} km.`);
+        setAlert1(`This service includes up to ${allowedKm} km. The calculated route is ${routeKm} km.`);
         return;
       }
 
@@ -326,7 +336,7 @@ export default function Home() {
       setUrgent(isUrgent(serviceDate, serviceTime));
       goStep(2);
     } catch {
-      setAlert1("Error de conexión. Intenta de nuevo.");
+      setAlert1("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -343,7 +353,7 @@ export default function Home() {
       `Tel: ${phone}`,
       "",
       "*Servicio*",
-      `Tipo: ${serviceTypeLabel(serviceType, rentalHours)}`,
+      `Tipo: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : "",
       `Fecha: ${formatDateTime(serviceDate, serviceTime)}`,
       `Origen: ${origin}`,
@@ -353,8 +363,8 @@ export default function Home() {
       `Vehículo: ${tariffs[category].name}`,
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
-        : `Duración: ${serviceTypeLabel(serviceType, rentalHours)}`,
-      `Zona: ${zoneLabel(zone)}`,
+        : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
+      `Zona: ${zoneLabelEs(zone)}`,
       urgent ? "⚠️ Reserva próxima — cargo adicional aplicado" : "",
       "",
       `*💰 Total estimado con IVA: $${price.toLocaleString("es-MX")} MXN*`,
@@ -366,10 +376,10 @@ export default function Home() {
 
   function handleWhatsApp(e: MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
-    if (!fullName.trim()) { setAlert3("El nombre completo es obligatorio."); return; }
-    if (!phone) { setAlert3("El teléfono es obligatorio."); return; }
-    if (!isValidPhoneNumber(phone)) { setAlert3("Ingresa un número de teléfono válido con código de país."); return; }
-    if (price === 0) { setAlert3("Error: regresa al paso 1 y calcula la ruta."); return; }
+    if (!fullName.trim()) { setAlert3("Full name is required."); return; }
+    if (!phone) { setAlert3("Phone number is required."); return; }
+    if (!isValidPhoneNumber(phone)) { setAlert3("Enter a valid phone number with country code."); return; }
+    if (price === 0) { setAlert3("Error: go back to step 1 and calculate the route."); return; }
     setAlert3("");
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
@@ -380,7 +390,7 @@ export default function Home() {
   if (!isLoaded) {
     return (
       <div style={{ background:"#000", color:"#444", minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"sans-serif", fontSize:13, letterSpacing:"0.1em" }}>
-        Cargando...
+        Loading...
       </div>
     );
   }
@@ -443,7 +453,7 @@ export default function Home() {
                 </div>
 
                 <div className="er-steps">
-                  {[["Ruta","1"],["Vehículo","2"],["Confirmar","3"]].map(([label,n]) => {
+                  {[["Route","1"],["Vehicle","2"],["Confirm","3"]].map(([label,n]) => {
                     const num = Number(n);
                     return (
                       <button key={n} className={`er-step-tab${step===num?" active":""}`}
@@ -480,13 +490,13 @@ export default function Home() {
             {serviceType !== "route" && (
               <div className="er-service-note">
                 {serviceType === "hour"
-                  ? `Servicio por horas · 20 km incluidos por hora · Máximo ${rentalHours * 20} km`
-                  : "Servicio por día completo · 10 horas · Hasta 200 km incluidos"}
+                  ? `Hourly service · 20 km included per hour · Up to ${rentalHours * 20} km`
+                  : "Full-day service · 10 hours · Up to 200 km included"}
                 <br/>
-                <span style={{color:"#555"}}>
+                <span style={{color:"#0A0A0A"}}>
                   {serviceType === "hour"
-                    ? "El chofer permanece a tu disposición durante las horas contratadas."
-                    : "Ideal para reuniones, eventos o turismo en CDMX."}
+                    ? "Your chauffeur remains available during the contracted hours."
+                    : "Ideal for meetings, events or city transportation in Mexico City."}
                 </span>
               </div>
             )}
@@ -494,12 +504,12 @@ export default function Home() {
             {/* SELECTOR HORAS */}
             {serviceType === "hour" && (
               <div className="er-field">
-                <label className="er-label">Duración del servicio</label>
+                <label className="er-label">Service Duration</label>
                 <div className="er-hours-selector">
                   <button type="button" className="er-hr-btn"
                     onClick={() => setRentalHours(h => Math.max(2, h-1))}>−</button>
                   <div className="er-hr-count">{rentalHours}</div>
-                  <div className="er-hr-unit">horas</div>
+                  <div className="er-hr-unit">hours</div>
                   <button type="button" className="er-hr-btn"
                     onClick={() => setRentalHours(h => h+1)}>+</button>
                 </div>
@@ -576,19 +586,19 @@ export default function Home() {
 
           {/* ── PASO 2 ── */}
           <div className={`er-panel${step===2?" active":""}`}>
-            <h2 className="er-section-title">Elige tu categoría</h2>
+            <h2 className="er-section-title">Choose your category</h2>
             <div className="er-route-box">
               <div className="er-route-stats">
                 <div>
                   <div className="er-stat-val">
                     {serviceType === "route" ? km : (serviceType === "hour" ? maxAllowedKm : 200)}
                   </div>
-                  <div className="er-stat-lbl">{serviceType === "route" ? "Kilómetros" : "Km incluidos"}</div>
+                  <div className="er-stat-lbl">{serviceType === "route" ? "Kilometers" : "Included km"}</div>
                 </div>
                 {serviceType === "route" && (
                   <div>
                     <div className="er-stat-val">{minutes}</div>
-                    <div className="er-stat-lbl">Minutos est.</div>
+                    <div className="er-stat-lbl">Estimated min.</div>
                   </div>
                 )}
               </div>
@@ -597,7 +607,7 @@ export default function Home() {
 
             {urgent && (
               <div className="er-urgent-note">
-                ⚠️ Reserva próxima — aplica cargo del 15% por disponibilidad
+                ⚠️ Short-notice booking — 15% availability fee applies
               </div>
             )}
 
@@ -618,7 +628,7 @@ export default function Home() {
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
                       </div>
-                      <div className="er-vehicle-price-label">con IVA incluido</div>
+                      <div className="er-vehicle-price-label">VAT included</div>
                     </div>
                     <div className="er-vehicle-check">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3">
@@ -631,10 +641,10 @@ export default function Home() {
             </div>
 
             <button className="er-btn-primary" onClick={() => goStep(3)} type="button">
-              Continuar →
+              Continue →
             </button>
             <button className="er-btn-secondary" onClick={goBackToStep1} type="button">
-              ← Modificar ruta
+              ← Modify route
             </button>
           </div>
 
@@ -642,12 +652,12 @@ export default function Home() {
           <div className={`er-panel${step===3?" active":""}`}>
             <div className="er-row" style={{ marginBottom:20 }}>
               <div className="er-field">
-                <label className="er-label">Nombre completo</label>
-                <input className="er-input" placeholder="Como aparece en ID"
+                <label className="er-label">Full Name</label>
+                <input className="er-input" placeholder="As shown on ID"
                   value={fullName} onChange={(e) => setFullName(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">Teléfono</label>
+                <label className="er-label">Phone</label>
                 <PhoneInput international defaultCountry="MX"
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
               </div>
@@ -661,7 +671,7 @@ export default function Home() {
                 </div>
               ))}
               <div className="er-summary-row">
-                <span className="er-summary-key" style={{ color:"#b8b8b8", fontWeight:500 }}>Total con IVA</span>
+                <span className="er-summary-key" style={{ color:"#b8b8b8", fontWeight:500 }}>Total with VAT</span>
                 <span className="er-summary-val er-summary-total">${price.toLocaleString("es-MX")} MXN</span>
               </div>
             </div>
@@ -673,20 +683,20 @@ export default function Home() {
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                 <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.942-1.42A9.953 9.953 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 11.999 2zm.001 18.18c-1.64 0-3.162-.497-4.424-1.347l-.317-.188-3.287.944.944-3.22-.206-.33A8.178 8.178 0 013.82 12c0-4.515 3.665-8.18 8.18-8.18 4.516 0 8.18 3.665 8.18 8.18 0 4.516-3.664 8.18-8.18 8.18z"/>
               </svg>
-              Solicitar reserva por WhatsApp
+              Request booking via WhatsApp
             </a>
 
             <div className="er-legal">
-              Solicitud sujeta a disponibilidad. El pago se confirma una vez validada la reserva.<br/>
+              Request subject to availability. Payment is confirmed once the booking is validated.<br/>
               Elite Route CDMX · eliteroute.mx
             </div>
 
             <button className="er-btn-secondary" style={{ marginTop:16 }} onClick={() => goStep(2)} type="button">
-              ← Modificar vehículo
+              ← Modify vehicle
             </button>
           </div>
 
-              <section className="er-benefits" aria-label="Beneficios Elite Route">
+              <section className="er-benefits" aria-label="Elite Route benefits">
                 <div className="er-benefit">
                   <div className="er-benefit-title">Professional Chauffeurs</div>
                   <div className="er-benefit-copy">

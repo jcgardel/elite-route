@@ -441,11 +441,11 @@ export default function Home() {
                     Safety, comfort and <span>confidence</span> in every ride.
                   </h2>
                   <ul className="er-comfort-list">
-                    <li><span className="er-comfort-icon">🥂</span>Complimentary beverage</li>
-                    <li><span className="er-comfort-icon">⚡</span>Phone chargers available</li>
+                    <li><span className="er-comfort-icon">💧</span>Botella de agua de cortesia</li>
+                    <li><span className="er-comfort-icon">⚡</span>Phone chargers</li>
                     <li><span className="er-comfort-icon">♪</span>Music connection</li>
-                    <li><span className="er-comfort-icon">❄</span>Climate-controlled vehicle</li>
-                    <li><span className="er-comfort-icon">✦</span>Attentive and service-minded driver</li>
+                    <li><span className="er-comfort-icon">❄</span>Vehicle with A/C</li>
+                    <li><span className="er-comfort-icon">✦</span>Chouffer amable y servicial</li>
                   </ul>
                 </section>
               </div>

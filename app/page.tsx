@@ -299,7 +299,10 @@ export default function Home() {
         body: JSON.stringify({ origin, destination: dest }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) { setAlert1("We could not calculate the route. Please verify the addresses."); return; }
+      if (!res.ok || data.error) {
+        setAlert1(res.status === 429 ? "Too many requests. Please wait a moment and try again." : "We could not calculate the route. Please verify the addresses.");
+        return;
+      }
 
       const routeKm = Number(data.km.toFixed(1));
       const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;

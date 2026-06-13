@@ -4,18 +4,22 @@ import { useRef, useState, type MouseEvent } from "react";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import {
+  calculatePrice,
+  serviceTypeLabel,
+  serviceTypeLabelEs,
+  tariffs,
+  zoneLabel,
+  zoneLabelEs,
+  type Category,
+  type ServiceType,
+  type Zone,
+} from "@/lib/booking";
 
 const libraries: "places"[] = ["places"];
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-
-const tariffs = {
-  sedan: { name: "Sedan", km: 25, hour: 450, min: 700, cap: "1-3 passengers · 2 bags", tag: "Executive" },
-  executive: { name: "Executive", km: 40, hour: 650, min: 950, cap: "1-3 passengers · 3 bags", tag: "Premium" },
-  minivan: { name: "Minivan", km: 45, hour: 700, min: 1100, cap: "4-6 passengers · 4 bags", tag: "Group" },
-  suv: { name: "HIGH SUV", km: 70, hour: 990, min: 1600, cap: "1-6 passengers · 6 bags", tag: "Suburban" },
-};
 
 const vehicleImages: Record<string, string> = {
   sedan: "/sedan.jpg",
@@ -24,56 +28,10 @@ const vehicleImages: Record<string, string> = {
   suv: "/high-suv.jpg",
 };
 
-type Category = keyof typeof tariffs;
-type Zone = "cdmx" | "semi_foraneo" | "foraneo";
-type ServiceType = "route" | "hour" | "day";
-
-function detectZone(origin: string, destination: string, km: number): Zone {
-  const s = (origin + " " + destination).toLowerCase();
-  if (/aifa|felipe\s*[aá]ngeles|zumpango|toluca/.test(s)) return "semi_foraneo";
-  if (km > 80) return "foraneo";
+function detectZone(km: number): Zone {
+  if (km > 120) return "foraneo";
+  if (km > 50) return "semi_foraneo";
   return "cdmx";
-}
-
-function zoneLabel(z: Zone) {
-  return z === "cdmx" ? "Mexico City" : z === "semi_foraneo" ? "AIFA / Toluca" : "Out-of-town";
-}
-
-function zoneLabelEs(z: Zone) {
-  return z === "cdmx" ? "CDMX" : z === "semi_foraneo" ? "AIFA / Toluca" : "Foráneo";
-}
-
-function serviceTypeLabel(serviceType: ServiceType, rentalHours: number) {
-  if (serviceType === "hour") return `Hourly ride (${rentalHours} hrs)`;
-  if (serviceType === "day") return "Full day (10 hrs)";
-  return "Point-to-point transfer";
-}
-
-function serviceTypeLabelEs(serviceType: ServiceType, rentalHours: number) {
-  if (serviceType === "hour") return `Por horas (${rentalHours} hrs)`;
-  if (serviceType === "day") return "Por día (10 hrs)";
-  return "Traslado por ruta";
-}
-
-function calculatePrice(
-  km: number, minutes: number, category: Category,
-  zone: Zone, urgent: boolean, serviceType: ServiceType, rentalHours: number,
-) {
-  const tariff = tariffs[category];
-  let base = 0;
-  if (serviceType === "hour") {
-    base = Math.max(rentalHours * tariff.hour, tariff.min);
-  } else if (serviceType === "day") {
-    base = Math.max(10 * tariff.hour, tariff.min);
-  } else {
-    const hours = Math.ceil((minutes / 60) * 2) / 2;
-    base = Math.max(km * tariff.km, hours * tariff.hour, tariff.min);
-    if (zone === "semi_foraneo") base *= 1.18;
-    if (zone === "foraneo") base *= 1.35;
-  }
-  base = Math.round(base * 1.16);
-  if (urgent) base = Math.round(base * 1.15);
-  return base;
 }
 
 function getMinDate() {
@@ -105,7 +63,7 @@ const styles = `
   .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); }
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; }
-  .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 92px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
+  .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
   .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
   .er-hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; }
   .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
@@ -148,6 +106,7 @@ const styles = `
   .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-input option { background:#0A0A0A; color:#FFFFFF; }
+  select.er-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C8A46B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:40px; cursor:pointer; }
   .er-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:580px) { .er-row { grid-template-columns:1fr; } }
 
@@ -160,7 +119,7 @@ const styles = `
   .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
 
   .er-section-title { color:#fff; font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:300; margin:42px 0 20px; }
-  .er-vehicles { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
+  .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
   .er-vehicle.selected { border-color:#fff; box-shadow:0 0 0 1px #fff; }
@@ -193,6 +152,7 @@ const styles = `
   .er-booking-card .er-btn-secondary:hover { border-color:#111; }
   .er-btn-wa { width:100%; background:#25D366; color:#000; border:none; border-radius:2px; padding:18px; font-family:'Barlow',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
   .er-btn-wa:hover { background:#1fb85a; }
+  .er-payment-note { color:#BFC3C8; font-size:12px; line-height:1.6; margin:-8px 0 14px; text-align:center; }
 
   .er-alert { padding:12px 16px; border-radius:2px; font-size:13px; margin-bottom:16px; }
   .er-alert-err { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; }
@@ -208,6 +168,12 @@ const styles = `
   .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
   .er-benefit-title { font-weight:600; font-size:17px; margin-bottom:8px; }
   .er-benefit-copy { color:#BFC3C8; line-height:1.6; font-size:14px; }
+  .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
+  .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
+  .er-contact-title { color:#fff; font-weight:600; font-size:17px; margin-bottom:8px; }
+  .er-contact-copy { color:#BFC3C8; line-height:1.6; font-size:14px; margin-bottom:12px; }
+  .er-contact-link { color:#C8A46B; font-size:14px; font-weight:600; text-decoration:none; overflow-wrap:anywhere; }
+  .er-contact-link:hover { color:#fff; }
   .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
   .er-hero .er-comfort { max-width:720px; margin-top:34px; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
   .er-comfort-title { color:#fff; font-family:'Cormorant Garamond',serif; font-size:34px; line-height:1.05; font-weight:300; margin:0; }
@@ -227,7 +193,6 @@ const styles = `
   @media (max-width:980px) {
     .er-hero-inner { grid-template-columns:1fr; padding-bottom:70px; }
     .er-booking-card { max-width:560px; }
-    .er-vehicles { grid-template-columns:repeat(2, minmax(0,1fr)); }
     .er-comfort { grid-template-columns:1fr; }
   }
   @media (max-width:700px) {
@@ -242,11 +207,12 @@ const styles = `
     .er-main { margin:0; padding:0 18px 64px; }
     .er-booking-card { padding:20px; }
     .er-service-tabs { flex-direction:column; }
-    .er-svc-tab { border-right:none; border-bottom:1px solid #e5dfd3; }
+    .er-svc-tab { border-right:none; border-bottom:1px solid rgba(200,164,107,0.24); }
     .er-svc-tab:last-child { border-bottom:none; }
     .er-vehicles { grid-template-columns:1fr; }
     .er-vehicle, .er-vehicle-content { min-height:330px; }
     .er-benefits { grid-template-columns:1fr; }
+    .er-contact-grid { grid-template-columns:1fr; }
     .er-comfort { padding:20px; }
     .er-comfort-list { grid-template-columns:1fr; }
   }
@@ -273,6 +239,7 @@ export default function Home() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
   const [alert1, setAlert1] = useState("");
   const [alert3, setAlert3] = useState("");
 
@@ -343,7 +310,7 @@ export default function Home() {
 
       setKm(routeKm);
       setMinutes(Number(data.minutes));
-      setZone(detectZone(origin, dest, data.km));
+      setZone(detectZone(data.km));
       setUrgent(isUrgent(serviceDate, serviceTime));
       goStep(2);
     } catch {
@@ -396,6 +363,46 @@ export default function Home() {
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
       "_blank", "noopener,noreferrer"
     );
+  }
+
+  async function handleCheckout() {
+    if (!fullName.trim()) { setAlert3("Full name is required."); return; }
+    if (!phone) { setAlert3("Phone number is required."); return; }
+    if (!isValidPhoneNumber(phone)) { setAlert3("Enter a valid phone number with country code."); return; }
+    if (price === 0) { setAlert3("Error: go back to step 1 and calculate the route."); return; }
+
+    setAlert3("");
+    setPaymentLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceType,
+          rentalHours,
+          origin,
+          destination,
+          serviceDate,
+          serviceTime,
+          km,
+          minutes,
+          zone,
+          category,
+          fullName,
+          phone,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        setAlert3(data.error || "We could not start the payment. Please try again.");
+        return;
+      }
+      window.location.href = data.url;
+    } catch {
+      setAlert3("Connection error. Please try again.");
+    } finally {
+      setPaymentLoading(false);
+    }
   }
 
   if (!isLoaded) {
@@ -593,16 +600,9 @@ export default function Home() {
               {loading ? "Calculating route..." : "Get Quote →"}
             </button>
           </div>
-              </div>
-            </div>
-          </section>
-
-          <main className="er-main">
-            <div className="er-workspace">
 
           {/* ── PASO 2 ── */}
           <div className={`er-panel${step===2?" active":""}`}>
-            <h2 className="er-section-title">Choose your category</h2>
             <div className="er-route-box">
               <div className="er-route-stats">
                 <div>
@@ -694,16 +694,24 @@ export default function Home() {
 
             {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
 
+            <p className="er-payment-note">
+              Secure card payment powered by Stripe. Your booking details are attached to the payment.
+            </p>
+
+            <button className="er-btn-primary" onClick={handleCheckout} disabled={paymentLoading} type="button">
+              {paymentLoading ? "Opening secure payment..." : "Pay and reserve with card"}
+            </button>
+
             <a className="er-btn-wa" href="#" onClick={handleWhatsApp}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                 <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.942-1.42A9.953 9.953 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 11.999 2zm.001 18.18c-1.64 0-3.162-.497-4.424-1.347l-.317-.188-3.287.944.944-3.22-.206-.33A8.178 8.178 0 013.82 12c0-4.515 3.665-8.18 8.18-8.18 4.516 0 8.18 3.665 8.18 8.18 0 4.516-3.664 8.18-8.18 8.18z"/>
               </svg>
-              Request booking via WhatsApp
+              Ask via WhatsApp
             </a>
 
             <div className="er-legal">
-              Request subject to availability. Payment is confirmed once the booking is validated.<br/>
+              Paid bookings remain subject to final availability confirmation by Elite Route.<br/>
               Elite Route CDMX · eliteroute.mx
             </div>
 
@@ -711,8 +719,12 @@ export default function Home() {
               ← Modify vehicle
             </button>
           </div>
+              </div>
+            </div>
+          </section>
 
-              <section className="er-benefits" aria-label="Elite Route benefits">
+          <main className="er-main">
+            <section className="er-benefits" aria-label="Elite Route benefits">
                 <div className="er-benefit">
                   <div className="er-benefit-title">Professional Chauffeurs</div>
                   <div className="er-benefit-copy">
@@ -739,7 +751,27 @@ export default function Home() {
                 </div>
               </section>
 
-            </div>
+              <section className="er-contact-grid" aria-label="Elite Route contact emails">
+                <div className="er-contact-item">
+                  <div className="er-contact-title">Business to Business</div>
+                  <div className="er-contact-copy">
+                    Corporate accounts, executive transfers, recurring routes and commercial
+                    partnerships.
+                  </div>
+                  <a className="er-contact-link" href="mailto:business@eliteroute.mx">
+                    business@eliteroute.mx
+                  </a>
+                </div>
+                <div className="er-contact-item">
+                  <div className="er-contact-title">Accounting / Invoices</div>
+                  <div className="er-contact-copy">
+                    Billing details, invoice requests, payment records and administrative follow-up.
+                  </div>
+                  <a className="er-contact-link" href="mailto:contabilidad@eliteroute.mx">
+                    contabilidad@eliteroute.mx
+                  </a>
+                </div>
+              </section>
           </main>
         </div>
       </div>

@@ -16,6 +16,38 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Stripe payments
+
+Set these environment variables before testing card payments:
+
+```bash
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+The checkout endpoint is `POST /api/checkout`. Stripe webhooks should point to
+`/api/webhooks/stripe` and listen for `checkout.session.completed`.
+
+## WhatsApp payment notifications
+
+When Stripe sends `checkout.session.completed`, the app builds a WhatsApp-ready
+message with the payment, customer, route and vehicle details.
+
+Configure either an automation webhook:
+
+```bash
+WHATSAPP_NOTIFY_WEBHOOK_URL=https://hook.make.com/...
+```
+
+Or configure WhatsApp Cloud API directly:
+
+```bash
+WHATSAPP_ACCESS_TOKEN=
+WHATSAPP_PHONE_NUMBER_ID=
+WHATSAPP_NOTIFY_TO=525543582919
+```
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

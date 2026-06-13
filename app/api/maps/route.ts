@@ -1,6 +1,15 @@
 import { NextResponse } from "next/server";
+import { getMapsLimiter, getIp } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  const limiter = getMapsLimiter();
+  if (limiter) {
+    const { success } = await limiter.limit(getIp(req));
+    if (!success) {
+      return NextResponse.json({ error: "Demasiadas solicitudes, espera un momento" }, { status: 429 });
+    }
+  }
+
   try {
     const { origin, destination } = await req.json();
 

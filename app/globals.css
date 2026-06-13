@@ -24,3 +24,97 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.er-status-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.66)),
+    url("/high-suv.jpg") center / cover;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.er-status-panel {
+  width: min(100%, 520px);
+  border: 1px solid rgba(200, 164, 107, 0.48);
+  background: rgba(10, 10, 10, 0.76);
+  padding: 34px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.er-status-logo {
+  width: 152px;
+  height: auto;
+  margin-bottom: 22px;
+}
+
+.er-status-kicker {
+  margin: 0 0 12px;
+  color: #c8a46b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.er-status-panel h1 {
+  margin: 0 0 14px;
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1.08;
+}
+
+.er-status-panel p {
+  margin: 0 0 24px;
+  color: #c8c8c8;
+  line-height: 1.65;
+}
+
+.er-status-link {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c8a46b;
+  margin: 6px auto;
+  padding: 13px 20px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.er-status-link:hover {
+  background: #c8a46b;
+  color: #0a0a0a;
+}
+
+.er-status-link-wa {
+  background: #25d366;
+  border-color: #25d366;
+  color: #06140b;
+}
+
+.er-status-link-wa:hover {
+  background: #1fb85a;
+  border-color: #1fb85a;
+  color: #06140b;
+}
+
+.er-status-invoice-link {
+  display: table;
+  margin: 14px auto 0;
+  color: #bfc3c8;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.er-status-invoice-link:hover {
+  color: #c8a46b;
+}

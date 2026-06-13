@@ -1,5 +1,37 @@
 import type Stripe from "stripe";
 
+async function sendEmailNotification(session: Stripe.Checkout.Session, message: string) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.RESEND_NOTIFY_TO || "jcgd.31@gmail.com";
+  if (!apiKey) return false;
+
+  const meta = session.metadata || {};
+  const htmlBody = message
+    .replace(/\*([^*]+)\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Elite Route <notificaciones@eliteroute.mx>",
+      to: [to],
+      subject: `✅ Pago confirmado · ${meta.fullName || "Cliente"} · ${meta.serviceDate || ""}`,
+      html: `<pre style="font-family:monospace;font-size:14px;line-height:1.6">${htmlBody}</pre>`,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Email notification failed with ${response.status}: ${body}`);
+  }
+
+  return true;
+}
+
 function formatMoney(amountTotal: number | null, currency: string | null) {
   const amount = (amountTotal || 0) / 100;
   return new Intl.NumberFormat("es-MX", {
@@ -91,13 +123,17 @@ async function sendToWhatsAppCloud(message: string) {
 
 export async function sendPaidBookingNotification(session: Stripe.Checkout.Session) {
   const message = buildPaidBookingMessage(session);
-  const sentToWebhook = await sendToAutomationWebhook(session, message);
-  const sentToWhatsApp = await sendToWhatsAppCloud(message);
+  const [sentToWebhook, sentToWhatsApp, sentToEmail] = await Promise.allSettled([
+    sendToAutomationWebhook(session, message),
+    sendToWhatsAppCloud(message),
+    sendEmailNotification(session, message),
+  ]).then(results => results.map(r => r.status === "fulfilled" && r.value === true));
 
   return {
     message,
-    sent: sentToWebhook || sentToWhatsApp,
+    sent: sentToWebhook || sentToWhatsApp || sentToEmail,
     sentToWebhook,
     sentToWhatsApp,
+    sentToEmail,
   };
 }

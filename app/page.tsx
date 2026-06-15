@@ -45,11 +45,132 @@ function isUrgent(dateStr: string, timeStr: string): boolean {
   return diff > 0 && diff <= 6;
 }
 
-function formatDateTime(dateStr: string, timeStr: string) {
+function formatDateTime(dateStr: string, timeStr: string, locale = "es-MX") {
   if (!dateStr || !timeStr) return "—";
   const dt = new Date(`${dateStr}T${timeStr}`);
-  return dt.toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + " · " + timeStr + "h";
+  return dt.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + " · " + timeStr + "h";
 }
+
+const TX = {
+  en: {
+    services: "Services", airports: "Airports", corporate: "Corporate", contact: "Contact", reserveNow: "Reserve Now",
+    kicker: "EliteRoute Mexico City",
+    heroTitle: "We move your level.",
+    heroCopy: "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation.",
+    heroBtnReserve: "Reserve Now",
+    comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
+    water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
+    ac: "Vehicle with A/C", chauffeur: "Friendly, service-minded chauffeur",
+    getQuote: "Get your quote",
+    stepRoute: "Route", stepVehicle: "Vehicle", stepConfirm: "Confirm",
+    transfer: "Transfer", hourly: "Hourly", fullDay: "Full Day",
+    hourlyNote: (h: number) => `Hourly service · 20 km included per hour · Up to ${h * 20} km`,
+    hourlyNote2: "Your chauffeur remains available during the contracted hours.",
+    dayNote: "Full-day service · 10 hours · Up to 200 km included",
+    dayNote2: "Ideal for meetings, events or city transportation in Mexico City.",
+    duration: "Service Duration", hours: "hours",
+    pickup: "Pickup Location", pickupPlaceholder: "Hotel, airport, address...",
+    destination: "Destination", destinationPlaceholder: "Where are we taking you?",
+    date: "Date", time: "Time", vehicleCategory: "Vehicle Category",
+    getQuoteBtn: "Get Quote →", calculating: "Calculating route...",
+    continue: "Continue →", modifyRoute: "← Modify route", modifyVehicle: "← Modify vehicle",
+    kilometers: "Kilometers", includedKm: "Included km", estimatedMin: "Estimated min.",
+    urgentNote: "⚠️ Short-notice booking — 15% availability fee applies",
+    vatIncluded: "VAT included",
+    fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
+    stServiceType: "Service type", stIncludedKm: "Included km", stDateTime: "Date & time",
+    stPickup: "Pickup", stDestination: "Destination", stOpenItinerary: "Open itinerary",
+    stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
+    totalVat: "Total with VAT",
+    paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
+    payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
+    whatsappBtn: "Ask via WhatsApp",
+    legal: "Paid bookings remain subject to final availability confirmation by Elite Route.",
+    legal2: "Elite Route CDMX · eliteroute.mx",
+    alertOrigin: "Enter the pickup location.",
+    alertDest: "Enter the destination.",
+    alertDateTime: "Select the service date and time.",
+    alertMinHours: "Minimum hourly service is 2 hours.",
+    alertPast: "Select a future date and time.",
+    alertAdvance: "At least 2 hours of advance notice are required.",
+    alertTooManyReq: "Too many requests. Please wait a moment and try again.",
+    alertRouteErr: "We could not calculate the route. Please verify the addresses.",
+    alertKmExceeded: (a: number, r: number) => `This service includes up to ${a} km. The calculated route is ${r} km.`,
+    alertConnErr: "Connection error. Please try again.",
+    alertName: "Full name is required.",
+    alertPhone: "Phone number is required.",
+    alertPhoneInvalid: "Enter a valid phone number with country code.",
+    alertPriceErr: "Error: go back to step 1 and calculate the route.",
+    alertCheckoutErr: "We could not start the payment. Please try again.",
+    benefit1Title: "Professional Chauffeurs", benefit1Copy: "Licensed and professionally trained.",
+    benefit2Title: "Fixed Pricing", benefit2Copy: "Transparent fares with no surprises.",
+    benefit3Title: "24/7 Availability", benefit3Copy: "Airport and executive transportation.",
+    benefit4Title: "Direct Confirmation", benefit4Copy: "Instant WhatsApp assistance.",
+    b2bTitle: "Business to Business",
+    b2bCopy: "Corporate accounts, executive transfers, recurring routes and commercial partnerships.",
+    accTitle: "Accounting / Invoices",
+    accCopy: "Billing details, invoice requests, payment records and administrative follow-up.",
+  },
+  es: {
+    services: "Servicios", airports: "Aeropuertos", corporate: "Corporativo", contact: "Contacto", reserveNow: "Reservar",
+    kicker: "EliteRoute Ciudad de México",
+    heroTitle: "Movemos tu nivel.",
+    heroCopy: "Tu chofer privado en Ciudad de México. Traslados al aeropuerto, servicio por hora y transporte ejecutivo.",
+    heroBtnReserve: "Reservar Ahora",
+    comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
+    water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
+    ac: "Vehículo con A/C", chauffeur: "Chofer amable y orientado al servicio",
+    getQuote: "Obtén tu cotización",
+    stepRoute: "Ruta", stepVehicle: "Vehículo", stepConfirm: "Confirmar",
+    transfer: "Traslado", hourly: "Por hora", fullDay: "Día completo",
+    hourlyNote: (h: number) => `Servicio por hora · 20 km incluidos por hora · Hasta ${h * 20} km`,
+    hourlyNote2: "Tu chofer permanece disponible durante las horas contratadas.",
+    dayNote: "Servicio día completo · 10 horas · Hasta 200 km incluidos",
+    dayNote2: "Ideal para reuniones, eventos o traslados en la Ciudad de México.",
+    duration: "Duración del servicio", hours: "horas",
+    pickup: "Lugar de recogida", pickupPlaceholder: "Hotel, aeropuerto, dirección...",
+    destination: "Destino", destinationPlaceholder: "¿A dónde te llevamos?",
+    date: "Fecha", time: "Hora", vehicleCategory: "Categoría de vehículo",
+    getQuoteBtn: "Obtener cotización →", calculating: "Calculando ruta...",
+    continue: "Continuar →", modifyRoute: "← Modificar ruta", modifyVehicle: "← Modificar vehículo",
+    kilometers: "Kilómetros", includedKm: "Km incluidos", estimatedMin: "Min. estimados",
+    urgentNote: "⚠️ Reserva próxima — se aplica cargo de disponibilidad del 15%",
+    vatIncluded: "IVA incluido",
+    fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
+    stServiceType: "Tipo de servicio", stIncludedKm: "Km incluidos", stDateTime: "Fecha y hora",
+    stPickup: "Recogida", stDestination: "Destino", stOpenItinerary: "Disposición libre",
+    stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
+    totalVat: "Total con IVA",
+    paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
+    payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
+    whatsappBtn: "Consultar por WhatsApp",
+    legal: "Las reservas pagadas están sujetas a confirmación final de disponibilidad por parte de Elite Route.",
+    legal2: "Elite Route CDMX · eliteroute.mx",
+    alertOrigin: "Ingresa el lugar de recogida.",
+    alertDest: "Ingresa el destino.",
+    alertDateTime: "Selecciona la fecha y hora del servicio.",
+    alertMinHours: "El servicio mínimo por hora es de 2 horas.",
+    alertPast: "Selecciona una fecha y hora futura.",
+    alertAdvance: "Se requieren al menos 2 horas de anticipación.",
+    alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
+    alertRouteErr: "No pudimos calcular la ruta. Por favor verifica las direcciones.",
+    alertKmExceeded: (a: number, r: number) => `Este servicio incluye hasta ${a} km. La ruta calculada es de ${r} km.`,
+    alertConnErr: "Error de conexión. Por favor intenta de nuevo.",
+    alertName: "El nombre completo es requerido.",
+    alertPhone: "El número de teléfono es requerido.",
+    alertPhoneInvalid: "Ingresa un número de teléfono válido con código de país.",
+    alertPriceErr: "Error: regresa al paso 1 y calcula la ruta.",
+    alertCheckoutErr: "No pudimos iniciar el pago. Por favor intenta de nuevo.",
+    benefit1Title: "Choferes Profesionales", benefit1Copy: "Licenciados y capacitados profesionalmente.",
+    benefit2Title: "Tarifas Fijas", benefit2Copy: "Precios transparentes sin sorpresas.",
+    benefit3Title: "Disponibilidad 24/7", benefit3Copy: "Transporte aeroportuario y ejecutivo.",
+    benefit4Title: "Confirmación Directa", benefit4Copy: "Asistencia inmediata por WhatsApp.",
+    b2bTitle: "Business to Business",
+    b2bCopy: "Cuentas corporativas, traslados ejecutivos, rutas recurrentes y asociaciones comerciales.",
+    accTitle: "Contabilidad / Facturas",
+    accCopy: "Datos de facturación, solicitudes de facturas, registros de pago y seguimiento administrativo.",
+  },
+};
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
@@ -61,8 +182,13 @@ const styles = `
   .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
   .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); }
+  .er-nav-right { display:flex; align-items:center; gap:20px; }
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; }
+  .er-lang-toggle { display:flex; border:1px solid rgba(200,164,107,0.45); border-radius:2px; overflow:hidden; flex-shrink:0; }
+  .er-lang-btn { padding:7px 11px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:none; background:transparent; color:#BFC3C8; cursor:pointer; font-family:'Barlow',sans-serif; transition:all 0.2s; }
+  .er-lang-btn.active { background:#C8A46B; color:#0A0A0A; }
+  .er-lang-btn:hover:not(.active) { color:#fff; }
   .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
   .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
   .er-hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; }
@@ -224,6 +350,9 @@ export default function Home() {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
 
+  const [lang, setLang] = useState<"es" | "en">("es");
+  const t = TX[lang];
+
   const [step, setStep] = useState(1);
   const [serviceType, setServiceType] = useState<ServiceType>("route");
   const [rentalHours, setRentalHours] = useState(3);
@@ -245,6 +374,7 @@ export default function Home() {
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
+  const locale = lang === "es" ? "es-MX" : "en-US";
 
   function priceFor(cat: Category) {
     return serviceType === "route" && km === 0
@@ -253,18 +383,31 @@ export default function Home() {
   }
   const price = priceFor(category);
 
-  const summaryRows: Array<[string, string]> = [
-    ["Service type", serviceTypeLabel(serviceType, rentalHours)],
-    ...(serviceType !== "route" ? [["Included km", `${maxAllowedKm} km`] as [string, string]] : []),
-    ["Date & time", formatDateTime(serviceDate, serviceTime)],
-    ["Pickup", origin || "—"],
-    ["Destination", serviceType === "route" ? (destination || "—") : "Open itinerary"],
-    ["Vehicle", tariffs[category].name],
-    serviceType === "route"
-      ? ["Distance", `${km} km · ${minutes} min`]
-      : ["Duration", serviceTypeLabel(serviceType, rentalHours)],
-    ["Zone", zoneLabel(zone)],
-  ];
+  const summaryRows: Array<[string, string]> = lang === "es"
+    ? [
+        [t.stServiceType, serviceTypeLabelEs(serviceType, rentalHours)],
+        ...(serviceType !== "route" ? [[t.stIncludedKm, `${maxAllowedKm} km`] as [string, string]] : []),
+        [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
+        [t.stPickup, origin || "—"],
+        [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
+        [t.stVehicle, tariffs[category].name],
+        serviceType === "route"
+          ? [t.stDistance, `${km} km · ${minutes} min`]
+          : [t.stDuration, serviceTypeLabelEs(serviceType, rentalHours)],
+        [t.stZone, zoneLabelEs(zone)],
+      ]
+    : [
+        [t.stServiceType, serviceTypeLabel(serviceType, rentalHours)],
+        ...(serviceType !== "route" ? [[t.stIncludedKm, `${maxAllowedKm} km`] as [string, string]] : []),
+        [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
+        [t.stPickup, origin || "—"],
+        [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
+        [t.stVehicle, tariffs[category].name],
+        serviceType === "route"
+          ? [t.stDistance, `${km} km · ${minutes} min`]
+          : [t.stDuration, serviceTypeLabel(serviceType, rentalHours)],
+        [t.stZone, zoneLabel(zone)],
+      ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setUrgent(false); goStep(1); }
@@ -279,15 +422,15 @@ export default function Home() {
   }
 
   async function validateStep1() {
-    if (!origin) { setAlert1("Enter the pickup location."); return; }
-    if (serviceType === "route" && !destination) { setAlert1("Enter the destination."); return; }
-    if (!serviceDate || !serviceTime) { setAlert1("Select the service date and time."); return; }
-    if (serviceType === "hour" && rentalHours < 2) { setAlert1("Minimum hourly service is 2 hours."); return; }
+    if (!origin) { setAlert1(t.alertOrigin); return; }
+    if (serviceType === "route" && !destination) { setAlert1(t.alertDest); return; }
+    if (!serviceDate || !serviceTime) { setAlert1(t.alertDateTime); return; }
+    if (serviceType === "hour" && rentalHours < 2) { setAlert1(t.alertMinHours); return; }
 
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
-    if (diff <= 0) { setAlert1("Select a future date and time."); return; }
-    if (diff < 2) { setAlert1("At least 2 hours of advance notice are required."); return; }
+    if (diff <= 0) { setAlert1(t.alertPast); return; }
+    if (diff < 2) { setAlert1(t.alertAdvance); return; }
 
     setAlert1("");
     setLoading(true);
@@ -300,14 +443,14 @@ export default function Home() {
       });
       const data = await res.json();
       if (!res.ok || data.error) {
-        setAlert1(res.status === 429 ? "Too many requests. Please wait a moment and try again." : "We could not calculate the route. Please verify the addresses.");
+        setAlert1(res.status === 429 ? t.alertTooManyReq : t.alertRouteErr);
         return;
       }
 
       const routeKm = Number(data.km.toFixed(1));
       const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;
       if (serviceType !== "route" && routeKm > allowedKm) {
-        setAlert1(`This service includes up to ${allowedKm} km. The calculated route is ${routeKm} km.`);
+        setAlert1(t.alertKmExceeded(allowedKm, routeKm));
         return;
       }
 
@@ -317,7 +460,7 @@ export default function Home() {
       setUrgent(isUrgent(serviceDate, serviceTime));
       goStep(2);
     } catch {
-      setAlert1("Connection error. Please try again.");
+      setAlert1(t.alertConnErr);
     } finally {
       setLoading(false);
     }
@@ -336,7 +479,7 @@ export default function Home() {
       "*Servicio*",
       `Tipo: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : "",
-      `Fecha: ${formatDateTime(serviceDate, serviceTime)}`,
+      `Fecha: ${formatDateTime(serviceDate, serviceTime, "es-MX")}`,
       `Origen: ${origin}`,
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
       "",
@@ -357,10 +500,10 @@ export default function Home() {
 
   function handleWhatsApp(e: MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
-    if (!fullName.trim()) { setAlert3("Full name is required."); return; }
-    if (!phone) { setAlert3("Phone number is required."); return; }
-    if (!isValidPhoneNumber(phone)) { setAlert3("Enter a valid phone number with country code."); return; }
-    if (price === 0) { setAlert3("Error: go back to step 1 and calculate the route."); return; }
+    if (!fullName.trim()) { setAlert3(t.alertName); return; }
+    if (!phone) { setAlert3(t.alertPhone); return; }
+    if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
+    if (price === 0) { setAlert3(t.alertPriceErr); return; }
     setAlert3("");
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
@@ -369,10 +512,10 @@ export default function Home() {
   }
 
   async function handleCheckout() {
-    if (!fullName.trim()) { setAlert3("Full name is required."); return; }
-    if (!phone) { setAlert3("Phone number is required."); return; }
-    if (!isValidPhoneNumber(phone)) { setAlert3("Enter a valid phone number with country code."); return; }
-    if (price === 0) { setAlert3("Error: go back to step 1 and calculate the route."); return; }
+    if (!fullName.trim()) { setAlert3(t.alertName); return; }
+    if (!phone) { setAlert3(t.alertPhone); return; }
+    if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
+    if (price === 0) { setAlert3(t.alertPriceErr); return; }
 
     setAlert3("");
     setPaymentLoading(true);
@@ -381,28 +524,18 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          serviceType,
-          rentalHours,
-          origin,
-          destination,
-          serviceDate,
-          serviceTime,
-          km,
-          minutes,
-          zone,
-          category,
-          fullName,
-          phone,
+          serviceType, rentalHours, origin, destination, serviceDate, serviceTime,
+          km, minutes, zone, category, fullName, phone,
         }),
       });
       const data = await res.json();
       if (!res.ok || !data.url) {
-        setAlert3(data.error || "We could not start the payment. Please try again.");
+        setAlert3(data.error || t.alertCheckoutErr);
         return;
       }
       window.location.href = data.url;
     } catch {
-      setAlert3("Connection error. Please try again.");
+      setAlert3(t.alertConnErr);
     } finally {
       setPaymentLoading(false);
     }
@@ -424,32 +557,35 @@ export default function Home() {
           <section className="er-hero">
             <nav className="er-nav" aria-label="Elite Route">
               <img className="er-logo-img" src="/elite-route-logo.jpg" alt="Elite Route" />
-              <div className="er-nav-links">
-                <span>Services</span>
-                <span>Airports</span>
-                <span>Corporate</span>
-                <span>Contact</span>
-                <span className="er-nav-chip">Reserve Now</span>
+              <div className="er-nav-right">
+                <div className="er-nav-links">
+                  <span>{t.services}</span>
+                  <span>{t.airports}</span>
+                  <span>{t.corporate}</span>
+                  <span>{t.contact}</span>
+                  <span className="er-nav-chip">{t.reserveNow}</span>
+                </div>
+                <div className="er-lang-toggle" aria-label="Idioma / Language">
+                  <button type="button" className={`er-lang-btn${lang === "es" ? " active" : ""}`} onClick={() => setLang("es")}>ES</button>
+                  <button type="button" className={`er-lang-btn${lang === "en" ? " active" : ""}`} onClick={() => setLang("en")}>EN</button>
+                </div>
               </div>
             </nav>
 
             <div className="er-hero-inner">
               <div>
-                <div className="er-kicker">EliteRoute Mexico City</div>
-                <h1 className="er-hero-title">We move your level.</h1>
-                <p className="er-hero-copy">
-                  Your private chauffeur in Mexico City. Airport transfers, hourly service and
-                  executive transportation.
-                </p>
+                <div className="er-kicker">{t.kicker}</div>
+                <h1 className="er-hero-title">{t.heroTitle}</h1>
+                <p className="er-hero-copy">{t.heroCopy}</p>
                 <div className="er-hero-actions">
-                  <a className="er-hero-btn" href="#quote">Reserve Now</a>
+                  <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>
                   <a className="er-hero-btn er-hero-mail" href="mailto:business@eliteroute.mx">
                     business@eliteroute.mx
                   </a>
                 </div>
                 <section className="er-comfort" aria-label="Comfort amenities">
                   <h2 className="er-comfort-title">
-                    Safety, comfort and <span>confidence</span> in every ride.
+                    {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
                   </h2>
                   <ul className="er-comfort-list">
                     <li>
@@ -461,25 +597,25 @@ export default function Home() {
                           <path d="M8 18h8" />
                         </svg>
                       </span>
-                      Complimentary water bottle
+                      {t.water}
                     </li>
-                    <li><span className="er-comfort-icon">⚡</span>Phone chargers</li>
-                    <li><span className="er-comfort-icon">♪</span>Music connection</li>
-                    <li><span className="er-comfort-icon">❄</span>Vehicle with A/C</li>
-                    <li><span className="er-comfort-icon">✦</span>Friendly, service-minded chauffeur</li>
+                    <li><span className="er-comfort-icon">⚡</span>{t.chargers}</li>
+                    <li><span className="er-comfort-icon">♪</span>{t.music}</li>
+                    <li><span className="er-comfort-icon">❄</span>{t.ac}</li>
+                    <li><span className="er-comfort-icon">✦</span>{t.chauffeur}</li>
                   </ul>
                 </section>
               </div>
 
               <div className="er-booking-card" id="quote">
-                <h2 className="er-booking-title">Get your quote</h2>
+                <h2 className="er-booking-title">{t.getQuote}</h2>
 
                 <div className="er-progress">
                   <div className="er-progress-fill" style={{ width:`${(step/3)*100}%` }}/>
                 </div>
 
                 <div className="er-steps">
-                  {[["Route","1"],["Vehicle","2"],["Confirm","3"]].map(([label,n]) => {
+                  {([[t.stepRoute,"1"],[t.stepVehicle,"2"],[t.stepConfirm,"3"]] as [string,string][]).map(([label,n]) => {
                     const num = Number(n);
                     return (
                       <button key={n} className={`er-step-tab${step===num?" active":""}`}
@@ -494,12 +630,11 @@ export default function Home() {
           {/* ── PASO 1 ── */}
           <div className={`er-panel${step===1?" active":""}`}>
 
-            {/* TABS SERVICIO */}
             <div className="er-service-tabs">
               {([
-                ["route", "Transfer",  "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"],
-                ["hour",  "Hourly", "M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm1-10V7h-2v6l4.28 2.54.72-1.21-3-1.79z"],
-                ["day",   "Full Day",   "M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"],
+                ["route", t.transfer,  "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"],
+                ["hour",  t.hourly, "M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm1-10V7h-2v6l4.28 2.54.72-1.21-3-1.79z"],
+                ["day",   t.fullDay,   "M19 3h-1V1h-2v2H8V1H6v2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm0 18H5V8h14v13zM7 10h5v5H7z"],
               ] as const).map(([val, label, d]) => (
                 <button key={val} type="button"
                   className={`er-svc-tab${serviceType===val?" active":""}`}
@@ -512,78 +647,69 @@ export default function Home() {
               ))}
             </div>
 
-            {/* NOTA */}
             {serviceType !== "route" && (
               <div className="er-service-note">
-                {serviceType === "hour"
-                  ? `Hourly service · 20 km included per hour · Up to ${rentalHours * 20} km`
-                  : "Full-day service · 10 hours · Up to 200 km included"}
+                {serviceType === "hour" ? t.hourlyNote(rentalHours) : t.dayNote}
                 <br/>
                 <span style={{color:"#0A0A0A"}}>
-                  {serviceType === "hour"
-                    ? "Your chauffeur remains available during the contracted hours."
-                    : "Ideal for meetings, events or city transportation in Mexico City."}
+                  {serviceType === "hour" ? t.hourlyNote2 : t.dayNote2}
                 </span>
               </div>
             )}
 
-            {/* SELECTOR HORAS */}
             {serviceType === "hour" && (
               <div className="er-field">
-                <label className="er-label">Service Duration</label>
+                <label className="er-label">{t.duration}</label>
                 <div className="er-hours-selector">
                   <button type="button" className="er-hr-btn"
                     onClick={() => setRentalHours(h => Math.max(2, h-1))}>−</button>
                   <div className="er-hr-count">{rentalHours}</div>
-                  <div className="er-hr-unit">hours</div>
+                  <div className="er-hr-unit">{t.hours}</div>
                   <button type="button" className="er-hr-btn"
                     onClick={() => setRentalHours(h => h+1)}>+</button>
                 </div>
               </div>
             )}
 
-            {/* ORIGEN */}
             <div className="er-field">
-                <label className="er-label">Pickup Location</label>
+              <label className="er-label">{t.pickup}</label>
               <Autocomplete
                 onLoad={(a) => { originRef.current = a; }}
                 onPlaceChanged={onOriginChanged}
                 options={{ componentRestrictions:{ country:"mx" }, fields:["formatted_address","geometry","name"] }}>
-                <input className="er-input" placeholder="Hotel, airport, address..."
+                <input className="er-input" placeholder={t.pickupPlaceholder}
                   value={origin} onChange={(e) => setOrigin(e.target.value)}/>
               </Autocomplete>
             </div>
 
-            {/* DESTINO — solo traslado */}
             {serviceType === "route" && (
               <div className="er-field">
-                <label className="er-label">Destination</label>
+                <label className="er-label">{t.destination}</label>
                 <Autocomplete
                   onLoad={(a) => { destinationRef.current = a; }}
                   onPlaceChanged={onDestinationChanged}
                   options={{ componentRestrictions:{ country:"mx" }, fields:["formatted_address","geometry","name"] }}>
-                  <input className="er-input" placeholder="Where are we taking you?"
+                  <input className="er-input" placeholder={t.destinationPlaceholder}
                     value={destination} onChange={(e) => setDestination(e.target.value)}/>
                 </Autocomplete>
               </div>
             )}
 
-            {/* FECHA Y HORA */}
             <div className="er-row">
               <div className="er-field">
-                <label className="er-label">Date</label>
+                <label className="er-label">{t.date}</label>
                 <input className="er-input" type="date" min={getMinDate()}
                   value={serviceDate} onChange={(e) => setServiceDate(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">Time</label>
+                <label className="er-label">{t.time}</label>
                 <input className="er-input" type="time"
                   value={serviceTime} onChange={(e) => setServiceTime(e.target.value)}/>
               </div>
             </div>
 
             <div className="er-field">
-              <label className="er-label">Vehicle Category</label>
+              <label className="er-label">{t.vehicleCategory}</label>
               <select
                 className="er-input"
                 value={category}
@@ -600,7 +726,7 @@ export default function Home() {
             {alert1 && <div className="er-alert er-alert-err">{alert1}</div>}
 
             <button className="er-btn-primary" onClick={validateStep1} disabled={loading} type="button">
-              {loading ? "Calculating route..." : "Get Quote →"}
+              {loading ? t.calculating : t.getQuoteBtn}
             </button>
           </div>
 
@@ -612,22 +738,20 @@ export default function Home() {
                   <div className="er-stat-val">
                     {serviceType === "route" ? km : (serviceType === "hour" ? maxAllowedKm : 200)}
                   </div>
-                  <div className="er-stat-lbl">{serviceType === "route" ? "Kilometers" : "Included km"}</div>
+                  <div className="er-stat-lbl">{serviceType === "route" ? t.kilometers : t.includedKm}</div>
                 </div>
                 {serviceType === "route" && (
                   <div>
                     <div className="er-stat-val">{minutes}</div>
-                    <div className="er-stat-lbl">Estimated min.</div>
+                    <div className="er-stat-lbl">{t.estimatedMin}</div>
                   </div>
                 )}
               </div>
-              <div className="er-zone-badge">{zoneLabel(zone)}</div>
+              <div className="er-zone-badge">{lang === "es" ? zoneLabelEs(zone) : zoneLabel(zone)}</div>
             </div>
 
             {urgent && (
-              <div className="er-urgent-note">
-                ⚠️ Short-notice booking — 15% availability fee applies
-              </div>
+              <div className="er-urgent-note">{t.urgentNote}</div>
             )}
 
             <div className="er-vehicles">
@@ -647,7 +771,7 @@ export default function Home() {
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
                       </div>
-                      <div className="er-vehicle-price-label">VAT included</div>
+                      <div className="er-vehicle-price-label">{t.vatIncluded}</div>
                     </div>
                     <div className="er-vehicle-check">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="3">
@@ -660,10 +784,10 @@ export default function Home() {
             </div>
 
             <button className="er-btn-primary" onClick={() => goStep(3)} type="button">
-              Continue →
+              {t.continue}
             </button>
             <button className="er-btn-secondary" onClick={goBackToStep1} type="button">
-              ← Modify route
+              {t.modifyRoute}
             </button>
           </div>
 
@@ -671,12 +795,12 @@ export default function Home() {
           <div className={`er-panel${step===3?" active":""}`}>
             <div className="er-row" style={{ marginBottom:20 }}>
               <div className="er-field">
-                <label className="er-label">Full Name</label>
-                <input className="er-input" placeholder="As shown on ID"
+                <label className="er-label">{t.fullName}</label>
+                <input className="er-input" placeholder={t.fullNamePlaceholder}
                   value={fullName} onChange={(e) => setFullName(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">Phone</label>
+                <label className="er-label">{t.phone}</label>
                 <PhoneInput international defaultCountry="MX"
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
               </div>
@@ -690,19 +814,17 @@ export default function Home() {
                 </div>
               ))}
               <div className="er-summary-row">
-                <span className="er-summary-key" style={{ color:"#b8b8b8", fontWeight:500 }}>Total with VAT</span>
+                <span className="er-summary-key" style={{ color:"#b8b8b8", fontWeight:500 }}>{t.totalVat}</span>
                 <span className="er-summary-val er-summary-total">${price.toLocaleString("es-MX")} MXN</span>
               </div>
             </div>
 
             {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
 
-            <p className="er-payment-note">
-              Secure card payment powered by Stripe. Your booking details are attached to the payment.
-            </p>
+            <p className="er-payment-note">{t.paymentNote}</p>
 
             <button className="er-btn-primary" onClick={handleCheckout} disabled={paymentLoading} type="button">
-              {paymentLoading ? "Opening secure payment..." : "Pay and reserve with card"}
+              {paymentLoading ? t.payLoading : t.payBtn}
             </button>
 
             <a className="er-btn-wa" href="#" onClick={handleWhatsApp}>
@@ -710,16 +832,16 @@ export default function Home() {
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                 <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.942-1.42A9.953 9.953 0 0012 22c5.522 0 10-4.477 10-10S17.522 2 11.999 2zm.001 18.18c-1.64 0-3.162-.497-4.424-1.347l-.317-.188-3.287.944.944-3.22-.206-.33A8.178 8.178 0 013.82 12c0-4.515 3.665-8.18 8.18-8.18 4.516 0 8.18 3.665 8.18 8.18 0 4.516-3.664 8.18-8.18 8.18z"/>
               </svg>
-              Ask via WhatsApp
+              {t.whatsappBtn}
             </a>
 
             <div className="er-legal">
-              Paid bookings remain subject to final availability confirmation by Elite Route.<br/>
-              Elite Route CDMX · eliteroute.mx
+              {t.legal}<br/>
+              {t.legal2}
             </div>
 
             <button className="er-btn-secondary" style={{ marginTop:16 }} onClick={() => goStep(2)} type="button">
-              ← Modify vehicle
+              {t.modifyVehicle}
             </button>
           </div>
               </div>
@@ -729,47 +851,34 @@ export default function Home() {
           <main className="er-main">
             <section className="er-benefits" aria-label="Elite Route benefits">
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Professional Chauffeurs</div>
-                  <div className="er-benefit-copy">
-                    Licensed and professionally trained.
-                  </div>
+                  <div className="er-benefit-title">{t.benefit1Title}</div>
+                  <div className="er-benefit-copy">{t.benefit1Copy}</div>
                 </div>
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Fixed Pricing</div>
-                  <div className="er-benefit-copy">
-                    Transparent fares with no surprises.
-                  </div>
+                  <div className="er-benefit-title">{t.benefit2Title}</div>
+                  <div className="er-benefit-copy">{t.benefit2Copy}</div>
                 </div>
                 <div className="er-benefit">
-                  <div className="er-benefit-title">24/7 Availability</div>
-                  <div className="er-benefit-copy">
-                    Airport and executive transportation.
-                  </div>
+                  <div className="er-benefit-title">{t.benefit3Title}</div>
+                  <div className="er-benefit-copy">{t.benefit3Copy}</div>
                 </div>
                 <div className="er-benefit">
-                  <div className="er-benefit-title">Direct Confirmation</div>
-                  <div className="er-benefit-copy">
-                    Instant WhatsApp assistance.
-                  </div>
+                  <div className="er-benefit-title">{t.benefit4Title}</div>
+                  <div className="er-benefit-copy">{t.benefit4Copy}</div>
                 </div>
               </section>
 
               <section className="er-contact-grid" aria-label="Elite Route contact emails">
                 <div className="er-contact-item">
-                  <div className="er-contact-title">Business to Business</div>
-                  <div className="er-contact-copy">
-                    Corporate accounts, executive transfers, recurring routes and commercial
-                    partnerships.
-                  </div>
+                  <div className="er-contact-title">{t.b2bTitle}</div>
+                  <div className="er-contact-copy">{t.b2bCopy}</div>
                   <a className="er-contact-link" href="mailto:business@eliteroute.mx">
                     business@eliteroute.mx
                   </a>
                 </div>
                 <div className="er-contact-item">
-                  <div className="er-contact-title">Accounting / Invoices</div>
-                  <div className="er-contact-copy">
-                    Billing details, invoice requests, payment records and administrative follow-up.
-                  </div>
+                  <div className="er-contact-title">{t.accTitle}</div>
+                  <div className="er-contact-copy">{t.accCopy}</div>
                   <a className="er-contact-link" href="mailto:contabilidad@eliteroute.mx">
                     contabilidad@eliteroute.mx
                   </a>

@@ -1,7 +1,7 @@
 export const tariffs = {
   sedan: {
     name: "Sedan",
-    km: 25,
+    km: 28,
     hour: 450,
     min: 700,
     cap: "1-3 passengers · 2 bags",
@@ -25,7 +25,7 @@ export const tariffs = {
   },
   suv: {
     name: "HIGH SUV",
-    km: 70,
+    km: 73,
     hour: 990,
     min: 1600,
     cap: "1-6 passengers · 6 bags",

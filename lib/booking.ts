@@ -25,7 +25,7 @@ export const tariffs = {
   },
   suv: {
     name: "HIGH SUV",
-    km: 75,
+    km: 77,
     hour: 990,
     min: 1600,
     cap: "1-6 passengers · 6 bags",

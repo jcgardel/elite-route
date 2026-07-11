@@ -6,6 +6,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
   calculatePrice,
+  isAirportAddress,
   serviceTypeLabel,
   serviceTypeLabelEs,
   tariffs,
@@ -76,6 +77,7 @@ const TX = {
     continue: "Continue →", modifyRoute: "← Modify route", modifyVehicle: "← Modify vehicle",
     kilometers: "Kilometers", includedKm: "Included km", estimatedMin: "Estimated min.",
     urgentNote: "⚠️ Short-notice booking — 15% availability fee applies",
+    airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included (+25%)",
     vatIncluded: "VAT included",
     fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
     stServiceType: "Service type", stIncludedKm: "Included km", stDateTime: "Date & time",
@@ -135,6 +137,7 @@ const TX = {
     continue: "Continuar →", modifyRoute: "← Modificar ruta", modifyVehicle: "← Modificar vehículo",
     kilometers: "Kilómetros", includedKm: "Km incluidos", estimatedMin: "Min. estimados",
     urgentNote: "⚠️ Reserva próxima — se aplica cargo de disponibilidad del 15%",
+    airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos (+25%)",
     vatIncluded: "IVA incluido",
     fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
     stServiceType: "Tipo de servicio", stIncludedKm: "Km incluidos", stDateTime: "Fecha y hora",
@@ -268,6 +271,7 @@ const styles = `
   .er-zone-badge { display:inline-block; padding:5px 12px; border:1px solid #4a4a4a; border-radius:20px; font-size:11px; color:#d0d0d0; letter-spacing:0.1em; text-transform:uppercase; }
 
   .er-urgent-note { color:#ef4444; font-size:12px; margin:8px 0; text-align:center; }
+  .er-airport-note { color:#C8A46B; font-size:12px; margin:8px 0 16px; text-align:center; }
 
   .er-btn-primary { width:100%; background:#0A0A0A; color:#fff; border:1px solid #C8A46B; border-radius:2px; padding:16px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; transition:background 0.2s, color 0.2s; }
   .er-btn-primary:hover { background:#C8A46B; color:#0A0A0A; }
@@ -365,6 +369,7 @@ export default function Home() {
   const [zone, setZone] = useState<Zone>("cdmx");
   const [category, setCategory] = useState<Category>("executive");
   const [urgent, setUrgent] = useState(false);
+  const [airportPickup, setAirportPickup] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -379,7 +384,7 @@ export default function Home() {
   function priceFor(cat: Category) {
     return serviceType === "route" && km === 0
       ? 0
-      : calculatePrice(km, minutes, cat, zone, urgent, serviceType, rentalHours);
+      : calculatePrice(km, minutes, cat, zone, urgent, serviceType, rentalHours, airportPickup);
   }
   const price = priceFor(category);
 
@@ -410,11 +415,14 @@ export default function Home() {
       ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setUrgent(false); goStep(1); }
+  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setUrgent(false); setAirportPickup(false); goStep(1); }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
-    if (place?.formatted_address) setOrigin(place.formatted_address);
+    if (place?.formatted_address) {
+      setOrigin(place.formatted_address);
+      setAirportPickup(isAirportAddress(place.formatted_address));
+    }
   }
   function onDestinationChanged() {
     const place = destinationRef.current?.getPlace();
@@ -489,6 +497,7 @@ export default function Home() {
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       `Zona: ${zoneLabelEs(zone)}`,
+      airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido (+25%)" : "",
       urgent ? "⚠️ Reserva próxima — cargo adicional aplicado" : "",
       "",
       `*💰 Total estimado con IVA: $${price.toLocaleString("es-MX")} MXN*`,
@@ -682,6 +691,10 @@ export default function Home() {
               </Autocomplete>
             </div>
 
+            {airportPickup && (
+              <div className="er-airport-note">{t.airportNote}</div>
+            )}
+
             {serviceType === "route" && (
               <div className="er-field">
                 <label className="er-label">{t.destination}</label>
@@ -750,6 +763,9 @@ export default function Home() {
               <div className="er-zone-badge">{lang === "es" ? zoneLabelEs(zone) : zoneLabel(zone)}</div>
             </div>
 
+            {airportPickup && (
+              <div className="er-airport-note">{t.airportNote}</div>
+            )}
             {urgent && (
               <div className="er-urgent-note">{t.urgentNote}</div>
             )}

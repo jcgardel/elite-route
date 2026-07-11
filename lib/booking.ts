@@ -57,6 +57,17 @@ export function serviceTypeLabelEs(serviceType: ServiceType, rentalHours: number
   return "Traslado por ruta";
 }
 
+/** Detecta si una dirección corresponde a AICM, AIFA o Aeropuerto de Toluca */
+export function isAirportAddress(address: string): boolean {
+  const a = address.toLowerCase();
+  return (
+    a.includes("aeropuerto") ||
+    a.includes("airport") ||
+    a.includes("aifa") ||
+    a.includes("benito ju") // Benito Juárez (AICM)
+  );
+}
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -65,6 +76,7 @@ export function calculatePrice(
   urgent: boolean,
   serviceType: ServiceType,
   rentalHours: number,
+  airport = false,
 ) {
   const tariff = tariffs[category];
   let base = 0;
@@ -80,6 +92,7 @@ export function calculatePrice(
     if (zone === "foraneo") base *= 1.35;
   }
 
+  if (airport) base *= 1.25;
   base = Math.round(base * 1.16);
   if (urgent) base = Math.round(base * 1.15);
   return base;

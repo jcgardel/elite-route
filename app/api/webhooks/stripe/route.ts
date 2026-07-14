@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { sendPaidBookingNotification } from "@/lib/payment-notifications";
+import { sendPaidBookingNotification, sendClientConfirmationEmail } from "@/lib/payment-notifications";
 import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
@@ -31,16 +31,24 @@ export async function POST(req: Request) {
       metadata: session.metadata,
     });
 
-    try {
-      const notification = await sendPaidBookingNotification(session);
-      console.info("Elite Route payment notification:", {
+    const [notificationResult, clientEmailResult] = await Promise.allSettled([
+      sendPaidBookingNotification(session),
+      sendClientConfirmationEmail(session),
+    ]);
+
+    if (notificationResult.status === "fulfilled") {
+      console.info("Elite Route operator notification:", {
         sessionId: session.id,
-        sent: notification.sent,
-        sentToWebhook: notification.sentToWebhook,
-        sentToWhatsApp: notification.sentToWhatsApp,
+        sent: notificationResult.value.sent,
       });
-    } catch (error) {
-      console.error("Elite Route payment notification error:", error);
+    } else {
+      console.error("Elite Route operator notification error:", notificationResult.reason);
+    }
+
+    if (clientEmailResult.status === "fulfilled") {
+      console.info("Elite Route client confirmation email sent:", session.customer_details?.email);
+    } else {
+      console.error("Elite Route client email error:", clientEmailResult.reason);
     }
   }
 

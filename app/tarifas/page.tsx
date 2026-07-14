@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { calculatePrice, type Category } from "@/lib/booking";
 
 export const metadata: Metadata = {
   title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
       "Precios fijos con IVA incluido para traslados ejecutivos en Ciudad de México. AICM, AIFA, Toluca y rutas corporativas.",
     url: "https://eliteroute.mx/tarifas",
     siteName: "Elite Route",
+    images: [{ url: "https://eliteroute.mx/executive.jpg", width: 1200, height: 630, alt: "Elite Route — Transporte ejecutivo CDMX" }],
     locale: "es_MX",
     type: "website",
   },
@@ -111,102 +113,44 @@ const styles = `
   }
 `;
 
+// Precios calculados dinámicamente desde lib/booking.ts
+// Si cambian las tarifas en tariffs, estos precios se actualizan automáticamente en el siguiente build.
+const cats: Category[] = ["sedan", "executive", "minivan", "suv"];
+
+function mxn(n: number) {
+  return "$" + n.toLocaleString("es-MX");
+}
+function p(km: number, min: number, cat: Category, airport = false) {
+  return mxn(calculatePrice(km, min, cat, "cdmx", false, "route", 3, airport));
+}
+function ph(hours: number, cat: Category) {
+  return mxn(calculatePrice(0, 0, cat, "cdmx", false, "hour", hours));
+}
+
 const aeropuertoDesde = [
-  {
-    ruta: "AICM → Centro Histórico / Roma / Condesa",
-    zona: "~15 km",
-    sedan: "$1,015",
-    executive: "$1,377",
-    minivan: "$1,595",
-    suv: "$2,320",
-  },
-  {
-    ruta: "AICM → Polanco / Lomas de Chapultepec",
-    zona: "~22 km",
-    sedan: "$1,015",
-    executive: "$1,377",
-    minivan: "$1,595",
-    suv: "$2,320",
-  },
-  {
-    ruta: "AICM → Santa Fe / Interlomas",
-    zona: "~35 km",
-    sedan: "$1,269",
-    executive: "$2,030",
-    minivan: "$2,284",
-    suv: "$3,552",
-  },
-  {
-    ruta: "AICM → Satélite / Naucalpan",
-    zona: "~30 km",
-    sedan: "$1,087",
-    executive: "$1,740",
-    minivan: "$1,957",
-    suv: "$3,045",
-  },
-  {
-    ruta: "AIFA → CDMX (cualquier zona)",
-    zona: "~68 km",
-    sedan: "$2,909",
-    executive: "$4,654",
-    minivan: "$5,236",
-    suv: "$8,144",
-  },
-  {
-    ruta: "Aeropuerto Toluca → CDMX",
-    zona: "~80 km",
-    sedan: "$3,200",
-    executive: "$5,120",
-    minivan: "$5,760",
-    suv: "$8,960",
-  },
+  { ruta: "AICM → Centro Histórico / Roma / Condesa", zona: "~15 km", km: 15, min: 25 },
+  { ruta: "AICM → Polanco / Lomas de Chapultepec",   zona: "~22 km", km: 22, min: 30 },
+  { ruta: "AICM → Santa Fe / Interlomas",             zona: "~35 km", km: 35, min: 50 },
+  { ruta: "AICM → Satélite / Naucalpan",              zona: "~30 km", km: 30, min: 40 },
+  { ruta: "AIFA → CDMX (cualquier zona)",             zona: "~68 km", km: 68, min: 75 },
+  { ruta: "Aeropuerto Toluca → CDMX",                 zona: "~80 km", km: 80, min: 85 },
 ];
 
 const aeropuertoHacia = [
-  {
-    ruta: "Centro Histórico / Roma / Condesa → AICM",
-    sedan: "$812",
-    executive: "$1,102",
-    minivan: "$1,276",
-    suv: "$1,856",
-  },
-  {
-    ruta: "Polanco / Lomas → AICM",
-    sedan: "$812",
-    executive: "$1,102",
-    minivan: "$1,276",
-    suv: "$1,856",
-  },
-  {
-    ruta: "Santa Fe / Interlomas → AICM",
-    sedan: "$1,015",
-    executive: "$1,624",
-    minivan: "$1,827",
-    suv: "$2,842",
-  },
-  {
-    ruta: "CDMX → AIFA",
-    sedan: "$2,327",
-    executive: "$3,723",
-    minivan: "$4,189",
-    suv: "$6,515",
-  },
-  {
-    ruta: "CDMX → Aeropuerto Toluca",
-    sedan: "$2,560",
-    executive: "$4,096",
-    minivan: "$4,608",
-    suv: "$7,168",
-  },
+  { ruta: "Centro Histórico / Roma / Condesa → AICM", km: 15, min: 25 },
+  { ruta: "Polanco / Lomas → AICM",                   km: 22, min: 30 },
+  { ruta: "Santa Fe / Interlomas → AICM",              km: 35, min: 50 },
+  { ruta: "CDMX → AIFA",                              km: 68, min: 75 },
+  { ruta: "CDMX → Aeropuerto Toluca",                 km: 80, min: 85 },
 ];
 
 const porHora = [
-  { horas: "2 horas", sedan: "$1,044", executive: "$1,508", minivan: "$1,624", suv: "$2,297" },
-  { horas: "3 horas", sedan: "$1,566", executive: "$2,262", minivan: "$2,436", suv: "$3,445" },
-  { horas: "4 horas", sedan: "$2,088", executive: "$3,016", minivan: "$3,248", suv: "$4,594" },
-  { horas: "5 horas", sedan: "$2,610", executive: "$3,770", minivan: "$4,060", suv: "$5,742" },
-  { horas: "6 horas", sedan: "$3,132", executive: "$4,524", minivan: "$4,872", suv: "$6,891" },
-  { horas: "Día completo (10 hrs)", sedan: "$5,220", executive: "$7,540", minivan: "$8,120", suv: "$11,484" },
+  { horas: "2 horas",            hours: 2 },
+  { horas: "3 horas",            hours: 3 },
+  { horas: "4 horas",            hours: 4 },
+  { horas: "5 horas",            hours: 5 },
+  { horas: "6 horas",            hours: 6 },
+  { horas: "Día completo (10 hrs)", hours: 10 },
 ];
 
 const faqs = [
@@ -259,7 +203,10 @@ export default function TarifasPage() {
           <Link href="/">
             <img className="tf-logo" src="/elite-route-logo.jpg" alt="Elite Route" />
           </Link>
-          <Link className="tf-nav-cta" href="/#quote">Cotizar ahora</Link>
+          <div style={{display:"flex",gap:"20px",alignItems:"center"}}>
+            <Link href="/b2b" style={{fontSize:"11px",letterSpacing:"0.12em",color:"#BFC3C8",textDecoration:"none",textTransform:"uppercase"}}>Corporativo</Link>
+            <Link className="tf-nav-cta" href="/#quote">Cotizar ahora</Link>
+          </div>
         </div>
       </nav>
 
@@ -323,22 +270,12 @@ export default function TarifasPage() {
                         {r.zona}
                       </div>
                     </td>
-                    <td>
-                      <span className="tf-price">{r.sedan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.executive}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.minivan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.suv}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
+                    {cats.map((cat) => (
+                      <td key={cat}>
+                        <span className="tf-price">{p(r.km, r.min, cat, true)}</span>
+                        <span className="tf-price-note">MXN c/IVA</span>
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -378,22 +315,12 @@ export default function TarifasPage() {
                         <strong>{r.ruta}</strong>
                       </div>
                     </td>
-                    <td>
-                      <span className="tf-price">{r.sedan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.executive}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.minivan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.suv}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
+                    {cats.map((cat) => (
+                      <td key={cat}>
+                        <span className="tf-price">{p(r.km, r.min, cat, false)}</span>
+                        <span className="tf-price-note">MXN c/IVA</span>
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
@@ -428,77 +355,17 @@ export default function TarifasPage() {
                     <td style={{ fontWeight: r.horas.includes("completo") ? 600 : 400, color: r.horas.includes("completo") ? "#C8A46B" : "#fff" }}>
                       {r.horas}
                     </td>
-                    <td>
-                      <span className="tf-price">{r.sedan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.executive}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.minivan}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
-                    <td>
-                      <span className="tf-price">{r.suv}</span>
-                      <span className="tf-price-note">MXN c/IVA</span>
-                    </td>
+                    {cats.map((cat) => (
+                      <td key={cat}>
+                        <span className="tf-price">{ph(r.hours, cat)}</span>
+                        <span className="tf-price-note">MXN c/IVA</span>
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="tf-note">
-            <strong>Km adicionales:</strong> Sedan $29/km · Executive $46/km · Minivan $52/km · SUV $81/km (con IVA)
-          </p>
-        </section>
-
-        {/* TARIFAS BASE */}
-        <section className="tf-section" aria-labelledby="tarifas-base">
-          <p className="tf-section-label">Tarifas por categoría</p>
-          <h2 className="tf-section-title" id="tarifas-base">
-            Detalle de tarifas base
-          </h2>
-          <p className="tf-section-copy">
-            Para rutas fuera de las tablas anteriores, usa el cotizador en línea.
-            El precio se calcula en segundos con Google Maps.
-          </p>
-          <div className="tf-table-wrap">
-            <table className="tf-table">
-              <thead>
-                <tr>
-                  <th>Categoría</th>
-                  <th>Por km (c/IVA)</th>
-                  <th>Por hora (c/IVA)</th>
-                  <th>Mínimo (c/IVA)</th>
-                  <th>Capacidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { name: "Sedan", tag: "Executive · 1-3 pasajeros", km: "$29", hr: "$522", min: "$812", cap: "2 maletas" },
-                  { name: "Executive", tag: "Premium · 1-3 pasajeros", km: "$46", hr: "$754", min: "$1,102", cap: "3 maletas" },
-                  { name: "Minivan", tag: "Grupal · 4-6 pasajeros", km: "$52", hr: "$812", min: "$1,276", cap: "4 maletas" },
-                  { name: "HIGH SUV", tag: "Suburban · 1-6 pasajeros", km: "$81", hr: "$1,148", min: "$1,856", cap: "6 maletas" },
-                ].map((c) => (
-                  <tr key={c.name}>
-                    <td>
-                      <span className="tf-cat-name">{c.name}</span>
-                      <span className="tf-cat-tag">{c.tag}</span>
-                    </td>
-                    <td><span className="tf-price" style={{ fontSize: 18 }}>{c.km}</span><span className="tf-price-note">MXN/km</span></td>
-                    <td><span className="tf-price" style={{ fontSize: 18 }}>{c.hr}</span><span className="tf-price-note">MXN/hr</span></td>
-                    <td><span className="tf-price" style={{ fontSize: 18 }}>{c.min}</span><span className="tf-price-note">MXN</span></td>
-                    <td style={{ color: "#BFC3C8", fontSize: 13 }}>{c.cap}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="tf-note">
-            <strong>Zonas foráneas:</strong> Destinos entre 50-120 km aplican +18% · Más de 120 km aplican +35% · Calculado automáticamente en el cotizador.
-          </p>
         </section>
 
         {/* FAQ */}
@@ -534,6 +401,20 @@ export default function TarifasPage() {
         business@eliteroute.mx · contabilidad@eliteroute.mx<br />
         <Link href="/" style={{ color: "#C8A46B", textDecoration: "none" }}>eliteroute.mx</Link>
       </footer>
+
+      {/* WHATSAPP FLOTANTE */}
+      <a
+        href="https://wa.me/525543582919?text=Hola%2C+quisiera+cotizar+un+traslado."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="WhatsApp"
+        style={{position:"fixed",bottom:"24px",right:"24px",zIndex:9999,width:"54px",height:"54px",borderRadius:"50%",background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 18px rgba(0,0,0,0.45)"}}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.556 4.118 1.528 5.845L.057 23.486a.5.5 0 0 0 .614.614l5.588-1.463A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.667-.513-5.187-1.408l-.37-.222-3.844 1.007 1.03-3.76-.24-.386A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+        </svg>
+      </a>
     </>
   );
 }

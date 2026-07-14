@@ -26,7 +26,7 @@ export const tariffs = {
   suv: {
     name: "HIGH SUV",
     km: 73.5,
-    hour: 990,
+    hour: 1200,
     min: 1600,
     cap: "1-6 passengers · 6 bags",
     tag: "Suburban",
@@ -36,6 +36,12 @@ export const tariffs = {
 export type Category = keyof typeof tariffs;
 export type Zone = "cdmx" | "semi_foraneo" | "foraneo";
 export type ServiceType = "route" | "hour" | "day";
+
+export function detectZone(km: number): Zone {
+  if (km > 120) return "foraneo";
+  if (km > 50) return "semi_foraneo";
+  return "cdmx";
+}
 
 export function zoneLabel(z: Zone) {
   return z === "cdmx" ? "Mexico City" : z === "semi_foraneo" ? "AIFA / Toluca" : "Out-of-town";
@@ -57,14 +63,24 @@ export function serviceTypeLabelEs(serviceType: ServiceType, rentalHours: number
   return "Traslado por ruta";
 }
 
-/** Detecta si una dirección corresponde a AICM, AIFA o Aeropuerto de Toluca */
+/**
+ * Detecta si una dirección corresponde a AICM T1/T2, AIFA o Aeropuerto de Toluca.
+ * Solo aplica recargo a aeropuertos de la ZMVM — no a aeropuertos foráneos (GDL, MTY, etc.).
+ * El cotizador B2B usa la misma lógica con recargo 23%; el cotizador online usa 25%.
+ */
 export function isAirportAddress(address: string): boolean {
   const a = address.toLowerCase();
   return (
-    a.includes("aeropuerto") ||
-    a.includes("airport") ||
+    a.includes("aeropuerto internacional benito ju") || // AICM T1/T2
+    a.includes("terminal 1") ||
+    a.includes("terminal 2") ||
+    a.includes("aicm") ||
     a.includes("aifa") ||
-    a.includes("benito ju") // Benito Juárez (AICM)
+    a.includes("felipe ángeles") ||
+    a.includes("felipe angeles") ||
+    a.includes("aeropuerto internacional de toluca") ||
+    a.includes("adolfo lópez mateos") ||
+    a.includes("adolfo lopez mateos")
   );
 }
 
@@ -88,8 +104,6 @@ export function calculatePrice(
   } else {
     const hours = Math.ceil((minutes / 60) * 2) / 2;
     base = Math.max(km * tariff.km, hours * tariff.hour, tariff.min);
-    if (zone === "semi_foraneo") base *= 1.18;
-    if (zone === "foraneo") base *= 1.35;
   }
 
   if (airport) base *= 1.25;

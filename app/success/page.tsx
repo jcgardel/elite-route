@@ -1,7 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
 import { buildPaidBookingMessage } from "@/lib/payment-notifications";
 import { getStripe } from "@/lib/stripe";
+import SuccessClient from "./SuccessClient";
 
 const WHATSAPP_NUMBER = "525543582919";
 
@@ -63,29 +62,20 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id: sessionId } = await searchParams;
   const { whatsAppUrl, invoiceRequestUrl } = await getSessionUrls(sessionId);
 
-  return (
-    <main className="er-status-page er-status-success">
-      <section className="er-status-panel">
-        <Image src="/elite-route-logo.jpg" alt="Elite Route" width={152} height={152} className="er-status-logo" />
-        <p className="er-status-kicker">Secure payment received</p>
-        <h1>Your booking request is paid.</h1>
-        <p>
-          Send the payment confirmation and route details to Elite Route on WhatsApp so the team can
-          validate availability and finalize your ride.
-        </p>
-        {whatsAppUrl ? (
-          <a href={whatsAppUrl} className="er-status-link er-status-link-wa">
-            Send confirmation by WhatsApp
+  // Sin sesión válida — fallback simple
+  if (!whatsAppUrl) {
+    return (
+      <main style={{ minHeight: "100vh", background: "#080808", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", color: "#fff", textAlign: "center", padding: "24px" }}>
+        <div>
+          <p style={{ color: "#C8A46B", marginBottom: "16px" }}>Pago recibido</p>
+          <h1 style={{ fontWeight: 300, marginBottom: "24px" }}>Gracias por tu reserva</h1>
+          <a href={`https://wa.me/525543582919?text=${encodeURIComponent("Hola, acabo de realizar un pago en eliteroute.mx y quiero confirmar mi traslado.")}`} target="_blank" rel="noopener noreferrer" style={{ background: "#25D366", color: "#000", padding: "14px 28px", fontWeight: 700, textDecoration: "none", display: "inline-block" }}>
+            Confirmar por WhatsApp
           </a>
-        ) : (
-          <Link href="/" className="er-status-link">Back to quote</Link>
-        )}
-        {invoiceRequestUrl ? (
-          <a href={invoiceRequestUrl} className="er-status-invoice-link">
-            Optional: request invoice
-          </a>
-        ) : null}
-      </section>
-    </main>
-  );
+        </div>
+      </main>
+    );
+  }
+
+  return <SuccessClient whatsAppUrl={whatsAppUrl} invoiceRequestUrl={invoiceRequestUrl} />;
 }

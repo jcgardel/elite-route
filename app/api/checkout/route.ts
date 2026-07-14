@@ -31,7 +31,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const category = body.category as Category;
-    const zone = body.zone as Zone;
     const serviceType = body.serviceType as ServiceType;
     const rentalHours = Number(body.rentalHours);
     const km = Number(body.km);
@@ -43,7 +42,8 @@ export async function POST(req: Request) {
     const serviceDate = String(body.serviceDate || "").trim();
     const serviceTime = String(body.serviceTime || "").trim();
 
-    if (!categories.includes(category) || !zones.includes(zone) || !serviceTypes.includes(serviceType)) {
+    // zone se recalcula server-side desde km — no se acepta del cliente
+    if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
       return NextResponse.json({ error: "Datos de cotización inválidos" }, { status: 400 });
     }
 
@@ -63,14 +63,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Duración inválida" }, { status: 400 });
     }
 
+    const airportPickup = Boolean(body.airportPickup);
+
     const startsAt = new Date(`${serviceDate}T${serviceTime}`);
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
-    if (!Number.isFinite(hoursUntilService) || hoursUntilService < 2) {
-      return NextResponse.json({ error: "El servicio requiere al menos 2 horas de anticipación" }, { status: 400 });
+    if (!Number.isFinite(hoursUntilService) || hoursUntilService < 4) {
+      return NextResponse.json({ error: "El servicio requiere al menos 4 horas de anticipación" }, { status: 400 });
     }
 
     const urgent = hoursUntilService <= 6;
-    const price = calculatePrice(km, minutes, category, zone, urgent, serviceType, rentalHours);
+    const zone: Zone = km > 120 ? "foraneo" : km > 50 ? "semi_foraneo" : "cdmx";
+    const price = calculatePrice(km, minutes, category, zone, urgent, serviceType, rentalHours, airportPickup);
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }
@@ -114,6 +117,7 @@ export async function POST(req: Request) {
         km: String(km),
         minutes: String(minutes),
         urgent: String(urgent),
+        airportPickup: String(airportPickup),
         priceMxn: String(price),
       },
     });

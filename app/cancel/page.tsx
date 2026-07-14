@@ -6,12 +6,12 @@ export default function CancelPage() {
     <main className="er-status-page">
       <section className="er-status-panel">
         <Image src="/elite-route-logo.jpg" alt="Elite Route" width={152} height={152} className="er-status-logo" />
-        <p className="er-status-kicker">Payment not completed</p>
-        <h1>Your quote is still available.</h1>
+        <p className="er-status-kicker">Pago no completado</p>
+        <h1>Tu cotización sigue disponible.</h1>
         <p>
-          You can return to the cotizador, review the service details and try the card payment again.
+          Puedes regresar al cotizador, revisar los detalles del servicio e intentar el pago nuevamente.
         </p>
-        <Link href="/#quote" className="er-status-link">Return to quote</Link>
+        <Link href="/#quote" className="er-status-link">Volver al cotizador</Link>
       </section>
     </main>
   );

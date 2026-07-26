@@ -526,7 +526,7 @@ export default function B2BCotizarPage() {
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                     <polyline points="22,6 12,12 2,6"/>
                   </svg>
-                  Enviar solicitud a contabilidad@eliteroute.mx
+                  Enviar solicitud de servicios
                 </button>
                 <p className="cq-send-note">
                   {canSend

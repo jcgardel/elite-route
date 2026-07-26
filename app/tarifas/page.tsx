@@ -176,7 +176,7 @@ const faqs = [
   },
   {
     q: "¿Cuánto tiempo de anticipación necesito para reservar?",
-    a: "Recomendamos mínimo 2 horas de anticipación. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación.",
+    a: "Recomendamos mínimo 4 horas de anticipación. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación.",
   },
   {
     q: "¿Cuál es la diferencia entre Sedan, Executive y SUV?",
@@ -294,7 +294,7 @@ export default function TarifasPage() {
           </h2>
           <p className="tf-section-copy">
             Precio directo sin espera en aeropuerto. Recomendamos reservar con al menos
-            2 horas de anticipación para garantizar disponibilidad.
+            4 horas de anticipación para garantizar disponibilidad.
           </p>
           <div className="tf-table-wrap">
             <table className="tf-table">

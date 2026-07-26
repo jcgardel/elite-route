@@ -255,9 +255,9 @@ export default function B2BPage() {
               note:"El aeropuerto más cercano al centro de CDMX.",
               rows:[
                 {cat:"Sedán",sub:"Nissan / VW",polanco:"$1,015",santafe:"$1,421",centro:"$1,015",sur:"$1,015"},
-                {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",polanco:"$1,378",santafe:"$2,791",centro:"$1,378",sur:"$1,993"},
+                {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",polanco:"$1,754",santafe:"$2,791",centro:"$1,378",sur:"$1,993"},
                 {cat:"Minivan",sub:"Captiva · 7 pax",polanco:"$1,595",santafe:"$2,538",centro:"$1,595",sur:"$1,813"},
-                {cat:"High SUV",sub:"Suburban / Escalade",polanco:"$2,320",santafe:"$3,730",centro:"$2,320",sur:"$2,664"},
+                {cat:"High SUV",sub:"Suburban / Escalade",polanco:"$2,345",santafe:"$3,730",centro:"$2,320",sur:"$2,664"},
               ],
               cols:["→ Polanco","→ Santa Fe","→ Centro","→ Pedregal / Sur"],
             },

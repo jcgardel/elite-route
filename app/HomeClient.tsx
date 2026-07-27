@@ -287,8 +287,8 @@ const styles = `
   .er-btn-primary:disabled { opacity:0.5; cursor:default; }
   .er-btn-secondary { width:100%; background:transparent; color:#d8d8d8; border:1px solid #363636; border-radius:2px; padding:13px; font-family:'Barlow',sans-serif; font-size:13px; font-weight:500; letter-spacing:0.1em; cursor:pointer; transition:border 0.2s; margin-top:10px; }
   .er-btn-secondary:hover { border-color:#8a8a8a; }
-  .er-booking-card .er-btn-secondary { color:#5f5951; border-color:#d9d2c4; }
-  .er-booking-card .er-btn-secondary:hover { border-color:#111; }
+  .er-booking-card .er-btn-secondary { border-color:rgba(200,164,107,0.45); }
+  .er-booking-card .er-btn-secondary:hover { border-color:#C8A46B; }
   .er-btn-wa { width:100%; background:#25D366; color:#000; border:none; border-radius:2px; padding:18px; font-family:'Barlow',sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
   .er-btn-wa:hover { background:#1fb85a; }
   .er-payment-note { color:#BFC3C8; font-size:12px; line-height:1.6; margin:-8px 0 14px; text-align:center; }
@@ -324,7 +324,7 @@ const styles = `
   .er-testimonial-author { display:flex; align-items:center; gap:12px; margin-top:auto; }
   .er-testimonial-avatar { width:36px; height:36px; border-radius:50%; background:rgba(200,164,107,0.15); border:1px solid rgba(200,164,107,0.35); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#C8A46B; flex-shrink:0; }
   .er-testimonial-name { font-size:13px; font-weight:600; color:#fff; }
-  .er-testimonial-role { font-size:11px; color:#666; margin-top:2px; }
+  .er-testimonial-role { font-size:11px; color:#9a9a9a; margin-top:2px; }
   @media (max-width:900px) { .er-testimonials-grid { grid-template-columns:1fr; } .er-testimonials { padding:48px 20px; } }
   .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
   .er-hero .er-comfort { max-width:720px; margin-top:34px; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
@@ -334,7 +334,7 @@ const styles = `
   .er-comfort-list li { color:#BFC3C8; font-size:14px; line-height:1.45; border-top:1px solid #2e2e2e; padding-top:10px; display:flex; align-items:flex-start; gap:10px; }
   .er-comfort-icon { color:#C8A46B; width:18px; min-width:18px; text-align:center; font-size:16px; line-height:1.15; }
   .er-comfort-icon svg { display:block; width:16px; height:16px; stroke:currentColor; }
-  .er-legal { text-align:center; font-size:11px; color:#666; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
+  .er-legal { text-align:center; font-size:11px; color:#9a9a9a; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
 
   .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
   .PhoneInput:focus-within { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }

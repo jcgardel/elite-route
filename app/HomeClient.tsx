@@ -75,6 +75,7 @@ const TX = {
     dayNote: "Full-day service · 10 hours · Up to 200 km included",
     dayNote2: "Ideal for meetings, events or city transportation in Mexico City.",
     duration: "Service Duration", hours: "hours",
+    decreaseHours: "Decrease hours", increaseHours: "Increase hours",
     pickup: "Pickup Location", pickupPlaceholder: "Hotel, airport, address...",
     destination: "Destination", destinationPlaceholder: "Where are we taking you?",
     date: "Date", time: "Time", vehicleCategory: "Vehicle Category",
@@ -135,6 +136,7 @@ const TX = {
     dayNote: "Servicio día completo · 10 horas · Hasta 200 km incluidos",
     dayNote2: "Ideal para reuniones, eventos o traslados en la Ciudad de México.",
     duration: "Duración del servicio", hours: "horas",
+    decreaseHours: "Disminuir horas", increaseHours: "Aumentar horas",
     pickup: "Lugar de recogida", pickupPlaceholder: "Hotel, aeropuerto, dirección...",
     destination: "Destino", destinationPlaceholder: "¿A dónde te llevamos?",
     date: "Fecha", time: "Hora", vehicleCategory: "Categoría de vehículo",
@@ -696,37 +698,37 @@ export default function Home() {
 
             {serviceType === "hour" && (
               <div className="er-field">
-                <label className="er-label">{t.duration}</label>
-                <div className="er-hours-selector">
-                  <button type="button" className="er-hr-btn"
+                <label className="er-label" id="rental-hours-label">{t.duration}</label>
+                <div className="er-hours-selector" role="group" aria-labelledby="rental-hours-label">
+                  <button type="button" className="er-hr-btn" aria-label={t.decreaseHours}
                     onClick={() => setRentalHours(h => Math.max(2, h-1))}>−</button>
-                  <div className="er-hr-count">{rentalHours}</div>
+                  <div className="er-hr-count" role="status" aria-atomic="true">{rentalHours}</div>
                   <div className="er-hr-unit">{t.hours}</div>
-                  <button type="button" className="er-hr-btn"
+                  <button type="button" className="er-hr-btn" aria-label={t.increaseHours}
                     onClick={() => setRentalHours(h => Math.min(24, h+1))}>+</button>
                 </div>
               </div>
             )}
 
             <div className="er-field">
-              <label className="er-label">{t.pickup}</label>
+              <label className="er-label" htmlFor="origin-input">{t.pickup}</label>
               <Autocomplete
                 onLoad={(a) => { originRef.current = a; }}
                 onPlaceChanged={onOriginChanged}
                 options={AC_OPTIONS}>
-                <input className="er-input" placeholder={t.pickupPlaceholder}
+                <input id="origin-input" className="er-input" placeholder={t.pickupPlaceholder}
                   value={origin} onChange={(e) => setOrigin(e.target.value)}/>
               </Autocomplete>
             </div>
 
             {serviceType === "route" && (
               <div className="er-field">
-                <label className="er-label">{t.destination}</label>
+                <label className="er-label" htmlFor="destination-input">{t.destination}</label>
                 <Autocomplete
                   onLoad={(a) => { destinationRef.current = a; }}
                   onPlaceChanged={onDestinationChanged}
                   options={AC_OPTIONS}>
-                  <input className="er-input" placeholder={t.destinationPlaceholder}
+                  <input id="destination-input" className="er-input" placeholder={t.destinationPlaceholder}
                     value={destination} onChange={(e) => setDestination(e.target.value)}/>
                 </Autocomplete>
               </div>
@@ -734,20 +736,21 @@ export default function Home() {
 
             <div className="er-row">
               <div className="er-field">
-                <label className="er-label">{t.date}</label>
-                <input className="er-input" type="date" min={getMinDate()}
+                <label className="er-label" htmlFor="service-date-input">{t.date}</label>
+                <input id="service-date-input" className="er-input" type="date" min={getMinDate()}
                   value={serviceDate} onChange={(e) => setServiceDate(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">{t.time}</label>
-                <input className="er-input" type="time"
+                <label className="er-label" htmlFor="service-time-input">{t.time}</label>
+                <input id="service-time-input" className="er-input" type="time"
                   value={serviceTime} onChange={(e) => setServiceTime(e.target.value)}/>
               </div>
             </div>
 
             <div className="er-field">
-              <label className="er-label">{t.vehicleCategory}</label>
+              <label className="er-label" htmlFor="vehicle-category-select">{t.vehicleCategory}</label>
               <select
+                id="vehicle-category-select"
                 className="er-input"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
@@ -828,13 +831,14 @@ export default function Home() {
           <div className={`er-panel${step===3?" active":""}`}>
             <div className="er-row" style={{ marginBottom:20 }}>
               <div className="er-field">
-                <label className="er-label">{t.fullName}</label>
-                <input className="er-input" placeholder={t.fullNamePlaceholder}
+                <label className="er-label" htmlFor="full-name-input">{t.fullName}</label>
+                <input id="full-name-input" className="er-input" placeholder={t.fullNamePlaceholder}
                   value={fullName} onChange={(e) => setFullName(e.target.value)}/>
               </div>
               <div className="er-field">
-                <label className="er-label">{t.phone}</label>
+                <label className="er-label" htmlFor="phone-input">{t.phone}</label>
                 <PhoneInput international defaultCountry="MX"
+                  numberInputProps={{ id: "phone-input" }}
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
               </div>
             </div>

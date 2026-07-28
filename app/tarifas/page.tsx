@@ -47,10 +47,9 @@ const jsonLd = {
 };
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0A0A0A; color: #fff; font-family: 'Barlow', sans-serif; font-weight: 300; }
+  body { background: #0A0A0A; color: #fff; font-family: var(--font-barlow), sans-serif; font-weight: 300; }
 
   .tf-nav { max-width: 1180px; margin: 0 auto; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; }
   .tf-logo { width: 160px; height: auto; display: block; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5)); }
@@ -59,7 +58,7 @@ const styles = `
 
   .tf-hero { border-bottom: 1px solid #1e1e1e; padding: 60px 28px 56px; text-align: center; max-width: 1180px; margin: 0 auto; }
   .tf-kicker { color: #C8A46B; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; }
-  .tf-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 6vw, 72px); font-weight: 300; line-height: 1; margin-bottom: 20px; color: #fff; }
+  .tf-title { font-family: var(--font-cormorant), serif; font-size: clamp(40px, 6vw, 72px); font-weight: 300; line-height: 1; margin-bottom: 20px; color: #fff; }
   .tf-subtitle { color: #BFC3C8; font-size: 17px; line-height: 1.7; max-width: 620px; margin: 0 auto 32px; }
   .tf-badge { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
   .tf-badge-item { font-size: 12px; color: #BFC3C8; letter-spacing: 0.1em; border-left: 2px solid #C8A46B; padding-left: 12px; text-align: left; }
@@ -69,7 +68,7 @@ const styles = `
 
   .tf-section { margin-top: 64px; }
   .tf-section-label { color: #C8A46B; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 12px; }
-  .tf-section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 46px); font-weight: 300; color: #fff; margin-bottom: 8px; line-height: 1.1; }
+  .tf-section-title { font-family: var(--font-cormorant), serif; font-size: clamp(28px, 4vw, 46px); font-weight: 300; color: #fff; margin-bottom: 8px; line-height: 1.1; }
   .tf-section-copy { color: #BFC3C8; font-size: 15px; line-height: 1.7; max-width: 620px; margin-bottom: 28px; }
 
   .tf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -81,10 +80,10 @@ const styles = `
   .tf-table tr:hover td { background: rgba(200,164,107,0.05); }
   .tf-table .tf-route { color: #BFC3C8; font-size: 13px; }
   .tf-table .tf-route strong { color: #fff; display: block; font-size: 14px; font-weight: 500; margin-bottom: 2px; }
-  .tf-table .tf-price { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; white-space: nowrap; }
+  .tf-table .tf-price { font-family: var(--font-cormorant), serif; font-size: 22px; font-weight: 400; white-space: nowrap; }
   .tf-table .tf-price-note { font-size: 10px; color: #9a9a9a; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 2px; }
   .tf-cat-header { background: rgba(200,164,107,0.08) !important; }
-  .tf-cat-name { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .tf-cat-name { font-family: var(--font-barlow-condensed), sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
   .tf-cat-tag { font-size: 11px; color: #9a9a9a; display: block; margin-top: 1px; font-weight: 400; letter-spacing: 0; text-transform: none; }
 
   .tf-note { background: rgba(200,164,107,0.08); border: 1px solid rgba(200,164,107,0.25); border-radius: 2px; padding: 14px 18px; font-size: 13px; color: #BFC3C8; line-height: 1.6; margin-top: 16px; }
@@ -96,7 +95,7 @@ const styles = `
   .tf-faq-a { color: #BFC3C8; font-size: 14px; line-height: 1.7; max-width: 780px; }
 
   .tf-cta { margin-top: 72px; border: 1px solid rgba(200,164,107,0.45); padding: 48px; text-align: center; background: rgba(255,255,255,0.02); }
-  .tf-cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 48px); font-weight: 300; margin-bottom: 16px; }
+  .tf-cta-title { font-family: var(--font-cormorant), serif; font-size: clamp(28px, 4vw, 48px); font-weight: 300; margin-bottom: 16px; }
   .tf-cta-copy { color: #BFC3C8; font-size: 16px; margin-bottom: 28px; line-height: 1.6; }
   .tf-cta-btn { display: inline-flex; align-items: center; justify-content: center; border: 1px solid #C8A46B; color: #fff; background: transparent; text-decoration: none; padding: 16px 36px; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.2s, color 0.2s; }
   .tf-cta-btn:hover { background: #C8A46B; color: #0A0A0A; }

@@ -305,10 +305,10 @@ export default function B2BCotizarPage() {
   const CSS = `
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html, body { background:#080808 !important; }
-    .cq { font-family:'Barlow',Arial,sans-serif; background:#080808; color:#fff; min-height:100vh; }
+    .cq { font-family:var(--font-barlow),Arial,sans-serif; background:#080808; color:#fff; min-height:100vh; }
 
     .cq-nav { display:flex; justify-content:space-between; align-items:center; padding:20px 56px; border-bottom:1px solid #1e1e1e; }
-    .cq-logo { font-family:'Cormorant Garamond',Georgia,serif; font-size:22px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; }
+    .cq-logo { font-family:var(--font-cormorant),Georgia,serif; font-size:22px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; }
     .cq-nav-links { display:flex; gap:28px; align-items:center; }
     .cq-nl { font-size:11px; letter-spacing:0.12em; color:#BFC3C8; text-transform:uppercase; text-decoration:none; }
     .cq-nl:hover { color:#fff; }
@@ -316,7 +316,7 @@ export default function B2BCotizarPage() {
 
     .cq-header { padding:56px 56px 40px; border-bottom:1px solid #1e1e1e; }
     .cq-kicker { font-size:11px; letter-spacing:0.22em; color:#C8A46B; text-transform:uppercase; margin-bottom:14px; }
-    .cq-h1 { font-family:'Cormorant Garamond',Georgia,serif; font-weight:300; font-size:46px; line-height:1.05; margin-bottom:14px; color:#fff; }
+    .cq-h1 { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:46px; line-height:1.05; margin-bottom:14px; color:#fff; }
     .cq-h1 em { color:#C8A46B; font-style:normal; }
     .cq-sub { color:#BFC3C8; font-size:14px; line-height:1.7; max-width:560px; }
     .cq-sub a { color:#C8A46B; text-decoration:none; }
@@ -340,7 +340,7 @@ export default function B2BCotizarPage() {
     .cq-f select {
       background:#111 !important; border:1px solid #2e2e2e !important; color:#fff !important;
       padding:9px 12px !important; font-size:13px !important;
-      font-family:'Barlow',Arial,sans-serif !important; border-radius:3px !important;
+      font-family:var(--font-barlow),Arial,sans-serif !important; border-radius:3px !important;
       outline:none !important; width:100% !important;
     }
     .cq-ac-input:focus, .cq-f input:focus, .cq-f select:focus { border-color:#C8A46B !important; }
@@ -381,12 +381,12 @@ export default function B2BCotizarPage() {
     .cq-send-note { font-size:11px; color:#444; text-align:center; margin-top:8px; }
 
     .cq-sent { text-align:center; padding:60px 24px; }
-    .cq-sent h2 { font-family:'Cormorant Garamond',Georgia,serif; font-size:34px; font-weight:300; margin-bottom:12px; color:#fff; }
+    .cq-sent h2 { font-family:var(--font-cormorant),Georgia,serif; font-size:34px; font-weight:300; margin-bottom:12px; color:#fff; }
     .cq-sent p { color:#BFC3C8; font-size:14px; margin-bottom:28px; line-height:1.7; }
     .cq-back { color:#C8A46B; font-size:12px; text-decoration:none; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:2px; }
 
 
-    .pac-container { background:#1a1a1a !important; border:1px solid #3a3a3a !important; border-radius:3px !important; box-shadow:0 4px 12px rgba(0,0,0,0.6) !important; font-family:'Barlow',Arial,sans-serif !important; margin-top:4px !important; }
+    .pac-container { background:#1a1a1a !important; border:1px solid #3a3a3a !important; border-radius:3px !important; box-shadow:0 4px 12px rgba(0,0,0,0.6) !important; font-family:var(--font-barlow),Arial,sans-serif !important; margin-top:4px !important; }
     .pac-item { padding:8px 12px !important; color:#BFC3C8 !important; font-size:13px !important; border-top:1px solid #2a2a2a !important; cursor:pointer !important; }
     .pac-item:hover, .pac-item-selected { background:#222 !important; }
     .pac-item-query { color:#fff !important; font-size:13px !important; }
@@ -407,7 +407,6 @@ export default function B2BCotizarPage() {
 
   return (
     <>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Barlow:wght@400;600;700&display=swap" />
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
       <div className="cq">

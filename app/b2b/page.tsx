@@ -24,12 +24,11 @@ export default function B2BPage() {
       <style>{`
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #080808; }
-        .b-root { font-family: 'Barlow', 'Helvetica Neue', Arial, sans-serif; background: #080808; color: #fff; min-height: 100vh; }
-        @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Cormorant+Garamond:wght@300;400&display=swap');
+        .b-root { font-family: var(--font-barlow), 'Helvetica Neue', Arial, sans-serif; background: #080808; color: #fff; min-height: 100vh; }
 
         /* NAV */
         .b-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 56px; border-bottom: 1px solid #1e1e1e; position: relative; }
-        .b-logo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; letter-spacing: 0.12em; color: #C8A46B; text-decoration: none; }
+        .b-logo { font-family: var(--font-cormorant), Georgia, serif; font-size: 22px; letter-spacing: 0.12em; color: #C8A46B; text-decoration: none; }
         .b-nav-links { display: flex; gap: 32px; align-items: center; }
         .b-nav-link { font-size: 11px; letter-spacing: 0.12em; color: #BFC3C8; text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
         .b-nav-link:hover { color: #fff; }
@@ -51,7 +50,7 @@ export default function B2BPage() {
         /* HERO */
         .b-hero { padding: 88px 56px 72px; border-bottom: 1px solid #1e1e1e; }
         .b-kicker { font-size: 11px; letter-spacing: 0.22em; color: #C8A46B; text-transform: uppercase; margin-bottom: 18px; }
-        .b-h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 62px; line-height: 1.0; margin-bottom: 22px; }
+        .b-h1 { font-family: var(--font-cormorant), Georgia, serif; font-weight: 300; font-size: 62px; line-height: 1.0; margin-bottom: 22px; }
         .b-h1 span { color: #C8A46B; }
         .b-hero-copy { color: #BFC3C8; font-size: 16px; line-height: 1.75; max-width: 520px; margin-bottom: 40px; }
         .b-hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -63,7 +62,7 @@ export default function B2BPage() {
         /* TRUST */
         .b-trust { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
         .b-section-kicker { font-size: 11px; letter-spacing: 0.18em; color: #C8A46B; text-transform: uppercase; margin-bottom: 12px; }
-        .b-h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 38px; color: #fff; margin-bottom: 36px; }
+        .b-h2 { font-family: var(--font-cormorant), Georgia, serif; font-weight: 300; font-size: 38px; color: #fff; margin-bottom: 36px; }
         .b-h2 span { color: #C8A46B; }
         .b-trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #2e2e2e; border: 1px solid #2e2e2e; }
         .b-trust-cell { background: #080808; padding: 32px 28px; }
@@ -90,7 +89,7 @@ export default function B2BPage() {
 
         /* CTA FINAL */
         .b-cta { padding: 88px 56px; text-align: center; border-top: 1px solid rgba(200,164,107,0.22); }
-        .b-cta-h2 { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; font-size: 46px; margin-bottom: 14px; }
+        .b-cta-h2 { font-family: var(--font-cormorant), Georgia, serif; font-weight: 300; font-size: 46px; margin-bottom: 14px; }
         .b-cta-h2 span { color: #C8A46B; }
         .b-cta-copy { color: #BFC3C8; font-size: 14px; margin-bottom: 36px; }
 

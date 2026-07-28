@@ -32,7 +32,7 @@ body {
   padding: 24px;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.66)),
-    url("/high-suv.jpg") center / cover;
+    url("/high-suv.webp") center / cover;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
 }

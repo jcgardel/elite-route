@@ -50,7 +50,6 @@ export default function SuccessClient({
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Barlow:wght@400;600;700&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html, body { height: 100%; background: #080808; }
@@ -83,25 +82,25 @@ export default function SuccessClient({
         }
 
         .sc-kicker {
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 11px; letter-spacing: 0.2em; color: #C8A46B;
           text-transform: uppercase;
         }
 
         .sc-title {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: var(--font-cormorant), serif;
           font-size: 32px; font-weight: 300; color: #fff; line-height: 1.1;
         }
 
         .sc-copy {
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 14px; color: #BFC3C8; line-height: 1.7;
         }
 
         .sc-copy strong { color: #fff; }
 
         .sc-countdown {
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 13px; color: #9a9a9a;
           background: rgba(200,164,107,0.08);
           border: 1px solid rgba(200,164,107,0.2);
@@ -114,7 +113,7 @@ export default function SuccessClient({
           display: flex; align-items: center; justify-content: center; gap: 10px;
           width: 100%; padding: 20px 24px;
           background: #1DB954; color: #fff;
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 15px; font-weight: 700; letter-spacing: 0.1em;
           text-transform: uppercase; text-decoration: none;
           border: none; cursor: pointer;
@@ -133,7 +132,7 @@ export default function SuccessClient({
         }
 
         .sc-invoice {
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 12px; color: #666;
         }
         .sc-invoice a { color: #C8A46B; text-decoration: none; }
@@ -146,7 +145,7 @@ export default function SuccessClient({
           display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
         .sc-home-link {
-          font-family: 'Barlow', sans-serif;
+          font-family: var(--font-barlow), sans-serif;
           font-size: 12px; color: #C8A46B; text-decoration: none;
           letter-spacing: 0.1em; text-transform: uppercase;
           border-bottom: 1px solid rgba(200,164,107,0.3);

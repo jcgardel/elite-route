@@ -8,6 +8,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
+import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = Object.keys(tariffs) as Category[];
 
@@ -32,6 +33,8 @@ export async function POST(req: Request) {
     }
 
     const lineItems = [];
+    // Distancia por servicio, calculada aquí y no tomada del cliente.
+    const resolved: { km: number; minutes: number }[] = [];
 
     for (let i = 0; i < rawServices.length; i++) {
       const s = rawServices[i];
@@ -40,8 +43,6 @@ export async function POST(req: Request) {
       const origen   = String(s.origen   || "").trim();
       const destino  = String(s.destino  || "").trim();
       const vehiculo = String(s.vehiculo || "sedan") as Category;
-      const km       = Number(s.km)      || 0;
-      const minutes  = Number(s.minutes) || 0;
 
       if (!fecha || !hora || !origen || !destino) {
         return NextResponse.json({ error: `Servicio ${i + 1}: faltan datos` }, { status: 400 });
@@ -57,6 +58,9 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
+
+      const { km, minutes } = await lookupRouteDistance(origen, destino);
+      resolved.push({ km, minutes });
 
       const airportPickup = isAirportAddress(origen);
       const zone   = detectZone(km);
@@ -112,9 +116,9 @@ export async function POST(req: Request) {
         destination:   String(first.destino || "").slice(0, 200),
         vehicle:       tariffs[firstVehiculo]?.name || firstVehiculo,
         category:      firstVehiculo,
-        km:            String(Number(first.km)      || 0),
-        minutes:       String(Number(first.minutes) || 0),
-        zone:          detectZone(Number(first.km) || 0),
+        km:            String(resolved[0].km),
+        minutes:       String(resolved[0].minutes),
+        zone:          detectZone(resolved[0].km),
         urgent:        String(Number.isFinite(firstH) && firstH <= 6),
         airportPickup: String(isAirportAddress(String(first.origen || ""))),
       },
@@ -122,6 +126,14 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
+    if (error instanceof RouteLookupError) {
+      console.error("B2B checkout route lookup error:", error.status, error.message);
+      return NextResponse.json(
+        { error: "No pudimos verificar una de las rutas. Revisa las direcciones e intenta de nuevo." },
+        { status: error.status === "NO_KEY" ? 500 : 400 },
+      );
+    }
+
     console.error("B2B checkout error:", error);
     return NextResponse.json({ error: "No se pudo iniciar el pago" }, { status: 500 });
   }

@@ -10,9 +10,9 @@ import {
   type Zone,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
+import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = Object.keys(tariffs) as Category[];
-const zones: Zone[] = ["cdmx", "semi_foraneo", "foraneo"];
 const serviceTypes: ServiceType[] = ["route", "hour", "day"];
 
 function trimMetadata(value: string) {
@@ -33,8 +33,6 @@ export async function POST(req: Request) {
     const category = body.category as Category;
     const serviceType = body.serviceType as ServiceType;
     const rentalHours = Number(body.rentalHours);
-    const km = Number(body.km);
-    const minutes = Number(body.minutes);
     const fullName = String(body.fullName || "").trim();
     const phone = String(body.phone || "").trim();
     const origin = String(body.origin || "").trim();
@@ -42,7 +40,7 @@ export async function POST(req: Request) {
     const serviceDate = String(body.serviceDate || "").trim();
     const serviceTime = String(body.serviceTime || "").trim();
 
-    // zone se recalcula server-side desde km — no se acepta del cliente
+    // km, minutes y zone se calculan server-side — no se aceptan del cliente
     if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
       return NextResponse.json({ error: "Datos de cotización inválidos" }, { status: 400 });
     }
@@ -55,10 +53,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Faltan datos del servicio" }, { status: 400 });
     }
 
-    if (!Number.isFinite(km) || !Number.isFinite(minutes) || km < 0 || minutes < 0) {
-      return NextResponse.json({ error: "Ruta inválida" }, { status: 400 });
-    }
-
     if (!Number.isFinite(rentalHours) || rentalHours < 2 || rentalHours > 24) {
       return NextResponse.json({ error: "Duración inválida" }, { status: 400 });
     }
@@ -69,6 +63,26 @@ export async function POST(req: Request) {
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
     if (!Number.isFinite(hoursUntilService) || hoursUntilService < 4) {
       return NextResponse.json({ error: "El servicio requiere al menos 4 horas de anticipación" }, { status: 400 });
+    }
+
+    // La distancia se vuelve a consultar aquí: el precio depende de los km, así
+    // que aceptarlos del cliente permitiría cobrarse la tarifa mínima.
+    // Para servicios por hora y por día el recorrido es de disposición libre
+    // desde el origen, igual que en el paso de cotización.
+    const { km, minutes } = await lookupRouteDistance(
+      origin,
+      serviceType === "route" ? destination : origin,
+    );
+
+    // Tope de kilómetros incluidos, también validado en el servidor.
+    if (serviceType !== "route") {
+      const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;
+      if (km > allowedKm) {
+        return NextResponse.json(
+          { error: `Este servicio incluye hasta ${allowedKm} km. La ruta calculada es de ${km} km.` },
+          { status: 400 },
+        );
+      }
     }
 
     const urgent = hoursUntilService <= 6;
@@ -124,6 +138,15 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
+    // Sin distancia confiable no se cobra: mejor pedir que reintente.
+    if (error instanceof RouteLookupError) {
+      console.error("Checkout route lookup error:", error.status, error.message);
+      return NextResponse.json(
+        { error: "No pudimos verificar la ruta. Revisa las direcciones e intenta de nuevo." },
+        { status: error.status === "NO_KEY" ? 500 : 400 },
+      );
+    }
+
     console.error("Stripe checkout error:", error);
     if (error instanceof Error && error.message.includes("STRIPE_SECRET_KEY")) {
       return NextResponse.json({ error: "Falta configurar STRIPE_SECRET_KEY" }, { status: 500 });

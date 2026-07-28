@@ -1,5 +1,29 @@
 import type { Metadata } from "next";
+import { Barlow, Barlow_Condensed, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+
+// Auto-hospedadas por Next: evitan la petición a fonts.googleapis.com, que
+// bloqueaba el render al venir de un @import dentro del CSS.
+const barlow = Barlow({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-barlow",
+  display: "swap",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-barlow-condensed",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "600"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Elite Route — Transporte Ejecutivo CDMX",
@@ -21,7 +45,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html
+      lang="es"
+      className={`${barlow.variable} ${barlowCondensed.variable} ${cormorant.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

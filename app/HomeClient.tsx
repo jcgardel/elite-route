@@ -880,8 +880,12 @@ export default function Home() {
               </div>
               <div className="er-field">
                 <label className="er-label" htmlFor="phone-input">{t.phone}</label>
+                {/* flagUrl local: por defecto el componente pide las banderas a
+                    purecatamphetamine.github.io, un tercero del que no
+                    queremos depender en cada carga. */}
                 <PhoneInput international defaultCountry="MX"
                   numberInputProps={{ id: "phone-input" }}
+                  flagUrl="/flags/{XX}.svg"
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
               </div>
             </div>

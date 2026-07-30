@@ -18,11 +18,14 @@ export class RouteLookupError extends Error {
   }
 }
 
+/**
+ * Sólo la llave de servidor. No se cae a `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`:
+ * esa está restringida por dominio y Google rechaza las peticiones sin
+ * referrer, así que el fallback sólo servía para fallar de forma confusa
+ * («REQUEST_DENIED») en lugar de avisar que falta configurar la variable.
+ */
 export function getMapsKey() {
-  return (
-    process.env.GOOGLE_MAPS_API_KEY ||
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  );
+  return process.env.GOOGLE_MAPS_API_KEY;
 }
 
 export async function lookupRouteDistance(

@@ -29,6 +29,24 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 The checkout endpoint is `POST /api/checkout`. Stripe webhooks should point to
 `/api/webhooks/stripe` and listen for `checkout.session.completed`.
 
+> **Use a test key locally.** With an `sk_live_…` key in `.env.local`, completing
+> a checkout on your own machine creates real sessions in the production Stripe
+> account. Keep `sk_test_…` for development.
+
+## Google Maps keys
+
+Two separate keys, on purpose:
+
+| Variable | Used by | Restriction |
+| --- | --- | --- |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | the browser (autocomplete) | HTTP referrer: `eliteroute.mx`, `www.eliteroute.mx`, `*.vercel.app` |
+| `GOOGLE_MAPS_API_KEY` | the server (`/api/maps`, checkout) | none — server calls send no referrer |
+
+They must not hold the same key. A referrer-restricted key fails server-side with
+`REQUEST_DENIED: API keys with referer restrictions cannot be used with this API`
+— which is exactly what happens locally when `GOOGLE_MAPS_API_KEY` is set to the
+browser key.
+
 ## WhatsApp payment notifications
 
 When Stripe sends `checkout.session.completed`, the app builds a WhatsApp-ready

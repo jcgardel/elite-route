@@ -112,6 +112,10 @@ export default function B2BPage() {
           .b-footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
         }
         @media (max-width: 560px) {
+          /* A dos columnas las celdas no caben —28px de padding más contenido
+             que no se encoge— y la página se desplazaba de lado. */
+          .b-trust-grid { grid-template-columns: 1fr; }
+          .b-trust-cell, .b-payment-cell { min-width: 0; }
           .b-steps { grid-template-columns: 1fr; }
           .b-hero-btns { flex-direction: column; }
           .b-cta-h2 { font-size: 32px; }

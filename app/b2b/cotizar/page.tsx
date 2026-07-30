@@ -339,7 +339,8 @@ export default function B2BCotizarPage() {
     .cq-ac-input,
     .cq-f select {
       background:#111 !important; border:1px solid #2e2e2e !important; color:#fff !important;
-      padding:9px 12px !important; font-size:13px !important;
+      /* 16px mínimo: por debajo de eso Safari en iOS hace zoom al enfocar. */
+      padding:9px 12px !important; font-size:16px !important;
       font-family:var(--font-barlow),Arial,sans-serif !important; border-radius:3px !important;
       outline:none !important; width:100% !important;
     }

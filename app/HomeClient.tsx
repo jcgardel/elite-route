@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -220,9 +220,10 @@ const styles = `
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; background:transparent; cursor:pointer; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; }
   .er-nav-b2b-mobile { display:none; font-size:11px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; text-transform:uppercase; font-weight:600; border:1px solid rgba(200,164,107,0.4); padding:7px 12px; border-radius:2px; }
-  @media (max-width:700px) { .er-nav-b2b-mobile { display:block; } }
+  @media (max-width:700px) { .er-nav-b2b-mobile { display:flex; align-items:center; min-height:44px; } }
   .er-lang-toggle { display:flex; border:1px solid rgba(200,164,107,0.45); border-radius:2px; overflow:hidden; flex-shrink:0; }
-  .er-lang-btn { padding:7px 11px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:none; background:transparent; color:#BFC3C8; cursor:pointer; font-family:var(--font-barlow),sans-serif; transition:all 0.2s; }
+  /* min-height 44px: mínimo recomendado para un objetivo de toque. */
+  .er-lang-btn { padding:7px 11px; min-height:44px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:none; background:transparent; color:#BFC3C8; cursor:pointer; font-family:var(--font-barlow),sans-serif; transition:all 0.2s; }
   .er-lang-btn.active { background:#C8A46B; color:#0A0A0A; }
   .er-lang-btn:hover:not(.active) { color:#fff; }
   .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
@@ -264,7 +265,8 @@ const styles = `
 
   .er-field { margin-bottom:17px; }
   .er-label { display:block; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; margin-bottom:8px; font-weight:600; }
-  .er-input { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:15px; font-weight:400; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
+  /* font-size 16px: por debajo de eso Safari en iOS hace zoom al enfocar el campo. */
+  .er-input { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
   .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-input option { background:#0A0A0A; color:#FFFFFF; }
@@ -363,7 +365,15 @@ const styles = `
   .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
   .PhoneInput:focus-within { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .PhoneInputCountry { margin-right:10px; }
-  .PhoneInputInput { flex:1; background:transparent; border:none; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:15px; font-weight:400; outline:none; padding:14px 0; }
+  .PhoneInputInput { flex:1; background:transparent; border:none; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; outline:none; padding:14px 0; }
+
+  .er-wa-fab { position:fixed; bottom:24px; right:24px; z-index:9999; width:54px; height:54px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.45); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
+  /* Un botón fijo sobre un formulario a todo el ancho siempre acaba encima de
+     algún campo: el toque abría WhatsApp en lugar del selector. En móvil se
+     retira mientras el cotizador está a la vista. */
+  @media (max-width:700px) {
+    .er-wa-fab--oculto { opacity:0; visibility:hidden; transform:scale(0.8); pointer-events:none; }
+  }
   .PhoneInputInput::placeholder { color:#BFC3C8; opacity:0.72; }
 
   @media (max-width:980px) {
@@ -402,6 +412,23 @@ export default function Home() {
 
   const [lang, setLang] = useState<"es" | "en">("es");
   const t = TX[lang];
+  // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
+  const capFor = (cat: Category) =>
+    lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap;
+
+  // En móvil el formulario ocupa todo el ancho, así que un botón flotante fijo
+  // acaba encima de sus campos. Se oculta mientras la tarjeta está a la vista.
+  const [formularioALaVista, setFormularioALaVista] = useState(false);
+  useEffect(() => {
+    const card = document.getElementById("quote");
+    if (!card || typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setFormularioALaVista(entry.isIntersecting),
+      { threshold: 0.12 },
+    );
+    obs.observe(card);
+    return () => obs.disconnect();
+  }, []);
 
   const [step, setStep] = useState(1);
   const [serviceType, setServiceType] = useState<ServiceType>("route");
@@ -773,7 +800,7 @@ export default function Home() {
               >
                 {(Object.keys(tariffs) as Category[]).map((cat) => (
                   <option key={cat} value={cat}>
-                    {tariffs[cat].name} · {tariffs[cat].cap}
+                    {tariffs[cat].name} · {capFor(cat)}
                   </option>
                 ))}
               </select>
@@ -819,7 +846,7 @@ export default function Home() {
                     <div className="er-vehicle-content">
                       <div className="er-vehicle-name">{tariffs[cat].name}</div>
                       <div className="er-vehicle-tag">{tariffs[cat].tag}</div>
-                      <div className="er-vehicle-cap">{tariffs[cat].cap}</div>
+                      <div className="er-vehicle-cap">{capFor(cat)}</div>
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
                       </div>
@@ -1007,7 +1034,7 @@ export default function Home() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp"
-        style={{position:"fixed",bottom:"24px",right:"24px",zIndex:9999,width:"54px",height:"54px",borderRadius:"50%",background:"#25D366",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 18px rgba(0,0,0,0.45)",transition:"transform 0.2s"}}
+        className={`er-wa-fab${formularioALaVista ? " er-wa-fab--oculto" : ""}`}
       >
         <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>

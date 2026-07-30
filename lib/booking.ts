@@ -5,6 +5,7 @@ export const tariffs = {
     hour: 450,
     min: 700,
     cap: "1-3 passengers · 2 bags",
+    capEs: "1-3 pasajeros · 2 maletas",
     tag: "Executive",
   },
   executive: {
@@ -13,6 +14,7 @@ export const tariffs = {
     hour: 650,
     min: 950,
     cap: "1-3 passengers · 3 bags",
+    capEs: "1-3 pasajeros · 3 maletas",
     tag: "Premium",
   },
   minivan: {
@@ -21,6 +23,7 @@ export const tariffs = {
     hour: 700,
     min: 1100,
     cap: "4-6 passengers · 4 bags",
+    capEs: "4-6 pasajeros · 4 maletas",
     tag: "Group",
   },
   suv: {
@@ -29,6 +32,7 @@ export const tariffs = {
     hour: 1200,
     min: 1600,
     cap: "1-6 passengers · 6 bags",
+    capEs: "1-6 pasajeros · 6 maletas",
     tag: "Suburban",
   },
 };

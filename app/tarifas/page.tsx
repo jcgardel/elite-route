@@ -120,10 +120,10 @@ function mxn(n: number) {
   return "$" + n.toLocaleString("es-MX");
 }
 function p(km: number, min: number, cat: Category, airport = false) {
-  return mxn(calculatePrice(km, min, cat, "cdmx", false, "route", 3, airport));
+  return mxn(calculatePrice(km, min, cat, "route", 3, airport));
 }
 function ph(hours: number, cat: Category) {
-  return mxn(calculatePrice(0, 0, cat, "cdmx", false, "hour", hours));
+  return mxn(calculatePrice(0, 0, cat, "hour", hours));
 }
 
 const aeropuertoDesde = [
@@ -175,7 +175,7 @@ const faqs = [
   },
   {
     q: "¿Cuánto tiempo de anticipación necesito para reservar?",
-    a: "Recomendamos mínimo 4 horas de anticipación. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación.",
+    a: "Se requiere un mínimo de 6 horas de anticipación para confirmar tu reserva. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación.",
   },
   {
     q: "¿Cuál es la diferencia entre Sedan, Executive y SUV?",
@@ -292,8 +292,8 @@ export default function TarifasPage() {
             CDMX → AICM, AIFA y Toluca
           </h2>
           <p className="tf-section-copy">
-            Precio directo sin espera en aeropuerto. Recomendamos reservar con al menos
-            4 horas de anticipación para garantizar disponibilidad.
+            Precio directo sin espera en aeropuerto. Reserva con al menos
+            6 horas de anticipación para garantizar disponibilidad.
           </p>
           <div className="tf-table-wrap">
             <table className="tf-table">

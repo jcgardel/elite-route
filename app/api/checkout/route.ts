@@ -3,11 +3,11 @@ import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import {
   calculatePrice,
+  detectZone,
   serviceTypeLabelEs,
   tariffs,
   type Category,
   type ServiceType,
-  type Zone,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
@@ -61,8 +61,8 @@ export async function POST(req: Request) {
 
     const startsAt = new Date(`${serviceDate}T${serviceTime}`);
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
-    if (!Number.isFinite(hoursUntilService) || hoursUntilService < 4) {
-      return NextResponse.json({ error: "El servicio requiere al menos 4 horas de anticipación" }, { status: 400 });
+    if (!Number.isFinite(hoursUntilService) || hoursUntilService < 6) {
+      return NextResponse.json({ error: "El servicio requiere al menos 6 horas de anticipación" }, { status: 400 });
     }
 
     // La distancia se vuelve a consultar aquí: el precio depende de los km, así
@@ -85,9 +85,8 @@ export async function POST(req: Request) {
       }
     }
 
-    const urgent = hoursUntilService <= 6;
-    const zone: Zone = km > 120 ? "foraneo" : km > 50 ? "semi_foraneo" : "cdmx";
-    const price = calculatePrice(km, minutes, category, zone, urgent, serviceType, rentalHours, airportPickup);
+    const zone = detectZone(km);
+    const price = calculatePrice(km, minutes, category, serviceType, rentalHours, airportPickup);
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }
@@ -130,7 +129,6 @@ export async function POST(req: Request) {
         zone,
         km: String(km),
         minutes: String(minutes),
-        urgent: String(urgent),
         airportPickup: String(airportPickup),
         priceMxn: String(price),
       },

@@ -64,7 +64,6 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     `Zona: ${meta.zone || "—"}`,
     `Distancia: ${meta.km || "—"} km`,
     `Tiempo estimado: ${meta.minutes || "—"} min`,
-    meta.urgent === "true" ? "Reserva próxima: cargo de urgencia aplicado" : "",
   ].filter(Boolean).join("\n");
 }
 

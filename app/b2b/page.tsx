@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { calculatePrice, type Category } from "@/lib/booking";
 
 export const metadata: Metadata = {
   title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
@@ -17,6 +18,68 @@ export const metadata: Metadata = {
 };
 
 const WHATSAPP_B2B = "https://wa.me/525543582919?text=Hola%2C+me+interesa+una+cuenta+corporativa+para+mi+empresa.";
+
+// Precios calculados dinámicamente desde lib/booking.ts — igual que en
+// /tarifas — para que esta tabla no quede desincronizada cuando cambien las
+// tarifas base. Los km/min por ruta son los mismos que ya usa /tarifas para
+// AICM; AIFA, Toluca y Pedregal/Sur se completan con la misma distancia usada
+// para calcular los precios que ya se mostraban aquí.
+type AirportRoute = { km: number; min: number } | null;
+const AIRPORT_TABLES: {
+  airport: string; code: string; note: string; cols: string[];
+  routes: { polanco: AirportRoute; santafe: AirportRoute; centro: AirportRoute; sur: AirportRoute };
+}[] = [
+  {
+    airport: "AICM · Benito Juárez",
+    code: "MEX",
+    note: "El aeropuerto más cercano al centro de CDMX.",
+    routes: {
+      polanco: { km: 22, min: 30 },
+      santafe: { km: 35, min: 50 },
+      centro: { km: 15, min: 25 },
+      sur: { km: 25, min: 36 },
+    },
+    cols: ["→ Polanco", "→ Santa Fe", "→ Centro", "→ Pedregal / Sur"],
+  },
+  {
+    airport: "AIFA · Felipe Ángeles",
+    code: "NLU",
+    note: "~55 km al norte de CDMX. Zona industrial Tultitlán.",
+    routes: {
+      polanco: { km: 55, min: 61 },
+      santafe: { km: 68, min: 75 },
+      centro: { km: 50, min: 56 },
+      sur: null,
+    },
+    cols: ["→ Polanco", "→ Santa Fe", "→ Centro CDMX", "→ Consultar"],
+  },
+  {
+    airport: "Aeropuerto Toluca",
+    code: "TLC",
+    note: "~65 km al poniente. Conexión directa a Santa Fe.",
+    routes: {
+      polanco: { km: 65, min: 69 },
+      santafe: { km: 45, min: 48 },
+      centro: { km: 70, min: 74 },
+      sur: null,
+    },
+    cols: ["→ Polanco", "→ Santa Fe", "→ Centro CDMX", "→ Consultar"],
+  },
+];
+
+const B2B_CATS: { key: Category; cat: string; sub: string }[] = [
+  { key: "sedan", cat: "Sedán", sub: "Nissan / VW" },
+  { key: "executive", cat: "Ejecutivo", sub: "BMW / Mercedes / Tesla" },
+  { key: "minivan", cat: "Minivan", sub: "Captiva · 7 pax" },
+  { key: "suv", cat: "High SUV", sub: "Suburban / Escalade" },
+];
+
+function mxn(n: number) {
+  return "$" + n.toLocaleString("es-MX");
+}
+function routePrice(route: AirportRoute, cat: Category) {
+  return route ? mxn(calculatePrice(route.km, route.min, cat, "route", 0, true)) : "";
+}
 
 export default function B2BPage() {
   return (
@@ -251,44 +314,7 @@ export default function B2BPage() {
             IVA incluido. Sin cargos ocultos. Recargo aeropuerto incluye ingreso a zona de llegadas, espera y estacionamiento.
           </p>
 
-          {[
-            {
-              airport:"AICM · Benito Juárez",
-              code:"MEX",
-              note:"El aeropuerto más cercano al centro de CDMX.",
-              rows:[
-                {cat:"Sedán",sub:"Nissan / VW",polanco:"$1,015",santafe:"$1,421",centro:"$1,015",sur:"$1,015"},
-                {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",polanco:"$1,754",santafe:"$2,791",centro:"$1,378",sur:"$1,993"},
-                {cat:"Minivan",sub:"Captiva · 7 pax",polanco:"$1,595",santafe:"$2,538",centro:"$1,595",sur:"$1,813"},
-                {cat:"High SUV",sub:"Suburban / Escalade",polanco:"$2,345",santafe:"$3,730",centro:"$2,320",sur:"$2,664"},
-              ],
-              cols:["→ Polanco","→ Santa Fe","→ Centro","→ Pedregal / Sur"],
-            },
-            {
-              airport:"AIFA · Felipe Ángeles",
-              code:"NLU",
-              note:"~55 km al norte de CDMX. Zona industrial Tultitlán.",
-              rows:[
-                {cat:"Sedán",sub:"Nissan / VW",polanco:"$2,233",santafe:"$2,760",centro:"$2,030",sur:""},
-                {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",polanco:"$4,386",santafe:"$5,423",centro:"$3,988",sur:""},
-                {cat:"Minivan",sub:"Captiva · 7 pax",polanco:"$3,988",santafe:"$4,930",centro:"$3,625",sur:""},
-                {cat:"High SUV",sub:"Suburban / Escalade",polanco:"$5,862",santafe:"$7,247",centro:"$5,329",sur:""},
-              ],
-              cols:["→ Polanco","→ Santa Fe","→ Centro CDMX","→ Consultar"],
-            },
-            {
-              airport:"Aeropuerto Toluca",
-              code:"TLC",
-              note:"~65 km al poniente. Conexión directa a Santa Fe.",
-              rows:[
-                {cat:"Sedán",sub:"Nissan / VW",polanco:"$2,639",santafe:"$1,827",centro:"$2,842",sur:""},
-                {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",polanco:"$5,184",santafe:"$3,589",centro:"$5,583",sur:""},
-                {cat:"Minivan",sub:"Captiva · 7 pax",polanco:"$4,713",santafe:"$3,263",centro:"$5,075",sur:""},
-                {cat:"High SUV",sub:"Suburban / Escalade",polanco:"$6,927",santafe:"$4,796",centro:"$7,460",sur:""},
-              ],
-              cols:["→ Polanco","→ Santa Fe","→ Centro CDMX","→ Consultar"],
-            },
-          ].map((section,si)=>(
+          {AIRPORT_TABLES.map((section,si)=>(
             <div key={si} style={{marginBottom: si < 2 ? "48px" : 0}}>
               <div style={{display:"flex",alignItems:"baseline",gap:"12px",marginBottom:"6px"}}>
                 <span style={{color:"#fff",fontWeight:600,fontSize:"16px"}}>{section.airport}</span>
@@ -306,16 +332,16 @@ export default function B2BPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {section.rows.map((r,i)=>(
+                    {B2B_CATS.map((c,i)=>(
                       <tr key={i} style={{borderBottom:"1px solid #1a1a1a"}}>
                         <td style={{padding:"14px",color:"#fff"}}>
-                          <div style={{fontWeight:600,marginBottom:"2px"}}>{r.cat}</div>
-                          <div style={{color:"#555",fontSize:"11px"}}>{r.sub}</div>
+                          <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
+                          <div style={{color:"#555",fontSize:"11px"}}>{c.sub}</div>
                         </td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.polanco}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.santafe}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.centro}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#555",fontSize:"12px"}}>{r.sur || "Cotizar"}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{routePrice(section.routes.polanco, c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{routePrice(section.routes.santafe, c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{routePrice(section.routes.centro, c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#555",fontSize:"12px"}}>{routePrice(section.routes.sur, c.key) || "Cotizar"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -339,21 +365,16 @@ export default function B2BPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {cat:"Sedán",sub:"Nissan / VW",hrIva:"$522",h2:"$1,044",h4:"$2,088",h8:"$4,176"},
-                    {cat:"Ejecutivo",sub:"BMW / Mercedes / Tesla",hrIva:"$754",h2:"$1,508",h4:"$3,016",h8:"$6,032"},
-                    {cat:"Minivan",sub:"Captiva · 7 pax",hrIva:"$812",h2:"$1,624",h4:"$3,248",h8:"$6,496"},
-                    {cat:"High SUV",sub:"Suburban / Escalade",hrIva:"$1,392",h2:"$2,784",h4:"$5,568",h8:"$11,136"},
-                  ].map((r,i)=>(
+                  {B2B_CATS.map((c,i)=>(
                     <tr key={i} style={{borderBottom:"1px solid #1a1a1a"}}>
                       <td style={{padding:"14px",color:"#fff"}}>
-                        <div style={{fontWeight:600,marginBottom:"2px"}}>{r.cat}</div>
-                        <div style={{color:"#555",fontSize:"11px"}}>{r.sub}</div>
+                        <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
+                        <div style={{color:"#555",fontSize:"11px"}}>{c.sub}</div>
                       </td>
-                      <td style={{textAlign:"right",padding:"14px",color:"#BFC3C8"}}>{r.hrIva}</td>
-                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.h2}</td>
-                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.h4}</td>
-                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{r.h8}</td>
+                      <td style={{textAlign:"right",padding:"14px",color:"#BFC3C8"}}>{mxn(calculatePrice(0, 0, c.key, "hour", 1))}</td>
+                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{mxn(calculatePrice(0, 0, c.key, "hour", 2))}</td>
+                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{mxn(calculatePrice(0, 0, c.key, "hour", 4))}</td>
+                      <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600}}>{mxn(calculatePrice(0, 0, c.key, "hour", 8))}</td>
                     </tr>
                   ))}
                 </tbody>

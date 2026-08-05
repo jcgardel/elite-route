@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { calculatePrice, detectZone, isAirportAddress, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice, isAirportAddress, tariffs, type Category } from "@/lib/booking";
 
 const CONTACT_EMAIL = "contabilidad@eliteroute.mx";
 const MAX_SERVICES = 20;
@@ -39,12 +39,6 @@ type Service = {
   minutes: number;
 };
 
-function isUrgent(fecha: string, hora: string) {
-  if (!fecha || !hora) return false;
-  const diff = (new Date(`${fecha}T${hora}`).getTime() - Date.now()) / 3600000;
-  return diff > 0 && diff <= 6;
-}
-
 /**
  * Calcula precio del servicio.
  * Cuando airport=true aplica 23% sobre el precio base (pre-IVA),
@@ -53,11 +47,9 @@ function isUrgent(fecha: string, hora: string) {
  */
 function calcRow(s: Service) {
   if (s.km > 0) {
-    const zone   = detectZone(s.km);
-    const urgent = isUrgent(s.fecha, s.hora);
-    const total  = calculatePrice(s.km, s.minutes, s.vehiculo, zone, urgent, "route", 0, s.airport);
-    const base   = Math.round(total / 1.16);
-    const iva    = total - base;
+    const total = calculatePrice(s.km, s.minutes, s.vehiculo, "route", 0, s.airport);
+    const base  = Math.round(total / 1.16);
+    const iva   = total - base;
     return { base, iva, total, estimate: false };
   }
   // Sin ruta → tarifa mínima como referencia

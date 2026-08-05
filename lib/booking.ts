@@ -2,8 +2,8 @@ export const tariffs = {
   sedan: {
     name: "Sedan",
     km: 28,
-    hour: 450,
-    min: 700,
+    hour: 400,
+    min: 600,
     cap: "1-3 passengers · 2 bags",
     capEs: "1-3 pasajeros · 2 maletas",
     tag: "Executive",
@@ -11,8 +11,8 @@ export const tariffs = {
   executive: {
     name: "Executive",
     km: 55,
-    hour: 650,
-    min: 950,
+    hour: 600,
+    min: 800,
     cap: "1-3 passengers · 3 bags",
     capEs: "1-3 pasajeros · 3 maletas",
     tag: "Premium",
@@ -20,8 +20,8 @@ export const tariffs = {
   minivan: {
     name: "Minivan",
     km: 50,
-    hour: 700,
-    min: 1100,
+    hour: 580,
+    min: 700,
     cap: "4-6 passengers · 4 bags",
     capEs: "4-6 pasajeros · 4 maletas",
     tag: "Group",
@@ -29,8 +29,8 @@ export const tariffs = {
   suv: {
     name: "HIGH SUV",
     km: 73.5,
-    hour: 1200,
-    min: 1600,
+    hour: 900,
+    min: 1200,
     cap: "1-6 passengers · 6 bags",
     capEs: "1-6 pasajeros · 6 maletas",
     tag: "Suburban",
@@ -42,8 +42,8 @@ export type Zone = "cdmx" | "semi_foraneo" | "foraneo";
 export type ServiceType = "route" | "hour" | "day";
 
 export function detectZone(km: number): Zone {
-  if (km > 120) return "foraneo";
-  if (km > 50) return "semi_foraneo";
+  if (km > 90) return "foraneo";
+  if (km > 40) return "semi_foraneo";
   return "cdmx";
 }
 
@@ -88,12 +88,41 @@ export function isAirportAddress(address: string): boolean {
   );
 }
 
+/**
+ * Profundidad del descuento en los tramos medio (25-90 km) y largo (90 km+)
+ * por categoría. Sedan se queda con el descuento original; Executive,
+ * Minivan y HIGH SUV llevan uno más profundo para foráneos largos (AIFA,
+ * Toluca, Querétaro, Acapulco, etc.) — decisión explícita del negocio, no
+ * se derivan unas de otras.
+ */
+const kmDiscount: Record<Category, { mid: number; far: number }> = {
+  sedan: { mid: 0.65, far: 0.50 }, // -35% / -50%
+  executive: { mid: 0.58, far: 0.42 }, // -42% / -58%
+  minivan: { mid: 0.58, far: 0.42 },
+  suv: { mid: 0.58, far: 0.42 },
+};
+
+/**
+ * Costo del tramo por kilómetro con descuento escalonado, como una tabla
+ * de ISR: cada tramo de distancia paga su propia tarifa, no la tarifa
+ * completa aplicada retroactivamente a todo el viaje. Así un viaje más
+ * largo nunca puede salir más barato que uno más corto.
+ *   0-25 km   → tarifa plena
+ *   25-90 km  → ese tramo con el descuento "mid" de la categoría
+ *   90 km+    → ese tramo con el descuento "far" de la categoría
+ */
+function kmCost(km: number, ratePerKm: number, category: Category): number {
+  const { mid, far } = kmDiscount[category];
+  const corta = Math.min(km, 25);
+  const media = Math.max(0, Math.min(km, 90) - 25);
+  const larga = Math.max(0, km - 90);
+  return corta * ratePerKm + media * ratePerKm * mid + larga * ratePerKm * far;
+}
+
 export function calculatePrice(
   km: number,
   minutes: number,
   category: Category,
-  zone: Zone,
-  urgent: boolean,
   serviceType: ServiceType,
   rentalHours: number,
   airport = false,
@@ -107,11 +136,9 @@ export function calculatePrice(
     base = Math.max(10 * tariff.hour, tariff.min);
   } else {
     const hours = Math.ceil((minutes / 60) * 2) / 2;
-    base = Math.max(km * tariff.km, hours * tariff.hour, tariff.min);
+    base = Math.max(kmCost(km, tariff.km, category), hours * tariff.hour, tariff.min);
   }
 
   if (airport) base *= 1.25;
-  base = Math.round(base * 1.16);
-  if (urgent) base = Math.round(base * 1.15);
-  return base;
+  return Math.round(base * 1.16);
 }

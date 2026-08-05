@@ -52,9 +52,9 @@ export async function POST(req: Request) {
       }
 
       const h = hoursUntil(fecha, hora);
-      if (!Number.isFinite(h) || h < 4) {
+      if (!Number.isFinite(h) || h < 6) {
         return NextResponse.json(
-          { error: `Servicio ${i + 1} (${fecha} ${hora}): requiere al menos 4 horas de anticipación` },
+          { error: `Servicio ${i + 1} (${fecha} ${hora}): requiere al menos 6 horas de anticipación` },
           { status: 400 }
         );
       }
@@ -63,10 +63,8 @@ export async function POST(req: Request) {
       resolved.push({ km, minutes });
 
       const airportPickup = isAirportAddress(origen);
-      const zone   = detectZone(km);
-      const urgent = h <= 6;
-      const total  = km > 0
-        ? calculatePrice(km, minutes, vehiculo, zone, urgent, "route", 0, airportPickup)
+      const total = km > 0
+        ? calculatePrice(km, minutes, vehiculo, "route", 0, airportPickup)
         : Math.round(tariffs[vehiculo].min * (airportPickup ? 1.25 : 1) * 1.16);
 
       const vName = tariffs[vehiculo].name;
@@ -88,7 +86,6 @@ export async function POST(req: Request) {
     // Metadata compatible con buildPaidBookingMessage — usa primer servicio para resumen
     const first = rawServices[0];
     const firstVehiculo = String(first.vehiculo || "sedan") as Category;
-    const firstH = hoursUntil(String(first.fecha || ""), String(first.hora || ""));
 
     const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
@@ -119,7 +116,6 @@ export async function POST(req: Request) {
         km:            String(resolved[0].km),
         minutes:       String(resolved[0].minutes),
         zone:          detectZone(resolved[0].km),
-        urgent:        String(Number.isFinite(firstH) && firstH <= 6),
         airportPickup: String(isAirportAddress(String(first.origen || ""))),
       },
     });

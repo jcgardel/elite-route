@@ -70,12 +70,6 @@ function getMinDate() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
-function isUrgent(dateStr: string, timeStr: string): boolean {
-  if (!dateStr || !timeStr) return false;
-  const diff = (new Date(`${dateStr}T${timeStr}`).getTime() - Date.now()) / 3600000;
-  return diff > 0 && diff <= 6;
-}
-
 function formatDateTime(dateStr: string, timeStr: string, locale = "es-MX") {
   if (!dateStr || !timeStr) return "—";
   const dt = new Date(`${dateStr}T${timeStr}`);
@@ -107,7 +101,6 @@ const TX = {
     getQuoteBtn: "Get Quote →", calculating: "Calculating route...",
     continue: "Continue →", modifyRoute: "← Modify route", modifyVehicle: "← Modify vehicle",
     kilometers: "Kilometers", includedKm: "Included km", estimatedMin: "Estimated min.",
-    urgentNote: "⚠️ Short-notice booking — 15% availability fee applies",
     airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included",
     vatIncluded: "VAT included",
     fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
@@ -125,7 +118,7 @@ const TX = {
     alertDateTime: "Select the service date and time.",
     alertMinHours: "Minimum hourly service is 2 hours.",
     alertPast: "Select a future date and time.",
-    alertAdvance: "At least 4 hours of advance notice are required.",
+    alertAdvance: "At least 6 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
     alertRouteErr: "We could not calculate the route. Please verify the addresses.",
     alertKmExceeded: (a: number, r: number) => `This service includes up to ${a} km. The calculated route is ${r} km.`,
@@ -168,7 +161,6 @@ const TX = {
     getQuoteBtn: "Obtener cotización →", calculating: "Calculando ruta...",
     continue: "Continuar →", modifyRoute: "← Modificar ruta", modifyVehicle: "← Modificar vehículo",
     kilometers: "Kilómetros", includedKm: "Km incluidos", estimatedMin: "Min. estimados",
-    urgentNote: "⚠️ Reserva próxima — se aplica cargo de disponibilidad del 15%",
     airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos",
     vatIncluded: "IVA incluido",
     fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
@@ -186,7 +178,7 @@ const TX = {
     alertDateTime: "Selecciona la fecha y hora del servicio.",
     alertMinHours: "El servicio mínimo por hora es de 2 horas.",
     alertPast: "Selecciona una fecha y hora futura.",
-    alertAdvance: "Se requieren al menos 4 horas de anticipación.",
+    alertAdvance: "Se requieren al menos 6 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
     alertRouteErr: "No pudimos calcular la ruta. Por favor verifica las direcciones.",
     alertKmExceeded: (a: number, r: number) => `Este servicio incluye hasta ${a} km. La ruta calculada es de ${r} km.`,
@@ -305,7 +297,6 @@ const styles = `
   .er-stat-lbl { font-size:11px; color:#9a9a9a; letter-spacing:0.1em; text-transform:uppercase; margin-top:4px; }
   .er-zone-badge { display:inline-block; padding:5px 12px; border:1px solid #4a4a4a; border-radius:20px; font-size:11px; color:#d0d0d0; letter-spacing:0.1em; text-transform:uppercase; }
 
-  .er-urgent-note { color:#ef4444; font-size:12px; margin:8px 0; text-align:center; }
   .er-airport-note { color:#C8A46B; font-size:12px; margin:8px 0 16px; text-align:center; }
 
   .er-btn-primary { width:100%; background:#0A0A0A; color:#fff; border:1px solid #C8A46B; border-radius:2px; padding:16px; font-family:var(--font-barlow),sans-serif; font-size:13px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; transition:background 0.2s, color 0.2s; }
@@ -441,7 +432,6 @@ export default function Home() {
   const [minutes, setMinutes] = useState(0);
   const [zone, setZone] = useState<Zone>("cdmx");
   const [category, setCategory] = useState<Category>("executive");
-  const [urgent, setUrgent] = useState(false);
   const [airportPickup, setAirportPickup] = useState(false);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
@@ -457,7 +447,7 @@ export default function Home() {
   function priceFor(cat: Category) {
     return serviceType === "route" && km === 0
       ? 0
-      : calculatePrice(km, minutes, cat, zone, urgent, serviceType, rentalHours, airportPickup);
+      : calculatePrice(km, minutes, cat, serviceType, rentalHours, airportPickup);
   }
   const price = priceFor(category);
 
@@ -486,7 +476,7 @@ export default function Home() {
       ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setUrgent(false); setAirportPickup(false); goStep(1); }
+  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setAirportPickup(false); goStep(1); }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
@@ -509,7 +499,7 @@ export default function Home() {
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
     if (diff <= 0) { setAlert1(t.alertPast); return; }
-    if (diff < 4) { setAlert1(t.alertAdvance); return; }
+    if (diff < 6) { setAlert1(t.alertAdvance); return; }
 
     setAlert1("");
     setLoading(true);
@@ -536,7 +526,6 @@ export default function Home() {
       setKm(routeKm);
       setMinutes(Number(data.minutes));
       setZone(detectZone(data.km));
-      setUrgent(isUrgent(serviceDate, serviceTime));
       goStep(2);
     } catch {
       setAlert1(t.alertConnErr);

@@ -89,19 +89,34 @@ export function isAirportAddress(address: string): boolean {
 }
 
 /**
+ * Profundidad del descuento en los tramos medio (25-90 km) y largo (90 km+)
+ * por categoría. Sedan se queda con el descuento original; Executive,
+ * Minivan y HIGH SUV llevan uno más profundo para foráneos largos (AIFA,
+ * Toluca, Querétaro, Acapulco, etc.) — decisión explícita del negocio, no
+ * se derivan unas de otras.
+ */
+const kmDiscount: Record<Category, { mid: number; far: number }> = {
+  sedan: { mid: 0.65, far: 0.50 }, // -35% / -50%
+  executive: { mid: 0.58, far: 0.42 }, // -42% / -58%
+  minivan: { mid: 0.58, far: 0.42 },
+  suv: { mid: 0.58, far: 0.42 },
+};
+
+/**
  * Costo del tramo por kilómetro con descuento escalonado, como una tabla
  * de ISR: cada tramo de distancia paga su propia tarifa, no la tarifa
  * completa aplicada retroactivamente a todo el viaje. Así un viaje más
  * largo nunca puede salir más barato que uno más corto.
- *   0-40 km   → tarifa plena
- *   40-90 km  → ese tramo con 30% de descuento
- *   90 km+    → ese tramo con 40% de descuento
+ *   0-25 km   → tarifa plena
+ *   25-90 km  → ese tramo con el descuento "mid" de la categoría
+ *   90 km+    → ese tramo con el descuento "far" de la categoría
  */
-function kmCost(km: number, ratePerKm: number): number {
-  const corta = Math.min(km, 40);
-  const media = Math.max(0, Math.min(km, 90) - 40);
+function kmCost(km: number, ratePerKm: number, category: Category): number {
+  const { mid, far } = kmDiscount[category];
+  const corta = Math.min(km, 25);
+  const media = Math.max(0, Math.min(km, 90) - 25);
   const larga = Math.max(0, km - 90);
-  return corta * ratePerKm + media * ratePerKm * 0.7 + larga * ratePerKm * 0.6;
+  return corta * ratePerKm + media * ratePerKm * mid + larga * ratePerKm * far;
 }
 
 export function calculatePrice(
@@ -121,7 +136,7 @@ export function calculatePrice(
     base = Math.max(10 * tariff.hour, tariff.min);
   } else {
     const hours = Math.ceil((minutes / 60) * 2) / 2;
-    base = Math.max(kmCost(km, tariff.km), hours * tariff.hour, tariff.min);
+    base = Math.max(kmCost(km, tariff.km, category), hours * tariff.hour, tariff.min);
   }
 
   if (airport) base *= 1.25;

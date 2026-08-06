@@ -25,6 +25,23 @@ const VEHICLES: { key: Category; label: string; sub: string }[] = [
   { key: "suv",       label: "HIGH SUV", sub: "Suburban / Escalade"    },
 ];
 
+type PaymentTerm = "immediate" | "7" | "15" | "30";
+
+/**
+ * Recargo por financiamiento: cubre el costo de tener el dinero parado
+ * mientras se paga a crédito, más el riesgo de cobranza (ya hemos tenido
+ * clientes que se atrasan). El de 30 días queda marcado como "requiere
+ * historial" porque no hay base de clientes en esta página para validarlo
+ * automáticamente — la aprobación real la hace el equipo al revisar la
+ * solicitud que llega por correo.
+ */
+const PAYMENT_TERMS: { key: PaymentTerm; label: string; shortLabel: string; surcharge: number }[] = [
+  { key: "immediate", label: "Pago inmediato (tarjeta o transferencia al confirmar)", shortLabel: "pago inmediato", surcharge: 0 },
+  { key: "7",  label: "Crédito a 7 días",                       shortLabel: "crédito a 7 días",  surcharge: 0.02 },
+  { key: "15", label: "Crédito a 15 días",                      shortLabel: "crédito a 15 días", surcharge: 0.04 },
+  { key: "30", label: "Crédito a 30 días — requiere historial", shortLabel: "crédito a 30 días", surcharge: 0.07 },
+];
+
 type Service = {
   id: number;
   fecha: string;
@@ -224,6 +241,7 @@ export default function B2BCotizarPage() {
 
   const [empresa, setEmpresa] = useState({ nombre:"", rfc:"", correo:"", telefono:"", responsable:"" });
   const [services, setServices] = useState<Service[]>([{ ...INITIAL_SERVICE }]);
+  const [paymentTerm, setPaymentTerm] = useState<PaymentTerm>("immediate");
   const [sent, setSent] = useState(false);
 
   function updateEmpresa(k: keyof typeof empresa, v: string) {
@@ -244,6 +262,10 @@ export default function B2BCotizarPage() {
     return { base: acc.base + r.base, iva: acc.iva + r.iva, total: acc.total + r.total };
   }, { base:0, iva:0, total:0 });
 
+  const selectedTerm = PAYMENT_TERMS.find((t) => t.key === paymentTerm)!;
+  const financingSurcharge = Math.round(totals.total * selectedTerm.surcharge);
+  const grandTotal = totals.total + financingSurcharge;
+
   const hasEstimates = services.some((s) => calcRow(s).estimate && (s.origen || s.destino));
 
   function buildBody() {
@@ -257,6 +279,7 @@ export default function B2BCotizarPage() {
       `Responsable: ${empresa.responsable}`,
       `Telefono:    ${empresa.telefono}`,
       `Correo:      ${empresa.correo}`,
+      `Termino de pago: ${selectedTerm.label}`,
       "", "SERVICIOS SOLICITADOS", "---",
     ];
     services.forEach((s, i) => {
@@ -274,7 +297,11 @@ export default function B2BCotizarPage() {
     lines.push("---", "RESUMEN TOTAL");
     lines.push(`Subtotal sin IVA: ${fmt(totals.base)}`);
     lines.push(`IVA (16%):        ${fmt(totals.iva)}`);
-    lines.push(`TOTAL:            ${fmt(totals.total)}`);
+    if (financingSurcharge > 0) {
+      lines.push(`Recargo ${selectedTerm.shortLabel} (${Math.round(selectedTerm.surcharge * 100)}%): ${fmt(financingSurcharge)}`);
+    }
+    lines.push(`TOTAL:            ${fmt(grandTotal)}`);
+    if (paymentTerm === "30") lines.push("", "* Credito a 30 dias sujeto a aprobacion segun historial de pago con Elite Route.");
     if (hasEstimates) lines.push("", "* Servicios marcados como estimado usan tarifa minima. El total se actualiza al ingresar la ruta completa.");
     return lines.join("\n");
   }
@@ -457,7 +484,7 @@ export default function B2BCotizarPage() {
                       onChange={(e) => updateEmpresa("correo", e.target.value)} />
                   </div>
                 </div>
-                <div className="cq-g2">
+                <div className="cq-g3">
                   <div className="cq-f">
                     <label>Responsable</label>
                     <input type="text" placeholder="Coordinador de viajes" value={empresa.responsable}
@@ -468,7 +495,20 @@ export default function B2BCotizarPage() {
                     <input type="tel" placeholder="55 0000 0000" value={empresa.telefono}
                       onChange={(e) => updateEmpresa("telefono", e.target.value)} />
                   </div>
+                  <div className="cq-f">
+                    <label>Término de pago</label>
+                    <select value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value as PaymentTerm)}>
+                      {PAYMENT_TERMS.map((t) => (
+                        <option key={t.key} value={t.key}>{t.label}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
+                {paymentTerm === "30" && (
+                  <p className="cq-note" style={{ marginTop: 10, marginBottom: 0, color: "#C8A46B" }}>
+                    Crédito a 30 días disponible para empresas con historial de pago con Elite Route — sujeto a aprobación. Si es tu primera solicitud, te confirmamos el término al revisar tu cotización.
+                  </p>
+                )}
               </section>
 
               {/* SERVICIOS */}
@@ -504,7 +544,13 @@ export default function B2BCotizarPage() {
                     <span>{fmt(totals.base)}</span>
                   </div>
                   <div className="cq-sl"><span>IVA 16%</span><span>{fmt(totals.iva)}</span></div>
-                  <div className="cq-st"><span>Total</span><span>{fmt(totals.total)}</span></div>
+                  {financingSurcharge > 0 && (
+                    <div className="cq-sl">
+                      <span>Recargo {selectedTerm.shortLabel} ({Math.round(selectedTerm.surcharge * 100)}%)</span>
+                      <span>{fmt(financingSurcharge)}</span>
+                    </div>
+                  )}
+                  <div className="cq-st"><span>Total</span><span>{fmt(grandTotal)}</span></div>
                 </div>
 
                 <p className="cq-note">

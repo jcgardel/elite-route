@@ -207,7 +207,9 @@ const styles = `
   .er-hero { position:relative; min-height:720px; background-image:linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.76) 48%, rgba(0,0,0,0.68) 100%), url('/high-suv.webp'); background-size:cover; background-position:center 48%; display:flex; flex-direction:column; }
   .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
-  .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); }
+  .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
+  @keyframes erLogoIn { from{opacity:0;transform:translateY(-8px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @media (prefers-reduced-motion: reduce) { .er-logo-img { animation:none; } }
   .er-nav-right { display:flex; align-items:center; gap:20px; }
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; background:transparent; cursor:pointer; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; }
@@ -262,6 +264,16 @@ const styles = `
   .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-input option { background:#0A0A0A; color:#FFFFFF; }
+  .er-input-wrap { position:relative; }
+  .er-input-wrap .er-input--clearable { padding-right:40px; }
+  .er-input-clear {
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:24px; height:24px; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(200,164,107,0.35); border-radius:50%;
+    color:#BFC3C8; font-size:15px; line-height:1; padding:0; cursor:pointer;
+    transition:background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .er-input-clear:hover { background:rgba(200,164,107,0.18); color:#fff; border-color:#C8A46B; }
   select.er-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C8A46B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:40px; cursor:pointer; }
   .er-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:580px) { .er-row { grid-template-columns:1fr; } }
@@ -615,7 +627,7 @@ export default function Home() {
         <div className="er-shell">
           <section className="er-hero">
             <nav className="er-nav" aria-label="Elite Route">
-              <img className="er-logo-img" src="/elite-route-logo.jpg" alt="Elite Route" />
+              <img className="er-logo-img" src="/elite-route-logo.png" alt="Elite Route" />
               <div className="er-nav-right">
                 <a href="/b2b" className="er-nav-b2b-mobile">Corporativo</a>
                 <div className="er-nav-links">
@@ -744,25 +756,37 @@ export default function Home() {
 
             <div className="er-field">
               <label className="er-label" htmlFor="origin-input">{t.pickup}</label>
-              <MaybeAutocomplete
-                isLoaded={isLoaded}
-                onLoad={(a) => { originRef.current = a; }}
-                onPlaceChanged={onOriginChanged}>
-                <input id="origin-input" className="er-input" placeholder={t.pickupPlaceholder}
-                  value={origin} onChange={(e) => setOrigin(e.target.value)}/>
-              </MaybeAutocomplete>
+              <div className="er-input-wrap">
+                <MaybeAutocomplete
+                  isLoaded={isLoaded}
+                  onLoad={(a) => { originRef.current = a; }}
+                  onPlaceChanged={onOriginChanged}>
+                  <input id="origin-input" className="er-input er-input--clearable" placeholder={t.pickupPlaceholder}
+                    value={origin} onChange={(e) => setOrigin(e.target.value)}/>
+                </MaybeAutocomplete>
+                {origin && (
+                  <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar dirección" : "Clear address"}
+                    onClick={() => setOrigin("")}>×</button>
+                )}
+              </div>
             </div>
 
             {serviceType === "route" && (
               <div className="er-field">
                 <label className="er-label" htmlFor="destination-input">{t.destination}</label>
-                <MaybeAutocomplete
-                  isLoaded={isLoaded}
-                  onLoad={(a) => { destinationRef.current = a; }}
-                  onPlaceChanged={onDestinationChanged}>
-                  <input id="destination-input" className="er-input" placeholder={t.destinationPlaceholder}
-                    value={destination} onChange={(e) => setDestination(e.target.value)}/>
-                </MaybeAutocomplete>
+                <div className="er-input-wrap">
+                  <MaybeAutocomplete
+                    isLoaded={isLoaded}
+                    onLoad={(a) => { destinationRef.current = a; }}
+                    onPlaceChanged={onDestinationChanged}>
+                    <input id="destination-input" className="er-input er-input--clearable" placeholder={t.destinationPlaceholder}
+                      value={destination} onChange={(e) => setDestination(e.target.value)}/>
+                  </MaybeAutocomplete>
+                  {destination && (
+                    <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar destino" : "Clear destination"}
+                      onClick={() => setDestination("")}>×</button>
+                  )}
+                </div>
               </div>
             )}
 

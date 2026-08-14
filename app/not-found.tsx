@@ -6,7 +6,7 @@ export default function NotFound() {
     <main className="er-status-page">
       <section className="er-status-panel">
         <Image
-          src="/elite-route-logo.jpg"
+          src="/elite-route-logo.png"
           alt="Elite Route"
           width={152}
           height={152}

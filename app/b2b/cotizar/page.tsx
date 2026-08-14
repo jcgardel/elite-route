@@ -98,8 +98,15 @@ type ServiceRowProps = {
 function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemove }: ServiceRowProps) {
   const originAcRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destAcRef   = useRef<google.maps.places.Autocomplete | null>(null);
+  const originInputRef = useRef<HTMLInputElement>(null);
+  const destInputRef   = useRef<HTMLInputElement>(null);
   const [calculating, setCalculating] = useState(false);
   const [routeErr, setRouteErr]       = useState("");
+  // Los inputs de origen/destino son no controlados (Autocomplete de Google
+  // maneja el texto), así que el estado de "hay texto" para mostrar la ×
+  // se rastrea aparte del origen/destino que vive en Service.
+  const [hasOrigen, setHasOrigen]   = useState(!!s.origen);
+  const [hasDestino, setHasDestino] = useState(!!s.destino);
 
   async function fetchRoute(origin: string, destination: string) {
     setCalculating(true);
@@ -122,6 +129,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
     const addr = place.formatted_address;
     const airp = isAirportAddress(addr);
     onUpdate(s.id, { origen: addr, airport: airp, km: 0, minutes: 0, vuelo: airp ? s.vuelo : "" });
+    setHasOrigen(true);
     if (s.destino) fetchRoute(addr, s.destino);
   }
 
@@ -130,7 +138,22 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
     if (!place?.formatted_address) return;
     const addr = place.formatted_address;
     onUpdate(s.id, { destino: addr, km: 0, minutes: 0 });
+    setHasDestino(true);
     if (s.origen) fetchRoute(s.origen, addr);
+  }
+
+  function clearOrigen() {
+    if (originInputRef.current) originInputRef.current.value = "";
+    setHasOrigen(false);
+    onUpdate(s.id, { origen: "", airport: false, km: 0, minutes: 0, vuelo: "" });
+    originInputRef.current?.focus();
+  }
+
+  function clearDestino() {
+    if (destInputRef.current) destInputRef.current.value = "";
+    setHasDestino(false);
+    onUpdate(s.id, { destino: "", km: 0, minutes: 0 });
+    destInputRef.current?.focus();
   }
 
   const r = calcRow(s);
@@ -157,27 +180,37 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
         </div>
         <div className="cq-f">
           <label>Origen *</label>
-          {isLoaded ? (
-            <Autocomplete onLoad={(a) => { originAcRef.current = a; }} onPlaceChanged={onOriginChanged} options={acOptions}>
-              <input className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
-                defaultValue={s.origen}
-                onChange={(e) => { if (!e.target.value) onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, vuelo:"" }); }} />
-            </Autocomplete>
-          ) : (
-            <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />
-          )}
+          <div className="cq-ac-wrap">
+            {isLoaded ? (
+              <Autocomplete onLoad={(a) => { originAcRef.current = a; }} onPlaceChanged={onOriginChanged} options={acOptions}>
+                <input ref={originInputRef} className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
+                  defaultValue={s.origen}
+                  onChange={(e) => { setHasOrigen(!!e.target.value); if (!e.target.value) onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, vuelo:"" }); }} />
+              </Autocomplete>
+            ) : (
+              <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />
+            )}
+            {hasOrigen && (
+              <button type="button" className="cq-ac-clear" aria-label="Borrar origen" onClick={clearOrigen}>×</button>
+            )}
+          </div>
         </div>
         <div className="cq-f">
           <label>Destino *</label>
+          <div className="cq-ac-wrap">
           {isLoaded ? (
             <Autocomplete onLoad={(a) => { destAcRef.current = a; }} onPlaceChanged={onDestinationChanged} options={acOptions}>
-              <input className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
+              <input ref={destInputRef} className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
                 defaultValue={s.destino}
-                onChange={(e) => { if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0 }); }} />
+                onChange={(e) => { setHasDestino(!!e.target.value); if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0 }); }} />
             </Autocomplete>
           ) : (
             <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />
           )}
+          {hasDestino && (
+            <button type="button" className="cq-ac-clear" aria-label="Borrar destino" onClick={clearDestino}>×</button>
+          )}
+          </div>
         </div>
       </div>
 
@@ -364,6 +397,16 @@ export default function B2BCotizarPage() {
       outline:none !important; width:100% !important;
     }
     .cq-ac-input:focus, .cq-f input:focus, .cq-f select:focus { border-color:#C8A46B !important; }
+    .cq-ac-wrap { position:relative; }
+    .cq-ac-wrap .cq-ac-input { padding-right:34px !important; }
+    .cq-ac-clear {
+      position:absolute; right:7px; top:50%; transform:translateY(-50%);
+      width:22px; height:22px; display:flex; align-items:center; justify-content:center;
+      background:#161616; border:1px solid #2e2e2e; border-radius:50%;
+      color:#888; font-size:14px; line-height:1; padding:0; cursor:pointer;
+      transition:background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .cq-ac-clear:hover { background:rgba(200,164,107,0.15); color:#C8A46B; border-color:#C8A46B; }
     .cq-f input::placeholder, .cq-ac-input::placeholder { color:#444 !important; }
     .cq-f select option { background:#222; color:#fff; }
 

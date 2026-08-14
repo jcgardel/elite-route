@@ -200,7 +200,7 @@ export default function TarifasPage() {
       <nav>
         <div className="tf-nav">
           <Link href="/">
-            <img className="tf-logo" src="/elite-route-logo.jpg" alt="Elite Route" />
+            <img className="tf-logo" src="/elite-route-logo.png" alt="Elite Route" />
           </Link>
           <div style={{display:"flex",gap:"20px",alignItems:"center"}}>
             <Link href="/b2b" style={{fontSize:"11px",letterSpacing:"0.12em",color:"#BFC3C8",textDecoration:"none",textTransform:"uppercase"}}>Corporativo</Link>

@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { calculatePrice, isAirportAddress, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice, isAirportAddress, isAirportPlace, tariffs, type Category } from "@/lib/booking";
 
 const CONTACT_EMAIL = "contabilidad@eliteroute.mx";
 const MAX_SERVICES = 20;
@@ -14,7 +14,10 @@ const AC_OPTIONS = {
   componentRestrictions: { country: "mx" },
   bounds: ZMVM_BOUNDS,
   strictBounds: false,
-  fields: ["formatted_address", "geometry", "name"],
+  // "types" y "name" son los que delatan al aeropuerto: el AICM devuelve
+  // como formatted_address la dirección de la calle, sin la palabra
+  // "aeropuerto" en ningún lado.
+  fields: ["formatted_address", "geometry", "name", "types"],
 };
 const libraries: "places"[] = ["places"];
 
@@ -99,6 +102,10 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
   const originAcRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destAcRef   = useRef<google.maps.places.Autocomplete | null>(null);
   const originInputRef = useRef<HTMLInputElement>(null);
+  // Dirección exacta que Google confirmó como aeropuerto: el AICM no trae la
+  // palabra "aeropuerto" en su formatted_address, así que hay que recordarla
+  // para no perder el recargo — y soltarla si el cliente edita el campo.
+  const airportPlaceRef = useRef("");
   const destInputRef   = useRef<HTMLInputElement>(null);
   const [calculating, setCalculating] = useState(false);
   const [routeErr, setRouteErr]       = useState("");
@@ -125,9 +132,10 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
 
   function onOriginChanged() {
     const place = originAcRef.current?.getPlace();
-    if (!place?.formatted_address) return;
-    const addr = place.formatted_address;
-    const airp = isAirportAddress(addr);
+    const addr = place?.formatted_address || place?.name;
+    if (!addr) return;
+    const airp = isAirportPlace(place, addr);
+    airportPlaceRef.current = airp ? addr : "";
     onUpdate(s.id, { origen: addr, airport: airp, km: 0, minutes: 0, vuelo: airp ? s.vuelo : "" });
     setHasOrigen(true);
     if (s.destino) fetchRoute(addr, s.destino);
@@ -145,6 +153,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
   function clearOrigen() {
     if (originInputRef.current) originInputRef.current.value = "";
     setHasOrigen(false);
+    airportPlaceRef.current = "";
     onUpdate(s.id, { origen: "", airport: false, km: 0, minutes: 0, vuelo: "" });
     originInputRef.current?.focus();
   }
@@ -185,7 +194,16 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
               <Autocomplete onLoad={(a) => { originAcRef.current = a; }} onPlaceChanged={onOriginChanged} options={acOptions}>
                 <input ref={originInputRef} className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
                   defaultValue={s.origen}
-                  onChange={(e) => { setHasOrigen(!!e.target.value); if (!e.target.value) onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, vuelo:"" }); }} />
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setHasOrigen(!!v);
+                    if (!v) { onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, vuelo:"" }); return; }
+                    // Escribir "AICM" o "aeropuerto" a mano ya activa el recargo,
+                    // sin tener que elegir una sugerencia; y si el texto deja de
+                    // ser el aeropuerto que Google confirmó, el recargo se cae.
+                    const airp = isAirportAddress(v) || airportPlaceRef.current === v;
+                    if (airp !== s.airport) onUpdate(s.id, { airport: airp, vuelo: airp ? s.vuelo : "" });
+                  }} />
               </Autocomplete>
             ) : (
               <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />

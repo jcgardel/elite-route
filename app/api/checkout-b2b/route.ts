@@ -62,7 +62,10 @@ export async function POST(req: Request) {
       const { km, minutes } = await lookupRouteDistance(origen, destino);
       resolved.push({ km, minutes });
 
-      const airportPickup = isAirportAddress(origen);
+      // Igual que en el cotizador online: la dirección manda, y la bandera que
+      // trae el cliente (detectada con el tipo de lugar de Google) sólo puede
+      // sumar el recargo, nunca quitarlo.
+      const airportPickup = isAirportAddress(origen) || Boolean(s.airport);
       const total = km > 0
         ? calculatePrice(km, minutes, vehiculo, "route", 0, airportPickup)
         : Math.round(tariffs[vehiculo].min * (airportPickup ? 1.25 : 1) * 1.16);
@@ -116,7 +119,7 @@ export async function POST(req: Request) {
         km:            String(resolved[0].km),
         minutes:       String(resolved[0].minutes),
         zone:          detectZone(resolved[0].km),
-        airportPickup: String(isAirportAddress(String(first.origen || ""))),
+        airportPickup: String(isAirportAddress(String(first.origen || "")) || Boolean(first.airport)),
       },
     });
 

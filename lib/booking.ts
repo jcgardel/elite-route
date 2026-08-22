@@ -67,24 +67,88 @@ export function serviceTypeLabelEs(serviceType: ServiceType, rentalHours: number
   return "Traslado por ruta";
 }
 
+/** Minúsculas y sin acentos, para comparar sin depender de cómo escriba el
+ *  nombre Google ("Felipe Ángeles" / "Felipe Angeles") ni el cliente. */
+function normalizeAddress(address: string): string {
+  return address.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 /**
- * Detecta si una dirección corresponde a AICM T1/T2, AIFA o Aeropuerto de Toluca.
- * Solo aplica recargo a aeropuertos de la ZMVM — no a aeropuertos foráneos (GDL, MTY, etc.).
- * El cotizador B2B usa la misma lógica con recargo 23%; el cotizador online usa 25%.
+ * Palabras que identifican un aeropuerto, sea cual sea: el recargo aplica a
+ * cualquier aeropuerto y no sólo a los de la ZMVM.
+ *
+ * No se incluyen nombres que también son de alcaldía, colonia o avenida
+ * ("Benito Juárez" es alcaldía; "Adolfo López Mateos" es una avenida enorme en
+ * Naucalpan y Santa Fe): esos aeropuertos ya caen con la palabra "aeropuerto"
+ * que Google trae en el nombre del lugar, y matcharlos sueltos cobraba el 25%
+ * a direcciones que no son aeropuerto.
+ */
+const AIRPORT_KEYWORDS = [
+  "aeropuerto",
+  "aeroporto",
+  "airport",
+  "aerodromo",
+  "airfield",
+  "air terminal",
+  "terminal aerea",
+  "terminal 1",
+  "terminal 2",
+  "terminal 3",
+  "terminal 4",
+  "aicm",
+  "aifa",
+  "felipe angeles",
+];
+
+/**
+ * Siglas IATA que el cliente escribe dentro de una dirección más larga.
+ * Sólo van las que no se confunden con abreviatura de ciudad o estado: MEX,
+ * GDL, MTY, QRO, MID, VER, OAX, ACA, TAM, DGO y SLP se quedan fuera a
+ * propósito ("Méx.", "Ver.", "Oax." aparecen en direcciones normales). Esas
+ * siglas sí cuentan cuando el cliente escribe únicamente el código -> EXACT_IATA.
+ */
+const AIRPORT_CODES =
+  /\b(nlu|tlc|cun|sjd|pvr|tij|hmo|cjs|cuu|bjx|zih|hux|mzt|pbc|trc|zcl|mlm|clq|zlo|czm|ctm|vsa|tgz|cul|lmm|agu|ntr)\b/;
+
+/** Cuando el campo trae sólo el código, no hay ambigüedad posible. */
+const EXACT_IATA = new Set([
+  "mex", "nlu", "tlc", "gdl", "mty", "cun", "qro", "mid", "ver", "oax", "aca",
+  "sjd", "pvr", "tij", "hmo", "cjs", "cuu", "bjx", "zih", "hux", "mzt", "pbc",
+  "trc", "zcl", "mlm", "clq", "zlo", "czm", "ctm", "vsa", "tgz", "cul", "lmm",
+  "agu", "ntr", "tam", "dgo", "slp",
+]);
+
+/**
+ * Detecta si un texto de dirección corresponde a un aeropuerto — cualquiera,
+ * nacional o extranjero — para aplicarle el recargo de estacionamiento y
+ * espera por retraso de vuelo.
  */
 export function isAirportAddress(address: string): boolean {
-  const a = address.toLowerCase();
-  return (
-    a.includes("aeropuerto internacional benito ju") || // AICM T1/T2
-    a.includes("terminal 1") ||
-    a.includes("terminal 2") ||
-    a.includes("aicm") ||
-    a.includes("aifa") ||
-    a.includes("felipe ángeles") ||
-    a.includes("felipe angeles") ||
-    a.includes("aeropuerto internacional de toluca") ||
-    a.includes("adolfo lópez mateos") ||
-    a.includes("adolfo lopez mateos")
+  const a = normalizeAddress(address).trim();
+  if (!a) return false;
+  if (EXACT_IATA.has(a.replace(/[^a-z]/g, ""))) return true;
+  if (AIRPORT_KEYWORDS.some((k) => a.includes(k))) return true;
+  return AIRPORT_CODES.test(a);
+}
+
+type PlaceLike =
+  | { name?: string | null; formatted_address?: string | null; types?: string[] | null }
+  | null
+  | undefined;
+
+/**
+ * Detección a partir del lugar que devuelve Google Places, que es la vía
+ * confiable: el `formatted_address` del AICM es la dirección de la calle
+ * ("Av. Capitán Carlos León S/N, Peñón de los Baños...") y no dice
+ * "aeropuerto" por ningún lado — por eso escribir "AICM" no aplicaba el
+ * recargo aunque "Terminal 1" sí. Aquí se miran también el tipo de lugar que
+ * asigna Google ("airport", válido para cualquier aeropuerto del mundo), el
+ * nombre del lugar y lo que el cliente escribió.
+ */
+export function isAirportPlace(place: PlaceLike, typed = ""): boolean {
+  if (place?.types?.includes("airport")) return true;
+  return [place?.name, place?.formatted_address, typed].some(
+    (text) => typeof text === "string" && isAirportAddress(text),
   );
 }
 

@@ -4,6 +4,7 @@ import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import {
   calculatePrice,
   detectZone,
+  isAirportAddress,
   serviceTypeLabelEs,
   tariffs,
   type Category,
@@ -57,7 +58,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Duración inválida" }, { status: 400 });
     }
 
-    const airportPickup = Boolean(body.airportPickup);
+    // El recargo de aeropuerto se vuelve a verificar aquí sobre la dirección:
+    // el cliente puede detectarlo por el tipo de lugar de Google (que el
+    // servidor no ve), pero no puede quitarlo mandando false.
+    const airportPickup = isAirportAddress(origin) || Boolean(body.airportPickup);
 
     const startsAt = new Date(`${serviceDate}T${serviceTime}`);
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;

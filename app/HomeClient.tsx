@@ -8,6 +8,7 @@ import {
   calculatePrice,
   detectZone,
   isAirportAddress,
+  isAirportPlace,
   serviceTypeLabel,
   serviceTypeLabelEs,
   tariffs,
@@ -30,7 +31,10 @@ const AC_OPTIONS = {
   componentRestrictions: { country: "mx" },
   bounds: ZMVM_BOUNDS,
   strictBounds: false,
-  fields: ["formatted_address", "geometry", "name"],
+  // "types" y "name" son los que delatan al aeropuerto: el AICM devuelve
+  // como formatted_address la dirección de la calle, sin la palabra
+  // "aeropuerto" en ningún lado.
+  fields: ["formatted_address", "geometry", "name", "types"],
 };
 
 /**
@@ -444,13 +448,21 @@ export default function Home() {
   const [minutes, setMinutes] = useState(0);
   const [zone, setZone] = useState<Zone>("cdmx");
   const [category, setCategory] = useState<Category>("executive");
-  const [airportPickup, setAirportPickup] = useState(false);
+  // Dirección exacta que Google confirmó como aeropuerto. Se guarda el texto
+  // (y no un booleano) para que el recargo se caiga solo si el cliente edita
+  // el campo después de haber elegido el aeropuerto en el autocompletado.
+  const [airportPlace, setAirportPlace] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [alert1, setAlert1] = useState("");
   const [alert3, setAlert3] = useState("");
+
+  // El recargo sale del texto del origen —así funciona aunque el cliente
+  // escriba "AICM" o "aeropuerto" a mano sin elegir sugerencia— o del lugar
+  // que Google confirmó como aeropuerto.
+  const airportPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
@@ -488,14 +500,14 @@ export default function Home() {
       ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setAirportPickup(false); goStep(1); }
+  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); goStep(1); }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
-    if (place?.formatted_address) {
-      setOrigin(place.formatted_address);
-      setAirportPickup(isAirportAddress(place.formatted_address));
-    }
+    const address = place?.formatted_address || place?.name;
+    if (!address) return;
+    setOrigin(address);
+    setAirportPlace(isAirportPlace(place, address) ? address : "");
   }
   function onDestinationChanged() {
     const place = destinationRef.current?.getPlace();
@@ -875,6 +887,8 @@ export default function Home() {
               })}
             </div>
 
+            {airportPickup && <p className="er-airport-note">{t.airportNote}</p>}
+
             <button className="er-btn-primary" onClick={() => goStep(3)} type="button">
               {t.continue}
             </button>
@@ -915,6 +929,8 @@ export default function Home() {
                 <span className="er-summary-val er-summary-total">${price.toLocaleString("es-MX")} MXN</span>
               </div>
             </div>
+
+            {airportPickup && <p className="er-airport-note">{t.airportNote}</p>}
 
             {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
 

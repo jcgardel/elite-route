@@ -112,6 +112,12 @@ const TX = {
     stPickup: "Pickup", stDestination: "Destination", stOpenItinerary: "Open itinerary",
     stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
     totalVat: "Total with VAT",
+    trustPay: "Secure payment with",
+    proof1Label: "Secure, encrypted card payment",
+    proof2Value: "FIXED PRICE", proof2Label: "VAT included, no surprise charges",
+    proof3Value: "24/7", proof3Label: "Flight tracked, waiting time included",
+    footPay: "Payments processed by",
+    footBilling: "CFDI invoicing",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
     whatsappBtn: "Ask via WhatsApp",
@@ -172,6 +178,12 @@ const TX = {
     stPickup: "Recogida", stDestination: "Destino", stOpenItinerary: "Disposición libre",
     stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
     totalVat: "Total con IVA",
+    trustPay: "Pago seguro con",
+    proof1Label: "Pago con tarjeta seguro y cifrado",
+    proof2Value: "PRECIO FIJO", proof2Label: "IVA incluido, sin cargos sorpresa",
+    proof3Value: "24/7", proof3Label: "Vuelo monitoreado y espera sin costo",
+    footPay: "Pagos procesados por",
+    footBilling: "Facturación CFDI",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
     whatsappBtn: "Consultar por WhatsApp",
@@ -224,7 +236,10 @@ const styles = `
   .er-lang-btn { padding:7px 11px; min-height:44px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; border:none; background:transparent; color:#BFC3C8; cursor:pointer; font-family:var(--font-barlow),sans-serif; transition:all 0.2s; }
   .er-lang-btn.active { background:#C8A46B; color:#0A0A0A; }
   .er-lang-btn:hover:not(.active) { color:#fff; }
-  .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:48px; align-items:start; }
+  /* Tres hijos: texto, tarjeta de cotización y amenidades. En escritorio
+     texto y amenidades se apilan en la columna izquierda; en móvil el
+     orden cambia para que el cotizador quede antes que las amenidades. */
+  .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:34px 48px; align-items:start; }
   .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
   .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; }
   .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
@@ -285,7 +300,7 @@ const styles = `
   .er-hours-selector { display:flex; align-items:center; gap:0; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:10px 16px; }
   .er-hr-btn { width:32px; height:32px; border-radius:50%; border:1px solid #bdb4a5; background:transparent; color:#111; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
   .er-hr-btn:hover { border-color:#111; background:#f0ece3; }
-  .er-hr-count { font-family:var(--font-cormorant),serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; }
+  .er-hr-count { font-family:var(--font-cormorant),serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; font-variant-numeric:tabular-nums; }
   .er-hr-unit { font-size:13px; color:#0A0A0A; letter-spacing:0.08em; }
 
   .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
@@ -302,14 +317,14 @@ const styles = `
   .er-vehicle-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:22px; font-weight:700; letter-spacing:0.12em; color:#fff; margin-bottom:2px; text-transform:uppercase; }
   .er-vehicle-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; }
   .er-vehicle-cap { font-size:12px; color:#b4b4b4; margin-bottom:10px; }
-  .er-vehicle-price { font-family:var(--font-cormorant),serif; font-size:25px; color:#fff; }
+  .er-vehicle-price { font-family:var(--font-cormorant),serif; font-size:25px; color:#fff; font-variant-numeric:tabular-nums; }
   .er-vehicle-price-label { font-size:10px; color:#a8a8a8; letter-spacing:0.1em; text-transform:uppercase; }
   .er-vehicle-check { position:absolute; top:12px; right:12px; z-index:2; width:22px; height:22px; border-radius:50%; background:#fff; display:none; align-items:center; justify-content:center; }
   .er-vehicle.selected .er-vehicle-check { display:flex; }
 
   .er-route-box { background:#111; border:1px solid #292929; border-radius:2px; padding:20px 24px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
   .er-route-stats { display:flex; gap:24px; }
-  .er-stat-val { font-family:var(--font-cormorant),serif; font-size:30px; font-weight:400; color:#fff; line-height:1; }
+  .er-stat-val { font-family:var(--font-cormorant),serif; font-size:30px; font-weight:400; color:#fff; line-height:1; font-variant-numeric:tabular-nums; }
   .er-stat-lbl { font-size:11px; color:#9a9a9a; letter-spacing:0.1em; text-transform:uppercase; margin-top:4px; }
   .er-zone-badge { display:inline-block; padding:5px 12px; border:1px solid #4a4a4a; border-radius:20px; font-size:11px; color:#d0d0d0; letter-spacing:0.1em; text-transform:uppercase; }
 
@@ -334,7 +349,7 @@ const styles = `
   .er-summary-row:last-child { border-bottom:none; background:#191919; }
   .er-summary-key { color:#9a9a9a; flex-shrink:0; }
   .er-summary-val { color:#fff; text-align:right; max-width:65%; line-height:1.4; }
-  .er-summary-total { font-family:var(--font-cormorant),serif; font-size:22px; font-weight:400; }
+  .er-summary-total { font-family:var(--font-cormorant),serif; font-size:22px; font-weight:400; font-variant-numeric:tabular-nums; }
 
   .er-benefits { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:22px; margin-top:58px; }
   .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
@@ -344,13 +359,18 @@ const styles = `
   .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
   .er-contact-title { color:#fff; font-weight:600; font-size:17px; margin-bottom:8px; }
   .er-contact-copy { color:#BFC3C8; line-height:1.6; font-size:14px; margin-bottom:12px; }
+  /* Columna con gap: en línea, el correo y el enlace de cotizar se pegaban. */
+  .er-contact-actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
   .er-contact-link { color:#C8A46B; font-size:14px; font-weight:600; text-decoration:none; overflow-wrap:anywhere; }
   .er-contact-link:hover { color:#fff; }
 
   .er-testimonials { padding:72px 40px; border-top:1px solid #1a1a1a; }
   .er-testimonials-kicker { color:#C8A46B; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:14px; }
   .er-testimonials-title { font-family:var(--font-cormorant),serif; font-size:clamp(28px,4vw,46px); font-weight:300; color:#fff; margin-bottom:40px; line-height:1.1; }
-  .er-testimonials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+  /* Tres columnas fijas: con auto-fit se abrían cuatro y el quinto
+     testimonio se quedaba solo en la segunda fila. */
+  .er-testimonials-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  @media (max-width:1000px) { .er-testimonials-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   .er-testimonial-card { background:#0d0d0d; border:1px solid #2e2e2e; padding:28px 26px; display:flex; flex-direction:column; gap:16px; }
   .er-testimonial-stars { color:#C8A46B; font-size:14px; letter-spacing:3px; }
   .er-testimonial-quote { font-family:var(--font-cormorant),serif; font-size:16px; font-weight:300; color:#D8D8D8; line-height:1.7; font-style:italic; margin:0; }
@@ -360,7 +380,7 @@ const styles = `
   .er-testimonial-role { font-size:11px; color:#9a9a9a; margin-top:2px; }
   @media (max-width:900px) { .er-testimonials-grid { grid-template-columns:1fr; } .er-testimonials { padding:48px 20px; } }
   .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
-  .er-hero .er-comfort { max-width:720px; margin-top:34px; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
+  .er-hero .er-comfort { max-width:720px; margin-top:0; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
   .er-comfort-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:34px; line-height:1.05; font-weight:300; margin:0; }
   .er-comfort-title span { color:#C8A46B; }
   .er-comfort-list { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px 18px; margin:0; padding:0; list-style:none; }
@@ -374,7 +394,7 @@ const styles = `
   .PhoneInputCountry { margin-right:10px; }
   .PhoneInputInput { flex:1; background:transparent; border:none; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; outline:none; padding:14px 0; }
 
-  .er-wa-fab { position:fixed; bottom:24px; right:24px; z-index:9999; width:54px; height:54px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.45); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
+  .er-wa-fab { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom)); right:24px; z-index:9999; width:54px; height:54px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.45); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
   /* Un botón fijo sobre un formulario a todo el ancho siempre acaba encima de
      algún campo: el toque abría WhatsApp en lugar del selector. En móvil se
      retira mientras el cotizador está a la vista. */
@@ -387,6 +407,10 @@ const styles = `
     .er-hero-inner { grid-template-columns:1fr; padding-bottom:70px; }
     .er-booking-card { max-width:560px; }
     .er-comfort { grid-template-columns:1fr; }
+    /* El cotizador antes que las amenidades: es lo que el visitante vino a usar. */
+    .er-hero-lede { order:1; }
+    .er-booking-card { order:2; }
+    .er-hero .er-comfort { order:3; }
   }
   @media (max-width:700px) {
     .er-hero { min-height:auto; }
@@ -396,7 +420,12 @@ const styles = `
     .er-hero-inner { padding:22px 18px 54px; gap:26px; }
     .er-hero-title { font-size:42px; }
     .er-hero-copy { font-size:15px; }
-    .er-proof { grid-template-columns:1fr; }
+    /* Compacta, no apilada: apilada empujaba el cotizador 200 px hacia
+       abajo, justo lo que se quería evitar en móvil. */
+    .er-proof { grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:24px; }
+    .er-proof-value { font-size:16px; }
+    .er-proof-value .er-stripe-mark { font-size:12px; padding:2px 7px 3px; }
+    .er-proof-label { font-size:11px; }
     .er-main { margin:0; padding:0 18px 64px; }
     .er-booking-card { padding:20px; }
     .er-service-tabs { flex-direction:column; }
@@ -408,7 +437,39 @@ const styles = `
     .er-contact-grid { grid-template-columns:1fr; }
     .er-comfort { padding:20px; }
     .er-comfort-list { grid-template-columns:1fr; }
+    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
   }
+
+  /* ── Sellos de pago ─────────────────────────────────────────────────
+     El cliente decide si deja su tarjeta mucho antes del paso 3, así que
+     el sello vive donde nace la duda (la tarjeta de cotización) y donde
+     todo el mundo busca legitimidad (el pie). */
+  .er-trust-line { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:#BFC3C8; font-size:12px; line-height:1.5; margin:0; }
+  .er-trust-line svg { flex-shrink:0; }
+  .er-booking-card .er-trust-line { margin:-8px 0 18px; }
+  .er-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; letter-spacing:-0.01em; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
+  .er-cardmarks { display:inline-flex; gap:6px; flex-wrap:wrap; }
+  .er-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#8B8B87; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
+  .er-proof-value .er-stripe-mark { font-size:15px; padding:3px 10px 4px; border-radius:5px; }
+
+  /* ── Pie de página ─────────────────────────────────────────────────
+     El colchón inferior deja libre la esquina donde flota WhatsApp. */
+  .er-foot { border-top:1px solid rgba(200,164,107,0.28); padding:26px 28px 92px; }
+  .er-foot-pay { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid #191919; }
+  .er-foot-billing { color:#9a9a9a; font-size:13px; text-decoration:none; }
+  .er-foot-billing:hover { color:#C8A46B; }
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; padding-top:16px; font-size:11px; color:#555; letter-spacing:0.06em; }
+  .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
+  .er-foot-links a { color:#C8A46B; text-decoration:none; }
+  .er-foot-links a:hover { color:#fff; }
+
+  /* ── Foco de teclado ───────────────────────────────────────────────
+     Sin esto, quien navega con teclado no ve dónde está parado. */
+  .er-root a:focus-visible,
+  .er-root button:focus-visible,
+  .er-root input:focus-visible,
+  .er-root select:focus-visible,
+  .er-wa-fab:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; border-radius:2px; }
 `;
 
 export default function Home() {
@@ -668,7 +729,7 @@ export default function Home() {
             </nav>
 
             <div className="er-hero-inner">
-              <div>
+              <div className="er-hero-lede">
                 <div className="er-kicker">{t.kicker}</div>
                 <h1 className="er-hero-title">{t.heroTitle}</h1>
                 <p className="er-hero-copy">{t.heroCopy}</p>
@@ -678,32 +739,39 @@ export default function Home() {
                     business@eliteroute.mx
                   </a>
                 </div>
-                <section className="er-comfort" aria-label="Comfort amenities">
-                  <h2 className="er-comfort-title">
-                    {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
-                  </h2>
-                  <ul className="er-comfort-list">
-                    <li>
-                      <span className="er-comfort-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
-                          <path d="M9 2h6" />
-                          <path d="M10 2v4l-2 3v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V2" />
-                          <path d="M8 13h8" />
-                          <path d="M8 18h8" />
-                        </svg>
-                      </span>
-                      {t.water}
-                    </li>
-                    <li><span className="er-comfort-icon">⚡</span>{t.chargers}</li>
-                    <li><span className="er-comfort-icon">♪</span>{t.music}</li>
-                    <li><span className="er-comfort-icon">❄</span>{t.ac}</li>
-                    <li><span className="er-comfort-icon">✦</span>{t.chauffeur}</li>
-                  </ul>
-                </section>
+
+                {/* Tres señales de confianza en el primer vistazo. */}
+                <div className="er-proof">
+                  <div className="er-proof-item">
+                    <div className="er-proof-value"><span className="er-stripe-mark">stripe</span></div>
+                    <div className="er-proof-label">{t.proof1Label}</div>
+                  </div>
+                  <div className="er-proof-item">
+                    <div className="er-proof-value">{t.proof2Value}</div>
+                    <div className="er-proof-label">{t.proof2Label}</div>
+                  </div>
+                  <div className="er-proof-item">
+                    <div className="er-proof-value">{t.proof3Value}</div>
+                    <div className="er-proof-label">{t.proof3Label}</div>
+                  </div>
+                </div>
               </div>
 
               <div className="er-booking-card" id="quote">
                 <h2 className="er-booking-title">{t.getQuote}</h2>
+
+                {/* El sello va aquí, donde el cliente empieza a dar sus datos:
+                    la mención a Stripe del paso 3 llegaba demasiado tarde. */}
+                <p className="er-trust-line">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8A46B" strokeWidth="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span>{t.trustPay}</span>
+                  <span className="er-stripe-mark">stripe</span>
+                  <span className="er-cardmarks">
+                    <span className="er-cardmark">VISA</span>
+                    <span className="er-cardmark">MASTERCARD</span>
+                    <span className="er-cardmark">AMEX</span>
+                  </span>
+                </p>
 
                 <div className="er-progress">
                   <div className="er-progress-fill" style={{ width:`${(step/3)*100}%` }}/>
@@ -951,6 +1019,29 @@ export default function Home() {
             </button>
           </div>
               </div>
+
+                <section className="er-comfort" aria-label="Comfort amenities">
+                  <h2 className="er-comfort-title">
+                    {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
+                  </h2>
+                  <ul className="er-comfort-list">
+                    <li>
+                      <span className="er-comfort-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                          <path d="M9 2h6" />
+                          <path d="M10 2v4l-2 3v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V2" />
+                          <path d="M8 13h8" />
+                          <path d="M8 18h8" />
+                        </svg>
+                      </span>
+                      {t.water}
+                    </li>
+                    <li><span className="er-comfort-icon">⚡</span>{t.chargers}</li>
+                    <li><span className="er-comfort-icon">♪</span>{t.music}</li>
+                    <li><span className="er-comfort-icon">❄</span>{t.ac}</li>
+                    <li><span className="er-comfort-icon">✦</span>{t.chauffeur}</li>
+                  </ul>
+                </section>
             </div>
           </section>
 
@@ -980,12 +1071,14 @@ export default function Home() {
                     <div className="er-contact-title">{t.b2bTitle}</div>
                   </a>
                   <div className="er-contact-copy">{t.b2bCopy}</div>
-                  <a className="er-contact-link" href="mailto:business@eliteroute.mx">
-                    business@eliteroute.mx
-                  </a>
-                  <a href="/b2b/cotizar" style={{ display:"inline-block", marginTop:"12px", fontSize:"11px", letterSpacing:"0.1em", textTransform:"uppercase", color:"#C8A46B", textDecoration:"none", borderBottom:"1px solid rgba(200,164,107,0.35)", paddingBottom:"2px" }}>
-                    Cotizar servicios corporativos →
-                  </a>
+                  <div className="er-contact-actions">
+                    <a className="er-contact-link" href="mailto:business@eliteroute.mx">
+                      business@eliteroute.mx
+                    </a>
+                    <a href="/b2b/cotizar" style={{ fontSize:"11px", letterSpacing:"0.1em", textTransform:"uppercase", color:"#C8A46B", textDecoration:"none", borderBottom:"1px solid rgba(200,164,107,0.35)", paddingBottom:"2px" }}>
+                      Cotizar servicios corporativos →
+                    </a>
+                  </div>
                 </div>
                 <div className="er-contact-item">
                   <div className="er-contact-title">{t.accTitle}</div>
@@ -1050,12 +1143,28 @@ export default function Home() {
           </section>
 
           {/* FOOTER */}
-          <footer style={{borderTop:"1px solid #1e1e1e",padding:"28px 28px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"12px",fontSize:"11px",color:"#555",letterSpacing:"0.06em"}}>
-            <span>Elite Route CDMX · business@eliteroute.mx</span>
-            <div style={{display:"flex",gap:"24px",flexWrap:"wrap"}}>
-              <a href="/tarifas" style={{color:"#C8A46B",textDecoration:"none"}}>Tarifas</a>
-              <a href="/b2b" style={{color:"#C8A46B",textDecoration:"none"}}>Corporativo</a>
-              <a href="mailto:contabilidad@eliteroute.mx" style={{color:"#9a9a9a",textDecoration:"none"}}>contabilidad@eliteroute.mx</a>
+          <footer className="er-foot">
+            <div className="er-foot-pay">
+              <p className="er-trust-line">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8A46B" strokeWidth="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>{t.footPay}</span>
+                <span className="er-stripe-mark">stripe</span>
+                <span className="er-cardmarks">
+                  <span className="er-cardmark">VISA</span>
+                  <span className="er-cardmark">MASTERCARD</span>
+                  <span className="er-cardmark">AMEX</span>
+                </span>
+              </p>
+              <a className="er-foot-billing" href="mailto:contabilidad@eliteroute.mx">
+                {t.footBilling} · contabilidad@eliteroute.mx
+              </a>
+            </div>
+            <div className="er-foot-meta">
+              <span>Elite Route CDMX · business@eliteroute.mx</span>
+              <div className="er-foot-links">
+                <a href="/tarifas">Tarifas</a>
+                <a href="/b2b">Corporativo</a>
+              </div>
             </div>
           </footer>
         </div>

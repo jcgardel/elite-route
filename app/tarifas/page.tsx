@@ -14,7 +14,6 @@ export const metadata: Metadata = {
       "Precios fijos con IVA incluido para traslados ejecutivos en Ciudad de México. AICM, AIFA, Toluca y rutas corporativas.",
     url: "https://eliteroute.mx/tarifas",
     siteName: "Elite Route",
-    images: [{ url: "https://eliteroute.mx/executive.jpg", width: 1200, height: 630, alt: "Elite Route — Transporte ejecutivo CDMX" }],
     locale: "es_MX",
     type: "website",
   },

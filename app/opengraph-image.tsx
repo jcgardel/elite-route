@@ -132,7 +132,6 @@ export default async function OpenGraphImage() {
 
         {logo && (
           <div style={{ display: "flex", alignItems: "center", paddingLeft: 40 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`data:image/png;base64,${logo.toString("base64")}`}
               alt=""

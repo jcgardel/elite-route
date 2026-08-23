@@ -724,7 +724,9 @@ export default function Home() {
         setAlert3(data.error || t.alertCheckoutErr);
         return;
       }
-      window.location.href = data.url;
+      // location.assign en vez de asignar location.href: el compilador de
+      // React marca la asignación directa como mutación de un valor externo.
+      window.location.assign(data.url);
     } catch {
       setAlert3(t.alertConnErr);
     } finally {

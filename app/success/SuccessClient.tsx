@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Booking } from "./page";
 
 /**
@@ -237,7 +238,7 @@ export default function SuccessClient({
             ) : (
               <span className="sc-note">Facturación: contabilidad@eliteroute.mx</span>
             )}
-            <a className="sc-home" href="/">← Volver al inicio</a>
+            <Link className="sc-home" href="/">← Volver al inicio</Link>
           </div>
         </div>
       </main>

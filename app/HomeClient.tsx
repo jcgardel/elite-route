@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import Image from "next/image";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -19,7 +19,6 @@ import {
   type Zone,
 } from "@/lib/booking";
 
-const libraries: "places"[] = ["places"];
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
@@ -38,28 +37,53 @@ const AC_OPTIONS = {
 };
 
 /**
- * Envuelve el campo en el autocompletado de Google sólo cuando la API ya
- * cargó. Así la página se pinta de inmediato y el visitante puede escribir
- * su dirección aunque el script de Maps siga en camino: la ruta se resuelve
- * igual en el servidor a partir del texto.
+ * Carga el SDK de Maps una sola vez y sólo cuando hace falta. Antes entraba
+ * en cada visita —305 KB entre places, main, util, common y controls, un
+ * tercio del peso de la página— aunque el visitante sólo viniera a ver
+ * precios y nunca tocara un campo de dirección.
  */
-function MaybeAutocomplete({
-  isLoaded,
-  onLoad,
-  onPlaceChanged,
-  children,
-}: {
-  isLoaded: boolean;
-  onLoad: (a: google.maps.places.Autocomplete) => void;
-  onPlaceChanged: () => void;
-  children: React.ReactElement;
-}) {
-  if (!isLoaded) return children;
-  return (
-    <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged} options={AC_OPTIONS}>
-      {children}
-    </Autocomplete>
-  );
+let mapsLoader: Promise<void> | null = null;
+function loadGoogleMaps(): Promise<void> {
+  if (mapsLoader) return mapsLoader;
+  mapsLoader = new Promise<void>((resolve, reject) => {
+    const w = window as unknown as { google?: { maps?: { places?: unknown } } };
+    if (w.google?.maps?.places) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("No se pudo cargar Google Maps"));
+    document.head.appendChild(script);
+  });
+  return mapsLoader;
+}
+
+/**
+ * Engancha el autocompletado al input que ya está en pantalla, en lugar de
+ * envolverlo en un componente: así el campo nunca se desmonta y el visitante
+ * no pierde el foco ni lo que llevaba escrito cuando el SDK termina de
+ * cargar. Mientras tanto el campo funciona como texto libre — la ruta se
+ * resuelve en el servidor a partir del texto.
+ */
+function attachAutocomplete(
+  input: HTMLInputElement | null,
+  store: React.RefObject<google.maps.places.Autocomplete | null>,
+  onPlaceChanged: () => void,
+) {
+  if (!input || store.current) return;
+  loadGoogleMaps()
+    .then(() => {
+      if (store.current) return;
+      const autocomplete = new google.maps.places.Autocomplete(input, AC_OPTIONS);
+      autocomplete.addListener("place_changed", onPlaceChanged);
+      store.current = autocomplete;
+    })
+    .catch(() => {
+      // Sin autocompletado se sigue pudiendo cotizar: el campo es texto libre.
+    });
 }
 
 const vehicleImages: Record<string, string> = {
@@ -412,10 +436,10 @@ const styles = `
 `;
 
 export default function Home() {
-  const { isLoaded } = useJsApiLoader({ googleMapsApiKey: GOOGLE_MAPS_KEY, libraries });
-
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const originInputRef = useRef<HTMLInputElement>(null);
+  const destinationInputRef = useRef<HTMLInputElement>(null);
 
   const [lang, setLang] = useState<"es" | "en">("es");
   const t = TX[lang];
@@ -639,7 +663,10 @@ export default function Home() {
         <div className="er-shell">
           <section className="er-hero">
             <nav className="er-nav" aria-label="Elite Route">
-              <img className="er-logo-img" src="/elite-route-logo.png" alt="Elite Route" />
+              {/* next/image sirve AVIF/WebP al tamaño de uso: el PNG original
+                  son 1024×1024 y 106 KB para pintarse a 176. */}
+              <Image className="er-logo-img" src="/elite-route-logo.png" alt="Elite Route"
+                width={176} height={176} priority style={{ height: "auto" }} />
               <div className="er-nav-right">
                 <a href="/b2b" className="er-nav-b2b-mobile">Corporativo</a>
                 <div className="er-nav-links">
@@ -769,13 +796,10 @@ export default function Home() {
             <div className="er-field">
               <label className="er-label" htmlFor="origin-input">{t.pickup}</label>
               <div className="er-input-wrap">
-                <MaybeAutocomplete
-                  isLoaded={isLoaded}
-                  onLoad={(a) => { originRef.current = a; }}
-                  onPlaceChanged={onOriginChanged}>
-                  <input id="origin-input" className="er-input er-input--clearable" placeholder={t.pickupPlaceholder}
-                    value={origin} onChange={(e) => setOrigin(e.target.value)}/>
-                </MaybeAutocomplete>
+                <input id="origin-input" ref={originInputRef} className="er-input er-input--clearable"
+                  placeholder={t.pickupPlaceholder} value={origin}
+                  onFocus={() => attachAutocomplete(originInputRef.current, originRef, onOriginChanged)}
+                  onChange={(e) => setOrigin(e.target.value)}/>
                 {origin && (
                   <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar dirección" : "Clear address"}
                     onClick={() => setOrigin("")}>×</button>
@@ -787,13 +811,10 @@ export default function Home() {
               <div className="er-field">
                 <label className="er-label" htmlFor="destination-input">{t.destination}</label>
                 <div className="er-input-wrap">
-                  <MaybeAutocomplete
-                    isLoaded={isLoaded}
-                    onLoad={(a) => { destinationRef.current = a; }}
-                    onPlaceChanged={onDestinationChanged}>
-                    <input id="destination-input" className="er-input er-input--clearable" placeholder={t.destinationPlaceholder}
-                      value={destination} onChange={(e) => setDestination(e.target.value)}/>
-                  </MaybeAutocomplete>
+                  <input id="destination-input" ref={destinationInputRef} className="er-input er-input--clearable"
+                    placeholder={t.destinationPlaceholder} value={destination}
+                    onFocus={() => attachAutocomplete(destinationInputRef.current, destinationRef, onDestinationChanged)}
+                    onChange={(e) => setDestination(e.target.value)}/>
                   {destination && (
                     <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar destino" : "Clear destination"}
                       onClick={() => setDestination("")}>×</button>

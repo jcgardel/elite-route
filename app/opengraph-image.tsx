@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 /**
@@ -15,6 +13,13 @@ export const contentType = "image/png";
 
 const GOLD = "#C8A46B";
 const INK = "#0A0A0A";
+
+/** El símbolo de la marca: el lema dibujado, una línea que sube de nivel. */
+const GLYPH = `<svg xmlns="http://www.w3.org/2000/svg" width="250" height="110" viewBox="0 0 118 52">
+  <path d="M4 42 H34 L64 12 H104" fill="none" stroke="${GOLD}" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="110" cy="12" r="5" fill="${GOLD}"/>
+</svg>`;
 
 /**
  * Google Fonts devuelve TTF —el formato que entiende el generador— cuando la
@@ -39,8 +44,7 @@ export default async function OpenGraphImage() {
   const titulo = "Movemos tu nivel.";
   const bajada = "Chofer privado y transporte ejecutivo en Ciudad de México";
 
-  const [logo, cormorant, barlow] = await Promise.all([
-    readFile(join(process.cwd(), "public/elite-route-logo.png")).catch(() => null),
+  const [cormorant, barlow] = await Promise.all([
     loadFont("Cormorant+Garamond", 300, titulo),
     loadFont("Barlow", 400, `${bajada}ELITE ROUTE CIUDAD DE MÉXICOAICM · AIFA · TolucaPrecio fijo, IVA incluido · Pago seguro con Stripe0123456789`),
   ]);
@@ -130,16 +134,9 @@ export default async function OpenGraphImage() {
           </div>
         </div>
 
-        {logo && (
-          <div style={{ display: "flex", alignItems: "center", paddingLeft: 40 }}>
-            <img
-              src={`data:image/png;base64,${logo.toString("base64")}`}
-              alt=""
-              width={300}
-              height={300}
-            />
-          </div>
-        )}
+        <div style={{ display: "flex", alignItems: "center", paddingLeft: 48 }}>
+          <img src={`data:image/svg+xml;base64,${Buffer.from(GLYPH).toString("base64")}`} alt="" width={250} height={110} />
+        </div>
       </div>
     ),
     { ...size, fonts: fonts.length ? fonts : undefined },

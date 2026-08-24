@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import Image from "next/image";
+import BrandMark from "./BrandMark";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -247,10 +247,10 @@ const styles = `
   .er-hero { position:relative; min-height:720px; background-image:linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.76) 48%, rgba(0,0,0,0.68) 100%), url('/high-suv.webp'); background-size:cover; background-position:center 48%; display:flex; flex-direction:column; }
   .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
-  .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
+  .er-brand { display:inline-block; text-decoration:none; filter:drop-shadow(0 14px 26px rgba(0,0,0,0.75)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
   @keyframes erLogoIn { from{opacity:0;transform:translateY(-8px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
   @media (prefers-reduced-motion: reduce) {
-    .er-logo-img { animation:none; }
+    .er-brand { animation:none; }
     .er-root *, .er-root *::before, .er-root *::after {
       animation-duration:0.01ms !important; animation-iteration-count:1 !important;
       transition-duration:0.01ms !important; scroll-behavior:auto !important;
@@ -445,7 +445,10 @@ const styles = `
   @media (max-width:700px) {
     .er-hero { min-height:auto; }
     .er-nav { padding:18px 18px; }
-    .er-logo-img { width:138px; }
+    /* En el teléfono la barra no da para el lema: el nombre solo se lee
+       mejor y deja aire al botón de corporativo. */
+    .er-brand { transform:scale(0.92); transform-origin:left center; }
+    .er-brand .er-brand-tagline { display:none; }
     .er-nav-links { display:none; }
     .er-hero-inner { padding:22px 18px 54px; gap:26px; }
     .er-hero-title { font-size:42px; }
@@ -741,10 +744,11 @@ export default function Home() {
         <div className="er-shell">
           <section className="er-hero">
             <nav className="er-nav" aria-label="Elite Route">
-              {/* next/image sirve AVIF/WebP al tamaño de uso: el PNG original
-                  son 1024×1024 y 106 KB para pintarse a 176. */}
-              <Image className="er-logo-img" src="/elite-route-logo.png" alt="Elite Route"
-                width={176} height={176} priority style={{ height: "auto" }} />
+              {/* Compuesto con las tipografías del sitio: cero bytes de red y
+                  nítido en cualquier pantalla. Ver app/BrandMark.tsx. */}
+              <a href="#quote" className="er-brand" aria-label="Elite Route">
+                <BrandMark size={19} />
+              </a>
               <div className="er-nav-right">
                 <a href="/b2b" className="er-nav-b2b-mobile">Corporativo</a>
                 <div className="er-nav-links">

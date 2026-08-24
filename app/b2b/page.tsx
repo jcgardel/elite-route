@@ -11,7 +11,6 @@ export const metadata: Metadata = {
     description: "Cuenta corporativa, factura CFDI y choferes verificados en CDMX.",
     url: "https://eliteroute.mx/b2b",
     siteName: "Elite Route",
-    images: [{ url: "https://eliteroute.mx/executive.jpg", width: 1200, height: 630, alt: "Elite Route — Ejecutivo BMW Mercedes CDMX" }],
     locale: "es_MX",
     type: "website",
   },

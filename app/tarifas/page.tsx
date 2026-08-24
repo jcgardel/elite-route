@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { calculatePrice, type Category } from "@/lib/booking";
+import BrandMark from "../BrandMark";
 
 export const metadata: Metadata = {
   title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
@@ -14,7 +15,6 @@ export const metadata: Metadata = {
       "Precios fijos con IVA incluido para traslados ejecutivos en Ciudad de México. AICM, AIFA, Toluca y rutas corporativas.",
     url: "https://eliteroute.mx/tarifas",
     siteName: "Elite Route",
-    images: [{ url: "https://eliteroute.mx/executive.jpg", width: 1200, height: 630, alt: "Elite Route — Transporte ejecutivo CDMX" }],
     locale: "es_MX",
     type: "website",
   },
@@ -52,7 +52,7 @@ const styles = `
   body { background: #0A0A0A; color: #fff; font-family: var(--font-barlow), sans-serif; font-weight: 300; }
 
   .tf-nav { max-width: 1180px; margin: 0 auto; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; }
-  .tf-logo { width: 160px; height: auto; display: block; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5)); }
+  .tf-nav a { text-decoration: none; }
   .tf-nav-cta { border: 1px solid #C8A46B; border-radius: 2px; padding: 10px 18px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.2s, color 0.2s; }
   .tf-nav-cta:hover { background: #C8A46B; color: #0A0A0A; }
 
@@ -104,7 +104,7 @@ const styles = `
 
   @media (max-width: 700px) {
     .tf-nav { padding: 18px; }
-    .tf-logo { width: 130px; }
+    .tf-nav > a { transform: scale(0.88); transform-origin: left center; }
     .tf-hero { padding: 40px 18px 44px; }
     .tf-main { padding: 0 18px 64px; }
     .tf-cta { padding: 32px 20px; }
@@ -200,7 +200,7 @@ export default function TarifasPage() {
       <nav>
         <div className="tf-nav">
           <Link href="/">
-            <img className="tf-logo" src="/elite-route-logo.png" alt="Elite Route" />
+            <BrandMark size={17} />
           </Link>
           <div style={{display:"flex",gap:"20px",alignItems:"center"}}>
             <Link href="/b2b" style={{fontSize:"11px",letterSpacing:"0.12em",color:"#BFC3C8",textDecoration:"none",textTransform:"uppercase"}}>Corporativo</Link>

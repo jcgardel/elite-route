@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import Image from "next/image";
+import BrandMark from "./BrandMark";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -247,9 +247,15 @@ const styles = `
   .er-hero { position:relative; min-height:720px; background-image:linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.76) 48%, rgba(0,0,0,0.68) 100%), url('/high-suv.webp'); background-size:cover; background-position:center 48%; display:flex; flex-direction:column; }
   .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
-  .er-logo-img { width:176px; height:auto; display:block; filter:drop-shadow(0 18px 32px rgba(0,0,0,0.65)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
+  .er-brand { display:inline-block; text-decoration:none; filter:drop-shadow(0 14px 26px rgba(0,0,0,0.75)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
   @keyframes erLogoIn { from{opacity:0;transform:translateY(-8px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
-  @media (prefers-reduced-motion: reduce) { .er-logo-img { animation:none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .er-brand { animation:none; }
+    .er-root *, .er-root *::before, .er-root *::after {
+      animation-duration:0.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:0.01ms !important; scroll-behavior:auto !important;
+    }
+  }
   .er-nav-right { display:flex; align-items:center; gap:20px; }
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; background:transparent; cursor:pointer; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; }
@@ -265,7 +271,7 @@ const styles = `
      orden cambia para que el cotizador quede antes que las amenidades. */
   .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:34px 48px; align-items:start; }
   .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
-  .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; }
+  .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; text-wrap:balance; }
   .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
   .er-hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
   .er-hero-btn { display:inline-flex; min-height:46px; align-items:center; justify-content:center; border:1px solid #C8A46B; color:#fff; background:rgba(10,10,10,0.58); text-decoration:none; padding:13px 20px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
@@ -329,7 +335,7 @@ const styles = `
 
   .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
 
-  .er-section-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:42px; font-weight:300; margin:42px 0 20px; }
+  .er-section-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:42px; font-weight:300; margin:42px 0 20px; text-wrap:balance; }
   .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
@@ -390,7 +396,7 @@ const styles = `
 
   .er-testimonials { padding:72px 40px; border-top:1px solid #1a1a1a; }
   .er-testimonials-kicker { color:#C8A46B; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:14px; }
-  .er-testimonials-title { font-family:var(--font-cormorant),serif; font-size:clamp(28px,4vw,46px); font-weight:300; color:#fff; margin-bottom:40px; line-height:1.1; }
+  .er-testimonials-title { font-family:var(--font-cormorant),serif; font-size:clamp(28px,4vw,46px); font-weight:300; color:#fff; margin-bottom:40px; line-height:1.1; text-wrap:balance; }
   /* Tres columnas fijas: con auto-fit se abrían cuatro y el quinto
      testimonio se quedaba solo en la segunda fila. */
   .er-testimonials-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
@@ -439,7 +445,10 @@ const styles = `
   @media (max-width:700px) {
     .er-hero { min-height:auto; }
     .er-nav { padding:18px 18px; }
-    .er-logo-img { width:138px; }
+    /* En el teléfono la barra no da para el lema: el nombre solo se lee
+       mejor y deja aire al botón de corporativo. */
+    .er-brand { transform:scale(0.92); transform-origin:left center; }
+    .er-brand .er-brand-tagline { display:none; }
     .er-nav-links { display:none; }
     .er-hero-inner { padding:22px 18px 54px; gap:26px; }
     .er-hero-title { font-size:42px; }
@@ -480,9 +489,11 @@ const styles = `
      El colchón inferior deja libre la esquina donde flota WhatsApp. */
   .er-foot { border-top:1px solid rgba(200,164,107,0.28); padding:26px 28px 92px; }
   .er-foot-pay { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid #191919; }
-  .er-foot-billing { color:#9a9a9a; font-size:13px; text-decoration:none; }
+  .er-foot-billing { color:#BFC3C8; font-size:13px; text-decoration:none; }
   .er-foot-billing:hover { color:#C8A46B; }
-  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; padding-top:16px; font-size:11px; color:#555; letter-spacing:0.06em; }
+  /* #8B8B87 da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
+     por debajo del 4.5:1 que pide la WCAG para texto pequeño. */
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; padding-top:16px; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
   .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
   .er-foot-links a { color:#C8A46B; text-decoration:none; }
   .er-foot-links a:hover { color:#fff; }
@@ -548,6 +559,13 @@ export default function Home() {
   // escriba "AICM" o "aeropuerto" a mano sin elegir sugerencia— o del lugar
   // que Google confirmó como aeropuerto.
   const airportPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
+
+  // El atributo lang del documento se queda en "es" salvo que se actualice
+  // aquí: sin esto un lector de pantalla lee el inglés con fonética española
+  // y el navegador no ofrece traducir la página.
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
@@ -709,7 +727,9 @@ export default function Home() {
         setAlert3(data.error || t.alertCheckoutErr);
         return;
       }
-      window.location.href = data.url;
+      // location.assign en vez de asignar location.href: el compilador de
+      // React marca la asignación directa como mutación de un valor externo.
+      window.location.assign(data.url);
     } catch {
       setAlert3(t.alertConnErr);
     } finally {
@@ -724,10 +744,11 @@ export default function Home() {
         <div className="er-shell">
           <section className="er-hero">
             <nav className="er-nav" aria-label="Elite Route">
-              {/* next/image sirve AVIF/WebP al tamaño de uso: el PNG original
-                  son 1024×1024 y 106 KB para pintarse a 176. */}
-              <Image className="er-logo-img" src="/elite-route-logo.png" alt="Elite Route"
-                width={176} height={176} priority style={{ height: "auto" }} />
+              {/* Compuesto con las tipografías del sitio: cero bytes de red y
+                  nítido en cualquier pantalla. Ver app/BrandMark.tsx. */}
+              <a href="#quote" className="er-brand" aria-label="Elite Route">
+                <BrandMark size={19} />
+              </a>
               <div className="er-nav-right">
                 <a href="/b2b" className="er-nav-b2b-mobile">Corporativo</a>
                 <div className="er-nav-links">
@@ -1150,7 +1171,7 @@ export default function Home() {
               ] as const).map((t) => (
                 <div className="er-testimonial-card" key={t.name}>
                   <div className="er-testimonial-stars">★★★★★</div>
-                  <blockquote className="er-testimonial-quote">"{t.quote}"</blockquote>
+                  <blockquote className="er-testimonial-quote">“{t.quote}”</blockquote>
                   <div className="er-testimonial-author">
                     <div className="er-testimonial-avatar">{t.initial}</div>
                     <div>

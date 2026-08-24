@@ -1,17 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
+import BrandMark from "./BrandMark";
 
 export default function NotFound() {
   return (
     <main className="er-status-page">
       <section className="er-status-panel">
-        <Image
-          src="/elite-route-logo.png"
-          alt="Elite Route"
-          width={152}
-          height={152}
-          className="er-status-logo"
-        />
+        <BrandMark variant="filete" size={22} className="er-status-logo" />
         <p className="er-status-kicker">Página no encontrada</p>
         <h1>404</h1>
         <p>

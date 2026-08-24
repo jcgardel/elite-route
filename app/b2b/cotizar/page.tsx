@@ -21,12 +21,9 @@ const AC_OPTIONS = {
 };
 const libraries: "places"[] = ["places"];
 
-const VEHICLES: { key: Category; label: string; sub: string }[] = [
-  { key: "sedan",     label: "Sedan",    sub: "Nissan / VW"            },
-  { key: "executive", label: "Executive",sub: "BMW / Mercedes / Tesla"  },
-  { key: "minivan",   label: "Minivan",  sub: "Captiva · 7 pax"        },
-  { key: "suv",       label: "HIGH SUV", sub: "Suburban / Escalade"    },
-];
+const VEHICLES: { key: Category; label: string; sub: string }[] = (
+  ["sedan", "executive", "minivan", "suv"] as Category[]
+).map((key) => ({ key, label: tariffs[key].name, sub: tariffs[key].tag }));
 
 type PaymentTerm = "immediate" | "7" | "15" | "30";
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { calculatePrice, type Category } from "@/lib/booking";
+import { calculatePrice, tariffs, type Category } from "@/lib/booking";
 
 export const metadata: Metadata = {
   title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
@@ -66,12 +66,12 @@ const AIRPORT_TABLES: {
   },
 ];
 
-const B2B_CATS: { key: Category; cat: string; sub: string }[] = [
-  { key: "sedan", cat: "Sedán", sub: "Nissan / VW" },
-  { key: "executive", cat: "Ejecutivo", sub: "BMW / Mercedes / Tesla" },
-  { key: "minivan", cat: "Minivan", sub: "Captiva · 7 pax" },
-  { key: "suv", cat: "High SUV", sub: "Suburban / Escalade" },
-];
+// Nombre y flota salen de lib/booking.ts: esta página los tenía en español
+// ("Sedán", "Ejecutivo") mientras el cotizador los tenía en inglés, así que
+// un cliente que comparaba las dos veía dos catálogos distintos.
+const B2B_CATS: { key: Category; cat: string; sub: string }[] = (
+  ["sedan", "executive", "minivan", "suv"] as Category[]
+).map((key) => ({ key, cat: tariffs[key].name, sub: tariffs[key].tag }));
 
 function mxn(n: number) {
   return "$" + n.toLocaleString("es-MX");

@@ -1,28 +1,12 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* El sitio es oscuro siempre: no hay tema claro que respetar. Antes esto
+   traía el andamiaje de la plantilla de Next —Tailwind, que no se usa en
+   ninguna página, las variables de las fuentes Geist, que no existen en el
+   proyecto, y un fondo blanco en modo claro. */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #0a0a0a;
+  color: #ededed;
+  font-family: var(--font-barlow), system-ui, sans-serif;
 }
 
 .er-status-page {
@@ -34,7 +18,7 @@ body {
     linear-gradient(90deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.66)),
     url("/high-suv.webp") center / cover;
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-barlow), system-ui, sans-serif;
 }
 
 .er-status-panel {

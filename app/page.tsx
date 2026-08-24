@@ -36,5 +36,12 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <HomeClient />;
+  return (
+    <>
+      {/* El fondo del hero vive dentro del CSS, así que el navegador lo
+          descubre tarde: es la imagen más grande de la primera pantalla. */}
+      <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />
+      <HomeClient />
+    </>
+  );
 }

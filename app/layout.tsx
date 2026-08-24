@@ -11,16 +11,21 @@ const barlow = Barlow({
   display: "swap",
 });
 
+// Sin preload: es la fuente de etiquetas pequeñas, no de lo primero que se
+// lee. Precargar las nueve variantes hacía competir 157 KB de tipografía con
+// la imagen del hero en los primeros milisegundos.
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700"],
   variable: "--font-barlow-condensed",
   display: "swap",
+  preload: false,
 });
 
+// 600 no se usa en ninguna hoja de estilos del proyecto.
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "600"],
+  weight: ["300", "400"],
   variable: "--font-cormorant",
   display: "swap",
 });

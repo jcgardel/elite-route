@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import BrandMark from "./BrandMark";
+import { useLang } from "./useLang";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -520,9 +521,9 @@ export default function Home() {
   const destinationInputRef = useRef<HTMLInputElement>(null);
 
   // El sitio abre en inglés: el cliente que reserva un traslado desde el
-  // AICM suele ser el viajero de negocios extranjero. El botón ES/EN
-  // sigue cambiándolo, y el atributo lang del documento lo acompaña.
-  const [lang, setLang] = useState<"es" | "en">("en");
+  // AICM suele ser el viajero de negocios extranjero. La elección se guarda
+  // y viaja con el visitante al resto del sitio — ver app/useLang.ts.
+  const [lang, setLang] = useLang("en");
   const t = TX[lang];
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>
@@ -568,13 +569,6 @@ export default function Home() {
   // escriba "AICM" o "aeropuerto" a mano sin elegir sugerencia— o del lugar
   // que Google confirmó como aeropuerto.
   const airportPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
-
-  // El atributo lang del documento se queda en "es" salvo que se actualice
-  // aquí: sin esto un lector de pantalla lee el inglés con fonética española
-  // y el navegador no ofrece traducir la página.
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;

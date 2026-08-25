@@ -146,6 +146,7 @@ const TX = {
     footBilling: "CFDI invoicing",
     footTerms: "Terms",
     footPrivacy: "Privacy",
+    footRates: "Rates",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
     whatsappBtn: "Ask via WhatsApp",
@@ -214,6 +215,7 @@ const TX = {
     footBilling: "Facturación CFDI",
     footTerms: "Términos",
     footPrivacy: "Aviso de privacidad",
+    footRates: "Tarifas",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
     whatsappBtn: "Consultar por WhatsApp",
@@ -1213,8 +1215,8 @@ export default function Home() {
             <div className="er-foot-meta">
               <span>Elite Route CDMX · business@eliteroute.mx</span>
               <div className="er-foot-links">
-                <a href="/tarifas">Tarifas</a>
-                <a href="/b2b">Corporativo</a>
+                <a href="/tarifas">{t.footRates}</a>
+                <a href="/b2b">{t.corporate}</a>
                 <a href="/terminos">{t.footTerms}</a>
                 <a href="/privacidad">{t.footPrivacy}</a>
               </div>

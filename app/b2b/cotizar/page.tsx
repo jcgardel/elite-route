@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import { calculatePrice, isAirportAddress, isAirportPlace, tariffs, type Category } from "@/lib/booking";
+import LangToggle from "../../LangToggle";
+import { useLang, type Lang } from "../../useLang";
 
 const CONTACT_EMAIL = "contabilidad@eliteroute.mx";
 const MAX_SERVICES = 20;
@@ -35,12 +37,123 @@ type PaymentTerm = "immediate" | "7" | "15" | "30";
  * automáticamente — la aprobación real la hace el equipo al revisar la
  * solicitud que llega por correo.
  */
-const PAYMENT_TERMS: { key: PaymentTerm; label: string; shortLabel: string; surcharge: number }[] = [
-  { key: "immediate", label: "Pago inmediato (tarjeta o transferencia al confirmar)", shortLabel: "pago inmediato", surcharge: 0 },
-  { key: "7",  label: "Crédito a 7 días",                       shortLabel: "crédito a 7 días",  surcharge: 0.02 },
-  { key: "15", label: "Crédito a 15 días",                      shortLabel: "crédito a 15 días", surcharge: 0.04 },
-  { key: "30", label: "Crédito a 30 días — requiere historial", shortLabel: "crédito a 30 días", surcharge: 0.07 },
+const PAYMENT_TERMS: { key: PaymentTerm; surcharge: number }[] = [
+  { key: "immediate", surcharge: 0 },
+  { key: "7",  surcharge: 0.02 },
+  { key: "15", surcharge: 0.04 },
+  { key: "30", surcharge: 0.07 },
 ];
+
+/**
+ * Textos de la pantalla en los dos idiomas del sitio. Arranca en español —el
+ * comprador corporativo de esta página suele serlo— pero respeta la elección
+ * guardada en cualquier otra página.
+ *
+ * El correo que se genera al enviar se queda SIEMPRE en español: lo lee el
+ * equipo de Elite Route, no el cliente.
+ */
+const TX = {
+  es: {
+    navServices: "Servicios", navRates: "Tarifas", navCorporate: "Corporativo", navQuote: "Cotizador B2B",
+    kicker: "Cuenta corporativa · Cotizador multi-servicio",
+    h1: "Registra tus traslados",
+    sub: (max: number) => `Hasta ${max} servicios, precio en tiempo real según la ruta. El desglose con IVA se envía directo a contabilidad. `,
+    single: "¿Traslado individual? Cotizador principal →",
+    sentTitle: "Solicitud enviada",
+    sentCopy: ["Tu cliente de correo se abrió con la cotización completa.", "Confirmamos precios en menos de 24 hrs."],
+    companySection: "Datos de la empresa",
+    company: "Empresa *", companyPh: "Grupo Financiero XYZ",
+    rfc: "RFC", rfcPh: "GFX900101ABC",
+    email: "Correo *", emailPh: "coordinador@empresa.com",
+    owner: "Responsable", ownerPh: "Coordinador de viajes",
+    phone: "Teléfono", phonePh: "55 0000 0000",
+    paymentTerm: "Término de pago",
+    terms: {
+      immediate: "Pago inmediato (tarjeta o transferencia al confirmar)",
+      "7": "Crédito a 7 días",
+      "15": "Crédito a 15 días",
+      "30": "Crédito a 30 días — requiere historial",
+    },
+    termsShort: {
+      immediate: "pago inmediato", "7": "crédito a 7 días",
+      "15": "crédito a 15 días", "30": "crédito a 30 días",
+    },
+    term30Note: "Crédito a 30 días disponible para empresas con historial de pago con Elite Route — sujeto a aprobación. Si es tu primera solicitud, te confirmamos el término al revisar tu cotización.",
+    services: (n: number, max: number) => `Servicios (${n}/${max})`,
+    addService: "+ Agregar servicio",
+    serviceN: (n: number) => `Servicio ${n}`,
+    remove: "Eliminar", clearOrigin: "Borrar origen", clearDest: "Borrar destino",
+    date: "Fecha *", time: "Hora *",
+    origin: "Origen *", destination: "Destino *", addressPh: "Hotel, aeropuerto, dirección...",
+    loadingMaps: "Cargando Maps...",
+    flight: "Número de vuelo *", flightPh: "AM234, AA1234, LA456...",
+    vehicle: "Vehículo", notes: "Notas", notesPh: "Núm. de pax, equipaje, instrucciones...",
+    calculating: "Calculando ruta...",
+    routeErr: "No se pudo calcular la ruta", connErr: "Error de conexión",
+    subtotal: "Subtotal", vat: "IVA", total: "Total", estimate: "(estimado mínimo)",
+    summary: "Resumen",
+    subtotalNoVat: (n: number) => `Subtotal sin IVA (${n} servicio${n !== 1 ? "s" : ""})`,
+    vat16: "IVA 16%",
+    surcharge: (label: string, pct: number) => `Recargo ${label} (${pct}%)`,
+    noteEstimates: "* Algunos servicios muestran tarifa mínima. El total se actualiza automáticamente al seleccionar origen y destino.",
+    noteReal: "Precio calculado con la ruta real. IVA 16% desglosado por servicio.",
+    send: "Enviar solicitud de servicios",
+    sendReady: "Se abrirá tu cliente de correo con el desglose completo pre-llenado.",
+    sendMissing: "Completa empresa*, correo* y todos los campos obligatorios (*) para enviar.",
+    backAccount: "← Cuenta corporativa",
+  },
+  en: {
+    navServices: "Services", navRates: "Rates", navCorporate: "Corporate", navQuote: "B2B quote",
+    kicker: "Corporate account · Multi-service quote",
+    h1: "Add your transfers",
+    sub: (max: number) => `Up to ${max} services, priced in real time from the route. The VAT breakdown goes straight to accounting. `,
+    single: "A single transfer? Main quote form →",
+    sentTitle: "Request sent",
+    sentCopy: ["Your mail app opened with the full quote.", "We confirm prices in under 24 hrs."],
+    companySection: "Company details",
+    company: "Company *", companyPh: "XYZ Financial Group",
+    rfc: "Tax ID (RFC)", rfcPh: "GFX900101ABC",
+    email: "Email *", emailPh: "coordinator@company.com",
+    owner: "Contact person", ownerPh: "Travel coordinator",
+    phone: "Phone", phonePh: "55 0000 0000",
+    paymentTerm: "Payment term",
+    terms: {
+      immediate: "Immediate payment (card or transfer on confirmation)",
+      "7": "7-day credit",
+      "15": "15-day credit",
+      "30": "30-day credit — requires history",
+    },
+    termsShort: {
+      immediate: "immediate payment", "7": "7-day credit",
+      "15": "15-day credit", "30": "30-day credit",
+    },
+    term30Note: "30-day credit is available to companies with a payment history with Elite Route — subject to approval. If this is your first request, we confirm the term when we review your quote.",
+    services: (n: number, max: number) => `Services (${n}/${max})`,
+    addService: "+ Add service",
+    serviceN: (n: number) => `Service ${n}`,
+    remove: "Remove", clearOrigin: "Clear pickup", clearDest: "Clear destination",
+    date: "Date *", time: "Time *",
+    origin: "Pickup *", destination: "Destination *", addressPh: "Hotel, airport, address...",
+    loadingMaps: "Loading Maps...",
+    flight: "Flight number *", flightPh: "AM234, AA1234, LA456...",
+    vehicle: "Vehicle", notes: "Notes", notesPh: "Passengers, luggage, instructions...",
+    calculating: "Calculating route...",
+    routeErr: "We could not calculate the route", connErr: "Connection error",
+    subtotal: "Subtotal", vat: "VAT", total: "Total", estimate: "(minimum estimate)",
+    summary: "Summary",
+    subtotalNoVat: (n: number) => `Subtotal before VAT (${n} service${n !== 1 ? "s" : ""})`,
+    vat16: "VAT 16%",
+    surcharge: (label: string, pct: number) => `${label} surcharge (${pct}%)`,
+    noteEstimates: "* Some services show the minimum fare. The total updates automatically once pickup and destination are set.",
+    noteReal: "Price calculated from the real route. 16% VAT itemised per service.",
+    send: "Send service request",
+    sendReady: "Your mail app will open with the full breakdown pre-filled.",
+    sendMissing: "Fill in company*, email* and every required field (*) to send.",
+    backAccount: "← Corporate account",
+  },
+} as const;
+
+type Copy = (typeof TX)[Lang];
 
 type Service = {
   id: number;
@@ -93,9 +206,10 @@ type ServiceRowProps = {
   isLoaded: boolean;
   onUpdate: (id: number, patch: Partial<Service>) => void;
   onRemove: (id: number) => void;
+  t: Copy;
 };
 
-function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemove }: ServiceRowProps) {
+function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemove, t }: ServiceRowProps) {
   const originAcRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destAcRef   = useRef<google.maps.places.Autocomplete | null>(null);
   const originInputRef = useRef<HTMLInputElement>(null);
@@ -118,10 +232,10 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
     try {
       const res  = await fetch("/api/maps", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ origin, destination }) });
       const data = await res.json();
-      if (!res.ok) { setRouteErr("No se pudo calcular la ruta"); return; }
+      if (!res.ok) { setRouteErr(t.routeErr); return; }
       onUpdate(s.id, { km: Number(data.km.toFixed(1)), minutes: Number(data.minutes) });
     } catch {
-      setRouteErr("Error de conexión");
+      setRouteErr(t.connErr);
     } finally {
       setCalculating(false);
     }
@@ -167,29 +281,29 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
 
   return (
     <div className="cq-card">
-      <p className="cq-card-num">Servicio {index + 1}</p>
+      <p className="cq-card-num">{t.serviceN(index + 1)}</p>
       {showRemove && (
-        <button className="cq-rm" onClick={() => onRemove(s.id)} aria-label="Eliminar">×</button>
+        <button className="cq-rm" onClick={() => onRemove(s.id)} aria-label={t.remove}>×</button>
       )}
 
       {/* Fila 1: fecha, hora, origen, destino */}
       <div className="cq-r1">
         <div className="cq-f">
-          <label>Fecha *</label>
+          <label>{t.date}</label>
           <input type="date" min={getMinDate()} value={s.fecha} suppressHydrationWarning
             onChange={(e) => onUpdate(s.id, { fecha: e.target.value, km: 0, minutes: 0 })} />
         </div>
         <div className="cq-f">
-          <label>Hora *</label>
+          <label>{t.time}</label>
           <input type="time" value={s.hora}
             onChange={(e) => onUpdate(s.id, { hora: e.target.value })} />
         </div>
         <div className="cq-f">
-          <label>Origen *</label>
+          <label>{t.origin}</label>
           <div className="cq-ac-wrap">
             {isLoaded ? (
               <Autocomplete onLoad={(a) => { originAcRef.current = a; }} onPlaceChanged={onOriginChanged} options={acOptions}>
-                <input ref={originInputRef} className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
+                <input ref={originInputRef} className="cq-ac-input" type="text" placeholder={t.addressPh}
                   defaultValue={s.origen}
                   onChange={(e) => {
                     const v = e.target.value;
@@ -203,27 +317,27 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
                   }} />
               </Autocomplete>
             ) : (
-              <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />
+              <input className="cq-ac-input" type="text" placeholder={t.loadingMaps} disabled />
             )}
             {hasOrigen && (
-              <button type="button" className="cq-ac-clear" aria-label="Borrar origen" onClick={clearOrigen}>×</button>
+              <button type="button" className="cq-ac-clear" aria-label={t.clearOrigin} onClick={clearOrigen}>×</button>
             )}
           </div>
         </div>
         <div className="cq-f">
-          <label>Destino *</label>
+          <label>{t.destination}</label>
           <div className="cq-ac-wrap">
           {isLoaded ? (
             <Autocomplete onLoad={(a) => { destAcRef.current = a; }} onPlaceChanged={onDestinationChanged} options={acOptions}>
-              <input ref={destInputRef} className="cq-ac-input" type="text" placeholder="Hotel, aeropuerto, dirección..."
+              <input ref={destInputRef} className="cq-ac-input" type="text" placeholder={t.addressPh}
                 defaultValue={s.destino}
                 onChange={(e) => { setHasDestino(!!e.target.value); if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0 }); }} />
             </Autocomplete>
           ) : (
-            <input className="cq-ac-input" type="text" placeholder="Cargando Maps..." disabled />
+            <input className="cq-ac-input" type="text" placeholder={t.loadingMaps} disabled />
           )}
           {hasDestino && (
-            <button type="button" className="cq-ac-clear" aria-label="Borrar destino" onClick={clearDestino}>×</button>
+            <button type="button" className="cq-ac-clear" aria-label={t.clearDest} onClick={clearDestino}>×</button>
           )}
           </div>
         </div>
@@ -233,8 +347,8 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
       {s.airport && (
         <div className="cq-vuelo-row">
           <div className="cq-f" style={{ maxWidth:240 }}>
-            <label>Número de vuelo *</label>
-            <input type="text" placeholder="AM234, AA1234, LA456..."
+            <label>{t.flight}</label>
+            <input type="text" placeholder={t.flightPh}
               value={s.vuelo}
               onChange={(e) => onUpdate(s.id, { vuelo: e.target.value.toUpperCase() })} />
           </div>
@@ -244,7 +358,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
       {/* Fila 2: vehículo, notas */}
       <div className="cq-r2">
         <div className="cq-f">
-          <label>Vehículo</label>
+          <label>{t.vehicle}</label>
           <select value={s.vehiculo} onChange={(e) => onUpdate(s.id, { vehiculo: e.target.value as Category })}>
             {VEHICLES.map((v) => (
               <option key={v.key} value={v.key}>{v.label} — {v.sub}</option>
@@ -252,8 +366,8 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
           </select>
         </div>
         <div className="cq-f">
-          <label>Notas</label>
-          <input type="text" placeholder="Núm. de pax, equipaje, instrucciones..." value={s.notas}
+          <label>{t.notes}</label>
+          <input type="text" placeholder={t.notesPh} value={s.notas}
             onChange={(e) => onUpdate(s.id, { notas: e.target.value })} />
         </div>
       </div>
@@ -261,15 +375,15 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
       {/* Total por servicio */}
       <div className="cq-row-tot">
         {calculating ? (
-          <span style={{ color:"#666" }}>Calculando ruta...</span>
+          <span style={{ color:"#8B8B87" }}>{t.calculating}</span>
         ) : routeErr ? (
           <span style={{ color:"#e57373", fontSize:11 }}>{routeErr}</span>
         ) : (
           <>
-            {s.km > 0 && <span style={{ color:"#555", fontSize:11, marginRight:10 }}>{s.km} km · {s.minutes} min</span>}
-            Subtotal: {fmt(r.base)}&nbsp;·&nbsp;IVA: {fmt(r.iva)}&nbsp;·&nbsp;
-            <strong>Total: {fmt(r.total)}</strong>
-            {r.estimate && <span style={{ color:"#555", fontSize:11, marginLeft:6 }}>(estimado mínimo)</span>}
+            {s.km > 0 && <span style={{ color:"#8B8B87", fontSize:11, marginRight:10 }}>{s.km} km · {s.minutes} min</span>}
+            {t.subtotal}: {fmt(r.base)}&nbsp;·&nbsp;{t.vat}: {fmt(r.iva)}&nbsp;·&nbsp;
+            <strong>{t.total}: {fmt(r.total)}</strong>
+            {r.estimate && <span style={{ color:"#8B8B87", fontSize:11, marginLeft:6 }}>{t.estimate}</span>}
           </>
         )}
       </div>
@@ -284,6 +398,8 @@ const INITIAL_SERVICE: Service = {
 };
 
 export default function B2BCotizarPage() {
+  const [lang, setLang] = useLang("es");
+  const t = TX[lang];
   const { isLoaded } = useJsApiLoader({ googleMapsApiKey: GOOGLE_MAPS_KEY, libraries });
   const idRef = useRef(2);
 
@@ -313,6 +429,7 @@ export default function B2BCotizarPage() {
   const selectedTerm = PAYMENT_TERMS.find((t) => t.key === paymentTerm)!;
   const financingSurcharge = Math.round(totals.total * selectedTerm.surcharge);
   const grandTotal = totals.total + financingSurcharge;
+  const termLabelShort = t.termsShort[selectedTerm.key];
 
   const hasEstimates = services.some((s) => calcRow(s).estimate && (s.origen || s.destino));
 
@@ -327,7 +444,7 @@ export default function B2BCotizarPage() {
       `Responsable: ${empresa.responsable}`,
       `Telefono:    ${empresa.telefono}`,
       `Correo:      ${empresa.correo}`,
-      `Termino de pago: ${selectedTerm.label}`,
+      `Termino de pago: ${TX.es.terms[selectedTerm.key]}`,
       "", "SERVICIOS SOLICITADOS", "---",
     ];
     services.forEach((s, i) => {
@@ -346,7 +463,7 @@ export default function B2BCotizarPage() {
     lines.push(`Subtotal sin IVA: ${fmt(totals.base)}`);
     lines.push(`IVA (16%):        ${fmt(totals.iva)}`);
     if (financingSurcharge > 0) {
-      lines.push(`Recargo ${selectedTerm.shortLabel} (${Math.round(selectedTerm.surcharge * 100)}%): ${fmt(financingSurcharge)}`);
+      lines.push(`Recargo ${TX.es.termsShort[selectedTerm.key]} (${Math.round(selectedTerm.surcharge * 100)}%): ${fmt(financingSurcharge)}`);
     }
     lines.push(`TOTAL:            ${fmt(grandTotal)}`);
     if (paymentTerm === "30") lines.push("", "* Credito a 30 dias sujeto a aprobacion segun historial de pago con Elite Route.");
@@ -377,6 +494,9 @@ export default function B2BCotizarPage() {
     .cq-nav { display:flex; justify-content:space-between; align-items:center; padding:20px 56px; border-bottom:1px solid #1e1e1e; }
     .cq-logo { font-family:var(--font-cormorant),Georgia,serif; font-size:22px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; }
     .cq-nav-links { display:flex; gap:28px; align-items:center; }
+    /* Fuera del grupo que se oculta en móvil: si no, en un teléfono no
+       hay manera de volver al español. */
+    .cq-nav-right { display:flex; gap:20px; align-items:center; }
     .cq-nl { font-size:11px; letter-spacing:0.12em; color:#BFC3C8; text-transform:uppercase; text-decoration:none; }
     .cq-nl:hover { color:#fff; }
     .cq-nl-active { color:#C8A46B !important; }
@@ -390,13 +510,13 @@ export default function B2BCotizarPage() {
 
     .cq-body { padding:40px 56px 80px; max-width:960px; }
     .cq-sec { margin-bottom:36px; }
-    .cq-sec-label { font-size:10px; letter-spacing:0.2em; color:#555; text-transform:uppercase; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #1a1a1a; }
+    .cq-sec-label { font-size:10px; letter-spacing:0.2em; color:#8B8B87; text-transform:uppercase; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #1a1a1a; }
 
     .cq-g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
     .cq-g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
     .cq-f { display:flex; flex-direction:column; gap:5px; }
-    .cq-f label { font-size:11px; color:#777; letter-spacing:0.05em; text-transform:uppercase; }
+    .cq-f label { font-size:11px; color:#9A9A96; letter-spacing:0.05em; text-transform:uppercase; }
 
     .cq-f input[type=text],
     .cq-f input[type=email],
@@ -431,7 +551,7 @@ export default function B2BCotizarPage() {
     .cq-add:disabled { color:#444; border-color:#1e1e1e; cursor:not-allowed; }
 
     .cq-card { background:#0b0b0b; border:1px solid #2e2e2e; border-radius:4px; padding:18px 18px 14px; margin-bottom:10px; position:relative; }
-    .cq-card-num { font-size:10px; letter-spacing:0.14em; color:#555; text-transform:uppercase; margin-bottom:12px; }
+    .cq-card-num { font-size:10px; letter-spacing:0.14em; color:#8B8B87; text-transform:uppercase; margin-bottom:12px; }
     .cq-rm { position:absolute; top:12px; right:14px; background:transparent; border:none; color:#444; font-size:20px; cursor:pointer; line-height:1; padding:0 2px; }
     .cq-rm:hover { color:#C8A46B; }
 
@@ -441,12 +561,12 @@ export default function B2BCotizarPage() {
     .cq-vuelo-row { margin-bottom:10px; padding:12px 14px; background:#0f0f0f; border:1px solid rgba(200,164,107,0.25); border-radius:3px; }
     .cq-vuelo-row .cq-f label { color:#C8A46B; }
 
-    .cq-row-tot { text-align:right; font-size:12px; color:#666; margin-top:10px; padding-top:10px; border-top:1px solid #161616; }
+    .cq-row-tot { text-align:right; font-size:12px; color:#8B8B87; margin-top:10px; padding-top:10px; border-top:1px solid #161616; }
     .cq-row-tot strong { color:#C8A46B; font-size:13px; }
 
     .cq-summary { background:#0a0a0a; border:1px solid #2e2e2e; border-radius:4px; padding:20px 24px; margin-bottom:16px; }
     .cq-sl { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; }
-    .cq-sl span:first-child { color:#777; }
+    .cq-sl span:first-child { color:#9A9A96; }
     .cq-sl span:last-child { color:#fff; }
     .cq-st { display:flex; justify-content:space-between; font-size:16px; padding:14px 0 0; margin-top:8px; border-top:1px solid #2e2e2e; }
     .cq-st span:first-child { color:#fff; }
@@ -490,21 +610,23 @@ export default function B2BCotizarPage() {
       <div className="cq">
         <nav className="cq-nav">
           <Link href="/" className="cq-logo">ELITE ROUTE</Link>
-          <div className="cq-nav-links">
-            <Link href="/" className="cq-nl">Servicios</Link>
-            <Link href="/tarifas" className="cq-nl">Tarifas</Link>
-            <Link href="/b2b" className="cq-nl">Corporativo</Link>
-            <Link href="/b2b/cotizar" className="cq-nl cq-nl-active">Cotizador B2B</Link>
+          <div className="cq-nav-right">
+            <div className="cq-nav-links">
+              <Link href="/" className="cq-nl">{t.navServices}</Link>
+              <Link href="/tarifas" className="cq-nl">{t.navRates}</Link>
+              <Link href="/b2b" className="cq-nl">{t.navCorporate}</Link>
+              <Link href="/b2b/cotizar" className="cq-nl cq-nl-active">{t.navQuote}</Link>
+            </div>
+            <LangToggle lang={lang} setLang={setLang} />
           </div>
         </nav>
 
         <header className="cq-header">
-          <p className="cq-kicker">Cuenta corporativa · Cotizador multi-servicio</p>
-          <h1 className="cq-h1">Registra tus traslados<em>.</em></h1>
+          <p className="cq-kicker">{t.kicker}</p>
+          <h1 className="cq-h1">{t.h1}<em>.</em></h1>
           <p className="cq-sub">
-            Hasta {MAX_SERVICES} servicios, precio en tiempo real según la ruta.
-            El desglose con IVA se envía directo a contabilidad.{" "}
-            <Link href="/">¿Traslado individual? Cotizador principal →</Link>
+            {t.sub(MAX_SERVICES)}
+            <Link href="/">{t.single}</Link>
           </p>
         </header>
 
@@ -512,8 +634,8 @@ export default function B2BCotizarPage() {
           {sent ? (
             <div className="cq-sent">
               <div style={{ fontSize:42, marginBottom:18 }}>✉</div>
-              <h2>Solicitud enviada</h2>
-              <p>Tu cliente de correo se abrió con la cotización completa.<br />Confirmamos precios en menos de 24 hrs.</p>
+              <h2>{t.sentTitle}</h2>
+              <p>{t.sentCopy[0]}<br />{t.sentCopy[1]}</p>
               <button className="cq-send" style={{ maxWidth:280, margin:"0 auto 24px" }} onClick={() => setSent(false)}>
                 Agregar más servicios
               </button>
@@ -524,47 +646,47 @@ export default function B2BCotizarPage() {
             <>
               {/* EMPRESA */}
               <section className="cq-sec">
-                <p className="cq-sec-label">Datos de la empresa</p>
+                <p className="cq-sec-label">{t.companySection}</p>
                 <div className="cq-g3">
                   <div className="cq-f">
-                    <label>Empresa *</label>
-                    <input type="text" placeholder="Grupo Financiero XYZ" value={empresa.nombre}
+                    <label>{t.company}</label>
+                    <input type="text" placeholder={t.companyPh} value={empresa.nombre}
                       onChange={(e) => updateEmpresa("nombre", e.target.value)} />
                   </div>
                   <div className="cq-f">
-                    <label>RFC</label>
-                    <input type="text" placeholder="GFX900101ABC" value={empresa.rfc}
+                    <label>{t.rfc}</label>
+                    <input type="text" placeholder={t.rfcPh} value={empresa.rfc}
                       onChange={(e) => updateEmpresa("rfc", e.target.value.toUpperCase())} />
                   </div>
                   <div className="cq-f">
-                    <label>Correo *</label>
-                    <input type="email" placeholder="coordinador@empresa.com" value={empresa.correo}
+                    <label>{t.email}</label>
+                    <input type="email" placeholder={t.emailPh} value={empresa.correo}
                       onChange={(e) => updateEmpresa("correo", e.target.value)} />
                   </div>
                 </div>
                 <div className="cq-g3">
                   <div className="cq-f">
-                    <label>Responsable</label>
-                    <input type="text" placeholder="Coordinador de viajes" value={empresa.responsable}
+                    <label>{t.owner}</label>
+                    <input type="text" placeholder={t.ownerPh} value={empresa.responsable}
                       onChange={(e) => updateEmpresa("responsable", e.target.value)} />
                   </div>
                   <div className="cq-f">
-                    <label>Teléfono</label>
-                    <input type="tel" placeholder="55 0000 0000" value={empresa.telefono}
+                    <label>{t.phone}</label>
+                    <input type="tel" placeholder={t.phonePh} value={empresa.telefono}
                       onChange={(e) => updateEmpresa("telefono", e.target.value)} />
                   </div>
                   <div className="cq-f">
-                    <label>Término de pago</label>
+                    <label>{t.paymentTerm}</label>
                     <select value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value as PaymentTerm)}>
-                      {PAYMENT_TERMS.map((t) => (
-                        <option key={t.key} value={t.key}>{t.label}</option>
+                      {PAYMENT_TERMS.map((term) => (
+                        <option key={term.key} value={term.key}>{t.terms[term.key]}</option>
                       ))}
                     </select>
                   </div>
                 </div>
                 {paymentTerm === "30" && (
                   <p className="cq-note" style={{ marginTop: 10, marginBottom: 0, color: "#C8A46B" }}>
-                    Crédito a 30 días disponible para empresas con historial de pago con Elite Route — sujeto a aprobación. Si es tu primera solicitud, te confirmamos el término al revisar tu cotización.
+                    {t.term30Note}
                   </p>
                 )}
               </section>
@@ -573,10 +695,10 @@ export default function B2BCotizarPage() {
               <section className="cq-sec">
                 <div className="cq-svc-hdr">
                   <p className="cq-sec-label" style={{ marginBottom:0 }}>
-                    Servicios ({services.length}/{MAX_SERVICES})
+                    {t.services(services.length, MAX_SERVICES)}
                   </p>
                   <button className="cq-add" onClick={addService} disabled={services.length >= MAX_SERVICES}>
-                    + Agregar servicio
+                    {t.addService}
                   </button>
                 </div>
 
@@ -589,32 +711,33 @@ export default function B2BCotizarPage() {
                     isLoaded={isLoaded}
                     onUpdate={updateService}
                     onRemove={removeService}
+                    t={t}
                   />
                 ))}
               </section>
 
               {/* RESUMEN */}
               <section className="cq-sec">
-                <p className="cq-sec-label">Resumen</p>
+                <p className="cq-sec-label">{t.summary}</p>
                 <div className="cq-summary">
                   <div className="cq-sl">
-                    <span>Subtotal sin IVA ({services.length} servicio{services.length !== 1 ? "s" : ""})</span>
+                    <span>{t.subtotalNoVat(services.length)}</span>
                     <span>{fmt(totals.base)}</span>
                   </div>
-                  <div className="cq-sl"><span>IVA 16%</span><span>{fmt(totals.iva)}</span></div>
+                  <div className="cq-sl"><span>{t.vat16}</span><span>{fmt(totals.iva)}</span></div>
                   {financingSurcharge > 0 && (
                     <div className="cq-sl">
-                      <span>Recargo {selectedTerm.shortLabel} ({Math.round(selectedTerm.surcharge * 100)}%)</span>
+                      <span>{t.surcharge(termLabelShort, Math.round(selectedTerm.surcharge * 100))}</span>
                       <span>{fmt(financingSurcharge)}</span>
                     </div>
                   )}
-                  <div className="cq-st"><span>Total</span><span>{fmt(grandTotal)}</span></div>
+                  <div className="cq-st"><span>{t.total}</span><span>{fmt(grandTotal)}</span></div>
                 </div>
 
                 <p className="cq-note">
                   {hasEstimates
-                    ? "* Algunos servicios muestran tarifa mínima. El total se actualiza automáticamente al seleccionar origen y destino."
-                    : "Precio calculado con la ruta real. IVA 16% desglosado por servicio."}
+                    ? t.noteEstimates
+                    : t.noteReal}
                 </p>
 
                 <button className="cq-send" onClick={handleSend} disabled={!canSend}>
@@ -622,12 +745,12 @@ export default function B2BCotizarPage() {
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                     <polyline points="22,6 12,12 2,6"/>
                   </svg>
-                  Enviar solicitud de servicios
+                  {t.send}
                 </button>
                 <p className="cq-send-note">
                   {canSend
-                    ? "Se abrirá tu cliente de correo con el desglose completo pre-llenado."
-                    : "Completa empresa*, correo* y todos los campos obligatorios (*) para enviar."}
+                    ? t.sendReady
+                    : t.sendMissing}
                 </p>
               </section>
             </>
@@ -635,8 +758,8 @@ export default function B2BCotizarPage() {
         </div>
 
         <footer style={{ borderTop:"1px solid #1e1e1e", padding:"20px 56px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <span style={{ fontSize:11, color:"#555", letterSpacing:"0.06em" }}>Elite Route CDMX · business@eliteroute.mx</span>
-          <Link href="/b2b" style={{ fontSize:11, color:"#C8A46B", textDecoration:"none", letterSpacing:"0.06em" }}>← Cuenta corporativa</Link>
+          <span style={{ fontSize:11, color:"#8B8B87", letterSpacing:"0.06em" }}>Elite Route CDMX · business@eliteroute.mx</span>
+          <Link href="/b2b" style={{ fontSize:11, color:"#C8A46B", textDecoration:"none", letterSpacing:"0.06em" }}>{t.backAccount}</Link>
         </footer>
       </div>
     </>

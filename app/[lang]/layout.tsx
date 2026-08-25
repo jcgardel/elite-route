@@ -1,36 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed, Cormorant_Garamond } from "next/font/google";
 import { notFound } from "next/navigation";
+import { fontVars } from "../fonts";
 import { isLang, LANGS, SITE } from "@/lib/i18n";
 import "../globals.css";
-
-// Auto-hospedadas por Next: evitan la petición a fonts.googleapis.com, que
-// bloqueaba el render al venir de un @import dentro del CSS.
-const barlow = Barlow({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-barlow",
-  display: "swap",
-});
-
-// Sin preload: es la fuente de etiquetas pequeñas, no de lo primero que se
-// lee. Precargar las nueve variantes hacía competir 157 KB de tipografía con
-// la imagen del hero en los primeros milisegundos.
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-barlow-condensed",
-  display: "swap",
-  preload: false,
-});
-
-// 600 no se usa en ninguna hoja de estilos del proyecto.
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   // Necesario para que la tarjeta generada en opengraph-image.tsx se anuncie
@@ -71,7 +43,7 @@ export default async function RootLayout({
   return (
     <html
       lang={lang}
-      className={`${barlow.variable} ${barlowCondensed.variable} ${cormorant.variable}`}
+      className={fontVars}
     >
       <body>{children}</body>
     </html>

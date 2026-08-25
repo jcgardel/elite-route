@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import SetLang from "../SetLang";
 
 export const metadata: Metadata = {
   title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
@@ -83,6 +84,7 @@ function routePrice(route: AirportRoute, cat: Category) {
 export default function B2BPage() {
   return (
     <>
+      <SetLang lang="es" />
       <style>{`
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #080808; }

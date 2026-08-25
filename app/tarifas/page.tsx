@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { calculatePrice, tariffs, type Category } from "@/lib/booking";
 import BrandMark from "../BrandMark";
+import SetLang from "../SetLang";
 
 export const metadata: Metadata = {
   title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
@@ -190,6 +191,7 @@ const faqs = [
 export default function TarifasPage() {
   return (
     <>
+      <SetLang lang="es" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

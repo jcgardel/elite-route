@@ -106,7 +106,9 @@ function formatDateTime(dateStr: string, timeStr: string, locale = "es-MX") {
 
 const TX = {
   en: {
-    services: "Dispositions", airports: "Transfers", corporate: "Corporate", contact: "Contact", reserveNow: "Reserve Now",
+    // "Dispositions" era calco de "Disposiciones": en inglés significa
+    // carácter o temperamento, no servicio por horas.
+    services: "Hourly", airports: "Transfers", corporate: "Corporate", contact: "Contact", reserveNow: "Reserve Now",
     kicker: "Elite Route Mexico City",
     heroTitle: "We move your level.",
     heroCopy: "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation.",
@@ -517,7 +519,10 @@ export default function Home() {
   const originInputRef = useRef<HTMLInputElement>(null);
   const destinationInputRef = useRef<HTMLInputElement>(null);
 
-  const [lang, setLang] = useState<"es" | "en">("es");
+  // El sitio abre en inglés: el cliente que reserva un traslado desde el
+  // AICM suele ser el viajero de negocios extranjero. El botón ES/EN
+  // sigue cambiándolo, y el atributo lang del documento lo acompaña.
+  const [lang, setLang] = useState<"es" | "en">("en");
   const t = TX[lang];
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>

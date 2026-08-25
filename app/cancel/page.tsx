@@ -1,9 +1,12 @@
 import Link from "next/link";
 import BrandMark from "../BrandMark";
+import SetLang from "../SetLang";
 
 export default function CancelPage() {
   return (
-    <main className="er-status-page">
+    <>
+      <SetLang lang="es" />
+      <main className="er-status-page">
       <section className="er-status-panel">
         <BrandMark variant="filete" size={22} className="er-status-logo" />
         <p className="er-status-kicker">Pago no completado</p>
@@ -13,6 +16,7 @@ export default function CancelPage() {
         </p>
         <Link href="/#quote" className="er-status-link">Volver al cotizador</Link>
       </section>
-    </main>
+      </main>
+    </>
   );
 }

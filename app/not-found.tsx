@@ -1,9 +1,12 @@
 import Link from "next/link";
 import BrandMark from "./BrandMark";
+import SetLang from "./SetLang";
 
 export default function NotFound() {
   return (
-    <main className="er-status-page">
+    <>
+      <SetLang lang="es" />
+      <main className="er-status-page">
       <section className="er-status-panel">
         <BrandMark variant="filete" size={22} className="er-status-logo" />
         <p className="er-status-kicker">Página no encontrada</p>
@@ -19,6 +22,7 @@ export default function NotFound() {
           Cotizar servicios corporativos
         </Link>
       </section>
-    </main>
+      </main>
+    </>
   );
 }

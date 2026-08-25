@@ -203,6 +203,10 @@ export default function B2bClient() {
         .b-nav-cta:hover { background: #b8924f; }
 
         /* HAMBURGER */
+        /* El selector de idioma vive fuera de .b-nav-links: ese grupo se
+           oculta en móvil y con él desaparecía la única forma de volver
+           al español desde un teléfono. */
+        .b-nav-side { display: flex; align-items: center; gap: 14px; }
         .b-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
         .b-hamburger span { display: block; width: 22px; height: 1.5px; background: #BFC3C8; transition: background 0.2s; }
         .b-hamburger:hover span { background: #fff; }
@@ -297,11 +301,13 @@ export default function B2bClient() {
             <Link href="/tarifas" className="b-nav-link">{t.rates}</Link>
             <Link href="/b2b" className="b-nav-link b-nav-link-active">{t.corporate}</Link>
             <a href={WHATSAPP_B2B} target="_blank" rel="noopener noreferrer" className="b-nav-cta">{t.contact}</a>
-            <LangToggle lang={lang} setLang={setLang} />
           </div>
-          <button className="b-hamburger" aria-label={t.openMenu} id="b-hamburger-btn">
-            <span /><span /><span />
-          </button>
+          <div className="b-nav-side">
+            <LangToggle lang={lang} setLang={setLang} />
+            <button className="b-hamburger" aria-label={t.openMenu} id="b-hamburger-btn">
+              <span /><span /><span />
+            </button>
+          </div>
         </nav>
         <div id="b-mobile-menu" className="b-mobile-menu">
           <Link href="/" className="b-mobile-link">{t.home}</Link>

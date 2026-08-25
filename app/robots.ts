@@ -6,7 +6,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/success", "/cancel"],
+      // El idioma va en la ruta desde que existen /en y /es.
+      disallow: ["/api/", "/en/success", "/es/success", "/en/cancel", "/es/cancel"],
     },
     sitemap: `${base}/sitemap.xml`,
   };

@@ -7,6 +7,7 @@ import {
   type Category,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
+import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
@@ -85,6 +86,10 @@ export async function POST(req: Request) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+    // Stripe devuelve al cliente al idioma en el que reservó. Si el cuerpo no
+    // trae idioma —una petición vieja o manipulada— cae al de por defecto en
+    // lugar de fallar: nadie debe perder un pago por esto.
+    const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
 
     // Metadata compatible con buildPaidBookingMessage — usa primer servicio para resumen
     const first = rawServices[0];
@@ -96,8 +101,8 @@ export async function POST(req: Request) {
       customer_creation: "if_required",
       phone_number_collection: { enabled: true },
       line_items: lineItems,
-      success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:  `${appUrl}/b2b/cotizar`,
+      success_url: `${appUrl}${path(lang, "success")}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:  `${appUrl}${path(lang, "quote")}`,
       metadata: {
         tipo:          "b2b",
         fullName:      empresa.nombre.slice(0, 200),

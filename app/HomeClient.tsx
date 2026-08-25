@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import BrandMark from "./BrandMark";
 import { useLang } from "./useLang";
+import InstallHint from "./InstallHint";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
@@ -753,7 +754,7 @@ export default function Home() {
                 <BrandMark size={19} />
               </a>
               <div className="er-nav-right">
-                <a href="/b2b" className="er-nav-b2b-mobile">Corporativo</a>
+                <a href="/b2b" className="er-nav-b2b-mobile">{t.corporate}</a>
                 <div className="er-nav-links">
                   <button type="button" style={{background:"none",border:"none",padding:0,color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s",fontFamily:"inherit",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:"5px"}}
                     onClick={() => { setServiceType("hour"); setStep(1); document.getElementById("quote")?.scrollIntoView({behavior:"smooth"}); }}>
@@ -1216,6 +1217,8 @@ export default function Home() {
           </footer>
         </div>
       </div>
+
+      <InstallHint lang={lang} />
 
       {/* WHATSAPP FLOTANTE */}
       <a

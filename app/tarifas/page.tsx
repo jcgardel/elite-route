@@ -6,7 +6,7 @@ import BrandMark from "../BrandMark";
 export const metadata: Metadata = {
   title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
   description:
-    "Consulta las tarifas fijas de traslado ejecutivo en Ciudad de México. Precios con IVA incluido para aeropuerto AICM, AIFA, Toluca y rutas corporativas. Sedan Regular, Executive, Minivan y High SUV.",
+    "Consulta las tarifas fijas de traslado ejecutivo en Ciudad de México. Precios con IVA incluido para aeropuerto AICM, AIFA, Toluca y rutas corporativas. Sedan, Executive, Minivan y High SUV.",
   keywords:
     "tarifa traslado aeropuerto CDMX, precio chofer ejecutivo Ciudad de México, tarifa AICM Polanco, costo traslado AIFA CDMX, transporte ejecutivo precio, tarifa chofer privado CDMX",
   openGraph: {
@@ -178,8 +178,8 @@ const faqs = [
     a: "Se requiere un mínimo de 6 horas de anticipación para confirmar tu reserva. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación.",
   },
   {
-    q: "¿Cuál es la diferencia entre Sedan Regular, Executive y High SUV?",
-    a: "Sedan Regular: ideal para 1-3 pasajeros con equipaje ligero. Executive: vehículos premium para 1-3 pasajeros, mayor confort y espacio. Minivan: grupos de 4-6 personas con equipaje amplio. High SUV: el nivel más alto de lujo para 1-6 pasajeros.",
+    q: "¿Cuál es la diferencia entre Sedan, Executive y High SUV?",
+    a: "Sedan: ideal para 1-3 pasajeros con equipaje ligero. Executive: vehículos premium para 1-3 pasajeros, mayor confort y espacio. Minivan: grupos de 4-6 personas con equipaje amplio. High SUV: el nivel más alto de lujo para 1-6 pasajeros.",
   },
   {
     q: "¿Hacen traslados a Querétaro, Cuernavaca u otras ciudades?",

@@ -12,7 +12,7 @@
  */
 export const tariffs = {
   sedan: {
-    name: "Sedan Regular",
+    name: "Sedan",
     km: 28,
     hour: 400,
     min: 600,

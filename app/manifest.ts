@@ -14,6 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Elite Route — Private Chauffeur",
     short_name: "Elite Route",
     description: "Executive transfers in Mexico City. Airport, hourly and corporate transportation.",
+    // La raíz negocia idioma en el middleware: abrir la app instalada lleva
+    // a /en o /es según lo que el dueño del teléfono haya elegido.
     start_url: "/",
     id: "/",
     display: "standalone",

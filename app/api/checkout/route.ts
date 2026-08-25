@@ -11,6 +11,7 @@ import {
   type ServiceType,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
+import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = Object.keys(tariffs) as Category[];
@@ -96,6 +97,10 @@ export async function POST(req: Request) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+    // Stripe devuelve al cliente al idioma en el que reservó. Si el cuerpo no
+    // trae idioma —una petición vieja o manipulada— cae al de por defecto en
+    // lugar de fallar: nadie debe perder un pago por esto.
+    const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
     const vehicle = tariffs[category].name;
     const serviceLabel = serviceTypeLabelEs(serviceType, rentalHours);
 
@@ -117,8 +122,8 @@ export async function POST(req: Request) {
           },
         },
       ],
-      success_url: `${appUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/cancel`,
+      success_url: `${appUrl}${path(lang, "success")}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}${path(lang, "cancel")}`,
       metadata: {
         fullName: trimMetadata(fullName),
         phone: trimMetadata(phone),

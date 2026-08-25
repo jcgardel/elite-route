@@ -34,14 +34,15 @@ export const metadata: Metadata = {
   // Necesario para que la tarjeta generada en app/opengraph-image.tsx se
   // anuncie con URL absoluta.
   metadataBase: new URL("https://eliteroute.mx"),
-  title: "Elite Route — Transporte Ejecutivo CDMX",
-  description: "Tu chofer privado en Ciudad de México. Traslados al aeropuerto AICM, AIFA y Toluca, servicio por hora y transporte ejecutivo corporativo.",
+  title: "Elite Route — Executive Transfers in Mexico City",
+  description: "Your private chauffeur in Mexico City. Airport transfers to AICM, AIFA and Toluca, hourly service and corporate executive transportation.",
   openGraph: {
-    title: "Elite Route — Transporte Ejecutivo CDMX",
-    description: "Tu chofer privado en Ciudad de México. Traslados al aeropuerto, servicio por hora y transporte ejecutivo.",
+    title: "Elite Route — Executive Transfers in Mexico City",
+    description: "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation.",
     url: "https://eliteroute.mx",
     siteName: "Elite Route",
-    locale: "es_MX",
+    locale: "en_US",
+    alternateLocale: "es_MX",
     type: "website",
   },
 };
@@ -60,7 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="es"
+      lang="en"
       className={`${barlow.variable} ${barlowCondensed.variable} ${cormorant.variable}`}
     >
       <body>{children}</body>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BrandMark from "../BrandMark";
+import SetLang from "../SetLang";
 import { LEGAL } from "@/lib/legal";
 
 /**
@@ -20,6 +21,7 @@ export default function LegalPage({
 }) {
   return (
     <>
+      <SetLang lang="es" />
       <style>{`
         .lg-root { background:#0A0A0A; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; line-height:1.7; }
         .lg-nav { max-width:820px; margin:0 auto; padding:26px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }

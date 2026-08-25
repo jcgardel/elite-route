@@ -1,25 +1,30 @@
 import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
 
+// La portada abre en inglés, así que los metadatos hablan el mismo idioma:
+// un título en español sobre una página en inglés es justo la discordancia
+// que Google castiga. Los términos en español siguen vivos en `keywords` y,
+// sobre todo, en /tarifas y /b2b, que son páginas enteras en español.
 export const metadata: Metadata = {
-  title: "Elite Route — Chofer Privado y Transporte Ejecutivo CDMX",
+  title: "Elite Route — Private Chauffeur & Executive Transfers in Mexico City",
   description:
-    "Reserva tu chofer privado en Ciudad de México. Traslados al aeropuerto AICM, AIFA y Toluca, servicio por horas y transporte ejecutivo corporativo. Precio fijo, IVA incluido.",
+    "Book a private chauffeur in Mexico City. Airport transfers to AICM, AIFA and Toluca, hourly service and corporate accounts. Fixed price, VAT included.",
   keywords:
-    "chofer privado CDMX, traslado aeropuerto Ciudad de México, transporte ejecutivo CDMX, chofer ejecutivo México, traslado AICM, traslado AIFA, chofer por horas CDMX",
+    "private chauffeur Mexico City, Mexico City airport transfer, AICM transfer, AIFA transfer, executive car service CDMX, chofer privado CDMX, traslado aeropuerto Ciudad de México, transporte ejecutivo CDMX, traslado AICM, traslado AIFA",
   openGraph: {
-    title: "Elite Route — Chofer Privado y Transporte Ejecutivo CDMX",
+    title: "Elite Route — Private Chauffeur & Executive Transfers in Mexico City",
     description:
-      "Tu chofer privado en Ciudad de México. Traslados al aeropuerto, servicio por hora y transporte ejecutivo corporativo. Precio fijo, IVA incluido.",
+      "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation. Fixed price, VAT included.",
     url: "https://eliteroute.mx",
     siteName: "Elite Route",
-    locale: "es_MX",
+    locale: "en_US",
+    alternateLocale: "es_MX",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Elite Route — Chofer Privado CDMX",
-    description: "Traslados ejecutivos al aeropuerto y por la ciudad. Precio fijo, IVA incluido.",
+    title: "Elite Route — Private Chauffeur in Mexico City",
+    description: "Executive airport and city transfers. Fixed price, VAT included.",
   },
   alternates: {
     canonical: "https://eliteroute.mx",

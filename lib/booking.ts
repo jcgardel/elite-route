@@ -1,12 +1,24 @@
+/**
+ * Los nombres de aquí son los que ve el cliente en todos lados: tarjetas del
+ * cotizador, resumen, mensaje de WhatsApp, cobro en Stripe, correo de
+ * confirmación, tabla de tarifas y páginas corporativas. Antes cada página
+ * tenía los suyos —/b2b decía "Sedán" y "Ejecutivo" mientras el cotizador
+ * decía "Sedan" y "Executive"— y el cliente que comparaba las dos veía dos
+ * catálogos distintos.
+ *
+ * Se escriben en capitalización normal: las tarjetas y las tablas los
+ * convierten a mayúsculas con CSS, y así el mismo dato se lee bien en un
+ * correo o en el cobro de la tarjeta.
+ */
 export const tariffs = {
   sedan: {
-    name: "Sedan",
+    name: "Sedan Regular",
     km: 28,
     hour: 400,
     min: 600,
     cap: "1-3 passengers · 2 bags",
     capEs: "1-3 pasajeros · 2 maletas",
-    tag: "Executive",
+    tag: "Nissan · VW",
   },
   executive: {
     name: "Executive",
@@ -15,7 +27,7 @@ export const tariffs = {
     min: 800,
     cap: "1-3 passengers · 3 bags",
     capEs: "1-3 pasajeros · 3 maletas",
-    tag: "Premium",
+    tag: "BMW · Mercedes · Tesla",
   },
   minivan: {
     name: "Minivan",
@@ -24,16 +36,16 @@ export const tariffs = {
     min: 700,
     cap: "4-6 passengers · 4 bags",
     capEs: "4-6 pasajeros · 4 maletas",
-    tag: "Group",
+    tag: "Captiva",
   },
   suv: {
-    name: "HIGH SUV",
+    name: "High SUV",
     km: 73.5,
     hour: 900,
     min: 1200,
     cap: "1-6 passengers · 6 bags",
     capEs: "1-6 pasajeros · 6 maletas",
-    tag: "Suburban",
+    tag: "Suburban · Escalade",
   },
 };
 

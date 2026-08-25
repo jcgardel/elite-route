@@ -142,6 +142,8 @@ const TX = {
     proof3Value: "24/7", proof3Label: "Flight tracked, waiting time included",
     footPay: "Payments processed by",
     footBilling: "CFDI invoicing",
+    footTerms: "Terms",
+    footPrivacy: "Privacy",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
     whatsappBtn: "Ask via WhatsApp",
@@ -208,6 +210,8 @@ const TX = {
     proof3Value: "24/7", proof3Label: "Vuelo monitoreado y espera sin costo",
     footPay: "Pagos procesados por",
     footBilling: "Facturación CFDI",
+    footTerms: "Términos",
+    footPrivacy: "Aviso de privacidad",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
     whatsappBtn: "Consultar por WhatsApp",
@@ -1206,6 +1210,8 @@ export default function Home() {
               <div className="er-foot-links">
                 <a href="/tarifas">Tarifas</a>
                 <a href="/b2b">Corporativo</a>
+                <a href="/terminos">{t.footTerms}</a>
+                <a href="/privacidad">{t.footPrivacy}</a>
               </div>
             </div>
           </footer>

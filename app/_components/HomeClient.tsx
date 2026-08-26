@@ -142,9 +142,9 @@ const TX = {
     stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
     totalVat: "Total with VAT",
     trustPay: "Secure payment with",
-    proof1Label: "Secure, encrypted card payment",
-    proof2Value: "FIXED PRICE", proof2Label: "VAT included, no surprise charges",
-    proof3Value: "24/7", proof3Label: "Flight tracked, waiting time included",
+    proof1Value: "4 YEARS", proof1Label: "moving executives in Mexico City",
+    proof2Value: "+600", proof2Label: "transfers a year",
+    proof3Value: "FIXED PRICE", proof3Label: "VAT included, no surprise charges",
     footPay: "Payments processed by",
     footBilling: "CFDI invoicing",
     footTerms: "Terms",
@@ -211,9 +211,9 @@ const TX = {
     stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
     totalVat: "Total con IVA",
     trustPay: "Pago seguro con",
-    proof1Label: "Pago con tarjeta seguro y cifrado",
-    proof2Value: "PRECIO FIJO", proof2Label: "IVA incluido, sin cargos sorpresa",
-    proof3Value: "24/7", proof3Label: "Vuelo monitoreado y espera sin costo",
+    proof1Value: "4 AÑOS", proof1Label: "moviendo ejecutivos en Ciudad de México",
+    proof2Value: "+600", proof2Label: "traslados al año",
+    proof3Value: "PRECIO FIJO", proof3Label: "IVA incluido, sin cargos sorpresa",
     footPay: "Pagos procesados por",
     footBilling: "Facturación CFDI",
     footTerms: "Términos",
@@ -469,7 +469,6 @@ const styles = `
        abajo, justo lo que se quería evitar en móvil. */
     .er-proof { grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:24px; }
     .er-proof-value { font-size:16px; }
-    .er-proof-value .er-stripe-mark { font-size:12px; padding:2px 7px 3px; }
     .er-proof-label { font-size:11px; }
     .er-main { margin:0; padding:0 18px 64px; }
     .er-booking-card { padding:20px; }
@@ -495,7 +494,6 @@ const styles = `
   .er-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; letter-spacing:-0.01em; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
   .er-cardmarks { display:inline-flex; gap:6px; flex-wrap:wrap; }
   .er-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#8B8B87; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
-  .er-proof-value .er-stripe-mark { font-size:15px; padding:3px 10px 4px; border-radius:5px; }
 
   /* ── Pie de página ─────────────────────────────────────────────────
      El colchón inferior deja libre la esquina donde flota WhatsApp. */
@@ -793,10 +791,15 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                   </a>
                 </div>
 
-                {/* Tres señales de confianza en el primer vistazo. */}
+                {/* Tres señales de confianza en el primer vistazo. Dos son
+                    cifras del negocio y la tercera la única promesa comercial
+                    que no se repite más arriba. El sello de Stripe salió de
+                    aquí: aparece seis veces más en la portada, y la que
+                    cuenta está en la tarjeta de cotización, justo donde el
+                    visitante va a poner su tarjeta. */}
                 <div className="er-proof">
                   <div className="er-proof-item">
-                    <div className="er-proof-value"><span className="er-stripe-mark">stripe</span></div>
+                    <div className="er-proof-value">{t.proof1Value}</div>
                     <div className="er-proof-label">{t.proof1Label}</div>
                   </div>
                   <div className="er-proof-item">

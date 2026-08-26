@@ -52,6 +52,7 @@ const TX = {
   es: {
     corporate: "Corporativo",
     quoteNow: "Cotizar ahora",
+    quoteShort: "Cotizar",
     kicker: "Elite Route · Ciudad de México",
     title: ["Tarifas de transporte", "ejecutivo en CDMX"],
     subtitle:
@@ -116,6 +117,7 @@ const TX = {
   en: {
     corporate: "Corporate",
     quoteNow: "Get a quote",
+    quoteShort: "Quote",
     kicker: "Elite Route · Mexico City",
     title: ["Executive transfer rates", "in Mexico City"],
     subtitle:
@@ -189,6 +191,7 @@ const styles = `
   .tf-nav-right { display: flex; gap: 18px; align-items: center; }
   .tf-nav-cta { border: 1px solid #C8A46B; border-radius: 2px; padding: 10px 18px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; transition: background 0.2s, color 0.2s; white-space: nowrap; }
   .tf-nav-cta:hover { background: #C8A46B; color: #0A0A0A; }
+  .tf-cta-corto { display: none; }
   .tf-nav-link { font-size: 11px; letter-spacing: 0.12em; color: #BFC3C8; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
   .tf-nav-link:hover { color: #fff; }
 
@@ -239,9 +242,20 @@ const styles = `
   .tf-root a:focus-visible, .tf-root button:focus-visible { outline: 2px solid #C8A46B; outline-offset: 3px; }
 
   @media (max-width: 700px) {
-    .tf-nav { padding: 18px; }
-    .tf-nav > a { transform: scale(0.88); transform-origin: left center; }
+    /* Mismo problema que en la portada: transform:scale encogía el logotipo
+       a la vista pero no en el layout, y aquí además se pintaba el lema
+       —"We move your level", 146 px— que es más ancho que el propio nombre.
+       Entre eso y el botón de cotizar, el selector de idioma acababa 117 px
+       fuera de una pantalla de 375. */
+    .tf-nav { padding: 16px 14px; gap: 10px; }
+    .tf-nav .er-brand-tagline { display: none; }
     .tf-nav-link { display: none; }
+    .tf-nav-right { gap: 10px; }
+    .tf-nav-cta { font-size: 10px; padding: 8px 10px; letter-spacing: 0.06em; }
+    /* "Cotizar ahora" no cabe; "Cotizar" sí, y el enlace conserva el texto
+       completo en aria-label para quien navegue escuchando. */
+    .tf-cta-largo { display: none; }
+    .tf-cta-corto { display: inline; }
     .tf-hero { padding: 40px 18px 44px; }
     .tf-main { padding: 0 18px 64px; }
     .tf-cta { padding: 32px 20px; }
@@ -264,11 +278,14 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
       <nav>
         <div className="tf-nav">
           <Link href={home} aria-label="Elite Route">
-            <BrandMark size={17} />
+            <BrandMark size={17} compact={14} />
           </Link>
           <div className="tf-nav-right">
             <Link href={path(lang, "corporate")} className="tf-nav-link">{t.corporate}</Link>
-            <Link className="tf-nav-cta" href={`${home}#quote`}>{t.quoteNow}</Link>
+            <Link className="tf-nav-cta" href={`${home}#quote`} aria-label={t.quoteNow}>
+              <span className="tf-cta-largo">{t.quoteNow}</span>
+              <span className="tf-cta-corto">{t.quoteShort}</span>
+            </Link>
             <LangToggle lang={lang} page="rates" />
           </div>
         </div>

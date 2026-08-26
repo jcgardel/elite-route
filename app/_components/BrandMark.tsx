@@ -13,27 +13,44 @@
  *   · el símbolo  — el lema dibujado: una línea que arranca abajo, sube de
  *     nivel y sigue arriba, rematada en un punto. Es lo único que aguanta
  *     el cuadrado (favicon, foto de perfil, emblema del auto).
+ *
+ * TODAS las medidas de dentro son múltiplos de `em`, colgadas de una variable
+ * `--bm`. Antes eran píxeles calculados en JavaScript, y eso obligaba a las
+ * páginas a encoger el logotipo con `transform: scale()`, que reduce lo que
+ * se ve pero **no lo que ocupa**: flex seguía reservando el ancho entero y en
+ * un teléfono la barra se desbordaba. Ahora basta con cambiar `--bm` y todo
+ * —nombre, símbolo, lema y separaciones— sigue al mismo tiempo.
  */
 
 const GOLD = "#C8A46B";
 
+/** Proporción del símbolo, del viewBox: 118 de ancho por 52 de alto. */
+const GLYPH_RATIO = 118 / 52;
+
 export function NivelGlyph({
-  height = 22,
+  /** Alto en em, relativo al tamaño del nombre. */
+  em = 1.25,
+  /** El trazo engorda al reducir: a 16 px una línea de 3.4 se deshilacha. */
+  stroke = 5,
   color = GOLD,
 }: {
-  height?: number;
+  em?: number;
+  stroke?: number;
   color?: string;
 }) {
-  // El trazo engorda al reducir: a 16 px una línea de 3.4 se deshilacha.
-  const stroke = height < 26 ? 5 : 4;
   return (
     <svg
-      width={Math.round((height * 118) / 52)}
-      height={height}
       viewBox="0 0 118 52"
       fill="none"
       aria-hidden="true"
-      style={{ flexShrink: 0, display: "block" }}
+      style={{
+        // Alto en em y ancho derivado de la proporción: si se dejara en
+        // `auto`, algunos motores resuelven el ancho del viewBox en píxeles.
+        height: `${em}em`,
+        width: `${(em * GLYPH_RATIO).toFixed(3)}em`,
+        flexShrink: 0,
+        display: "block",
+      }}
     >
       <path
         d="M4 42 H34 L64 12 H104"
@@ -49,6 +66,7 @@ export function NivelGlyph({
 
 export default function BrandMark({
   size = 19,
+  compact,
   variant = "inline",
   withGlyph = true,
   withTagline = true,
@@ -57,6 +75,11 @@ export default function BrandMark({
 }: {
   /** Tamaño tipográfico del nombre, en px. Todo lo demás escala con él. */
   size?: number;
+  /**
+   * Tamaño por debajo de 700 px. Sin esto el logotipo mide lo mismo en un
+   * teléfono que en un escritorio, que es justo lo que desbordaba la barra.
+   */
+  compact?: number;
   /** "inline" para barras de navegación; "filete" centrado, entre reglas. */
   variant?: "inline" | "filete";
   withGlyph?: boolean;
@@ -64,15 +87,31 @@ export default function BrandMark({
   color?: string;
   className?: string;
 }) {
+  // La clase sale de las medidas, así que dos logotipos iguales comparten
+  // regla y el bloque repetido es idéntico e inofensivo. La variable no puede
+  // ir en el `style` del elemento: un valor en línea gana a cualquier media
+  // query y el tamaño compacto nunca llegaría a aplicarse.
+  const cls = compact ? `er-bm-${size}-${compact}` : `er-bm-${size}`;
+  // El espaciado entre letras también se afloja al encoger. A 0.26em el
+  // nombre gasta casi 40 px sólo en aire entre letras, y en una barra de
+  // teléfono ese aire es justo lo que falta; a tamaño pequeño una letra tan
+  // suelta además se lee peor, no mejor.
+  const css = compact
+    ? `.${cls}{--bm:${size}px;--bm-track:0.26em}` +
+      `@media (max-width:700px){.${cls}{--bm:${compact}px;--bm-track:0.16em}}`
+    : `.${cls}{--bm:${size}px;--bm-track:0.26em}`;
+
+  const stroke = size < 26 ? 5 : 4;
+
   const name = (
     <span
       style={{
         fontFamily: "var(--font-cormorant), Georgia, serif",
         fontWeight: 300,
-        fontSize: size,
+        fontSize: "1em",
         lineHeight: 1,
-        letterSpacing: "0.26em",
-        paddingLeft: "0.26em",
+        letterSpacing: "var(--bm-track)",
+        paddingLeft: "var(--bm-track)",
         color,
         whiteSpace: "nowrap",
       }}
@@ -87,12 +126,13 @@ export default function BrandMark({
       style={{
         fontFamily: "var(--font-barlow-condensed), sans-serif",
         fontWeight: 600,
-        fontSize: Math.max(7, Math.round(size * 0.37)),
-        letterSpacing: "0.26em",
-        paddingLeft: "0.26em",
+        // El lema no baja de 7 px: por debajo deja de leerse.
+        fontSize: "max(7px, 0.37em)",
+        letterSpacing: "var(--bm-track)",
+        paddingLeft: "var(--bm-track)",
         textTransform: "uppercase",
         color: "#8B8B87",
-        marginTop: Math.round(size * 0.36),
+        marginTop: "0.36em",
         whiteSpace: "nowrap",
       }}
     >
@@ -100,36 +140,39 @@ export default function BrandMark({
     </span>
   ) : null;
 
-  if (variant === "filete") {
-    return (
+  const root = (inner: React.ReactNode, style: React.CSSProperties) => (
+    <>
+      <style>{css}</style>
       <div
-        className={className}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: Math.round(size * 0.42),
-        }}
+        className={className ? `${cls} ${className}` : cls}
+        style={{ fontSize: "var(--bm)", ...style }}
       >
-        {withGlyph && <NivelGlyph height={Math.round(size * 1.15)} />}
-        <div style={{ width: size * 6.4, height: 1, background: "rgba(200,164,107,0.55)" }} />
-        {name}
-        <div style={{ width: size * 3.2, height: 1, background: "rgba(200,164,107,0.55)" }} />
-        {tagline}
+        {inner}
       </div>
+    </>
+  );
+
+  if (variant === "filete") {
+    return root(
+      <>
+        {withGlyph && <NivelGlyph em={1.15} stroke={stroke} />}
+        <div style={{ width: "6.4em", height: 1, background: "rgba(200,164,107,0.55)" }} />
+        {name}
+        <div style={{ width: "3.2em", height: 1, background: "rgba(200,164,107,0.55)" }} />
+        {tagline}
+      </>,
+      { display: "flex", flexDirection: "column", alignItems: "center", gap: "0.42em" },
     );
   }
 
-  return (
-    <div
-      className={className}
-      style={{ display: "flex", alignItems: "center", gap: Math.round(size * 0.66) }}
-    >
-      {withGlyph && <NivelGlyph height={Math.round(size * 1.25)} />}
+  return root(
+    <>
+      {withGlyph && <NivelGlyph em={1.25} stroke={stroke} />}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
         {name}
         {tagline}
       </div>
-    </div>
+    </>,
+    { display: "flex", alignItems: "center", gap: "0.66em" },
   );
 }

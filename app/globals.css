@@ -22,6 +22,10 @@ body {
 }
 
 .er-status-panel {
+  /* Sin border-box los 34 px de relleno se SUMAN al 100 %, y el panel
+     terminaba 3 px más ancho que la pantalla en un teléfono. Las hojas de
+     los componentes declaran su propio reset; esta no lo tenía. */
+  box-sizing: border-box;
   width: min(100%, 520px);
   border: 1px solid rgba(200, 164, 107, 0.48);
   background: rgba(10, 10, 10, 0.76);

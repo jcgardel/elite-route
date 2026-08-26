@@ -10,6 +10,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: "Elite Route",
   description: "Executive transfers in Mexico City.",
+  // Lo que le demuestra a Google que el sitio es nuestro y abre Search
+  // Console. No se puede quitar aunque la verificación ya esté hecha: Google
+  // la revisa cada tanto y sin la etiqueta la propiedad se pierde.
+  verification: {
+    google: "rBrvdJP68ssqzcZBTKp0vrS_cusNoVzIXM5mz6jMGho",
+  },
 };
 
 // Sin esto la barra del navegador sale clara en Android y en Safari iOS y

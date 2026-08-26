@@ -6,22 +6,29 @@
  * que ya existen. Lo único que no se puede sacar del repositorio es la
  * identidad fiscal.
  *
- * PENDIENTE DEL DUEÑO — `domicilio`, `razonSocial` y `rfc` van vacíos a
- * propósito. La Ley Federal de Protección de Datos Personales en Posesión de
- * los Particulares (art. 16) pide identidad y domicilio del responsable en el
- * aviso de privacidad. Mientras estén vacíos, el aviso se publica con el
- * nombre comercial y el correo de contacto —que es cierto y suficiente para
- * ejercer derechos ARCO— y omite las líneas fiscales en lugar de inventarlas.
+ * IDENTIDAD DEL RESPONSABLE — decidido por el dueño el 26 de agosto de 2026.
+ * La Ley Federal de Protección de Datos Personales en Posesión de los
+ * Particulares (art. 16) pide identidad y domicilio del responsable. Se
+ * publica el **nombre comercial** y el **domicilio**, y se dejan fuera la
+ * razón social y el RFC: son datos personales del dueño y la ley no obliga a
+ * exponerlos cuando el responsable ya queda identificado y localizable.
+ *
+ * Quien quiera ejercer sus derechos ARCO tiene las tres vías que la ley
+ * espera: un nombre, un domicilio físico y un correo de contacto.
+ *
+ * `razonSocial` y `rfc` se quedan vacíos **a propósito**, no por pendiente.
+ * Si algún día se llenan, las páginas los pintan solas —el código ya lo
+ * contempla— pero es una decisión del dueño, no un olvido.
  */
 export const LEGAL = {
-  /** Nombre comercial. Cierto hoy. */
-  responsable: "Elite Route",
-  /** Razón social. Vacío hasta que el dueño la proporcione. */
+  /** Nombre comercial con el que se identifica al responsable. */
+  responsable: "ELITE ROUTE MX",
+  /** Vacío a propósito: dato personal del dueño. Ver la nota de arriba. */
   razonSocial: "",
-  /** RFC. Vacío hasta que el dueño lo proporcione. */
+  /** Vacío a propósito: dato personal del dueño. Ver la nota de arriba. */
   rfc: "",
-  /** Domicilio fiscal. Vacío hasta que el dueño lo proporcione. */
-  domicilio: "",
+  /** Domicilio donde se puede ejercer ARCO. */
+  domicilio: "Lago Zurich 244, Ampliación Granada, Miguel Hidalgo, 11529, Ciudad de México",
 
   sitio: "eliteroute.mx",
   correoPrivacidad: "contabilidad@eliteroute.mx",
@@ -30,9 +37,9 @@ export const LEGAL = {
   whatsappUrl: "https://wa.me/525543582919",
 
   /** Fecha de la última revisión de los textos legales. */
-  actualizado: "25 de agosto de 2026",
+  actualizado: "26 de agosto de 2026",
   /** La misma fecha para la versión en inglés. */
-  updated: "August 25, 2026",
+  updated: "August 26, 2026",
 
   /**
    * Terceros que tratan datos del cliente. Cada uno está en el código:

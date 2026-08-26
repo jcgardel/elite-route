@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { LANGS, url, type Page } from "@/lib/i18n";
+import { LANGS, SITE, url, type Page } from "@/lib/i18n";
+import { ROUTE_KEYS, routePath } from "@/lib/routes";
 
 /**
  * El sitemap con las dos versiones de cada página y sus enlaces cruzados.
@@ -24,7 +25,7 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  return PAGES.flatMap(({ page, priority, changeFrequency }) =>
+  const paginas = PAGES.flatMap(({ page, priority, changeFrequency }) =>
     LANGS.map((lang) => ({
       url: url(lang, page),
       lastModified: now,
@@ -38,4 +39,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     })),
   );
+
+  // Una página por ruta y por idioma. Prioridad alta: son las que persiguen
+  // las búsquedas con intención de compra —origen, destino y precio— y las
+  // que deberían traer el tráfico que hoy no llega.
+  const rutas = ROUTE_KEYS.flatMap((key) =>
+    LANGS.map((lang) => ({
+      url: SITE + routePath(lang, key),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: SITE + routePath("en", key),
+          "es-MX": SITE + routePath("es", key),
+        },
+      },
+    })),
+  );
+
+  return [...paginas, ...rutas];
 }

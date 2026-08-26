@@ -24,7 +24,21 @@ function remember(next: Lang) {
   }
 }
 
-export default function LangToggle({ lang, page }: { lang: Lang; page: Page }) {
+export default function LangToggle({
+  lang,
+  page,
+  hrefs,
+}: {
+  lang: Lang;
+  /** Una de las páginas del catálogo. */
+  page?: Page;
+  /**
+   * Las dos direcciones a mano, para las páginas que no están en el catálogo
+   * —las de ruta, que llevan un slug distinto por idioma—. Gana sobre `page`.
+   */
+  hrefs?: Record<Lang, string>;
+}) {
+  const to = (l: Lang) => hrefs?.[l] ?? (page ? path(l, page) : `/${l}`);
   return (
     <>
       <style>{`
@@ -42,7 +56,7 @@ export default function LangToggle({ lang, page }: { lang: Lang; page: Page }) {
       `}</style>
       <div className="lt-toggle">
         <Link
-          href={path("es", page)}
+          href={to("es")}
           hrefLang="es"
           prefetch={false}
           onClick={() => remember("es")}
@@ -53,7 +67,7 @@ export default function LangToggle({ lang, page }: { lang: Lang; page: Page }) {
           <span aria-hidden="true">ES</span>
         </Link>
         <Link
-          href={path("en", page)}
+          href={to("en")}
           hrefLang="en"
           prefetch={false}
           onClick={() => remember("en")}

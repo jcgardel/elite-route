@@ -271,7 +271,9 @@ const styles = `
   .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
   .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; background:transparent; cursor:pointer; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; }
   .er-nav-b2b-mobile { display:none; font-size:11px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; text-transform:uppercase; font-weight:600; border:1px solid rgba(200,164,107,0.4); padding:7px 12px; border-radius:2px; }
-  @media (max-width:700px) { .er-nav-b2b-mobile { display:flex; align-items:center; min-height:44px; } }
+  @media (max-width:700px) {
+    .er-nav-b2b-mobile { display:flex; align-items:center; min-height:44px; font-size:10.5px; padding:7px 10px; letter-spacing:0.08em; }
+  }
   /* min-height 44px: mínimo recomendado para un objetivo de toque. */
   /* Tres hijos: texto, tarjeta de cotización y amenidades. En escritorio
      texto y amenidades se apilan en la columna izquierda; en móvil el
@@ -451,12 +453,15 @@ const styles = `
   }
   @media (max-width:700px) {
     .er-hero { min-height:auto; }
-    .er-nav { padding:18px 18px; }
-    /* En el teléfono la barra no da para el lema: el nombre solo se lee
-       mejor y deja aire al botón de corporativo. */
-    .er-brand { transform:scale(0.92); transform-origin:left center; }
+    /* La barra en el teléfono. Antes el logotipo se encogía con
+       transform:scale(0.92), que reduce lo que se ve pero no lo que ocupa:
+       flex seguía reservándole 241 px de los 323 disponibles y el selector
+       de idioma terminaba fuera de la pantalla. Ahora encoge de verdad
+       —BrandMark compact={15}— y el resto sólo aprieta lo justo. */
+    .er-nav { padding:16px 14px; }
     .er-brand .er-brand-tagline { display:none; }
     .er-nav-links { display:none; }
+    .er-nav-right { gap:12px; }
     .er-hero-inner { padding:22px 18px 54px; gap:26px; }
     .er-hero-title { font-size:42px; }
     .er-hero-copy { font-size:15px; }
@@ -750,10 +755,10 @@ export default function HomeClient({ lang }: { lang: Lang }) {
               {/* Compuesto con las tipografías del sitio: cero bytes de red y
                   nítido en cualquier pantalla. Ver app/BrandMark.tsx. */}
               <a href="#quote" className="er-brand" aria-label="Elite Route">
-                <BrandMark size={19} />
+                <BrandMark size={19} compact={15} />
               </a>
               <div className="er-nav-right">
-                <a href={corporate} className="er-nav-b2b-mobile">{t.corporate}</a>
+                <a href={corporate} className="er-nav-b2b-mobile" aria-label={t.corporate}>B2B</a>
                 <div className="er-nav-links">
                   <button type="button" style={{background:"none",border:"none",padding:0,color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s",fontFamily:"inherit",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:"5px"}}
                     onClick={() => { setServiceType("hour"); setStep(1); document.getElementById("quote")?.scrollIntoView({behavior:"smooth"}); }}>

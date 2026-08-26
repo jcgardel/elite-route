@@ -5,6 +5,7 @@ import { calculatePrice, tariffs, type Category } from "@/lib/booking";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
+import { routePath, type RouteKey } from "@/lib/routes";
 
 /**
  * Tarifas, en los dos idiomas del sitio.
@@ -194,6 +195,8 @@ const styles = `
   .tf-cta-corto { display: none; }
   .tf-nav-link { font-size: 11px; letter-spacing: 0.12em; color: #BFC3C8; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
   .tf-nav-link:hover { color: #fff; }
+  .tf-route-link { display:block; color:#fff; font-weight:600; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.45); padding-bottom:2px; }
+  .tf-route-link:hover { color:#C8A46B; border-bottom-color:#C8A46B; }
 
   .tf-hero { border-bottom: 1px solid #1e1e1e; padding: 60px 28px 56px; text-align: center; max-width: 1180px; margin: 0 auto; }
   .tf-kicker { color: #C8A46B; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; }
@@ -323,7 +326,13 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
                   <tr key={r.key}>
                     <td>
                       <div className="tf-route">
-                        <strong>{t.routes[r.key]}</strong>
+                        {/* Cada ruta tiene su propia página, con el precio, el
+                            tiempo y las dudas de esa ruta en concreto. Enlazar
+                            desde aquí es lo que hace que Google las encuentre
+                            y lo que deja al visitante llegar a la suya. */}
+                        <Link className="tf-route-link" href={routePath(lang, r.key as RouteKey)}>
+                          {t.routes[r.key]}
+                        </Link>
                         {r.zona}
                       </div>
                     </td>
@@ -360,7 +369,9 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
                   <tr key={r.key}>
                     <td>
                       <div className="tf-route">
-                        <strong>{t.routesTo[r.key]}</strong>
+                        <Link className="tf-route-link" href={routePath(lang, r.key as RouteKey)}>
+                          {t.routesTo[r.key]}
+                        </Link>
                       </div>
                     </td>
                     {cats.map((cat) => (

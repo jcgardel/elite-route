@@ -42,6 +42,8 @@ export default function LangToggle({
   return (
     <>
       <style>{`
+        .lt-wrap { display:flex; align-items:center; gap:7px; flex-shrink:0; }
+        .lt-globe { color:#BFC3C8; flex-shrink:0; }
         .lt-toggle { display:flex; border:1px solid rgba(200,164,107,0.45); border-radius:2px; overflow:hidden; flex-shrink:0; }
         .lt-btn {
           display:flex; align-items:center; justify-content:center;
@@ -54,29 +56,39 @@ export default function LangToggle({
         .lt-btn:hover:not(.on) { color:#fff; }
         .lt-btn:focus-visible { outline:2px solid #C8A46B; outline-offset:2px; }
       `}</style>
-      <div className="lt-toggle">
-        <Link
-          href={to("es")}
-          hrefLang="es"
-          prefetch={false}
-          onClick={() => remember("es")}
-          aria-current={lang === "es" ? "page" : undefined}
-          className={`lt-btn${lang === "es" ? " on" : ""}`}
-        >
-          <span className="er-sr">Ver en español</span>
-          <span aria-hidden="true">ES</span>
-        </Link>
-        <Link
-          href={to("en")}
-          hrefLang="en"
-          prefetch={false}
-          onClick={() => remember("en")}
-          aria-current={lang === "en" ? "page" : undefined}
-          className={`lt-btn${lang === "en" ? " on" : ""}`}
-        >
-          <span className="er-sr">View in English</span>
-          <span aria-hidden="true">EN</span>
-        </Link>
+      <div className="lt-wrap">
+        {/* Puramente visual — el control ya tiene su propósito anunciado por
+            los textos de "er-sr" en cada enlace, así que el ícono no necesita
+            su propio label. */}
+        <svg className="lt-globe" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        </svg>
+        <div className="lt-toggle">
+          <Link
+            href={to("es")}
+            hrefLang="es"
+            prefetch={false}
+            onClick={() => remember("es")}
+            aria-current={lang === "es" ? "page" : undefined}
+            className={`lt-btn${lang === "es" ? " on" : ""}`}
+          >
+            <span className="er-sr">Ver en español</span>
+            <span aria-hidden="true">ES</span>
+          </Link>
+          <Link
+            href={to("en")}
+            hrefLang="en"
+            prefetch={false}
+            onClick={() => remember("en")}
+            aria-current={lang === "en" ? "page" : undefined}
+            className={`lt-btn${lang === "en" ? " on" : ""}`}
+          >
+            <span className="er-sr">View in English</span>
+            <span aria-hidden="true">EN</span>
+          </Link>
+        </div>
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import TarifasClient from "../../_components/TarifasClient";
 import { pageMetadata } from "@/lib/seo";
 import { isLang } from "@/lib/i18n";
+import { tablasTarifas } from "@/lib/price-book";
 
 /**
  * /en/rates. Su gemela en español es /es/tarifas: el slug cambia porque
@@ -19,5 +20,5 @@ export async function generateMetadata() {
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang) || lang !== "en") notFound();
-  return <TarifasClient lang={lang} />;
+  return <TarifasClient lang={lang} tablas={tablasTarifas()} />;
 }

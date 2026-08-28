@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import RoutePage from "../../../_components/RoutePage";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice } from "@/lib/booking";
+import { CATEGORIES, type Category } from "@/lib/vehicles";
 import { isLang, path, SITE } from "@/lib/i18n";
 import { ROUTE_KEYS, ROUTES, routeFromSlug, routePath, routeSlug } from "@/lib/routes";
 
@@ -53,7 +54,7 @@ export default async function Page({ params }: Props) {
 
   const route = ROUTES[key];
   const c = route[LANG];
-  const cats: Category[] = Object.keys(tariffs) as Category[];
+  const cats: readonly Category[] = CATEGORIES;
   // El rango que se anuncia es el mismo que la tabla de la página: el más
   // barato sin recargo y el más caro con él. Inventar un precio en los datos
   // estructurados que no coincida con lo que se ve es justo lo que hace que

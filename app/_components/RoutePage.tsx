@@ -1,7 +1,8 @@
 import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice } from "@/lib/booking";
+import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import { ROUTE_KEYS, ROUTES, routePath, type RouteKey } from "@/lib/routes";
@@ -303,9 +304,9 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
               {cats.map((cat) => (
                 <tr key={cat}>
                   <td>
-                    {tariffs[cat].name}
+                    {vehicles[cat].name}
                     <span className="rt-veh-cap">
-                      {lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap}
+                      {lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap}
                     </span>
                   </td>
                   <td>{precio(cat, true)}</td>

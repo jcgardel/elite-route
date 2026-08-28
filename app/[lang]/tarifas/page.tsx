@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import TarifasClient from "../../_components/TarifasClient";
 import { pageMetadata } from "@/lib/seo";
 import { isLang } from "@/lib/i18n";
+import { tablasTarifas } from "@/lib/price-book";
 
 /**
  * /es/tarifas. Su gemela en inglés es /en/rates.
@@ -18,5 +19,5 @@ export async function generateMetadata() {
 export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang) || lang !== "es") notFound();
-  return <TarifasClient lang={lang} />;
+  return <TarifasClient lang={lang} tablas={tablasTarifas()} />;
 }

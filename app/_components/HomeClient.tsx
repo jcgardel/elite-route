@@ -14,19 +14,20 @@ import LangToggle from "./LangToggle";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
-  calculatePrice,
   detectZone,
   isAirportAddress,
   isAirportPlace,
   serviceTypeLabel,
   serviceTypeLabelEs,
-  tariffs,
+  vehicles,
+  CATEGORIES,
   zoneLabel,
   zoneLabelEs,
   type Category,
   type ServiceType,
   type Zone,
-} from "@/lib/booking";
+} from "@/lib/vehicles";
+import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
@@ -574,7 +575,20 @@ const styles = `
   .er-wa-fab:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; border-radius:2px; }
 `;
 
-export default function HomeClient({ lang }: { lang: Lang }) {
+export default function HomeClient({
+  lang,
+  tablas,
+}: {
+  lang: Lang;
+  /**
+   * Precios por horas y de día completo, ya resueltos en el servidor. No se
+   * calculan aquí porque hacerlo obligaba a importar el tarifario, y todo lo
+   * que importa un componente de cliente se descarga en el navegador del
+   * visitante: el costo por kilómetro de cada categoría viajaba en texto
+   * plano dentro del JavaScript del sitio.
+   */
+  tablas: TablasCotizador;
+}) {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
   const originInputRef = useRef<HTMLInputElement>(null);
@@ -587,7 +601,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const corporate = path(lang, "corporate");
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>
-    lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap;
+    lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap;
 
   // En móvil el formulario ocupa todo el ancho, así que un botón flotante fijo
   // acaba encima de sus campos. Se oculta mientras la tarjeta está a la vista.
@@ -613,6 +627,9 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const [km, setKm] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [zone, setZone] = useState<Zone>("cdmx");
+  /** Precio de las cuatro categorías para la ruta cotizada, tal como lo
+   *  devolvió el servidor. `null` mientras no haya una ruta calculada. */
+  const [routePrices, setRoutePrices] = useState<PrecioPorCategoria | null>(null);
   const [category, setCategory] = useState<Category>("executive");
   // Dirección exacta que Google confirmó como aeropuerto. Se guarda el texto
   // (y no un booleano) para que el recargo se caiga solo si el cliente edita
@@ -634,10 +651,18 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
   const locale = lang === "es" ? "es-MX" : "en-US";
 
+  /**
+   * El precio ya no se calcula aquí: se consulta.
+   *
+   * Por horas y por día sale de las tablas que trae el servidor, que no
+   * dependen de la ruta. Un traslado sí depende de la ruta, así que su
+   * precio llega junto con los kilómetros en la respuesta de /api/maps y
+   * vive en `routePrices` hasta que el visitante cambie el recorrido.
+   */
   function priceFor(cat: Category) {
-    return serviceType === "route" && km === 0
-      ? 0
-      : calculatePrice(km, minutes, cat, serviceType, rentalHours, airportPickup);
+    if (serviceType === "day") return tablas.dia[cat] ?? 0;
+    if (serviceType === "hour") return tablas.horas[rentalHours]?.[cat] ?? 0;
+    return routePrices?.[cat] ?? 0;
   }
   const price = priceFor(category);
 
@@ -648,7 +673,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, tariffs[category].name],
+        [t.stVehicle, vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabelEs(serviceType, rentalHours)],
@@ -659,14 +684,16 @@ export default function HomeClient({ lang }: { lang: Lang }) {
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, tariffs[category].name],
+        [t.stVehicle, vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabel(serviceType, rentalHours)],
       ];
 
   function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); goStep(1); }
+  // El precio se borra junto con la ruta: si se quedara, el visitante podría
+  // ver el importe del recorrido anterior mientras edita el nuevo.
+  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null); goStep(1); }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
@@ -698,7 +725,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       const res = await fetch("/api/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination: dest }),
+        body: JSON.stringify({ origin, destination: dest, airportPickup }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -716,6 +743,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       setKm(routeKm);
       setMinutes(Number(data.minutes));
       setZone(detectZone(data.km));
+      setRoutePrices(data.prices ?? null);
       goStep(2);
     } catch {
       setAlert1(t.alertConnErr);
@@ -742,7 +770,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
       "",
       "*Detalles*",
-      `Vehículo: ${tariffs[category].name}`,
+      `Vehículo: ${vehicles[category].name}`,
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
@@ -998,9 +1026,9 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
               >
-                {(Object.keys(tariffs) as Category[]).map((cat) => (
+                {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
-                    {tariffs[cat].name} · {capFor(cat)}
+                    {vehicles[cat].name} · {capFor(cat)}
                   </option>
                 ))}
               </select>
@@ -1034,7 +1062,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
 
 
             <div className="er-vehicles">
-              {(Object.keys(tariffs) as Category[]).map((cat) => {
+              {CATEGORIES.map((cat) => {
                 const p = priceFor(cat);
                 return (
                   <button key={cat} type="button"
@@ -1044,8 +1072,8 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                       style={{ backgroundImage:`url(${vehicleImages[cat]})` }}/>
                     <div className="er-vehicle-overlay"/>
                     <div className="er-vehicle-content">
-                      <div className="er-vehicle-name">{tariffs[cat].name}</div>
-                      <div className="er-vehicle-tag">{tariffs[cat].tag}</div>
+                      <div className="er-vehicle-name">{vehicles[cat].name}</div>
+                      <div className="er-vehicle-tag">{vehicles[cat].tag}</div>
                       <div className="er-vehicle-cap">{capFor(cat)}</div>
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>

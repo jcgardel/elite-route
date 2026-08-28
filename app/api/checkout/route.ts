@@ -6,7 +6,8 @@ import {
   detectZone,
   isAirportAddress,
   serviceTypeLabelEs,
-  tariffs,
+  vehicles,
+  CATEGORIES,
   type Category,
   type ServiceType,
 } from "@/lib/booking";
@@ -14,7 +15,7 @@ import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
-const categories = Object.keys(tariffs) as Category[];
+const categories = CATEGORIES;
 const serviceTypes: ServiceType[] = ["route", "hour", "day"];
 
 function trimMetadata(value: string) {
@@ -101,7 +102,7 @@ export async function POST(req: Request) {
     // trae idioma —una petición vieja o manipulada— cae al de por defecto en
     // lugar de fallar: nadie debe perder un pago por esto.
     const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
-    const vehicle = tariffs[category].name;
+    const vehicle = vehicles[category].name;
     const serviceLabel = serviceTypeLabelEs(serviceType, rentalHours);
 
     const stripe = getStripe();

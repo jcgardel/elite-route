@@ -1,7 +1,8 @@
 import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice } from "@/lib/booking";
+import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import {
@@ -427,9 +428,9 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
                 {cats.map((cat) => (
                   <tr key={cat}>
                     <td>
-                      {tariffs[cat].name}
+                      {vehicles[cat].name}
                       <span className="hp-veh-cap">
-                        {lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap}
+                        {lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap}
                       </span>
                     </td>
                     {BLOCKS.map((h) => <td key={h}>{mxn(hourlyPrice(cat, h))}</td>)}

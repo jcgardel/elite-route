@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import { B2B_HORAS, B2B_SECTIONS, type TablasB2b } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
 
@@ -11,65 +12,32 @@ import { path, type Lang } from "@/lib/i18n";
  * Arranca en español —es la página que atiende al comprador corporativo
  * mexicano y sus metadatos están en ese idioma— pero respeta la elección que
  * el visitante ya haya hecho en cualquier otra página. Los precios salen de
- * lib/booking.ts en los dos casos: no hay tablas escritas a mano.
+ * el servidor en los dos casos: no hay tablas escritas a mano.
  */
 
 const WHATSAPP_B2B = "https://wa.me/525543582919?text=Hola%2C+me+interesa+una+cuenta+corporativa+para+mi+empresa.";
 
-// Precios calculados dinámicamente desde lib/booking.ts — igual que en
-// /tarifas — para que esta tabla no quede desincronizada cuando cambien las
-// tarifas base. Los km/min por ruta son los mismos que ya usa /tarifas para
-// AICM; AIFA, Toluca y Pedregal/Sur se completan con la misma distancia usada
-// para calcular los precios que ya se mostraban aquí.
-type AirportRoute = { km: number; min: number } | null;
-const AIRPORT_TABLES: {
-  airport: string; code: string;
-  routes: { polanco: AirportRoute; santafe: AirportRoute; centro: AirportRoute; sur: AirportRoute };
-}[] = [
-  {
-    airport: "AICM · Benito Juárez",
-    code: "MEX",
-    routes: {
-      polanco: { km: 22, min: 30 },
-      santafe: { km: 35, min: 50 },
-      centro: { km: 15, min: 25 },
-      sur: { km: 25, min: 36 },
-    },
-  },
-  {
-    airport: "AIFA · Felipe Ángeles",
-    code: "NLU",
-    routes: {
-      polanco: { km: 55, min: 61 },
-      santafe: { km: 68, min: 75 },
-      centro: { km: 50, min: 56 },
-      sur: null,
-    },
-  },
-  {
-    airport: "Aeropuerto Toluca",
-    code: "TLC",
-    routes: {
-      polanco: { km: 65, min: 69 },
-      santafe: { km: 45, min: 48 },
-      centro: { km: 70, min: 74 },
-      sur: null,
-    },
-  },
-];
+// Las rutas y sus distancias viven ahora en lib/rate-tables.ts, compartidas
+// con la página de servidor que calcula los precios: si estuvieran aquí,
+// este componente tendría que calcularlos él mismo y arrastrar el tarifario
+// al navegador.
+const AIRPORT_TABLES = B2B_SECTIONS;
 
-// Nombre y flota salen de lib/booking.ts: esta página los tenía en español
+// Nombre y flota salen de lib/vehicles.ts: esta página los tenía en español
 // ("Sedán", "Ejecutivo") mientras el cotizador los tenía en inglés, así que
 // un cliente que comparaba las dos veía dos catálogos distintos.
 const B2B_CATS: { key: Category; cat: string; sub: string }[] = (
-  ["sedan", "executive", "minivan", "suv"] as Category[]
-).map((key) => ({ key, cat: tariffs[key].name, sub: tariffs[key].tag }));
+  CATEGORIES
+).map((key) => ({ key, cat: vehicles[key].name, sub: vehicles[key].tag }));
 
 function mxn(n: number) {
   return "$" + n.toLocaleString("es-MX");
 }
-function routePrice(route: AirportRoute, cat: Category) {
-  return route ? mxn(calculatePrice(route.km, route.min, cat, "route", 0, true)) : "";
+/** El precio ya viene resuelto del servidor; aquí sólo se busca y se
+ *  formatea. Calcularlo en el navegador obligaba a bajar el tarifario. */
+function routePrice(tablas: TablasB2b, code: string, destino: string, cat: Category) {
+  const fila = tablas.rutas[`${code}:${destino}`];
+  return fila ? mxn(fila[cat]) : "";
 }
 
 const TX = {
@@ -181,7 +149,14 @@ const TX = {
   },
 } as const;
 
-export default function B2bClient({ lang }: { lang: Lang }) {
+export default function B2bClient({
+  lang,
+  tablas,
+}: {
+  lang: Lang;
+  /** Precios ya calculados en el servidor. */
+  tablas: TablasB2b;
+}) {
   const t = TX[lang];
   const home = path(lang, "home");
   const quote = path(lang, "quote");
@@ -395,10 +370,10 @@ export default function B2bClient({ lang }: { lang: Lang }) {
                           <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
                           <div style={{color:"#8B8B87",fontSize:"11px"}}>{c.sub}</div>
                         </td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(section.routes.polanco, c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(section.routes.santafe, c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(section.routes.centro, c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#8B8B87",fontSize:"12px"}}>{routePrice(section.routes.sur, c.key) || t.quoteIt}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "polanco", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "santafe", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "centro", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#8B8B87",fontSize:"12px"}}>{routePrice(tablas, section.code, "sur", c.key) || t.quoteIt}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -426,9 +401,9 @@ export default function B2bClient({ lang }: { lang: Lang }) {
                         <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
                         <div style={{color:"#8B8B87",fontSize:"11px"}}>{c.sub}</div>
                       </td>
-                      {[1,2,4,8].map((h)=>(
+                      {B2B_HORAS.map((h)=>(
                         <td key={h} style={{textAlign:"right",padding:"14px",color: h === 1 ? "#BFC3C8" : "#C8A46B",fontWeight: h === 1 ? 400 : 600,fontVariantNumeric:"tabular-nums"}}>
-                          {mxn(calculatePrice(0, 0, c.key, "hour", h))}
+                          {mxn(tablas.horas[h][c.key])}
                         </td>
                       ))}
                     </tr>

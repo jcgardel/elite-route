@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import HomeClient from "../_components/HomeClient";
 import { pageMetadata } from "@/lib/seo";
+import { tablasCotizador } from "@/lib/price-book";
 import { isLang, LANGS, SITE } from "@/lib/i18n";
 
 export const dynamicParams = false;
@@ -78,7 +79,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {/* El fondo del hero vive dentro del CSS, así que el navegador lo
           descubre tarde: es la imagen más grande de la primera pantalla. */}
       <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />
-      <HomeClient lang={lang} />
+      {/* Los precios por horas y de día completo se resuelven aquí, en el
+          servidor, y bajan ya calculados. El cotizador no puede calcularlos
+          por su cuenta sin arrastrar el tarifario al navegador. */}
+      <HomeClient lang={lang} tablas={tablasCotizador()} />
     </>
   );
 }

@@ -17,7 +17,17 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 /**
  * Lo que alimenta la ficha de negocio de Google: qué es Elite Route, dónde
  * opera y cómo se le contacta. Sólo datos que el sitio ya sostiene en otras
- * páginas — sin valoraciones, que necesitan reseñas verificables.
+ * páginas.
+ *
+ * Sigue sin `aggregateRating`, y ahora por un motivo distinto del de antes:
+ * ya hay reseñas verificables —5.0 sobre 20 en la ficha de Google—, pero
+ * Google no acepta que un negocio publique su propia calificación en su
+ * propio sitio. Sus normas de fragmentos de reseña lo llaman "autoservicio"
+ * y dejan la página fuera del formato de estrellas, tanto si el dato va en
+ * los datos estructurados como si viene de un widget de reseñas incrustado.
+ * Las estrellas del buscador salen de la ficha, no de aquí. Lo que sí suma
+ * es `sameAs`: le dice a Google que este sitio y esa ficha son el mismo
+ * negocio, que es justo lo que hace que la ficha y el dominio se refuercen.
  *
  * Va una sola vez, en la portada en español: es una ficha de un negocio, no
  * de una página, y declararla dos veces con el mismo @id no aporta nada.
@@ -36,6 +46,9 @@ const jsonLd = {
   priceRange: "$$$",
   currenciesAccepted: "MXN",
   paymentAccepted: "Tarjeta de crédito, tarjeta de débito",
+  sameAs: [
+    "https://www.google.com/maps/place/?q=place_id:ChIJwYyKBzB3-SYRmnY1eNB8Vf0",
+  ],
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
     dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],

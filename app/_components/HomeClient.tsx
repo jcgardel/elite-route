@@ -156,6 +156,7 @@ const TX = {
     footTerms: "Terms",
     footPrivacy: "Privacy",
     footRates: "Rates",
+    footHourly: "Hourly chauffeur",
     // Sin año: se pintaría en el servidor y otra vez en el navegador, y en
     // el cambio de año los dos no coinciden. No vale una advertencia de
     // hidratación por un dato que no aporta.
@@ -235,6 +236,7 @@ const TX = {
     footTerms: "Términos",
     footPrivacy: "Aviso de privacidad",
     footRates: "Tarifas",
+    footHourly: "Chofer por horas",
     footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
@@ -1285,6 +1287,10 @@ export default function HomeClient({ lang }: { lang: Lang }) {
               <span>{t.footRights}</span>
               <div className="er-foot-links">
                 <a href={path(lang, "rates")}>{t.footRates}</a>
+                {/* El enlace de "Disposiciones" de la barra es un botón que
+                    baja al cotizador, no una dirección: un buscador no puede
+                    seguirlo. Este sí. */}
+                <a href={path(lang, "hourly")}>{t.footHourly}</a>
                 <a href={corporate}>{t.corporate}</a>
                 <a href={path(lang, "terms")}>{t.footTerms}</a>
                 <a href={path(lang, "privacy")}>{t.footPrivacy}</a>

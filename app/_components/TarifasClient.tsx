@@ -75,6 +75,7 @@ const TX = {
       "Precio directo sin espera en aeropuerto. Reserva con al menos 6 horas de anticipación para garantizar disponibilidad.",
     hourLabel: "Servicio por hora y día completo",
     hourTitle: "Chofer por horas en CDMX",
+    hourMore: "Todo sobre el chofer por horas",
     hourCopy:
       "Tu chofer permanece disponible durante las horas contratadas. Incluye 20 km por hora. Ideal para reuniones, eventos o días de trabajo intenso.",
     colRoute: "Ruta",
@@ -140,6 +141,7 @@ const TX = {
       "Direct price with no airport waiting. Book at least 6 hours ahead to guarantee availability.",
     hourLabel: "Hourly and full-day service",
     hourTitle: "Chauffeur by the hour in Mexico City",
+    hourMore: "Everything about hourly service",
     hourCopy:
       "Your chauffeur stays available for the hours booked, with 20 km included per hour. Ideal for meetings, events or long working days.",
     colRoute: "Route",
@@ -212,6 +214,9 @@ const styles = `
   .tf-section-label { color: #C8A46B; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 12px; }
   .tf-section-title { font-family: var(--font-cormorant), serif; font-size: clamp(28px, 4vw, 46px); font-weight: 300; color: #fff; margin-bottom: 8px; line-height: 1.1; text-wrap: balance; }
   .tf-section-copy { color: #BFC3C8; font-size: 15px; line-height: 1.7; max-width: 620px; margin-bottom: 28px; }
+  .tf-more { margin: 18px 0 0; font-size: 13px; }
+  .tf-more a { color: #C8A46B; text-decoration: none; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid rgba(200,164,107,0.35); padding-bottom: 2px; }
+  .tf-more a:hover { color: #fff; border-bottom-color: #fff; }
 
   .tf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .tf-table { width: 100%; border-collapse: collapse; min-width: 560px; }
@@ -419,6 +424,12 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
               </tbody>
             </table>
           </div>
+          {/* Esta sección resume el servicio; la página propia lo explica
+              entero. El enlace también es lo que le dice a Google que esa
+              página existe y de qué trata. */}
+          <p className="tf-more">
+            <Link href={path(lang, "hourly")}>{t.hourMore} →</Link>
+          </p>
         </section>
 
         <section className="tf-section tf-faq" aria-labelledby="faq">

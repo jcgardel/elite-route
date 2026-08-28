@@ -26,6 +26,14 @@ const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
+// Ficha real "Elite Route MX" en Google Maps (5.0 · 20 reseñas, verificado
+// 2026-08-27). Un solo lugar para las dos URLs, para no repetir el Place ID.
+const GOOGLE_PLACE_ID = "ChIJwYyKBzB3-SYRmnY1eNB8Vf0";
+const GOOGLE_PLACE_URL =
+  "https://www.google.com/maps/place/Elite+Route+MX/data=!4m7!3m6!1s0x26f97730078a8cc1:0xfd557cd07835769a!8m2!3d19.9422083!4d-99.440172!16s%2Fg%2F11zgs9m1dv!19s" +
+  GOOGLE_PLACE_ID;
+const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
+
 // Sesgo geográfico: prioriza sugerencias dentro de la ZMVM.
 // strictBounds:false permite rutas foráneas si el usuario las escribe explícitamente.
 const ZMVM_BOUNDS = { south: 18.9, west: -99.5, north: 20.0, east: -98.7 };
@@ -178,6 +186,12 @@ const TX = {
     b2bCopy: "Corporate accounts, executive transfers, recurring routes and commercial partnerships.",
     accTitle: "Accounting / Invoices",
     accCopy: "Billing details, invoice requests, payment records and administrative follow-up.",
+    reviewsKicker: "Elite Route Reviews",
+    reviewsTitle: "What our clients say",
+    reviewsRatingLabel: "Reviews on Google",
+    reviewsWriteBtn: "Write us a review",
+    reviewsSeeBtn: "See reviews",
+    reviewsCount: (n: number) => `${n} Google reviews`,
   },
   es: {
     services: "Disposiciones", airports: "Traslados", corporate: "Corporativo", contact: "Contacto", reserveNow: "Reservar",
@@ -247,6 +261,12 @@ const TX = {
     b2bCopy: "Cuentas corporativas, traslados ejecutivos, rutas recurrentes y asociaciones comerciales.",
     accTitle: "Contabilidad / Facturas",
     accCopy: "Datos de facturación, solicitudes de facturas, registros de pago y seguimiento administrativo.",
+    reviewsKicker: "Reseñas Elite Route",
+    reviewsTitle: "Lo que dicen quienes viajan con nosotros",
+    reviewsRatingLabel: "Reseñas en Google",
+    reviewsWriteBtn: "Escríbenos una reseña",
+    reviewsSeeBtn: "Ver reseñas",
+    reviewsCount: (n: number) => `${n} reseñas en Google`,
   },
 };
 
@@ -417,6 +437,23 @@ const styles = `
   .er-testimonial-avatar { width:36px; height:36px; border-radius:50%; background:rgba(200,164,107,0.15); border:1px solid rgba(200,164,107,0.35); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#C8A46B; flex-shrink:0; }
   .er-testimonial-name { font-size:13px; font-weight:600; color:#fff; }
   .er-testimonial-role { font-size:11px; color:#9a9a9a; margin-top:2px; }
+
+  .er-reviews-badge-row { display:flex; justify-content:center; margin-bottom:36px; }
+  .er-reviews-badge { display:inline-flex; align-items:center; gap:13px; border:1px solid #2e2e2e; background:#0d0d0d; border-radius:2px; padding:13px 24px; text-decoration:none; transition:border-color 0.2s, background 0.2s; }
+  .er-reviews-badge:hover { border-color:#C8A46B; background:rgba(200,164,107,0.06); }
+  .er-reviews-badge-text { display:flex; flex-direction:column; gap:2px; }
+  .er-reviews-badge-top { display:flex; align-items:baseline; gap:8px; }
+  .er-reviews-score { font-family:var(--font-cormorant),serif; font-size:24px; color:#fff; line-height:1; }
+  .er-reviews-stars { letter-spacing:1px; color:#C8A46B; font-size:13px; }
+  .er-reviews-label { color:#9a9a9a; font-size:12px; }
+
+  .er-reviews-cta-row { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-top:40px; }
+  .er-reviews-btn-primary, .er-reviews-btn-secondary { display:inline-flex; align-items:center; text-decoration:none; padding:15px 28px; font-size:12px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; border-radius:2px; font-family:var(--font-barlow),sans-serif; transition:background 0.2s, color 0.2s, border-color 0.2s; }
+  .er-reviews-btn-primary { background:transparent; border:1px solid #C8A46B; color:#fff; }
+  .er-reviews-btn-primary:hover { background:#C8A46B; color:#0A0A0A; }
+  .er-reviews-btn-secondary { background:transparent; border:1px solid #2e2e2e; color:#BFC3C8; }
+  .er-reviews-btn-secondary:hover { border-color:#C8A46B; color:#C8A46B; }
+
   @media (max-width:900px) { .er-testimonials-grid { grid-template-columns:1fr; } .er-testimonials { padding:48px 20px; } }
   .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
   .er-hero .er-comfort { max-width:720px; margin-top:0; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
@@ -1140,55 +1177,63 @@ export default function HomeClient({ lang }: { lang: Lang }) {
               </section>
           </main>
 
-          {/* TESTIMONIOS */}
-          <section className="er-testimonials" aria-label="Testimonios de clientes">
-            <p className="er-testimonials-kicker">Clientes Elite Route</p>
-            <h2 className="er-testimonials-title">Lo que dicen quienes viajan con nosotros</h2>
+          {/* RESEÑAS DE GOOGLE — reales, de la ficha "Elite Route MX" en Google
+              Maps (5.0 · verificado). Sustituye testimonios de ejemplo que
+              vivían aquí antes con nombres y citas inventados. */}
+          <section className="er-testimonials" aria-label="Reseñas de clientes en Google">
+            <p className="er-testimonials-kicker">{t.reviewsKicker}</p>
+            <h2 className="er-testimonials-title">{t.reviewsTitle}</h2>
+
+            <div className="er-reviews-badge-row">
+              <a
+                className="er-reviews-badge"
+                href={GOOGLE_PLACE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg className="er-google-g" width="26" height="26" viewBox="0 0 48 48" aria-hidden="true">
+                  <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" />
+                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+                  <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.4C29.5 34.9 26.9 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z" />
+                  <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.5 5.4C39.9 37 44 31.5 44 24c0-1.3-.1-2.7-.4-3.5z" />
+                </svg>
+                <span className="er-reviews-badge-text">
+                  <span className="er-reviews-badge-top">
+                    <span className="er-reviews-score">5.0</span>
+                    <span className="er-reviews-stars">★★★★★</span>
+                  </span>
+                  <span className="er-reviews-label">{t.reviewsRatingLabel}</span>
+                </span>
+              </a>
+            </div>
+
             <div className="er-testimonials-grid">
               {([
-                {
-                  quote: "Usé el servicio para recoger a un cliente de AICM. El chofer llegó puntual, el vehículo impecable. Mi cliente quedó muy bien impresionado. Lo seguiré usando para visitas corporativas.",
-                  name: "Sofía M.",
-                  role: "Gerente de Cuentas · Sector Tecnológico",
-                  initial: "S",
-                },
-                {
-                  quote: "Contraté el servicio por horas para una jornada de reuniones en Santa Fe. El chofer esperó pacientemente entre cita y cita. Precio fijo, sin sorpresas al final. Exactamente lo que necesitaba.",
-                  name: "Ricardo V.",
-                  role: "Director de Operaciones · Consultoría",
-                  initial: "R",
-                },
-                {
-                  quote: "Coordiné 8 traslados corporativos en una sola semana para un evento. Todo puntual, todos los choferes profesionales. La factura llegó sin problemas. Definitivamente mi proveedor de transporte ejecutivo.",
-                  name: "Alejandra T.",
-                  role: "Coordinadora de Eventos Corporativos",
-                  initial: "A",
-                },
-                {
-                  quote: "Thank you for picking me up right on time at the airport. The driver was waiting for me inside the terminal with a sign — exactly what you expect from a professional service. Highly recommended.",
-                  name: "James K.",
-                  role: "Business Traveler · New York",
-                  initial: "J",
-                },
-                {
-                  quote: "Thank you so much for picking up my wife and family at the airport. Having the driver waiting for them inside gave us great peace of mind. They felt safe and well taken care of from the moment they landed.",
-                  name: "Michael R.",
-                  role: "Corporate Client · Houston",
-                  initial: "M",
-                },
-              ] as const).map((t) => (
-                <div className="er-testimonial-card" key={t.name}>
+                { quote: "Seguridad y exclusividad, la mejor opción en transporte privado.", name: "Itzel Sanchez", count: 5, initial: "I" },
+                { quote: "Me encantó, servicio confiable y seguro.", name: "Nayeli Reyes H.", count: 3, initial: "N" },
+                { quote: "Lo que uno siempre espera de un servicio: puntualidad, amabilidad y un excelente servicio. Súper recomendado.", name: "Octavio Santos", count: 2, initial: "O" },
+              ] as const).map((r) => (
+                <div className="er-testimonial-card" key={r.name}>
                   <div className="er-testimonial-stars">★★★★★</div>
-                  <blockquote className="er-testimonial-quote">“{t.quote}”</blockquote>
+                  <blockquote className="er-testimonial-quote">“{r.quote}”</blockquote>
                   <div className="er-testimonial-author">
-                    <div className="er-testimonial-avatar">{t.initial}</div>
+                    <div className="er-testimonial-avatar">{r.initial}</div>
                     <div>
-                      <div className="er-testimonial-name">{t.name}</div>
-                      <div className="er-testimonial-role">{t.role}</div>
+                      <div className="er-testimonial-name">{r.name}</div>
+                      <div className="er-testimonial-role">{t.reviewsCount(r.count)}</div>
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
+
+            <div className="er-reviews-cta-row">
+              <a className="er-reviews-btn-primary" href={GOOGLE_WRITE_REVIEW_URL} target="_blank" rel="noopener noreferrer">
+                {t.reviewsWriteBtn}
+              </a>
+              <a className="er-reviews-btn-secondary" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">
+                {t.reviewsSeeBtn}
+              </a>
             </div>
           </section>
 

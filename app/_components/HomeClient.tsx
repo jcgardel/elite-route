@@ -3,6 +3,12 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import BrandMark from "./BrandMark";
 import { path, type Lang } from "@/lib/i18n";
+import { LEGAL } from "@/lib/legal";
+import {
+  GOOGLE_PLACE_URL,
+  GOOGLE_WRITE_REVIEW_URL,
+  REVIEWS,
+} from "@/lib/social-proof";
 import InstallHint from "./InstallHint";
 import LangToggle from "./LangToggle";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
@@ -25,14 +31,6 @@ import {
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-
-// Ficha real "Elite Route MX" en Google Maps (5.0 · 20 reseñas, verificado
-// 2026-08-27). Un solo lugar para las dos URLs, para no repetir el Place ID.
-const GOOGLE_PLACE_ID = "ChIJwYyKBzB3-SYRmnY1eNB8Vf0";
-const GOOGLE_PLACE_URL =
-  "https://www.google.com/maps/place/Elite+Route+MX/data=!4m7!3m6!1s0x26f97730078a8cc1:0xfd557cd07835769a!8m2!3d19.9422083!4d-99.440172!16s%2Fg%2F11zgs9m1dv!19s" +
-  GOOGLE_PLACE_ID;
-const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 
 // Sesgo geográfico: prioriza sugerencias dentro de la ZMVM.
 // strictBounds:false permite rutas foráneas si el usuario las escribe explícitamente.
@@ -158,6 +156,10 @@ const TX = {
     footTerms: "Terms",
     footPrivacy: "Privacy",
     footRates: "Rates",
+    // Sin año: se pintaría en el servidor y otra vez en el navegador, y en
+    // el cambio de año los dos no coinciden. No vale una advertencia de
+    // hidratación por un dato que no aporta.
+    footRights: "Elite Route MX · Mexico City",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
     whatsappBtn: "Ask via WhatsApp",
@@ -233,6 +235,7 @@ const TX = {
     footTerms: "Términos",
     footPrivacy: "Aviso de privacidad",
     footRates: "Tarifas",
+    footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
     whatsappBtn: "Consultar por WhatsApp",
@@ -540,10 +543,25 @@ const styles = `
   .er-foot-billing:hover { color:#C8A46B; }
   /* #8B8B87 da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
      por debajo del 4.5:1 que pide la WCAG para texto pequeño. */
-  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; padding-top:16px; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
+  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:18px; font-style:normal; font-size:12.5px; line-height:1.6; color:#8B8B87; }
+  .er-foot-id-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
+  .er-foot-id-contact { display:flex; flex-wrap:wrap; gap:6px 18px; }
+  .er-foot-id-contact a { color:#BFC3C8; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }
+  .er-foot-id-contact a:hover { color:#C8A46B; border-bottom-color:#C8A46B; }
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid #191919; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
   .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
   .er-foot-links a { color:#C8A46B; text-decoration:none; }
   .er-foot-links a:hover { color:#fff; }
+
+  /* La media query general apila el pie en móvil, pero está declarada
+     ANTES que las reglas de arriba, así que con la misma especificidad
+     perdía y el align-items:center seguía aplicando: el nombre del
+     negocio salía centrado sobre unos enlaces alineados a la izquierda.
+     Va aquí, después, para que gane. */
+  @media (max-width:700px) {
+    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
+    .er-foot-meta { gap:12px; }
+  }
 
   /* ── Foco de teclado ───────────────────────────────────────────────
      Sin esto, quien navega con teclado no ve dónde está parado. */
@@ -1208,11 +1226,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
             </div>
 
             <div className="er-testimonials-grid">
-              {([
-                { quote: "Seguridad y exclusividad, la mejor opción en transporte privado.", name: "Itzel Sanchez", count: 5, initial: "I" },
-                { quote: "Me encantó, servicio confiable y seguro.", name: "Nayeli Reyes H.", count: 3, initial: "N" },
-                { quote: "Lo que uno siempre espera de un servicio: puntualidad, amabilidad y un excelente servicio. Súper recomendado.", name: "Octavio Santos", count: 2, initial: "O" },
-              ] as const).map((r) => (
+              {REVIEWS.map((r) => (
                 <div className="er-testimonial-card" key={r.name}>
                   <div className="er-testimonial-stars">★★★★★</div>
                   <blockquote className="er-testimonial-quote">“{r.quote}”</blockquote>
@@ -1254,8 +1268,21 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                 {t.footBilling} · contabilidad@eliteroute.mx
               </a>
             </div>
+            {/* Quién es el negocio, dónde está y a qué número se le llama.
+                Estaba sólo en las páginas legales, que casi nadie abre. Un
+                domicilio y un teléfono que se pueden comprobar son la
+                diferencia entre una empresa y un sitio cualquiera. */}
+            <address className="er-foot-id">
+              <span className="er-foot-id-name">{LEGAL.responsable}</span>
+              <span>{LEGAL.domicilio}</span>
+              <span className="er-foot-id-contact">
+                <a href={`tel:+${WHATSAPP_NUMBER}`}>{LEGAL.whatsapp}</a>
+                <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
+              </span>
+            </address>
+
             <div className="er-foot-meta">
-              <span>Elite Route CDMX · business@eliteroute.mx</span>
+              <span>{t.footRights}</span>
               <div className="er-foot-links">
                 <a href={path(lang, "rates")}>{t.footRates}</a>
                 <a href={corporate}>{t.corporate}</a>

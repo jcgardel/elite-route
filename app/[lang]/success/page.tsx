@@ -143,6 +143,9 @@ async function getSessionUrls(sessionId: string | undefined, lang: Lang): Promis
       destino: String(meta.destination || ""),
       vehiculo: String(meta.vehicle || ""),
       notas: String(meta.notes || ""),
+      // El importe en número, aparte del texto con formato: la analítica
+      // necesita una cifra, no "$1,754.00 MXN".
+      montoMxn: (session.amount_total || 0) / 100,
       total: new Intl.NumberFormat(lang === "es" ? "es-MX" : "en-US", {
         style: "currency",
         currency: (session.currency || "mxn").toUpperCase(),

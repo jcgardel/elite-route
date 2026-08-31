@@ -29,6 +29,7 @@ import {
 } from "@/lib/vehicles";
 import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
 import { NOTAS_MAX } from "@/lib/booking-form";
+import { track } from "@/lib/analytics";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
@@ -647,6 +648,14 @@ export default function HomeClient({
   }, []);
 
   const [step, setStep] = useState(1);
+  // El primer evento del embudo se manda una vez y no en cada tecla: sin
+  // esto, "empezó a cotizar" contaría una vez por carácter escrito.
+  const yaContadaLaIntencion = useRef(false);
+  function marcarIntencion() {
+    if (yaContadaLaIntencion.current) return;
+    yaContadaLaIntencion.current = true;
+    track("cotizacion_iniciada", { tipo_servicio: serviceType });
+  }
   const [serviceType, setServiceType] = useState<ServiceType>("route");
   const [rentalHours, setRentalHours] = useState(3);
   const [origin, setOrigin] = useState("");
@@ -721,7 +730,20 @@ export default function HomeClient({
           : [t.stDuration, serviceTypeLabel(serviceType, rentalHours)],
       ];
 
-  function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function goStep(n: number) {
+    // El precio con IVA sólo está delante del visitante en el paso 3; ahí es
+    // donde se decide, y por eso es el paso que interesa contar.
+    if (n === 3) {
+      track("precio_mostrado", {
+        tipo_servicio: serviceType,
+        categoria: category,
+        value: price,
+        currency: "MXN",
+      });
+    }
+    setStep(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   // El precio se borra junto con la ruta: si se quedara, el visitante podría
   // ver el importe del recorrido anterior mientras edita el nuevo.
   function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null); goStep(1); }
@@ -775,6 +797,12 @@ export default function HomeClient({
       setMinutes(Number(data.minutes));
       setZone(detectZone(data.km));
       setRoutePrices(data.prices ?? null);
+      track("ruta_completada", {
+        tipo_servicio: serviceType,
+        km: routeKm,
+        minutos: Number(data.minutes),
+        desde_aeropuerto: airportPickup,
+      });
       goStep(2);
     } catch {
       setAlert1(t.alertConnErr);
@@ -828,6 +856,15 @@ export default function HomeClient({
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
     setAlert3("");
+    // Después de las validaciones: un clic que sólo enseñó "falta el nombre"
+    // no es una salida a WhatsApp, y contarlo inflaría el canal.
+    track("clic_whatsapp", {
+      tipo_servicio: serviceType,
+      categoria: category,
+      value: price,
+      currency: "MXN",
+      con_solicitudes: notes.trim().length > 0,
+    });
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
       "_blank", "noopener,noreferrer"
@@ -841,6 +878,13 @@ export default function HomeClient({
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
 
     setAlert3("");
+    track("pago_iniciado", {
+      tipo_servicio: serviceType,
+      categoria: category,
+      value: price,
+      currency: "MXN",
+      con_solicitudes: notes.trim().length > 0,
+    });
     setPaymentLoading(true);
     try {
       const res = await fetch("/api/checkout", {
@@ -1019,7 +1063,7 @@ export default function HomeClient({
                 <input id="origin-input" ref={originInputRef} className="er-input er-input--clearable"
                   placeholder={t.pickupPlaceholder} value={origin}
                   onFocus={() => attachAutocomplete(originInputRef.current, originRef, onOriginChanged)}
-                  onChange={(e) => setOrigin(e.target.value)}/>
+                  onChange={(e) => { setOrigin(e.target.value); marcarIntencion(); }}/>
                 {origin && (
                   <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar dirección" : "Clear address"}
                     onClick={() => setOrigin("")}>×</button>
@@ -1105,7 +1149,10 @@ export default function HomeClient({
                 return (
                   <button key={cat} type="button"
                     className={`er-vehicle${category===cat?" selected":""}`}
-                    onClick={() => setCategory(cat)}>
+                    onClick={() => {
+                      setCategory(cat);
+                      track("vehiculo_seleccionado", { categoria: cat, value: p, currency: "MXN" });
+                    }}>
                     <div className="er-vehicle-bg"
                       style={{ backgroundImage:`url(${vehicleImages[cat]})` }}/>
                     <div className="er-vehicle-overlay"/>

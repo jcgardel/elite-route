@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { path, type Lang } from "@/lib/i18n";
+import { track } from "@/lib/analytics";
 
 /** Lo que la página de gracias necesita saber de la reserva. Vive aquí y no
  *  en la página porque es el componente que lo pinta. */
@@ -17,6 +18,7 @@ export type Booking = {
   vehiculo: string;
   notas: string;
   total: string;
+  montoMxn: number;
   googleCalendarUrl: string | null;
   icsHref: string | null;
 };
@@ -92,6 +94,23 @@ export default function SuccessClient({
 }) {
   const [sent, setSent] = useState(false);
   const t = TX[lang];
+
+  // Cierra el embudo con el importe real cobrado, no con el estimado del
+  // cotizador. Se manda una sola vez por montaje y lleva el folio como
+  // identificador: si el visitante recarga la página de gracias, GA4 tiene
+  // con qué reconocer que es la misma reserva y no una segunda venta.
+  const yaContado = useRef(false);
+  useEffect(() => {
+    if (yaContado.current || !booking) return;
+    yaContado.current = true;
+    track("reserva_pagada", {
+      transaction_id: booking.folio,
+      value: booking.montoMxn,
+      currency: "MXN",
+      vehiculo: booking.vehiculo,
+      servicio: booking.servicio,
+    });
+  }, [booking]);
 
   function handleWhatsApp() {
     setSent(true);

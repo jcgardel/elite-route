@@ -89,8 +89,15 @@ export default function PrivacyPage() {
         </tbody>
       </table>
       <p>
-        We do not ask for sensitive data, we do not create user accounts, and we
-        run no advertising or analytics cookies of our own.
+        We do not ask for sensitive data and we do not create user accounts. We
+        do use analytics cookies: Google Analytics tells us how many people
+        arrive and where they stop in the quote form, so we know which part of
+        the site is failing. It is set up for measurement only — Google's
+        advertising signals and ad personalisation are switched off — so we do
+        not use that data to follow you with ads, and we do not share it with
+        anyone for that purpose. We run no advertising cookies. You can block
+        these cookies in your browser and the site still works: neither the
+        quote form nor the payment depends on them.
       </p>
 
       <h2>What we use it for</h2>

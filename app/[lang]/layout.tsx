@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { fontVars } from "../fonts";
 import { isLang, LANGS, SITE } from "@/lib/i18n";
 import "../globals.css";
+import Analytics from "../_components/Analytics";
 
 export const metadata: Metadata = {
   // Necesario para que la tarjeta generada en opengraph-image.tsx se anuncie
@@ -51,7 +52,10 @@ export default async function RootLayout({
       lang={lang}
       className={fontVars}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

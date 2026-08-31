@@ -73,8 +73,15 @@ export default function PrivacidadPage() {
         </tbody>
       </table>
       <p>
-        No pedimos datos sensibles, no creamos cuentas de usuario y no usamos
-        cookies de publicidad ni de analítica propias.
+        No pedimos datos sensibles y no creamos cuentas de usuario. Sí usamos
+        cookies de analítica: medimos con Google Analytics cuánta gente entra
+        y en qué paso del cotizador se queda, para saber qué parte del sitio
+        falla. Está configurado sólo para medir —las señales de publicidad y
+        la personalización de anuncios están desactivadas—, así que no
+        usamos esos datos para perseguirte con anuncios ni los compartimos
+        con nadie para ese fin. No usamos cookies de publicidad. Puedes
+        bloquear estas cookies desde tu navegador sin que el sitio deje de
+        funcionar: el cotizador y el pago no dependen de ellas.
       </p>
 
       <h2>Para qué los usamos</h2>

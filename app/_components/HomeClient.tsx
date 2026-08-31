@@ -28,6 +28,7 @@ import {
   type Zone,
 } from "@/lib/vehicles";
 import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
+import { NOTAS_MAX } from "@/lib/booking-form";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
@@ -144,6 +145,9 @@ const TX = {
     airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included",
     vatIncluded: "VAT included",
     fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
+    notes: "Anything we should know? (optional)",
+    notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
+    notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
     stServiceType: "Service type", stIncludedKm: "Included km", stDateTime: "Date & time",
     stPickup: "Pickup", stDestination: "Destination", stOpenItinerary: "Open itinerary",
     stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
@@ -224,6 +228,9 @@ const TX = {
     airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos",
     vatIncluded: "IVA incluido",
     fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
+    notes: "¿Algo que debamos saber? (opcional)",
+    notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
+    notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
     stServiceType: "Tipo de servicio", stIncludedKm: "Km incluidos", stDateTime: "Fecha y hora",
     stPickup: "Recogida", stDestination: "Destino", stOpenItinerary: "Disposición libre",
     stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
@@ -348,6 +355,19 @@ const styles = `
   .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-input option { background:#0A0A0A; color:#FFFFFF; }
+
+  /* Hereda del input: mismo fondo, mismo borde, mismo foco. Lo único propio
+     es que crece en alto y no en ancho —resize:vertical— porque un textarea
+     arrastrable en horizontal rompe la rejilla del formulario en el
+     teléfono. El alto mínimo deja ver tres renglones sin tener que
+     desplazar. */
+  .er-textarea { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; line-height:1.55; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; resize:vertical; min-height:92px; display:block; }
+  .er-textarea:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
+  .er-textarea::placeholder { color:#BFC3C8; opacity:0.72; }
+  .er-notes-foot { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-top:7px; }
+  .er-notes-help { color:#8B8B87; font-size:12px; line-height:1.5; max-width:62ch; }
+  .er-notes-count { color:#8B8B87; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
+  .er-notes-count.full { color:#C8A46B; }
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
   .er-input-clear {
@@ -636,6 +656,8 @@ export default function HomeClient({
   // el campo después de haber elegido el aeropuerto en el autocompletado.
   const [airportPlace, setAirportPlace] = useState("");
   const [fullName, setFullName] = useState("");
+  /** Solicitudes extra del cliente. Opcional: la reserva es válida sin ellas. */
+  const [notes, setNotes] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -775,6 +797,9 @@ export default function HomeClient({
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : "",
+      // Junto al resto del servicio y no al final: es parte de lo que hay
+      // que preparar, no una posdata.
+      notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : "",
       "",
       `*💰 Total estimado con IVA: $${price.toLocaleString("es-MX")} MXN*`,
       "",
@@ -809,7 +834,7 @@ export default function HomeClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          serviceType, rentalHours, origin, destination, serviceDate, serviceTime,
+          serviceType, rentalHours, origin, destination, serviceDate, serviceTime, notes,
           km, minutes, zone, category, fullName, phone, airportPickup, lang,
         }),
       });
@@ -1117,6 +1142,37 @@ export default function HomeClient({
                   numberInputProps={{ id: "phone-input" }}
                   flagUrl="/flags/{XX}.svg"
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
+              </div>
+            </div>
+
+            {/* Solicitudes extra. Va antes del resumen y del pago porque es
+                parte de lo que se está reservando, no un añadido posterior:
+                quien necesita silla de bebé quiere decirlo ANTES de dar la
+                tarjeta. El texto viaja con la reserva hasta el aviso que
+                recibe el chofer. */}
+            <div className="er-field" style={{ marginBottom: 20 }}>
+              <label className="er-label" htmlFor="notes-input">{t.notes}</label>
+              <textarea
+                id="notes-input"
+                className="er-textarea"
+                placeholder={t.notesPlaceholder}
+                value={notes}
+                maxLength={NOTAS_MAX}
+                rows={3}
+                onChange={(e) => setNotes(e.target.value)}
+                aria-describedby="notes-help"
+              />
+              <div className="er-notes-foot">
+                {/* El aviso no es adorno: sin él, escribir "necesito dos
+                    paradas" se lee como incluido en el precio fijo que está
+                    justo debajo. */}
+                <span id="notes-help" className="er-notes-help">{t.notesHelp}</span>
+                <span
+                  className={`er-notes-count${notes.length >= NOTAS_MAX ? " full" : ""}`}
+                  aria-live="polite"
+                >
+                  {notes.length}/{NOTAS_MAX}
+                </span>
               </div>
             </div>
 

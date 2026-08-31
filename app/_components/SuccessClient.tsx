@@ -15,6 +15,7 @@ export type Booking = {
   origen: string;
   destino: string;
   vehiculo: string;
+  notas: string;
   total: string;
   googleCalendarUrl: string | null;
   icsHref: string | null;
@@ -34,6 +35,7 @@ const TX = {
     from: "Recogida",
     to: "Destino",
     vehicle: "Vehículo",
+    notes: "Tus solicitudes",
     paid: "Pagado",
     wa: "Confirmar por WhatsApp",
     waSent: "Abrimos WhatsApp con tu mensaje. Si no se abrió, revisa que la app esté instalada.",
@@ -56,6 +58,7 @@ const TX = {
     from: "Pickup",
     to: "Destination",
     vehicle: "Vehicle",
+    notes: "Your requests",
     paid: "Paid",
     wa: "Confirm on WhatsApp",
     waSent: "We opened WhatsApp with your message. If nothing happened, check that the app is installed.",
@@ -258,6 +261,15 @@ export default function SuccessClient({
                 <div className="sc-row">
                   <dt>{t.vehicle}</dt>
                   <dd>{booking.vehiculo}</dd>
+                </div>
+              )}
+              {/* Se le devuelven al cliente para que vea que quedaron
+                  registradas: si no aparecen por ningún lado, la duda es si
+                  alguien las leyó. */}
+              {booking.notas && (
+                <div className="sc-row">
+                  <dt>{t.notes}</dt>
+                  <dd>{booking.notas}</dd>
                 </div>
               )}
               <div className="sc-row sc-row--total">

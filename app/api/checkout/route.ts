@@ -13,6 +13,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
+import { NOTAS_MAX } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = CATEGORIES;
@@ -42,6 +43,11 @@ export async function POST(req: Request) {
     const destination = String(body.destination || "").trim();
     const serviceDate = String(body.serviceDate || "").trim();
     const serviceTime = String(body.serviceTime || "").trim();
+    // Solicitudes extra del cliente. Opcional y sin validar contra nada: es
+    // texto libre a propósito. Se recorta aquí y no sólo en el navegador
+    // porque el límite del formulario no obliga a nadie que llame a la API
+    // directamente, y de aquí sale hacia Stripe, el correo y WhatsApp.
+    const notes = String(body.notes || "").trim().slice(0, NOTAS_MAX);
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
     if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
@@ -140,6 +146,7 @@ export async function POST(req: Request) {
         km: String(km),
         minutes: String(minutes),
         airportPickup: String(airportPickup),
+        notes: trimMetadata(notes),
         priceMxn: String(price),
       },
     });

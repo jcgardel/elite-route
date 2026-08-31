@@ -142,6 +142,7 @@ async function getSessionUrls(sessionId: string | undefined, lang: Lang): Promis
       origen: String(meta.origin || ""),
       destino: String(meta.destination || ""),
       vehiculo: String(meta.vehicle || ""),
+      notas: String(meta.notes || ""),
       total: new Intl.NumberFormat(lang === "es" ? "es-MX" : "en-US", {
         style: "currency",
         currency: (session.currency || "mxn").toUpperCase(),

@@ -168,7 +168,7 @@ const TX = {
     footRights: "Elite Route MX · Mexico City",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
-    whatsappBtn: "Ask via WhatsApp",
+    whatsappBtn: "Prefer to confirm over WhatsApp?",
     legal: "Paid bookings remain subject to final availability confirmation by Elite Route.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Enter the pickup location.",
@@ -248,7 +248,7 @@ const TX = {
     footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
-    whatsappBtn: "Consultar por WhatsApp",
+    whatsappBtn: "¿Prefieres confirmar por WhatsApp?",
     legal: "Las reservas pagadas están sujetas a confirmación final de disponibilidad por parte de Elite Route.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Ingresa el lugar de recogida.",
@@ -368,6 +368,15 @@ const styles = `
   .er-notes-help { color:#8B8B87; font-size:12px; line-height:1.5; max-width:62ch; }
   .er-notes-count { color:#8B8B87; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
   .er-notes-count.full { color:#C8A46B; }
+
+  /* Enlace y no botón, a propósito: es la salida para quien todavía no
+     quiere dejar la tarjeta, no una segunda llamada a la acción. El verde
+     de WhatsApp aparece sólo en el ícono; el texto se queda en el gris del
+     resto para no gritar más que el botón de pagar. */
+  .er-wa-link { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; padding:10px; min-height:44px; color:#BFC3C8; font-size:13.5px; text-decoration:none; transition:color 0.2s; }
+  .er-wa-link svg { color:#25D366; flex-shrink:0; }
+  .er-wa-link:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
+  .er-wa-link:focus-visible { outline:2px solid #C8A46B; outline-offset:2px; }
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
   .er-input-clear {
@@ -775,6 +784,10 @@ export default function HomeClient({
   }
 
   function buildWhatsAppMessage() {
+    // `null` = renglón que no aplica y se quita; `""` = renglón en blanco que
+    // separa bloques y se conserva. Antes los dos eran "" y el filtro se
+    // llevaba también los separadores, así que el mensaje llegaba en un solo
+    // párrafo apelmazado.
     return [
       "━━━━━━━━━━━━━━━━━━━━━━",
       "🚗 *ELITE ROUTE — Nueva reserva*",
@@ -786,7 +799,7 @@ export default function HomeClient({
       "",
       "*Servicio*",
       `Tipo: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
-      serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : "",
+      serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : null,
       `Fecha: ${formatDateTime(serviceDate, serviceTime, "es-MX")}`,
       `Origen: ${origin}`,
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
@@ -796,16 +809,16 @@ export default function HomeClient({
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
-      airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : "",
+      airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : null,
       // Junto al resto del servicio y no al final: es parte de lo que hay
       // que preparar, no una posdata.
-      notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : "",
+      notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : null,
       "",
       `*💰 Total estimado con IVA: $${price.toLocaleString("es-MX")} MXN*`,
       "",
       "_Solicito confirmación de disponibilidad._",
       "━━━━━━━━━━━━━━━━━━━━━━",
-    ].filter(Boolean).join("\n");
+    ].filter((linea) => linea !== null).join("\n");
   }
 
   function handleWhatsApp(e: MouseEvent<HTMLAnchorElement>) {
@@ -1199,6 +1212,33 @@ export default function HomeClient({
               {paymentLoading ? t.payLoading : t.payBtn}
             </button>
 
+            {/* La salida para quien no quiere dejar la tarjeta todavía.
+                Deliberadamente un enlace y no un botón: el pago con precio
+                fijo es lo que distingue a Elite Route y tiene que seguir
+                mandando en la pantalla. Dos botones del mismo peso reparten
+                la atención y le quitan fuerza al principal.
+
+                Hace falta aquí porque el botón flotante de WhatsApp se
+                esconde justo cuando el cotizador está a la vista, así que en
+                este paso —con el precio delante y la decisión encima— no
+                había ninguna alternativa a pagar o irse.
+
+                El mensaje va armado con la cotización entera: nombre, fecha,
+                ruta, vehículo, precio y las solicitudes extra. El botón
+                flotante manda "Hola, quisiera cotizar un traslado" y nada
+                más, y obliga a preguntarlo todo otra vez. */}
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              onClick={handleWhatsApp}
+              className="er-wa-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.556 4.118 1.528 5.845L.057 23.486a.5.5 0 0 0 .614.614l5.588-1.463A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.667-.513-5.187-1.408l-.37-.222-3.844 1.007 1.03-3.76-.24-.386A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+              {t.whatsappBtn}
+            </a>
 
             <div className="er-legal">
               {t.legal}<br/>

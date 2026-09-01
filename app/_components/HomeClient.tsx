@@ -57,7 +57,7 @@ const AC_OPTIONS = {
 let mapsLoader: Promise<void> | null = null;
 function loadGoogleMaps(): Promise<void> {
   if (mapsLoader) return mapsLoader;
-  mapsLoader = new Promise<void>((resolve, reject) => {
+  const intento = new Promise<void>((resolve, reject) => {
     const w = window as unknown as { google?: { maps?: { places?: unknown } } };
     if (w.google?.maps?.places) {
       resolve();
@@ -66,9 +66,38 @@ function loadGoogleMaps(): Promise<void> {
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_KEY}&libraries=places&loading=async`;
     script.async = true;
-    script.onload = () => resolve();
+    // `onload` NO significa que se pueda usar Places.
+    //
+    // Con `loading=async` lo que se descarga primero es un cargador, y las
+    // librerías vienen después. Al dispararse `onload`, `google.maps.places`
+    // todavía no existe: construir el autocompletado ahí lanza un
+    // TypeError, y como el llamador lo capturaba en silencio, el visitante
+    // se quedaba sin sugerencias en su PRIMER clic —el único que importa—.
+    // Funcionaba al segundo intento, cuando la librería ya había llegado,
+    // que es justo el síntoma que se veía: "a veces sirve".
+    //
+    // `importLibrary` es la forma que documenta Google para esperar de
+    // verdad a que la librería esté lista.
+    script.onload = () => {
+      const g = (window as unknown as {
+        google?: { maps?: { importLibrary?: (n: string) => Promise<unknown> } };
+      }).google;
+      if (g?.maps?.importLibrary) {
+        g.maps.importLibrary("places").then(() => resolve(), reject);
+      } else {
+        // Cargador antiguo: al llegar aquí las librerías ya están dentro.
+        resolve();
+      }
+    };
     script.onerror = () => reject(new Error("No se pudo cargar Google Maps"));
     document.head.appendChild(script);
+  });
+  // Un fallo no puede dejar la promesa rechazada en caché para siempre:
+  // sin esto, un corte de red momentáneo apagaba el autocompletado hasta
+  // que el visitante recargara la página.
+  mapsLoader = intento.catch((e) => {
+    mapsLoader = null;
+    throw e;
   });
   return mapsLoader;
 }
@@ -93,8 +122,12 @@ function attachAutocomplete(
       autocomplete.addListener("place_changed", onPlaceChanged);
       store.current = autocomplete;
     })
-    .catch(() => {
-      // Sin autocompletado se sigue pudiendo cotizar: el campo es texto libre.
+    .catch((e) => {
+      // Sin autocompletado se sigue pudiendo cotizar —el campo es texto
+      // libre y la ruta la resuelve el servidor—, pero se deja constancia:
+      // tragarse este error en silencio fue lo que mantuvo escondido
+      // durante semanas que las sugerencias no salían al primer clic.
+      console.error("Autocompletado de direcciones no disponible:", e);
     });
 }
 
@@ -640,7 +673,15 @@ export default function HomeClient({
     const card = document.getElementById("quote");
     if (!card || typeof IntersectionObserver === "undefined") return;
     const obs = new IntersectionObserver(
-      ([entry]) => setFormularioALaVista(entry.isIntersecting),
+      ([entry]) => {
+        setFormularioALaVista(entry.isIntersecting);
+        // Que el cotizador entre en pantalla ya es intención suficiente
+        // para ir pidiendo el SDK de Maps: son 316 KB en ocho archivos, y
+        // esperarlos hasta el clic dejaba dos segundos en blanco justo
+        // cuando el visitante empieza a escribir su dirección. Quien sólo
+        // pasa por la portada sin bajar hasta aquí sigue sin descargarlo.
+        if (entry.isIntersecting) loadGoogleMaps().catch(() => {});
+      },
       { threshold: 0.12 },
     );
     obs.observe(card);

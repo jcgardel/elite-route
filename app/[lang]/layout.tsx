@@ -52,6 +52,14 @@ export default async function RootLayout({
       lang={lang}
       className={fontVars}
     >
+      <head>
+        {/* El SDK de Maps se pide cuando el cotizador entra en pantalla, y
+            para entonces conviene tener el saludo con Google ya hecho: sin
+            esto, la primera petición carga además con la resolución de DNS
+            y el apretón de manos TLS. */}
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="" />
+      </head>
       <body>
         {children}
         <Analytics />

@@ -6,15 +6,17 @@ import {
   detectZone,
   isAirportAddress,
   serviceTypeLabelEs,
-  tariffs,
+  vehicles,
+  CATEGORIES,
   type Category,
   type ServiceType,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
+import { NOTAS_MAX } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
-const categories = Object.keys(tariffs) as Category[];
+const categories = CATEGORIES;
 const serviceTypes: ServiceType[] = ["route", "hour", "day"];
 
 function trimMetadata(value: string) {
@@ -41,6 +43,11 @@ export async function POST(req: Request) {
     const destination = String(body.destination || "").trim();
     const serviceDate = String(body.serviceDate || "").trim();
     const serviceTime = String(body.serviceTime || "").trim();
+    // Solicitudes extra del cliente. Opcional y sin validar contra nada: es
+    // texto libre a propósito. Se recorta aquí y no sólo en el navegador
+    // porque el límite del formulario no obliga a nadie que llame a la API
+    // directamente, y de aquí sale hacia Stripe, el correo y WhatsApp.
+    const notes = String(body.notes || "").trim().slice(0, NOTAS_MAX);
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
     if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
@@ -101,7 +108,7 @@ export async function POST(req: Request) {
     // trae idioma —una petición vieja o manipulada— cae al de por defecto en
     // lugar de fallar: nadie debe perder un pago por esto.
     const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
-    const vehicle = tariffs[category].name;
+    const vehicle = vehicles[category].name;
     const serviceLabel = serviceTypeLabelEs(serviceType, rentalHours);
 
     const stripe = getStripe();
@@ -139,6 +146,7 @@ export async function POST(req: Request) {
         km: String(km),
         minutes: String(minutes),
         airportPickup: String(airportPickup),
+        notes: trimMetadata(notes),
         priceMxn: String(price),
       },
     });

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import { DURACIONES, RUTAS_DESDE, RUTAS_HACIA, type TablasTarifas } from "@/lib/rate-tables";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
@@ -15,39 +16,16 @@ import { routePath, type RouteKey } from "@/lib/routes";
  * están en ese idioma. Si el visitante ya eligió inglés en la portada, la
  * elección viaja con él: vive en localStorage, no en el estado de una página.
  *
- * Los precios no se traducen: salen de lib/booking.ts en los dos casos.
+ * Los precios no se traducen: los calcula el servidor en los dos casos.
  */
 
-const cats: Category[] = ["sedan", "executive", "minivan", "suv"];
+const cats = CATEGORIES;
 
 function mxn(n: number) {
   return "$" + n.toLocaleString("es-MX");
 }
-function p(km: number, min: number, cat: Category, airport = false) {
-  return mxn(calculatePrice(km, min, cat, "route", 3, airport));
-}
-function ph(hours: number, cat: Category) {
-  return mxn(calculatePrice(0, 0, cat, "hour", hours));
-}
 
-const rutasDesde = [
-  { key: "centro", zona: "~15 km", km: 15, min: 25 },
-  { key: "polanco", zona: "~22 km", km: 22, min: 30 },
-  { key: "santafe", zona: "~35 km", km: 35, min: 50 },
-  { key: "satelite", zona: "~30 km", km: 30, min: 40 },
-  { key: "aifa", zona: "~68 km", km: 68, min: 75 },
-  { key: "toluca", zona: "~80 km", km: 80, min: 85 },
-] as const;
 
-const rutasHacia = [
-  { key: "centro", km: 15, min: 25 },
-  { key: "polanco", km: 22, min: 30 },
-  { key: "santafe", km: 35, min: 50 },
-  { key: "aifa", km: 68, min: 75 },
-  { key: "toluca", km: 80, min: 85 },
-] as const;
-
-const duraciones = [2, 3, 4, 5, 6, 10] as const;
 
 const TX = {
   es: {
@@ -75,6 +53,7 @@ const TX = {
       "Precio directo sin espera en aeropuerto. Reserva con al menos 6 horas de anticipación para garantizar disponibilidad.",
     hourLabel: "Servicio por hora y día completo",
     hourTitle: "Chofer por horas en CDMX",
+    hourMore: "Todo sobre el chofer por horas",
     hourCopy:
       "Tu chofer permanece disponible durante las horas contratadas. Incluye 20 km por hora. Ideal para reuniones, eventos o días de trabajo intenso.",
     colRoute: "Ruta",
@@ -106,7 +85,7 @@ const TX = {
       ["¿Puedo pagar con tarjeta de crédito o débito?", "Sí. Aceptamos todas las tarjetas de crédito y débito mediante pago seguro con Stripe. También puedes coordinar tu reserva por WhatsApp."],
       ["¿Emiten factura?", "Sí. Emitimos factura CFDI para todos los servicios. Escríbenos a contabilidad@eliteroute.mx con tus datos fiscales."],
       ["¿Cuánto tiempo de anticipación necesito para reservar?", "Se requiere un mínimo de 6 horas de anticipación para confirmar tu reserva. Para servicios en horario de madrugada o rutas foráneas, lo ideal es reservar con 24 horas de antelación."],
-      [`¿Cuál es la diferencia entre ${tariffs.sedan.name}, ${tariffs.executive.name} y ${tariffs.suv.name}?`, `${tariffs.sedan.name}: ideal para 1-3 pasajeros con equipaje ligero. ${tariffs.executive.name}: vehículos premium para 1-3 pasajeros, mayor confort y espacio. ${tariffs.minivan.name}: grupos de 4-6 personas con equipaje amplio. ${tariffs.suv.name}: el nivel más alto de lujo para 1-6 pasajeros.`],
+      [`¿Cuál es la diferencia entre ${vehicles.sedan.name}, ${vehicles.executive.name} y ${vehicles.suv.name}?`, `${vehicles.sedan.name}: ideal para 1-3 pasajeros con equipaje ligero. ${vehicles.executive.name}: vehículos premium para 1-3 pasajeros, mayor confort y espacio. ${vehicles.minivan.name}: grupos de 4-6 personas con equipaje amplio. ${vehicles.suv.name}: el nivel más alto de lujo para 1-6 pasajeros.`],
       ["¿Hacen traslados a Querétaro, Cuernavaca u otras ciudades?", "Sí. Cubrimos rutas foráneas a cualquier destino desde Ciudad de México. Escríbenos a business@eliteroute.mx o usa el cotizador para calcular el precio exacto."],
     ],
     ctaTitle: "¿Quieres saber el precio exacto de tu ruta?",
@@ -140,6 +119,7 @@ const TX = {
       "Direct price with no airport waiting. Book at least 6 hours ahead to guarantee availability.",
     hourLabel: "Hourly and full-day service",
     hourTitle: "Chauffeur by the hour in Mexico City",
+    hourMore: "Everything about hourly service",
     hourCopy:
       "Your chauffeur stays available for the hours booked, with 20 km included per hour. Ideal for meetings, events or long working days.",
     colRoute: "Route",
@@ -171,7 +151,7 @@ const TX = {
       ["Can I pay by credit or debit card?", "Yes. We accept every credit and debit card through secure payment with Stripe. You can also arrange your booking over WhatsApp."],
       ["Do you issue invoices?", "Yes. We issue Mexican CFDI invoices for every service. Write to contabilidad@eliteroute.mx with your tax details."],
       ["How far in advance do I need to book?", "A minimum of 6 hours' notice is required to confirm a booking. For early-morning services or out-of-town routes, 24 hours ahead is ideal."],
-      [`What is the difference between ${tariffs.sedan.name}, ${tariffs.executive.name} and ${tariffs.suv.name}?`, `${tariffs.sedan.name}: ideal for 1-3 passengers with light luggage. ${tariffs.executive.name}: premium vehicles for 1-3 passengers, with more comfort and space. ${tariffs.minivan.name}: groups of 4-6 with generous luggage. ${tariffs.suv.name}: the highest level of luxury, for 1-6 passengers.`],
+      [`What is the difference between ${vehicles.sedan.name}, ${vehicles.executive.name} and ${vehicles.suv.name}?`, `${vehicles.sedan.name}: ideal for 1-3 passengers with light luggage. ${vehicles.executive.name}: premium vehicles for 1-3 passengers, with more comfort and space. ${vehicles.minivan.name}: groups of 4-6 with generous luggage. ${vehicles.suv.name}: the highest level of luxury, for 1-6 passengers.`],
       ["Do you drive to Querétaro, Cuernavaca or other cities?", "Yes. We cover out-of-town routes to any destination from Mexico City. Write to business@eliteroute.mx or use the quote form to calculate the exact price."],
     ],
     ctaTitle: "Want the exact price for your route?",
@@ -212,6 +192,9 @@ const styles = `
   .tf-section-label { color: #C8A46B; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 12px; }
   .tf-section-title { font-family: var(--font-cormorant), serif; font-size: clamp(28px, 4vw, 46px); font-weight: 300; color: #fff; margin-bottom: 8px; line-height: 1.1; text-wrap: balance; }
   .tf-section-copy { color: #BFC3C8; font-size: 15px; line-height: 1.7; max-width: 620px; margin-bottom: 28px; }
+  .tf-more { margin: 18px 0 0; font-size: 13px; }
+  .tf-more a { color: #C8A46B; text-decoration: none; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid rgba(200,164,107,0.35); padding-bottom: 2px; }
+  .tf-more a:hover { color: #fff; border-bottom-color: #fff; }
 
   .tf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .tf-table { width: 100%; border-collapse: collapse; min-width: 560px; }
@@ -270,7 +253,15 @@ const styles = `
   }
 `;
 
-export default function TarifasClient({ lang }: { lang: Lang }) {
+export default function TarifasClient({
+  lang,
+  tablas,
+}: {
+  lang: Lang;
+  /** Las tres tablas ya resueltas en el servidor. Este componente sólo da
+   *  formato: calcular aquí obligaba a bajar el tarifario al navegador. */
+  tablas: TablasTarifas;
+}) {
   const t = TX[lang];
   const home = path(lang, "home");
 
@@ -318,11 +309,11 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
               <thead>
                 <tr>
                   <th>{t.colRoute}</th>
-                  {cats.map((cat) => <th key={cat}>{tariffs[cat].name}</th>)}
+                  {cats.map((cat) => <th key={cat}>{vehicles[cat].name}</th>)}
                 </tr>
               </thead>
               <tbody>
-                {rutasDesde.map((r) => (
+                {RUTAS_DESDE.map((r) => (
                   <tr key={r.key}>
                     <td>
                       <div className="tf-route">
@@ -338,7 +329,7 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
                     </td>
                     {cats.map((cat) => (
                       <td key={cat}>
-                        <span className="tf-price">{p(r.km, r.min, cat, true)}</span>
+                        <span className="tf-price">{mxn(tablas.desde[r.key][cat])}</span>
                         <span className="tf-price-note">{t.priceNote}</span>
                       </td>
                     ))}
@@ -361,11 +352,11 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
               <thead>
                 <tr>
                   <th>{t.colRoute}</th>
-                  {cats.map((cat) => <th key={cat}>{tariffs[cat].name}</th>)}
+                  {cats.map((cat) => <th key={cat}>{vehicles[cat].name}</th>)}
                 </tr>
               </thead>
               <tbody>
-                {rutasHacia.map((r) => (
+                {RUTAS_HACIA.map((r) => (
                   <tr key={r.key}>
                     <td>
                       <div className="tf-route">
@@ -376,7 +367,7 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
                     </td>
                     {cats.map((cat) => (
                       <td key={cat}>
-                        <span className="tf-price">{p(r.km, r.min, cat, false)}</span>
+                        <span className="tf-price">{mxn(tablas.hacia[r.key][cat])}</span>
                         <span className="tf-price-note">{t.priceNote}</span>
                       </td>
                     ))}
@@ -396,11 +387,11 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
               <thead>
                 <tr>
                   <th>{t.colDuration}</th>
-                  {cats.map((cat) => <th key={cat}>{tariffs[cat].name}</th>)}
+                  {cats.map((cat) => <th key={cat}>{vehicles[cat].name}</th>)}
                 </tr>
               </thead>
               <tbody>
-                {duraciones.map((h) => {
+                {DURACIONES.map((h) => {
                   const esDia = h === 10;
                   return (
                     <tr key={h}>
@@ -409,7 +400,7 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
                       </td>
                       {cats.map((cat) => (
                         <td key={cat}>
-                          <span className="tf-price">{ph(h, cat)}</span>
+                          <span className="tf-price">{mxn(tablas.horas[h][cat])}</span>
                           <span className="tf-price-note">{t.priceNote}</span>
                         </td>
                       ))}
@@ -419,6 +410,12 @@ export default function TarifasClient({ lang }: { lang: Lang }) {
               </tbody>
             </table>
           </div>
+          {/* Esta sección resume el servicio; la página propia lo explica
+              entero. El enlace también es lo que le dice a Google que esa
+              página existe y de qué trata. */}
+          <p className="tf-more">
+            <Link href={path(lang, "hourly")}>{t.hourMore} →</Link>
+          </p>
         </section>
 
         <section className="tf-section tf-faq" aria-labelledby="faq">

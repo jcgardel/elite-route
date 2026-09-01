@@ -37,9 +37,9 @@ export const LEGAL = {
   whatsappUrl: "https://wa.me/525543582919",
 
   /** Fecha de la última revisión de los textos legales. */
-  actualizado: "26 de agosto de 2026",
+  actualizado: "31 de agosto de 2026",
   /** La misma fecha para la versión en inglés. */
-  updated: "August 26, 2026",
+  updated: "August 31, 2026",
 
   /**
    * Terceros que tratan datos del cliente. Cada uno está en el código:
@@ -68,6 +68,11 @@ export const LEGAL = {
       nombre: "Resend",
       para: "Enviar el correo de confirmación de la reserva.",
       forWhat: "Sending the booking confirmation email.",
+    },
+    {
+      nombre: "Google Analytics",
+      para: "Contar visitas y saber en qué paso del cotizador se queda la gente. Está configurado sólo para medir: las señales de publicidad y la personalización de anuncios están desactivadas, así que estos datos no alimentan audiencias publicitarias.",
+      forWhat: "Counting visits and seeing where people stop in the quote form. It is configured for measurement only: Google's advertising signals and ad personalisation are switched off, so this data does not feed advertising audiences.",
     },
     {
       nombre: "Vercel",

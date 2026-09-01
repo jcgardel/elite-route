@@ -1,12 +1,32 @@
 import type Stripe from "stripe";
 
+/**
+ * Escapa el texto que escribió el cliente antes de meterlo en un correo.
+ *
+ * Los avisos se arman concatenando cadenas dentro de HTML, así que cualquier
+ * dato que venga del formulario —el nombre, la dirección y ahora las
+ * solicitudes extra, que son texto libre— podría cerrar una etiqueta y meter
+ * marcado en el correo que abre el dueño. Escapar aquí es más barato que
+ * confiar en que ningún cliente escriba un signo de menor que.
+ */
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 async function sendEmailNotification(session: Stripe.Checkout.Session, message: string) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.RESEND_NOTIFY_TO || "jcgd.31@gmail.com";
   if (!apiKey) return false;
 
   const meta = session.metadata || {};
-  const htmlBody = message
+  // Se escapa PRIMERO y se da formato después: al revés, el <strong> que
+  // acabamos de poner se convertiría en texto visible.
+  const htmlBody = escapeHtml(message)
     .replace(/\*([^*]+)\*/g, "<strong>$1</strong>")
     .replace(/\n/g, "<br>");
 
@@ -19,7 +39,7 @@ async function sendEmailNotification(session: Stripe.Checkout.Session, message: 
     body: JSON.stringify({
       from: "Elite Route <notificaciones@eliteroute.mx>",
       to: [to],
-      subject: `✅ Pago confirmado · ${meta.fullName || "Cliente"} · ${meta.serviceDate || ""}`,
+      subject: `✅ Pago confirmado · ${meta.fullName || "Cliente"} · ${meta.serviceDate || ""}`.slice(0, 200),
       html: `<pre style="font-family:monospace;font-size:14px;line-height:1.6">${htmlBody}</pre>`,
     }),
   });
@@ -64,6 +84,10 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     `Zona: ${meta.zone || "—"}`,
     `Distancia: ${meta.km || "—"} km`,
     `Tiempo estimado: ${meta.minutes || "—"} min`,
+    // Sólo aparece si el cliente escribió algo: un renglón "Solicitudes: —"
+    // en cada aviso enseña a ignorar el renglón, y justo este no conviene
+    // que se ignore.
+    ...(meta.notes ? ["", "*⚠️ Solicitudes del cliente*", meta.notes] : []),
   ].filter(Boolean).join("\n");
 }
 
@@ -127,9 +151,15 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
 
   const meta = session.metadata || {};
   const total = formatMoney(session.amount_total, session.currency);
-  const vehicle = meta.vehicle || meta.category || "Vehículo ejecutivo";
-  const serviceLabel = meta.serviceLabel || "Traslado ejecutivo";
-  const dateTime = [meta.serviceDate, meta.serviceTime].filter(Boolean).join(" · ");
+  // Todo lo que se interpola en el HTML de abajo pasa por escapeHtml: son
+  // datos que escribió el cliente en el formulario.
+  const vehicle = escapeHtml(meta.vehicle || meta.category || "Vehículo ejecutivo");
+  const serviceLabel = escapeHtml(meta.serviceLabel || "Traslado ejecutivo");
+  const dateTime = escapeHtml([meta.serviceDate, meta.serviceTime].filter(Boolean).join(" · "));
+  const clientName = escapeHtml(meta.fullName || "cliente");
+  const originText = escapeHtml(meta.origin || "—");
+  const destinationText = escapeHtml(meta.destination || "");
+  const notesText = escapeHtml(meta.notes || "");
 
   const html = `
     <!DOCTYPE html>
@@ -147,7 +177,7 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
             <!-- Body -->
             <tr><td style="padding:28px 40px">
               <p style="margin:0 0 20px;font-size:14px;color:#BFC3C8;line-height:1.7">
-                Hola <strong style="color:#fff">${meta.fullName || "cliente"}</strong>, tu pago fue procesado exitosamente.
+                Hola <strong style="color:#fff">${clientName}</strong>, tu pago fue procesado exitosamente.
                 Un agente de Elite Route confirmará disponibilidad y te enviará los detalles del chofer por WhatsApp.
               </p>
 
@@ -166,16 +196,21 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
                 </td></tr>
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
                   <span style="font-size:13px;color:#777">Origen</span>
-                  <span style="font-size:13px;color:#fff;float:right">${meta.origin || "—"}</span>
+                  <span style="font-size:13px;color:#fff;float:right">${originText}</span>
                 </td></tr>
-                ${meta.destination && meta.destination !== "Disposición libre" ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
+                ${destinationText && destinationText !== "Disposición libre" ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
                   <span style="font-size:13px;color:#777">Destino</span>
-                  <span style="font-size:13px;color:#fff;float:right">${meta.destination}</span>
+                  <span style="font-size:13px;color:#fff;float:right">${destinationText}</span>
                 </td></tr>` : ""}
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
                   <span style="font-size:13px;color:#777">Vehículo</span>
                   <span style="font-size:13px;color:#fff;float:right">${vehicle}</span>
                 </td></tr>
+                ${notesText ? `<tr><td style="padding:12px 18px;border-bottom:1px solid #161616">
+                  <p style="margin:0 0 4px;font-size:13px;color:#777">Tus solicitudes</p>
+                  <p style="margin:0;font-size:13px;color:#fff;line-height:1.6">${notesText}</p>
+                  <p style="margin:6px 0 0;font-size:11px;color:#555;line-height:1.5">Te confirmamos por WhatsApp si algo cambia el precio.</p>
+                </td></tr>` : ""}
                 <tr><td style="padding:14px 18px;background:#0a0a0a">
                   <span style="font-size:13px;color:#fff;font-weight:700">Total pagado</span>
                   <span style="font-size:16px;color:#C8A46B;font-weight:700;float:right">${total}</span>

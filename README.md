@@ -47,6 +47,33 @@ They must not hold the same key. A referrer-restricted key fails server-side wit
 — which is exactly what happens locally when `GOOGLE_MAPS_API_KEY` is set to the
 browser key.
 
+## Analytics (GA4)
+
+One variable, and the site works with it empty:
+
+```bash
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+```
+
+Leave it unset and nothing loads — no script request, no cookie, and the
+privacy notice's analytics paragraph is the only thing that would be ahead of
+reality. Set it in the Vercel project (Production and Preview) to switch
+measurement on; no code change needed.
+
+The tag starts with `allow_google_signals` and
+`allow_ad_personalization_signals` off, so GA4 measures and does not build
+advertising audiences. That is what the privacy notice promises, so if you
+ever turn those on for remarketing, update `app/[lang]/privacidad/page.tsx`
+and its English twin in the same change.
+
+Funnel events, named in Spanish because the owner reads them in the GA4
+console: `cotizacion_iniciada`, `ruta_completada`, `vehiculo_seleccionado`,
+`precio_mostrado`, `clic_whatsapp`, `pago_iniciado`, `reserva_pagada`. They
+live in `lib/analytics.ts`.
+
+> `.env.example` is not versioned — the `.env*` rule in `.gitignore` covers it
+> — so this table is the tracked place where variables get documented.
+
 ## WhatsApp payment notifications
 
 When Stripe sends `checkout.session.completed`, the app builds a WhatsApp-ready

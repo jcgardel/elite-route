@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import RoutePage from "../../../_components/RoutePage";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
-import { isLang, SITE } from "@/lib/i18n";
+import { calculatePrice } from "@/lib/booking";
+import { CATEGORIES, type Category } from "@/lib/vehicles";
+import { isLang, path, SITE } from "@/lib/i18n";
 import { ROUTE_KEYS, ROUTES, routeFromSlug, routePath, routeSlug } from "@/lib/routes";
 
 const LANG = "en" as const;
@@ -53,7 +54,7 @@ export default async function Page({ params }: Props) {
 
   const route = ROUTES[key];
   const c = route[LANG];
-  const cats: Category[] = Object.keys(tariffs) as Category[];
+  const cats: readonly Category[] = CATEGORIES;
   // El rango que se anuncia es el mismo que la tabla de la página: el más
   // barato sin recargo y el más caro con él. Inventar un precio en los datos
   // estructurados que no coincida con lo que se ve es justo lo que hace que
@@ -82,6 +83,20 @@ export default async function Page({ params }: Props) {
     mainEntityOfPage: SITE + routePath(LANG, key),
   };
 
+  // La miga de pan que Google pinta en lugar de la URL cruda. Los dos
+  // escalones anteriores son páginas que existen y a las que esta misma
+  // página enlaza al pie; una miga que invente un nivel intermedio —un
+  // /transfers que no responde— es peor que no ponerla.
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE + path(LANG, "home") },
+      { "@type": "ListItem", position: 2, name: "Rates", item: SITE + path(LANG, "rates") },
+      { "@type": "ListItem", position: 3, name: c.title, item: SITE + routePath(LANG, key) },
+    ],
+  };
+
   // Las preguntas de la página, para que Google pueda mostrarlas desplegadas.
   const faqLd = {
     "@context": "https://schema.org",
@@ -96,6 +111,7 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }} />
       <RoutePage lang={LANG} routeKey={key} />
     </>

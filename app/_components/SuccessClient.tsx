@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { path, type Lang } from "@/lib/i18n";
+import { track } from "@/lib/analytics";
 
 /** Lo que la página de gracias necesita saber de la reserva. Vive aquí y no
  *  en la página porque es el componente que lo pinta. */
@@ -15,7 +16,9 @@ export type Booking = {
   origen: string;
   destino: string;
   vehiculo: string;
+  notas: string;
   total: string;
+  montoMxn: number;
   googleCalendarUrl: string | null;
   icsHref: string | null;
 };
@@ -34,6 +37,7 @@ const TX = {
     from: "Recogida",
     to: "Destino",
     vehicle: "Vehículo",
+    notes: "Tus solicitudes",
     paid: "Pagado",
     wa: "Confirmar por WhatsApp",
     waSent: "Abrimos WhatsApp con tu mensaje. Si no se abrió, revisa que la app esté instalada.",
@@ -56,6 +60,7 @@ const TX = {
     from: "Pickup",
     to: "Destination",
     vehicle: "Vehicle",
+    notes: "Your requests",
     paid: "Paid",
     wa: "Confirm on WhatsApp",
     waSent: "We opened WhatsApp with your message. If nothing happened, check that the app is installed.",
@@ -89,6 +94,23 @@ export default function SuccessClient({
 }) {
   const [sent, setSent] = useState(false);
   const t = TX[lang];
+
+  // Cierra el embudo con el importe real cobrado, no con el estimado del
+  // cotizador. Se manda una sola vez por montaje y lleva el folio como
+  // identificador: si el visitante recarga la página de gracias, GA4 tiene
+  // con qué reconocer que es la misma reserva y no una segunda venta.
+  const yaContado = useRef(false);
+  useEffect(() => {
+    if (yaContado.current || !booking) return;
+    yaContado.current = true;
+    track("reserva_pagada", {
+      transaction_id: booking.folio,
+      value: booking.montoMxn,
+      currency: "MXN",
+      vehiculo: booking.vehiculo,
+      servicio: booking.servicio,
+    });
+  }, [booking]);
 
   function handleWhatsApp() {
     setSent(true);
@@ -258,6 +280,15 @@ export default function SuccessClient({
                 <div className="sc-row">
                   <dt>{t.vehicle}</dt>
                   <dd>{booking.vehiculo}</dd>
+                </div>
+              )}
+              {/* Se le devuelven al cliente para que vea que quedaron
+                  registradas: si no aparecen por ningún lado, la duda es si
+                  alguien las leyó. */}
+              {booking.notas && (
+                <div className="sc-row">
+                  <dt>{t.notes}</dt>
+                  <dd>{booking.notas}</dd>
                 </div>
               )}
               <div className="sc-row sc-row--total">

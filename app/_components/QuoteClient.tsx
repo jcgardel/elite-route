@@ -3,7 +3,8 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { calculatePrice, isAirportAddress, isAirportPlace, tariffs, type Category } from "@/lib/booking";
+import { isAirportAddress, isAirportPlace, vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import type { PrecioPorCategoria, TablasQuote } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
 
@@ -24,8 +25,8 @@ const AC_OPTIONS = {
 const libraries: "places"[] = ["places"];
 
 const VEHICLES: { key: Category; label: string; sub: string }[] = (
-  ["sedan", "executive", "minivan", "suv"] as Category[]
-).map((key) => ({ key, label: tariffs[key].name, sub: tariffs[key].tag }));
+  CATEGORIES
+).map((key) => ({ key, label: vehicles[key].name, sub: vehicles[key].tag }));
 
 type PaymentTerm = "immediate" | "7" | "15" | "30";
 
@@ -167,26 +168,24 @@ type Service = {
   notas: string;
   km: number;
   minutes: number;
+  /** Precio de las cuatro categorías para esta ruta, tal como lo calculó el
+   *  servidor. `null` mientras no haya ruta. */
+  prices?: PrecioPorCategoria | null;
 };
 
 /**
- * Calcula precio del servicio.
- * Cuando airport=true aplica 23% sobre el precio base (pre-IVA),
- * sin usar el parámetro airport de calculatePrice (que aplica 25%).
- * Formula: precio_sin_aeropuerto * 1.23 ≈ precio_con_23%
+ * Desglosa el precio de un renglón en base e IVA.
  */
-function calcRow(s: Service) {
-  if (s.km > 0) {
-    const total = calculatePrice(s.km, s.minutes, s.vehiculo, "route", 0, s.airport);
-    const base  = Math.round(total / 1.16);
-    const iva   = total - base;
-    return { base, iva, total, estimate: false };
-  }
-  // Sin ruta → tarifa mínima como referencia
-  const totalEst = Math.round(tariffs[s.vehiculo].min * (s.airport ? 1.25 : 1) * 1.16);
-  const base = Math.round(totalEst / 1.16);
-  const iva  = totalEst - base;
-  return { base, iva, total: totalEst, estimate: true };
+function calcRow(s: Service, tablas: TablasQuote) {
+  // Con ruta, el precio es el que devolvió /api/maps; sin ruta, el mínimo de
+  // la categoría que trae el servidor. En ninguno de los dos casos se calcula
+  // aquí: hacerlo obligaba a bajar el tarifario al navegador.
+  const total = s.km > 0 && s.prices
+    ? s.prices[s.vehiculo]
+    : (s.airport ? tablas.minimoAeropuerto : tablas.minimo)[s.vehiculo];
+  const base = Math.round(total / 1.16);
+  const iva  = total - base;
+  return { base, iva, total, estimate: !(s.km > 0 && s.prices) };
 }
 
 function fmt(n: number) {
@@ -207,9 +206,10 @@ type ServiceRowProps = {
   onUpdate: (id: number, patch: Partial<Service>) => void;
   onRemove: (id: number) => void;
   t: Copy;
+  tablas: TablasQuote;
 };
 
-function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemove, t }: ServiceRowProps) {
+function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemove, t, tablas }: ServiceRowProps) {
   const originAcRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destAcRef   = useRef<google.maps.places.Autocomplete | null>(null);
   const originInputRef = useRef<HTMLInputElement>(null);
@@ -226,14 +226,20 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
   const [hasOrigen, setHasOrigen]   = useState(!!s.origen);
   const [hasDestino, setHasDestino] = useState(!!s.destino);
 
-  async function fetchRoute(origin: string, destination: string) {
+  /**
+   * `airport` llega como parámetro y no se lee de `s.airport`: quien llama
+   * acaba de hacer `onUpdate` con el valor nuevo, y el estado de React
+   * todavía no lo refleja. Leerlo de `s` mandaría el de la vez anterior, y
+   * con él un precio sin el recargo de aeropuerto.
+   */
+  async function fetchRoute(origin: string, destination: string, airport: boolean) {
     setCalculating(true);
     setRouteErr("");
     try {
-      const res  = await fetch("/api/maps", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ origin, destination }) });
+      const res  = await fetch("/api/maps", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ origin, destination, airportPickup: airport }) });
       const data = await res.json();
       if (!res.ok) { setRouteErr(t.routeErr); return; }
-      onUpdate(s.id, { km: Number(data.km.toFixed(1)), minutes: Number(data.minutes) });
+      onUpdate(s.id, { km: Number(data.km.toFixed(1)), minutes: Number(data.minutes), prices: data.prices ?? null });
     } catch {
       setRouteErr(t.connErr);
     } finally {
@@ -247,36 +253,36 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
     if (!addr) return;
     const airp = isAirportPlace(place, addr);
     airportPlaceRef.current = airp ? addr : "";
-    onUpdate(s.id, { origen: addr, airport: airp, km: 0, minutes: 0, vuelo: airp ? s.vuelo : "" });
+    onUpdate(s.id, { origen: addr, airport: airp, km: 0, minutes: 0, prices: null, vuelo: airp ? s.vuelo : "" });
     setHasOrigen(true);
-    if (s.destino) fetchRoute(addr, s.destino);
+    if (s.destino) fetchRoute(addr, s.destino, airp);
   }
 
   function onDestinationChanged() {
     const place = destAcRef.current?.getPlace();
     if (!place?.formatted_address) return;
     const addr = place.formatted_address;
-    onUpdate(s.id, { destino: addr, km: 0, minutes: 0 });
+    onUpdate(s.id, { destino: addr, km: 0, minutes: 0, prices: null });
     setHasDestino(true);
-    if (s.origen) fetchRoute(s.origen, addr);
+    if (s.origen) fetchRoute(s.origen, addr, s.airport);
   }
 
   function clearOrigen() {
     if (originInputRef.current) originInputRef.current.value = "";
     setHasOrigen(false);
     airportPlaceRef.current = "";
-    onUpdate(s.id, { origen: "", airport: false, km: 0, minutes: 0, vuelo: "" });
+    onUpdate(s.id, { origen: "", airport: false, km: 0, minutes: 0, prices: null, vuelo: "" });
     originInputRef.current?.focus();
   }
 
   function clearDestino() {
     if (destInputRef.current) destInputRef.current.value = "";
     setHasDestino(false);
-    onUpdate(s.id, { destino: "", km: 0, minutes: 0 });
+    onUpdate(s.id, { destino: "", km: 0, minutes: 0, prices: null });
     destInputRef.current?.focus();
   }
 
-  const r = calcRow(s);
+  const r = calcRow(s, tablas);
   const acOptions = AC_OPTIONS;
 
   return (
@@ -291,7 +297,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
         <div className="cq-f">
           <label>{t.date}</label>
           <input type="date" min={getMinDate()} value={s.fecha} suppressHydrationWarning
-            onChange={(e) => onUpdate(s.id, { fecha: e.target.value, km: 0, minutes: 0 })} />
+            onChange={(e) => onUpdate(s.id, { fecha: e.target.value, km: 0, minutes: 0, prices: null })} />
         </div>
         <div className="cq-f">
           <label>{t.time}</label>
@@ -308,7 +314,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
                   onChange={(e) => {
                     const v = e.target.value;
                     setHasOrigen(!!v);
-                    if (!v) { onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, vuelo:"" }); return; }
+                    if (!v) { onUpdate(s.id, { origen:"", airport:false, km:0, minutes:0, prices:null, vuelo:"" }); return; }
                     // Escribir "AICM" o "aeropuerto" a mano ya activa el recargo,
                     // sin tener que elegir una sugerencia; y si el texto deja de
                     // ser el aeropuerto que Google confirmó, el recargo se cae.
@@ -331,7 +337,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
             <Autocomplete onLoad={(a) => { destAcRef.current = a; }} onPlaceChanged={onDestinationChanged} options={acOptions}>
               <input ref={destInputRef} className="cq-ac-input" type="text" placeholder={t.addressPh}
                 defaultValue={s.destino}
-                onChange={(e) => { setHasDestino(!!e.target.value); if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0 }); }} />
+                onChange={(e) => { setHasDestino(!!e.target.value); if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0, prices:null }); }} />
             </Autocomplete>
           ) : (
             <input className="cq-ac-input" type="text" placeholder={t.loadingMaps} disabled />
@@ -394,10 +400,17 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
 // ─── Página principal ──────────────────────────────────────────────────────
 const INITIAL_SERVICE: Service = {
   id:1, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan",
-  airport:false, vuelo:"", notas:"", km:0, minutes:0,
+  airport:false, vuelo:"", notas:"", km:0, minutes:0, prices:null,
 };
 
-export default function QuoteClient({ lang }: { lang: Lang }) {
+export default function QuoteClient({
+  lang,
+  tablas,
+}: {
+  lang: Lang;
+  /** Mínimos por categoría, ya calculados en el servidor. */
+  tablas: TablasQuote;
+}) {
   const t = TX[lang];
   const home = path(lang, "home");
   const { isLoaded } = useJsApiLoader({ googleMapsApiKey: GOOGLE_MAPS_KEY, libraries });
@@ -414,7 +427,7 @@ export default function QuoteClient({ lang }: { lang: Lang }) {
   function addService() {
     if (services.length >= MAX_SERVICES) return;
     const id = idRef.current++;
-    setServices((p) => [...p, { id, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan", airport:false, vuelo:"", notas:"", km:0, minutes:0 }]);
+    setServices((p) => [...p, { id, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan", airport:false, vuelo:"", notas:"", km:0, minutes:0, prices:null }]);
   }
   function removeService(id: number) { setServices((p) => p.filter((x) => x.id !== id)); }
   function updateService(id: number, patch: Partial<Service>) {
@@ -422,7 +435,7 @@ export default function QuoteClient({ lang }: { lang: Lang }) {
   }
 
   const totals = services.reduce((acc, s) => {
-    const r = calcRow(s);
+    const r = calcRow(s, tablas);
     return { base: acc.base + r.base, iva: acc.iva + r.iva, total: acc.total + r.total };
   }, { base:0, iva:0, total:0 });
 
@@ -431,7 +444,7 @@ export default function QuoteClient({ lang }: { lang: Lang }) {
   const grandTotal = totals.total + financingSurcharge;
   const termLabelShort = t.termsShort[selectedTerm.key];
 
-  const hasEstimates = services.some((s) => calcRow(s).estimate && (s.origen || s.destino));
+  const hasEstimates = services.some((s) => calcRow(s, tablas).estimate && (s.origen || s.destino));
 
   function buildBody() {
     const date = new Date().toLocaleDateString("es-MX", { day:"2-digit", month:"long", year:"numeric" });
@@ -449,7 +462,7 @@ export default function QuoteClient({ lang }: { lang: Lang }) {
     ];
     services.forEach((s, i) => {
       const v = VEHICLES.find((x) => x.key === s.vehiculo)?.label ?? s.vehiculo;
-      const r = calcRow(s);
+      const r = calcRow(s, tablas);
       lines.push(`${i+1}. ${s.fecha} ${s.hora} | ${v}`);
       lines.push(`   Origen:  ${s.origen}`);
       lines.push(`   Destino: ${s.destino}`);
@@ -712,6 +725,7 @@ export default function QuoteClient({ lang }: { lang: Lang }) {
                     onUpdate={updateService}
                     onRemove={removeService}
                     t={t}
+                    tablas={tablas}
                   />
                 ))}
               </section>

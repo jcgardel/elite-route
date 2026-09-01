@@ -16,6 +16,10 @@ import { ROUTE_KEYS, routePath } from "@/lib/routes";
 const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "monthly" | "yearly" }> = [
   { page: "home", priority: 1, changeFrequency: "weekly" },
   { page: "rates", priority: 0.8, changeFrequency: "monthly" },
+  // Prioridad alta por el mismo motivo que las rutas: persigue una búsqueda
+  // con intención de compra —"chofer por horas cdmx"— que hasta ahora caía
+  // en /tarifas y competía ahí con todo lo demás.
+  { page: "hourly", priority: 0.9, changeFrequency: "monthly" },
   { page: "corporate", priority: 0.7, changeFrequency: "monthly" },
   { page: "quote", priority: 0.6, changeFrequency: "monthly" },
   { page: "terms", priority: 0.3, changeFrequency: "yearly" },

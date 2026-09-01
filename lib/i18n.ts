@@ -30,6 +30,7 @@ export const LANG_COOKIE = "er-lang";
 export type Page =
   | "home"
   | "rates"
+  | "hourly"
   | "corporate"
   | "quote"
   | "privacy"
@@ -40,6 +41,10 @@ export type Page =
 const SLUGS: Record<Page, Record<Lang, string>> = {
   home: { en: "", es: "" },
   rates: { en: "rates", es: "tarifas" },
+  // Quien busca esto escribe "chofer por horas cdmx" o "hourly car service
+  // Mexico City". Hasta ahora esa búsqueda caía en /tarifas, que habla de
+  // todos los servicios a la vez y por eso no gana ninguno.
+  hourly: { en: "hourly-chauffeur", es: "chofer-por-horas" },
   corporate: { en: "corporate", es: "b2b" },
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },

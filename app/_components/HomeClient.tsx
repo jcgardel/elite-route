@@ -3,36 +3,37 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import BrandMark from "./BrandMark";
 import { path, type Lang } from "@/lib/i18n";
+import { LEGAL } from "@/lib/legal";
+import {
+  GOOGLE_PLACE_URL,
+  GOOGLE_WRITE_REVIEW_URL,
+  REVIEWS,
+} from "@/lib/social-proof";
 import InstallHint from "./InstallHint";
 import LangToggle from "./LangToggle";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import {
-  calculatePrice,
   detectZone,
   isAirportAddress,
   isAirportPlace,
   serviceTypeLabel,
   serviceTypeLabelEs,
-  tariffs,
+  vehicles,
+  CATEGORIES,
   zoneLabel,
   zoneLabelEs,
   type Category,
   type ServiceType,
   type Zone,
-} from "@/lib/booking";
+} from "@/lib/vehicles";
+import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
+import { NOTAS_MAX } from "@/lib/booking-form";
+import { track } from "@/lib/analytics";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-
-// Ficha real "Elite Route MX" en Google Maps (5.0 · 20 reseñas, verificado
-// 2026-08-27). Un solo lugar para las dos URLs, para no repetir el Place ID.
-const GOOGLE_PLACE_ID = "ChIJwYyKBzB3-SYRmnY1eNB8Vf0";
-const GOOGLE_PLACE_URL =
-  "https://www.google.com/maps/place/Elite+Route+MX/data=!4m7!3m6!1s0x26f97730078a8cc1:0xfd557cd07835769a!8m2!3d19.9422083!4d-99.440172!16s%2Fg%2F11zgs9m1dv!19s" +
-  GOOGLE_PLACE_ID;
-const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 
 // Sesgo geográfico: prioriza sugerencias dentro de la ZMVM.
 // strictBounds:false permite rutas foráneas si el usuario las escribe explícitamente.
@@ -145,6 +146,9 @@ const TX = {
     airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included",
     vatIncluded: "VAT included",
     fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
+    notes: "Anything we should know? (optional)",
+    notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
+    notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
     stServiceType: "Service type", stIncludedKm: "Included km", stDateTime: "Date & time",
     stPickup: "Pickup", stDestination: "Destination", stOpenItinerary: "Open itinerary",
     stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
@@ -158,9 +162,14 @@ const TX = {
     footTerms: "Terms",
     footPrivacy: "Privacy",
     footRates: "Rates",
+    footHourly: "Hourly chauffeur",
+    // Sin año: se pintaría en el servidor y otra vez en el navegador, y en
+    // el cambio de año los dos no coinciden. No vale una advertencia de
+    // hidratación por un dato que no aporta.
+    footRights: "Elite Route MX · Mexico City",
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
-    whatsappBtn: "Ask via WhatsApp",
+    whatsappBtn: "Prefer to confirm over WhatsApp?",
     legal: "Paid bookings remain subject to final availability confirmation by Elite Route.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Enter the pickup location.",
@@ -220,6 +229,9 @@ const TX = {
     airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos",
     vatIncluded: "IVA incluido",
     fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
+    notes: "¿Algo que debamos saber? (opcional)",
+    notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
+    notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
     stServiceType: "Tipo de servicio", stIncludedKm: "Km incluidos", stDateTime: "Fecha y hora",
     stPickup: "Recogida", stDestination: "Destino", stOpenItinerary: "Disposición libre",
     stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
@@ -233,9 +245,11 @@ const TX = {
     footTerms: "Términos",
     footPrivacy: "Aviso de privacidad",
     footRates: "Tarifas",
+    footHourly: "Chofer por horas",
+    footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
-    whatsappBtn: "Consultar por WhatsApp",
+    whatsappBtn: "¿Prefieres confirmar por WhatsApp?",
     legal: "Las reservas pagadas están sujetas a confirmación final de disponibilidad por parte de Elite Route.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Ingresa el lugar de recogida.",
@@ -342,6 +356,28 @@ const styles = `
   .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-input option { background:#0A0A0A; color:#FFFFFF; }
+
+  /* Hereda del input: mismo fondo, mismo borde, mismo foco. Lo único propio
+     es que crece en alto y no en ancho —resize:vertical— porque un textarea
+     arrastrable en horizontal rompe la rejilla del formulario en el
+     teléfono. El alto mínimo deja ver tres renglones sin tener que
+     desplazar. */
+  .er-textarea { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; line-height:1.55; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; resize:vertical; min-height:92px; display:block; }
+  .er-textarea:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
+  .er-textarea::placeholder { color:#BFC3C8; opacity:0.72; }
+  .er-notes-foot { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-top:7px; }
+  .er-notes-help { color:#8B8B87; font-size:12px; line-height:1.5; max-width:62ch; }
+  .er-notes-count { color:#8B8B87; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
+  .er-notes-count.full { color:#C8A46B; }
+
+  /* Enlace y no botón, a propósito: es la salida para quien todavía no
+     quiere dejar la tarjeta, no una segunda llamada a la acción. El verde
+     de WhatsApp aparece sólo en el ícono; el texto se queda en el gris del
+     resto para no gritar más que el botón de pagar. */
+  .er-wa-link { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; padding:10px; min-height:44px; color:#BFC3C8; font-size:13.5px; text-decoration:none; transition:color 0.2s; }
+  .er-wa-link svg { color:#25D366; flex-shrink:0; }
+  .er-wa-link:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
+  .er-wa-link:focus-visible { outline:2px solid #C8A46B; outline-offset:2px; }
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
   .er-input-clear {
@@ -540,10 +576,25 @@ const styles = `
   .er-foot-billing:hover { color:#C8A46B; }
   /* #8B8B87 da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
      por debajo del 4.5:1 que pide la WCAG para texto pequeño. */
-  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; padding-top:16px; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
+  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:18px; font-style:normal; font-size:12.5px; line-height:1.6; color:#8B8B87; }
+  .er-foot-id-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
+  .er-foot-id-contact { display:flex; flex-wrap:wrap; gap:6px 18px; }
+  .er-foot-id-contact a { color:#BFC3C8; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }
+  .er-foot-id-contact a:hover { color:#C8A46B; border-bottom-color:#C8A46B; }
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid #191919; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
   .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
   .er-foot-links a { color:#C8A46B; text-decoration:none; }
   .er-foot-links a:hover { color:#fff; }
+
+  /* La media query general apila el pie en móvil, pero está declarada
+     ANTES que las reglas de arriba, así que con la misma especificidad
+     perdía y el align-items:center seguía aplicando: el nombre del
+     negocio salía centrado sobre unos enlaces alineados a la izquierda.
+     Va aquí, después, para que gane. */
+  @media (max-width:700px) {
+    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
+    .er-foot-meta { gap:12px; }
+  }
 
   /* ── Foco de teclado ───────────────────────────────────────────────
      Sin esto, quien navega con teclado no ve dónde está parado. */
@@ -554,7 +605,20 @@ const styles = `
   .er-wa-fab:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; border-radius:2px; }
 `;
 
-export default function HomeClient({ lang }: { lang: Lang }) {
+export default function HomeClient({
+  lang,
+  tablas,
+}: {
+  lang: Lang;
+  /**
+   * Precios por horas y de día completo, ya resueltos en el servidor. No se
+   * calculan aquí porque hacerlo obligaba a importar el tarifario, y todo lo
+   * que importa un componente de cliente se descarga en el navegador del
+   * visitante: el costo por kilómetro de cada categoría viajaba en texto
+   * plano dentro del JavaScript del sitio.
+   */
+  tablas: TablasCotizador;
+}) {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
   const originInputRef = useRef<HTMLInputElement>(null);
@@ -567,7 +631,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const corporate = path(lang, "corporate");
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>
-    lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap;
+    lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap;
 
   // En móvil el formulario ocupa todo el ancho, así que un botón flotante fijo
   // acaba encima de sus campos. Se oculta mientras la tarjeta está a la vista.
@@ -584,6 +648,14 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   }, []);
 
   const [step, setStep] = useState(1);
+  // El primer evento del embudo se manda una vez y no en cada tecla: sin
+  // esto, "empezó a cotizar" contaría una vez por carácter escrito.
+  const yaContadaLaIntencion = useRef(false);
+  function marcarIntencion() {
+    if (yaContadaLaIntencion.current) return;
+    yaContadaLaIntencion.current = true;
+    track("cotizacion_iniciada", { tipo_servicio: serviceType });
+  }
   const [serviceType, setServiceType] = useState<ServiceType>("route");
   const [rentalHours, setRentalHours] = useState(3);
   const [origin, setOrigin] = useState("");
@@ -593,12 +665,17 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const [km, setKm] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [zone, setZone] = useState<Zone>("cdmx");
+  /** Precio de las cuatro categorías para la ruta cotizada, tal como lo
+   *  devolvió el servidor. `null` mientras no haya una ruta calculada. */
+  const [routePrices, setRoutePrices] = useState<PrecioPorCategoria | null>(null);
   const [category, setCategory] = useState<Category>("executive");
   // Dirección exacta que Google confirmó como aeropuerto. Se guarda el texto
   // (y no un booleano) para que el recargo se caiga solo si el cliente edita
   // el campo después de haber elegido el aeropuerto en el autocompletado.
   const [airportPlace, setAirportPlace] = useState("");
   const [fullName, setFullName] = useState("");
+  /** Solicitudes extra del cliente. Opcional: la reserva es válida sin ellas. */
+  const [notes, setNotes] = useState("");
   const [phone, setPhone] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -614,10 +691,18 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
   const locale = lang === "es" ? "es-MX" : "en-US";
 
+  /**
+   * El precio ya no se calcula aquí: se consulta.
+   *
+   * Por horas y por día sale de las tablas que trae el servidor, que no
+   * dependen de la ruta. Un traslado sí depende de la ruta, así que su
+   * precio llega junto con los kilómetros en la respuesta de /api/maps y
+   * vive en `routePrices` hasta que el visitante cambie el recorrido.
+   */
   function priceFor(cat: Category) {
-    return serviceType === "route" && km === 0
-      ? 0
-      : calculatePrice(km, minutes, cat, serviceType, rentalHours, airportPickup);
+    if (serviceType === "day") return tablas.dia[cat] ?? 0;
+    if (serviceType === "hour") return tablas.horas[rentalHours]?.[cat] ?? 0;
+    return routePrices?.[cat] ?? 0;
   }
   const price = priceFor(category);
 
@@ -628,7 +713,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, tariffs[category].name],
+        [t.stVehicle, vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabelEs(serviceType, rentalHours)],
@@ -639,14 +724,29 @@ export default function HomeClient({ lang }: { lang: Lang }) {
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, tariffs[category].name],
+        [t.stVehicle, vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabel(serviceType, rentalHours)],
       ];
 
-  function goStep(n: number) { setStep(n); window.scrollTo({ top: 0, behavior: "smooth" }); }
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); goStep(1); }
+  function goStep(n: number) {
+    // El precio con IVA sólo está delante del visitante en el paso 3; ahí es
+    // donde se decide, y por eso es el paso que interesa contar.
+    if (n === 3) {
+      track("precio_mostrado", {
+        tipo_servicio: serviceType,
+        categoria: category,
+        value: price,
+        currency: "MXN",
+      });
+    }
+    setStep(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  // El precio se borra junto con la ruta: si se quedara, el visitante podría
+  // ver el importe del recorrido anterior mientras edita el nuevo.
+  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null); goStep(1); }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
@@ -678,7 +778,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       const res = await fetch("/api/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination: dest }),
+        body: JSON.stringify({ origin, destination: dest, airportPickup }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -696,6 +796,13 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       setKm(routeKm);
       setMinutes(Number(data.minutes));
       setZone(detectZone(data.km));
+      setRoutePrices(data.prices ?? null);
+      track("ruta_completada", {
+        tipo_servicio: serviceType,
+        km: routeKm,
+        minutos: Number(data.minutes),
+        desde_aeropuerto: airportPickup,
+      });
       goStep(2);
     } catch {
       setAlert1(t.alertConnErr);
@@ -705,6 +812,10 @@ export default function HomeClient({ lang }: { lang: Lang }) {
   }
 
   function buildWhatsAppMessage() {
+    // `null` = renglón que no aplica y se quita; `""` = renglón en blanco que
+    // separa bloques y se conserva. Antes los dos eran "" y el filtro se
+    // llevaba también los separadores, así que el mensaje llegaba en un solo
+    // párrafo apelmazado.
     return [
       "━━━━━━━━━━━━━━━━━━━━━━",
       "🚗 *ELITE ROUTE — Nueva reserva*",
@@ -716,23 +827,26 @@ export default function HomeClient({ lang }: { lang: Lang }) {
       "",
       "*Servicio*",
       `Tipo: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
-      serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : "",
+      serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : null,
       `Fecha: ${formatDateTime(serviceDate, serviceTime, "es-MX")}`,
       `Origen: ${origin}`,
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
       "",
       "*Detalles*",
-      `Vehículo: ${tariffs[category].name}`,
+      `Vehículo: ${vehicles[category].name}`,
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
-      airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : "",
+      airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : null,
+      // Junto al resto del servicio y no al final: es parte de lo que hay
+      // que preparar, no una posdata.
+      notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : null,
       "",
       `*💰 Total estimado con IVA: $${price.toLocaleString("es-MX")} MXN*`,
       "",
       "_Solicito confirmación de disponibilidad._",
       "━━━━━━━━━━━━━━━━━━━━━━",
-    ].filter(Boolean).join("\n");
+    ].filter((linea) => linea !== null).join("\n");
   }
 
   function handleWhatsApp(e: MouseEvent<HTMLAnchorElement>) {
@@ -742,6 +856,15 @@ export default function HomeClient({ lang }: { lang: Lang }) {
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
     setAlert3("");
+    // Después de las validaciones: un clic que sólo enseñó "falta el nombre"
+    // no es una salida a WhatsApp, y contarlo inflaría el canal.
+    track("clic_whatsapp", {
+      tipo_servicio: serviceType,
+      categoria: category,
+      value: price,
+      currency: "MXN",
+      con_solicitudes: notes.trim().length > 0,
+    });
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
       "_blank", "noopener,noreferrer"
@@ -755,13 +878,20 @@ export default function HomeClient({ lang }: { lang: Lang }) {
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
 
     setAlert3("");
+    track("pago_iniciado", {
+      tipo_servicio: serviceType,
+      categoria: category,
+      value: price,
+      currency: "MXN",
+      con_solicitudes: notes.trim().length > 0,
+    });
     setPaymentLoading(true);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          serviceType, rentalHours, origin, destination, serviceDate, serviceTime,
+          serviceType, rentalHours, origin, destination, serviceDate, serviceTime, notes,
           km, minutes, zone, category, fullName, phone, airportPickup, lang,
         }),
       });
@@ -933,7 +1063,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                 <input id="origin-input" ref={originInputRef} className="er-input er-input--clearable"
                   placeholder={t.pickupPlaceholder} value={origin}
                   onFocus={() => attachAutocomplete(originInputRef.current, originRef, onOriginChanged)}
-                  onChange={(e) => setOrigin(e.target.value)}/>
+                  onChange={(e) => { setOrigin(e.target.value); marcarIntencion(); }}/>
                 {origin && (
                   <button type="button" className="er-input-clear" aria-label={lang === "es" ? "Borrar dirección" : "Clear address"}
                     onClick={() => setOrigin("")}>×</button>
@@ -978,9 +1108,9 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
               >
-                {(Object.keys(tariffs) as Category[]).map((cat) => (
+                {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
-                    {tariffs[cat].name} · {capFor(cat)}
+                    {vehicles[cat].name} · {capFor(cat)}
                   </option>
                 ))}
               </select>
@@ -1014,18 +1144,21 @@ export default function HomeClient({ lang }: { lang: Lang }) {
 
 
             <div className="er-vehicles">
-              {(Object.keys(tariffs) as Category[]).map((cat) => {
+              {CATEGORIES.map((cat) => {
                 const p = priceFor(cat);
                 return (
                   <button key={cat} type="button"
                     className={`er-vehicle${category===cat?" selected":""}`}
-                    onClick={() => setCategory(cat)}>
+                    onClick={() => {
+                      setCategory(cat);
+                      track("vehiculo_seleccionado", { categoria: cat, value: p, currency: "MXN" });
+                    }}>
                     <div className="er-vehicle-bg"
                       style={{ backgroundImage:`url(${vehicleImages[cat]})` }}/>
                     <div className="er-vehicle-overlay"/>
                     <div className="er-vehicle-content">
-                      <div className="er-vehicle-name">{tariffs[cat].name}</div>
-                      <div className="er-vehicle-tag">{tariffs[cat].tag}</div>
+                      <div className="er-vehicle-name">{vehicles[cat].name}</div>
+                      <div className="er-vehicle-tag">{vehicles[cat].tag}</div>
                       <div className="er-vehicle-cap">{capFor(cat)}</div>
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
@@ -1072,6 +1205,37 @@ export default function HomeClient({ lang }: { lang: Lang }) {
               </div>
             </div>
 
+            {/* Solicitudes extra. Va antes del resumen y del pago porque es
+                parte de lo que se está reservando, no un añadido posterior:
+                quien necesita silla de bebé quiere decirlo ANTES de dar la
+                tarjeta. El texto viaja con la reserva hasta el aviso que
+                recibe el chofer. */}
+            <div className="er-field" style={{ marginBottom: 20 }}>
+              <label className="er-label" htmlFor="notes-input">{t.notes}</label>
+              <textarea
+                id="notes-input"
+                className="er-textarea"
+                placeholder={t.notesPlaceholder}
+                value={notes}
+                maxLength={NOTAS_MAX}
+                rows={3}
+                onChange={(e) => setNotes(e.target.value)}
+                aria-describedby="notes-help"
+              />
+              <div className="er-notes-foot">
+                {/* El aviso no es adorno: sin él, escribir "necesito dos
+                    paradas" se lee como incluido en el precio fijo que está
+                    justo debajo. */}
+                <span id="notes-help" className="er-notes-help">{t.notesHelp}</span>
+                <span
+                  className={`er-notes-count${notes.length >= NOTAS_MAX ? " full" : ""}`}
+                  aria-live="polite"
+                >
+                  {notes.length}/{NOTAS_MAX}
+                </span>
+              </div>
+            </div>
+
             <div className="er-summary">
               {summaryRows.map(([k,v]) => (
                 <div className="er-summary-row" key={k}>
@@ -1095,6 +1259,33 @@ export default function HomeClient({ lang }: { lang: Lang }) {
               {paymentLoading ? t.payLoading : t.payBtn}
             </button>
 
+            {/* La salida para quien no quiere dejar la tarjeta todavía.
+                Deliberadamente un enlace y no un botón: el pago con precio
+                fijo es lo que distingue a Elite Route y tiene que seguir
+                mandando en la pantalla. Dos botones del mismo peso reparten
+                la atención y le quitan fuerza al principal.
+
+                Hace falta aquí porque el botón flotante de WhatsApp se
+                esconde justo cuando el cotizador está a la vista, así que en
+                este paso —con el precio delante y la decisión encima— no
+                había ninguna alternativa a pagar o irse.
+
+                El mensaje va armado con la cotización entera: nombre, fecha,
+                ruta, vehículo, precio y las solicitudes extra. El botón
+                flotante manda "Hola, quisiera cotizar un traslado" y nada
+                más, y obliga a preguntarlo todo otra vez. */}
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              onClick={handleWhatsApp}
+              className="er-wa-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.556 4.118 1.528 5.845L.057 23.486a.5.5 0 0 0 .614.614l5.588-1.463A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.667-.513-5.187-1.408l-.37-.222-3.844 1.007 1.03-3.76-.24-.386A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+              {t.whatsappBtn}
+            </a>
 
             <div className="er-legal">
               {t.legal}<br/>
@@ -1208,11 +1399,7 @@ export default function HomeClient({ lang }: { lang: Lang }) {
             </div>
 
             <div className="er-testimonials-grid">
-              {([
-                { quote: "Seguridad y exclusividad, la mejor opción en transporte privado.", name: "Itzel Sanchez", count: 5, initial: "I" },
-                { quote: "Me encantó, servicio confiable y seguro.", name: "Nayeli Reyes H.", count: 3, initial: "N" },
-                { quote: "Lo que uno siempre espera de un servicio: puntualidad, amabilidad y un excelente servicio. Súper recomendado.", name: "Octavio Santos", count: 2, initial: "O" },
-              ] as const).map((r) => (
+              {REVIEWS.map((r) => (
                 <div className="er-testimonial-card" key={r.name}>
                   <div className="er-testimonial-stars">★★★★★</div>
                   <blockquote className="er-testimonial-quote">“{r.quote}”</blockquote>
@@ -1254,10 +1441,27 @@ export default function HomeClient({ lang }: { lang: Lang }) {
                 {t.footBilling} · contabilidad@eliteroute.mx
               </a>
             </div>
+            {/* Quién es el negocio, dónde está y a qué número se le llama.
+                Estaba sólo en las páginas legales, que casi nadie abre. Un
+                domicilio y un teléfono que se pueden comprobar son la
+                diferencia entre una empresa y un sitio cualquiera. */}
+            <address className="er-foot-id">
+              <span className="er-foot-id-name">{LEGAL.responsable}</span>
+              <span>{LEGAL.domicilio}</span>
+              <span className="er-foot-id-contact">
+                <a href={`tel:+${WHATSAPP_NUMBER}`}>{LEGAL.whatsapp}</a>
+                <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
+              </span>
+            </address>
+
             <div className="er-foot-meta">
-              <span>Elite Route CDMX · business@eliteroute.mx</span>
+              <span>{t.footRights}</span>
               <div className="er-foot-links">
                 <a href={path(lang, "rates")}>{t.footRates}</a>
+                {/* El enlace de "Disposiciones" de la barra es un botón que
+                    baja al cotizador, no una dirección: un buscador no puede
+                    seguirlo. Este sí. */}
+                <a href={path(lang, "hourly")}>{t.footHourly}</a>
                 <a href={corporate}>{t.corporate}</a>
                 <a href={path(lang, "terms")}>{t.footTerms}</a>
                 <a href={path(lang, "privacy")}>{t.footPrivacy}</a>

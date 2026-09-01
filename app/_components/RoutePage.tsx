@@ -1,9 +1,19 @@
 import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
-import { calculatePrice, tariffs, type Category } from "@/lib/booking";
+import { calculatePrice } from "@/lib/booking";
+import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
+import { LEGAL } from "@/lib/legal";
 import { ROUTE_KEYS, ROUTES, routePath, type RouteKey } from "@/lib/routes";
+import {
+  GOOGLE_PLACE_URL,
+  GOOGLE_RATING,
+  GOOGLE_REVIEW_COUNT,
+  REVIEWS,
+  TRANSFERS_PER_YEAR,
+  YEARS_OPERATING,
+} from "@/lib/social-proof";
 
 /**
  * La página de una ruta concreta: AICM → Polanco, AIFA → CDMX, y las demás.
@@ -56,6 +66,18 @@ const TX = {
     ctaBtn: "Cotizar ahora",
     othersTitle: "Otras rutas",
     allRates: "Ver todas las tarifas",
+    trustTitle: "Quién te va a llevar",
+    trustRating: `${GOOGLE_REVIEW_COUNT} reseñas en Google`,
+    trustSeeAll: "Ver las reseñas en Google",
+    trustYears: `${YEARS_OPERATING} años`,
+    trustYearsLabel: "moviendo ejecutivos en Ciudad de México",
+    trustVolume: `+${TRANSFERS_PER_YEAR}`,
+    trustVolumeLabel: "traslados al año",
+    trustPayValue: "Pago con tarjeta",
+    trustPayLabel: "procesado por Stripe; la tarjeta no pasa por este sitio",
+    footPay: "Pago seguro con",
+    footTerms: "Términos",
+    footPrivacy: "Aviso de privacidad",
   },
   en: {
     navRates: "Rates",
@@ -90,6 +112,18 @@ const TX = {
     ctaBtn: "Get a quote",
     othersTitle: "Other routes",
     allRates: "See all rates",
+    trustTitle: "Who is driving you",
+    trustRating: `${GOOGLE_REVIEW_COUNT} reviews on Google`,
+    trustSeeAll: "Read the reviews on Google",
+    trustYears: `${YEARS_OPERATING} years`,
+    trustYearsLabel: "moving executives in Mexico City",
+    trustVolume: `+${TRANSFERS_PER_YEAR}`,
+    trustVolumeLabel: "transfers a year",
+    trustPayValue: "Card payment",
+    trustPayLabel: "handled by Stripe; your card never passes through this site",
+    footPay: "Secure payment with",
+    footTerms: "Terms",
+    footPrivacy: "Privacy notice",
   },
 } as const;
 
@@ -142,8 +176,40 @@ const styles = `
   .rt-other { border:1px solid #232323; padding:11px 14px; color:#BFC3C8; text-decoration:none; font-size:13px; }
   .rt-other:hover { border-color:#C8A46B; color:#fff; }
 
+  /* CONFIANZA — va justo debajo de la tabla de precios, que es donde nace
+     la duda: el visitante acaba de ver una cifra y todavía no sabe si hay
+     una empresa detrás. */
+  .rt-trust { margin-top:64px; border:1px solid #232323; }
+  .rt-trust-head { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:20px 24px; border-bottom:1px solid #232323; }
+  .rt-trust-badge { display:inline-flex; align-items:center; gap:12px; text-decoration:none; }
+  .rt-trust-score { font-family:var(--font-cormorant),Georgia,serif; font-size:28px; line-height:1; color:#fff; }
+  .rt-trust-stars { color:#C8A46B; font-size:13px; letter-spacing:1px; }
+  .rt-trust-count { color:#BFC3C8; font-size:12.5px; }
+  .rt-trust-see { margin-left:auto; color:#C8A46B; text-decoration:none; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; white-space:nowrap; }
+  .rt-trust-see:hover { color:#fff; }
+
+  .rt-trust-quotes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:#232323; }
+  .rt-trust-quote { background:#0A0A0A; padding:22px 24px; display:flex; flex-direction:column; gap:12px; }
+  .rt-trust-q { font-family:var(--font-cormorant),Georgia,serif; font-size:19px; line-height:1.45; color:#ECEAE6; margin:0; flex-grow:1; text-wrap:balance; }
+  .rt-trust-who { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em; color:#8B8B87; }
+  .rt-trust-who b { color:#fff; font-weight:600; }
+
+  .rt-trust-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:#232323; border-top:1px solid #232323; }
+  .rt-trust-fact { background:#0A0A0A; padding:20px 24px; }
+  .rt-trust-fact-v { font-family:var(--font-barlow-condensed),sans-serif; font-size:19px; font-weight:700; letter-spacing:0.07em; color:#fff; text-transform:uppercase; }
+  .rt-trust-fact-l { color:#8B8B87; font-size:12px; line-height:1.5; margin-top:5px; }
+
   .rt-foot { border-top:1px solid rgba(200,164,107,0.28); margin-top:64px; padding-top:24px; font-size:13px; color:#8B8B87; }
   .rt-foot a { color:#C8A46B; text-decoration:none; }
+  .rt-foot-id { display:flex; flex-direction:column; gap:5px; font-style:normal; line-height:1.6; margin-bottom:18px; }
+  .rt-foot-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
+  .rt-foot-id a { color:#BFC3C8; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }
+  .rt-foot-id a:hover { color:#C8A46B; }
+  .rt-foot-contact { display:flex; flex-wrap:wrap; gap:6px 18px; }
+  .rt-foot-pay { display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:12px; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid #191919; }
+  .rt-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
+  .rt-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#8B8B87; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
+  .rt-foot-links { display:flex; flex-wrap:wrap; gap:8px 20px; }
 
   .rt-root a:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; }
 
@@ -160,6 +226,13 @@ const styles = `
     .rt-section { margin-top:48px; }
     .rt-cta { padding:28px 20px; }
     .rt-table { font-size:14px; }
+    .rt-trust { margin-top:48px; }
+    .rt-trust-head { padding:16px 18px; gap:10px; }
+    .rt-trust-see { margin-left:0; flex-basis:100%; }
+    .rt-trust-quotes { grid-template-columns:1fr; }
+    .rt-trust-quote { padding:18px; }
+    .rt-trust-facts { grid-template-columns:1fr; }
+    .rt-trust-fact { padding:16px 18px; }
   }
 `;
 
@@ -231,9 +304,9 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
               {cats.map((cat) => (
                 <tr key={cat}>
                   <td>
-                    {tariffs[cat].name}
+                    {vehicles[cat].name}
                     <span className="rt-veh-cap">
-                      {lang === "es" ? tariffs[cat].capEs : tariffs[cat].cap}
+                      {lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap}
                     </span>
                   </td>
                   <td>{precio(cat, true)}</td>
@@ -243,6 +316,58 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
             </tbody>
           </table>
           <p className="rt-note">{t.tableNote}</p>
+        </section>
+
+        {/* Reseñas reales de la ficha de Google, las cifras del dueño y
+            quién cobra la tarjeta. Dos reseñas y no las tres de la portada:
+            aquí compiten con el contenido de la ruta, que es lo que trajo
+            al visitante. */}
+        <section className="rt-trust" aria-label={t.trustTitle}>
+          <div className="rt-trust-head">
+            <a className="rt-trust-badge" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">
+              <svg width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" />
+                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+                <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.4C29.5 34.9 26.9 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.6 39.6 16.2 44 24 44z" />
+                <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.5 5.4C39.9 37 44 31.5 44 24c0-1.3-.1-2.7-.4-3.5z" />
+              </svg>
+              <span className="rt-trust-score">{GOOGLE_RATING}</span>
+              <span>
+                <span className="rt-trust-stars">★★★★★</span>
+                <br />
+                <span className="rt-trust-count">{t.trustRating}</span>
+              </span>
+            </a>
+            <a className="rt-trust-see" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">
+              {t.trustSeeAll} →
+            </a>
+          </div>
+
+          <div className="rt-trust-quotes">
+            {REVIEWS.slice(0, 2).map((r) => (
+              <figure className="rt-trust-quote" key={r.name}>
+                <blockquote className="rt-trust-q">“{r.quote}”</blockquote>
+                <figcaption className="rt-trust-who">
+                  <b>{r.name}</b> · Google
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <div className="rt-trust-facts">
+            <div className="rt-trust-fact">
+              <div className="rt-trust-fact-v">{t.trustYears}</div>
+              <div className="rt-trust-fact-l">{t.trustYearsLabel}</div>
+            </div>
+            <div className="rt-trust-fact">
+              <div className="rt-trust-fact-v">{t.trustVolume}</div>
+              <div className="rt-trust-fact-l">{t.trustVolumeLabel}</div>
+            </div>
+            <div className="rt-trust-fact">
+              <div className="rt-trust-fact-v">{t.trustPayValue}</div>
+              <div className="rt-trust-fact-l">{t.trustPayLabel}</div>
+            </div>
+          </div>
         </section>
 
         <section className="rt-section">
@@ -284,11 +409,34 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
           </div>
         </section>
 
-        <div className="rt-foot">
-          <Link href={path(lang, "rates")}>{t.allRates}</Link>
-          {" · "}
-          <Link href={home}>eliteroute.mx</Link>
-        </div>
+        {/* El pie eran dos enlaces. Quien llega aquí desde el buscador no
+            ha visto la portada, así que esta es la única ocasión de decirle
+            quién es el negocio y dónde encontrarlo. */}
+        <footer className="rt-foot">
+          <p className="rt-foot-pay">
+            <span>{t.footPay}</span>
+            <span className="rt-stripe-mark">stripe</span>
+            <span className="rt-cardmark">VISA</span>
+            <span className="rt-cardmark">MASTERCARD</span>
+            <span className="rt-cardmark">AMEX</span>
+          </p>
+
+          <address className="rt-foot-id">
+            <span className="rt-foot-name">{LEGAL.responsable}</span>
+            <span>{LEGAL.domicilio}</span>
+            <span className="rt-foot-contact">
+              <a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a>
+              <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
+            </span>
+          </address>
+
+          <div className="rt-foot-links">
+            <Link href={path(lang, "rates")}>{t.allRates}</Link>
+            <Link href={path(lang, "terms")}>{t.footTerms}</Link>
+            <Link href={path(lang, "privacy")}>{t.footPrivacy}</Link>
+            <Link href={home}>eliteroute.mx</Link>
+          </div>
+        </footer>
       </main>
     </div>
   );

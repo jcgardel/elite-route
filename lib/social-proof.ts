@@ -71,6 +71,15 @@ export const REVIEWS: readonly Review[] = [
 /**
  * Las cifras que sólo Elite Route puede decir. Las dio el dueño; no se
  * calculan solas, así que si cambian hay que venir a cambiarlas aquí.
+ *
+ * Aquí y en ningún otro sitio: la portada las tenía escritas a mano aparte,
+ * y el día que se actualizaron una sola de las dos versiones el sitio habría
+ * dicho dos cifras distintas del mismo negocio en páginas contiguas.
+ *
+ * Actualizadas por el dueño el 31 de agosto de 2026 (antes: 4 años y 600).
+ * "Experiencia en el sector" cuenta la trayectoria del dueño, que es más
+ * larga que la vida de la marca; por eso el número sube más de lo que ha
+ * pasado el tiempo.
  */
-export const YEARS_OPERATING = 4;
-export const TRANSFERS_PER_YEAR = 600;
+export const YEARS_OPERATING = 6;
+export const TRANSFERS_PER_YEAR = 1200;

@@ -8,6 +8,8 @@ import {
   GOOGLE_PLACE_URL,
   GOOGLE_WRITE_REVIEW_URL,
   REVIEWS,
+  TRANSFERS_PER_YEAR,
+  YEARS_OPERATING,
 } from "@/lib/social-proof";
 import InstallHint from "./InstallHint";
 import LangToggle from "./LangToggle";
@@ -187,8 +189,8 @@ const TX = {
     stVehicle: "Vehicle", stDistance: "Distance", stDuration: "Duration", stZone: "Zone",
     totalVat: "Total with VAT",
     trustPay: "Secure payment with",
-    proof1Value: "4 YEARS", proof1Label: "moving executives in Mexico City",
-    proof2Value: "+600", proof2Label: "transfers a year",
+    proof1Value: `+${YEARS_OPERATING} YEARS`, proof1Label: "of experience in the sector",
+    proof2Value: `+${TRANSFERS_PER_YEAR}`, proof2Label: "trips a year",
     proof3Value: "FIXED PRICE", proof3Label: "VAT included, no surprise charges",
     footPay: "Payments processed by",
     footBilling: "CFDI invoicing",
@@ -270,8 +272,8 @@ const TX = {
     stVehicle: "Vehículo", stDistance: "Distancia", stDuration: "Duración", stZone: "Zona",
     totalVat: "Total con IVA",
     trustPay: "Pago seguro con",
-    proof1Value: "4 AÑOS", proof1Label: "moviendo ejecutivos en Ciudad de México",
-    proof2Value: "+600", proof2Label: "traslados al año",
+    proof1Value: `+${YEARS_OPERATING} AÑOS`, proof1Label: "de experiencia en el sector",
+    proof2Value: `+${TRANSFERS_PER_YEAR}`, proof2Label: "viajes por año",
     proof3Value: "PRECIO FIJO", proof3Label: "IVA incluido, sin cargos sorpresa",
     footPay: "Pagos procesados por",
     footBilling: "Facturación CFDI",

@@ -59,21 +59,30 @@ export type Review = {
  * De Laura no hay `count`: la ficha no lo enseña. Se queda sin esa línea
  * antes que inventarle un número.
  *
- * Quedan 22 en el perfil que Google no deja leer sin haber verificado la
- * ficha. Si algún día hacen falta más tarjetas, salen de ahí — no de aquí.
+ * Google enseña ocho de las 27 sin sesión de propietario; las otras 19 sólo
+ * se leen desde el perfil, y hace falta verificar la ficha para entrar. Si
+ * algún día hacen falta más tarjetas, salen de ahí — no de aquí.
+ *
+ * Una advertencia para quien venga a tocar esto: "literal" es literal. Al
+ * cotejarlas contra la ficha aparecieron tres que no lo eran —a Octavio le
+ * habían reescrito la frase entera, a Nayeli le habían abreviado el apellido
+ * y a Itzel le habían puesto un punto final que ella no escribió—. Lo único
+ * que se normaliza es el espacio en blanco: Octavio escribió "Puntualidad
+ * ,amabilidad" con el espacio antes de la coma, y eso en la web se lee como
+ * una errata nuestra, no suya. Las palabras no se tocan.
  */
 export const REVIEWS: readonly Review[] = [
   {
-    quote: "Seguridad y exclusividad, la mejor opción en transporte privado.",
+    quote: "Seguridad y exclusividad, la mejor opción en transporte privado",
     name: "Itzel Sanchez",
     count: 5,
     initial: "I",
   },
   {
     quote:
-      "Lo que uno siempre espera de un servicio: puntualidad, amabilidad y un excelente servicio. Súper recomendado.",
+      "Lo que uno siempre espera de un servicio de aplicación. Puntualidad, amabilidad y un excelente servicio. Super recomendado!",
     name: "Octavio Santos",
-    count: 2,
+    count: 3,
     initial: "O",
   },
   {
@@ -85,8 +94,8 @@ export const REVIEWS: readonly Review[] = [
   },
   {
     quote: "Me encantó, servicio confiable y seguro.",
-    name: "Nayeli Reyes H.",
-    count: 3,
+    name: "Nayeli Reyes Hernández",
+    count: 4,
     initial: "N",
   },
   {

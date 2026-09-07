@@ -28,9 +28,14 @@ export const GOOGLE_PLACE_URL =
 /** El formulario de Google para dejar una reseña en esa ficha. */
 export const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 
-/** Lo que dice la ficha hoy. Verificado el 27 de agosto de 2026. */
+/**
+ * Lo que dice la ficha hoy. Verificado en Google Maps el 7 de septiembre de
+ * 2026: eran 20 el 27 de agosto y ya son 27, así que este número envejece
+ * solo. Conviene revisarlo cada cierto tiempo — decir menos reseñas de las
+ * que hay es regalar prueba social que ya se ganó.
+ */
 export const GOOGLE_RATING = "5.0";
-export const GOOGLE_REVIEW_COUNT = 20;
+export const GOOGLE_REVIEW_COUNT = 27;
 
 export type Review = {
   /** Transcrita literalmente de la ficha. */

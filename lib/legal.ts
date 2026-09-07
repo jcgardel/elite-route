@@ -27,8 +27,16 @@ export const LEGAL = {
   razonSocial: "",
   /** Vacío a propósito: dato personal del dueño. Ver la nota de arriba. */
   rfc: "",
-  /** Domicilio donde se puede ejercer ARCO. */
-  domicilio: "Lago Zurich 244, Ampliación Granada, Miguel Hidalgo, 11529, Ciudad de México",
+  /**
+   * Domicilio donde se puede ejercer ARCO.
+   *
+   * Es el 243, no el 244. Se publicó mal desde el principio y nadie lo notó
+   * hasta que se comparó con la ficha de Google el 7 de septiembre de 2026.
+   * No es un dato cosmético: la LFPDPPP pide que el responsable quede
+   * localizable, y un número de calle equivocado en el aviso de privacidad
+   * rompe justo eso.
+   */
+  domicilio: "Lago Zurich 243, Ampliación Granada, Miguel Hidalgo, 11529, Ciudad de México",
 
   sitio: "eliteroute.mx",
   correoPrivacidad: "contabilidad@eliteroute.mx",
@@ -37,9 +45,9 @@ export const LEGAL = {
   whatsappUrl: "https://wa.me/525543582919",
 
   /** Fecha de la última revisión de los textos legales. */
-  actualizado: "31 de agosto de 2026",
+  actualizado: "7 de septiembre de 2026",
   /** La misma fecha para la versión en inglés. */
-  updated: "August 31, 2026",
+  updated: "September 7, 2026",
 
   /**
    * Terceros que tratan datos del cliente. Cada uno está en el código:

@@ -41,15 +41,26 @@ export type Review = {
   /** Transcrita literalmente de la ficha. */
   quote: string;
   name: string;
-  /** Cuántas reseñas ha escrito esa persona en Google. */
-  count: number;
+  /**
+   * Cuántas reseñas ha escrito esa persona en Google. Opcional a propósito:
+   * la ficha no lo enseña para todo el mundo, y de quien no lo enseña no hay
+   * de dónde sacarlo. Cuando falta, la tarjeta se queda sin esa línea; nunca
+   * se le pone un número aproximado.
+   */
+  count?: number;
   initial: string;
 };
 
 /**
- * Sólo tres: Google no deja ver más sin sesión iniciada, y las otras
- * diecisiete tienen que salir del perfil de negocio del dueño. Faltan dos
- * para las cinco que pidió.
+ * Las cinco de la portada, transcritas de la ficha el 7 de septiembre de
+ * 2026. Las tres primeras ya estaban; Fabiola y Laura son de esa misma
+ * semana y la ficha las marcaba como NUEVA.
+ *
+ * De Laura no hay `count`: la ficha no lo enseña. Se queda sin esa línea
+ * antes que inventarle un número.
+ *
+ * Quedan 22 en el perfil que Google no deja leer sin haber verificado la
+ * ficha. Si algún día hacen falta más tarjetas, salen de ahí — no de aquí.
  */
 export const REVIEWS: readonly Review[] = [
   {
@@ -66,10 +77,23 @@ export const REVIEWS: readonly Review[] = [
     initial: "O",
   },
   {
+    quote:
+      "Excelente servicio, puntuales, atentos y limpieza perfecta en la unidad. Creo que si tu prioridad es discreción y un servicio premium, Elite Route MX es la primera opción.",
+    name: "Fabiola Escalante Araiza",
+    count: 1,
+    initial: "F",
+  },
+  {
     quote: "Me encantó, servicio confiable y seguro.",
     name: "Nayeli Reyes H.",
     count: 3,
     initial: "N",
+  },
+  {
+    quote:
+      "Me encantó el servicio; el estado de las unidades, la puntualidad y amabilidad de los conductores. Sin duda los recomendaré y seguiré prefiriendo sus servicios.",
+    name: "Laura García",
+    initial: "L",
   },
 ];
 

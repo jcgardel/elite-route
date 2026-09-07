@@ -235,7 +235,7 @@ const TX = {
     reviewsRatingLabel: "Reviews on Google",
     reviewsWriteBtn: "Write us a review",
     reviewsSeeBtn: "See reviews",
-    reviewsCount: (n: number) => `${n} Google reviews`,
+    reviewsCount: (n: number) => (n === 1 ? "1 Google review" : `${n} Google reviews`),
   },
   es: {
     services: "Disposiciones", airports: "Traslados", corporate: "Corporativo", contact: "Contacto", reserveNow: "Reservar",
@@ -315,7 +315,8 @@ const TX = {
     reviewsRatingLabel: "Reseñas en Google",
     reviewsWriteBtn: "Escríbenos una reseña",
     reviewsSeeBtn: "Ver reseñas",
-    reviewsCount: (n: number) => `${n} reseñas en Google`,
+    reviewsCount: (n: number) =>
+      n === 1 ? "1 reseña en Google" : `${n} reseñas en Google`,
   },
 };
 
@@ -499,8 +500,17 @@ const styles = `
   .er-testimonials-title { font-family:var(--font-cormorant),serif; font-size:clamp(28px,4vw,46px); font-weight:300; color:#fff; margin-bottom:40px; line-height:1.1; text-wrap:balance; }
   /* Tres columnas fijas: con auto-fit se abrían cuatro y el quinto
      testimonio se quedaba solo en la segunda fila. */
-  .er-testimonials-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
-  @media (max-width:1000px) { .er-testimonials-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  /* Flex y no grid: son cinco reseñas y tres columnas, así que la última fila
+     va incompleta. Con grid se pegaba a la izquierda dejando un hueco; con
+     flex-wrap + justify-content:center las dos de abajo quedan centradas y
+     del mismo ancho que las tres de arriba (el max-width se encarga). */
+  .er-testimonials-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
+  /* La base tiene que ser el ancho de columna, no un mínimo cómodo: flex parte
+     las filas mirando flex-basis, no max-width, así que con 280px entraban
+     cuatro tarjetas arriba y una suelta abajo. Y grow en 0 para que las dos
+     de la última fila no se estiren a lo ancho de las tres de arriba. */
+  .er-testimonials-grid > * { flex:0 1 calc((100% - 40px) / 3); min-width:0; }
+  @media (max-width:1000px) { .er-testimonials-grid > * { flex-basis:calc((100% - 20px) / 2); } }
   .er-testimonial-card { background:#0d0d0d; border:1px solid #2e2e2e; padding:28px 26px; display:flex; flex-direction:column; gap:16px; }
   .er-testimonial-stars { color:#C8A46B; font-size:14px; letter-spacing:3px; }
   .er-testimonial-quote { font-family:var(--font-cormorant),serif; font-size:16px; font-weight:300; color:#D8D8D8; line-height:1.7; font-style:italic; margin:0; }
@@ -525,7 +535,7 @@ const styles = `
   .er-reviews-btn-secondary { background:transparent; border:1px solid #2e2e2e; color:#BFC3C8; }
   .er-reviews-btn-secondary:hover { border-color:#C8A46B; color:#C8A46B; }
 
-  @media (max-width:900px) { .er-testimonials-grid { grid-template-columns:1fr; } .er-testimonials { padding:48px 20px; } }
+  @media (max-width:900px) { .er-testimonials-grid > * { flex-basis:100%; } .er-testimonials { padding:48px 20px; } }
   .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
   .er-hero .er-comfort { max-width:720px; margin-top:0; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
   .er-comfort-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:34px; line-height:1.05; font-weight:300; margin:0; }
@@ -1450,7 +1460,10 @@ export default function HomeClient({
                     <div className="er-testimonial-avatar">{r.initial}</div>
                     <div>
                       <div className="er-testimonial-name">{r.name}</div>
-                      <div className="er-testimonial-role">{t.reviewsCount(r.count)}</div>
+                      {/* Google no enseña este número de todo el mundo. Sin él, la línea no va. */}
+                      {r.count !== undefined && (
+                        <div className="er-testimonial-role">{t.reviewsCount(r.count)}</div>
+                      )}
                     </div>
                   </div>
                 </div>

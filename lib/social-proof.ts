@@ -52,9 +52,16 @@ export type Review = {
 };
 
 /**
- * Las cinco de la portada, transcritas de la ficha el 7 de septiembre de
- * 2026. Las tres primeras ya estaban; Fabiola y Laura son de esa misma
- * semana y la ficha las marcaba como NUEVA.
+ * Las cinco de la portada, transcritas de la ficha. Las páginas de ruta y
+ * de chofer por horas enseñan las dos primeras, así que el orden importa.
+ *
+ * SÓLO CLIENTES. El 15 de septiembre de 2026 salió de aquí la reseña de
+ * Itzel Sanchez: el dueño confirmó que es conductora de Elite Route. Google
+ * prohíbe las reseñas de empleados, y ponerla en el sitio como si fuera de
+ * una clienta es presentar la palabra del equipo como la de alguien de
+ * fuera. Entró en su lugar la de Nestor Sotelo Rodriguez. Antes de añadir
+ * una reseña, preguntar si quien la firma trabaja o ha trabajado con el
+ * negocio.
  *
  * De Laura no hay `count`: la ficha no lo enseña. Se queda sin esa línea
  * antes que inventarle un número.
@@ -73,10 +80,11 @@ export type Review = {
  */
 export const REVIEWS: readonly Review[] = [
   {
-    quote: "Seguridad y exclusividad, la mejor opción en transporte privado",
-    name: "Itzel Sanchez",
-    count: 5,
-    initial: "I",
+    quote:
+      "Muy profesionales y confiables al proporcionar el servicio! Me he sentido super seguro y tranquilo en todos los viajes que he tomado con ellos! Más servicios así por favor!",
+    name: "Nestor Sotelo Rodriguez",
+    count: 3,
+    initial: "N",
   },
   {
     quote:

@@ -1497,13 +1497,17 @@ export default function HomeClient({
                 {t.footBilling} · contabilidad@eliteroute.mx
               </a>
             </div>
-            {/* Quién es el negocio, dónde está y a qué número se le llama.
-                Estaba sólo en las páginas legales, que casi nadie abre. Un
-                domicilio y un teléfono que se pueden comprobar son la
-                diferencia entre una empresa y un sitio cualquiera. */}
+            {/* Quién es el negocio y cómo se le contacta: estaba sólo en las
+                páginas legales, que casi nadie abre.
+                SIN DOMICILIO, a propósito. Elite Route no tiene local: la
+                dirección de LEGAL.domicilio es la casa del dueño, y un
+                servicio de transporte ejecutivo no publica dónde vive quien
+                lo dirige en cada página. Sólo la llevan los avisos de
+                privacidad, porque ahí la ley pide un domicilio. No volver a
+                ponerla aquí para "dar confianza": la dan el teléfono, el
+                correo y las reseñas verificables. */}
             <address className="er-foot-id">
               <span className="er-foot-id-name">{LEGAL.responsable}</span>
-              <span>{LEGAL.domicilio}</span>
               <span className="er-foot-id-contact">
                 <a href={`tel:+${WHATSAPP_NUMBER}`}>{LEGAL.whatsapp}</a>
                 <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>

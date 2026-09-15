@@ -421,9 +421,9 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
             <span className="rt-cardmark">AMEX</span>
           </p>
 
+          {/* Sin domicilio: es la casa del dueño. Ver el pie de HomeClient. */}
           <address className="rt-foot-id">
             <span className="rt-foot-name">{LEGAL.responsable}</span>
-            <span>{LEGAL.domicilio}</span>
             <span className="rt-foot-contact">
               <a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a>
               <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>

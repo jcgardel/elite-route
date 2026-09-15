@@ -545,9 +545,9 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
             <span className="hp-cardmark">AMEX</span>
           </p>
 
+          {/* Sin domicilio: es la casa del dueño. Ver el pie de HomeClient. */}
           <address className="hp-foot-id">
             <span className="hp-foot-name">{LEGAL.responsable}</span>
-            <span>{LEGAL.domicilio}</span>
             <span className="hp-foot-contact">
               <a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a>
               <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>

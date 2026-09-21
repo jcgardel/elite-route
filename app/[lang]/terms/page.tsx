@@ -76,8 +76,9 @@ export default function TermsPage() {
       <p>
         Pickups from any airport include{" "}
         <strong>parking and waiting time for flight delays</strong>. We track the
-        flight and the chauffeur waits as long as needed at no extra cost. For
-        that to work, give us your flight number when you confirm.
+        flight and the chauffeur waits out the whole delay at no extra cost. For
+        that to work, give us your flight number when you confirm. Once you have
+        landed, the 60 courtesy minutes described below start running.
       </p>
 
       <h2>Luggage and passengers</h2>
@@ -104,9 +105,12 @@ export default function TermsPage() {
         from the moment of confirmation.
       </p>
       <p>
-        <strong>No-show</strong> means, at the airport, 60 minutes after actual
-        landing time with no contact from the passenger; elsewhere, 30 minutes
-        after the scheduled pickup time.
+        <strong>No-show</strong> means, at the airport, 60 minutes after the
+        actual landing time; elsewhere, 30 minutes after the scheduled pickup
+        time. Before recording a service as a no-show we try to reach you
+        through the channels you gave us when booking — phone, WhatsApp and
+        email. If there is no reply within that window, the service is recorded
+        as a no-show and the chauffeur leaves.
       </p>
       <p>
         Refunds are processed through the original payment method via Stripe.

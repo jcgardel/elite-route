@@ -80,7 +80,7 @@ const TX = {
     hourNote: "Mínimo 2 horas. Chofer a disposición durante las horas contratadas. IVA incluido.",
     hourRate: "Tarifa / hora c/IVA", h2: "2 horas", h4: "4 horas", h8: "8 horas",
     ratesFoot: "Todos los precios incluyen IVA · Recargo aeropuerto incluido (ingreso a zona de llegadas, espera y estacionamiento) · Distancias y tiempos estimados sujetos a tráfico",
-    cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta.",
+    cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero.",
     stepsKicker: "Cómo funciona",
     stepsTitle: "Tu cuenta activa en 24 hrs",
     steps: [
@@ -134,7 +134,7 @@ const TX = {
     hourNote: "Two-hour minimum. The chauffeur stays at your disposal for the hours booked. VAT included.",
     hourRate: "Rate / hour incl. VAT", h2: "2 hours", h4: "4 hours", h8: "8 hours",
     ratesFoot: "All prices include VAT · Airport surcharge included (arrivals-hall pickup, waiting time and parking) · Distances and times are estimates subject to traffic",
-    cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show.",
+    cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger.",
     stepsKicker: "How it works",
     stepsTitle: "Your account live in 24 hrs",
     steps: [

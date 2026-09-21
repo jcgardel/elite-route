@@ -42,3 +42,7 @@ next-env.d.ts
 
 # local tooling
 /.claude
+
+# instaladores sueltos que se descargan a la raíz (p. ej. el de Homebrew):
+# no son del proyecto y GitHub Desktop los ofrece palomeados en cada commit
+/install.sh

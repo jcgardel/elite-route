@@ -107,8 +107,11 @@ export default function TermsPage() {
       <p>
         <strong>No-show</strong> means, at the airport, 60 minutes after the
         actual landing time; elsewhere, 30 minutes after the scheduled pickup
-        time. Before recording a service as a no-show we try to reach you
-        through the channels you gave us when booking — phone, WhatsApp and
+        time. If you contact us within that window and are still inside the
+        airport, your chauffeur waits <strong>up to 30 extra minutes at no
+        charge</strong>. Before recording a service as a no-show we try to
+        reach you through the channels you gave us when booking — phone,
+        WhatsApp and
         email. If there is no reply within that window, the service is recorded
         as a no-show and the chauffeur leaves.
       </p>

@@ -104,8 +104,11 @@ export default function TerminosPage() {
       <p>
         <strong>No presentarse</strong> significa, en el aeropuerto, 60 minutos
         después de la hora real de aterrizaje; en cualquier otro punto, 30
-        minutos después de la hora de recogida acordada. Antes de dar un
-        servicio por no presentado intentamos comunicarnos contigo por los
+        minutos después de la hora de recogida acordada. Si te comunicas con
+        nosotros dentro de ese plazo y sigues dentro del aeropuerto, tu chofer
+        te espera <strong>hasta 30 minutos adicionales sin costo</strong>.
+        Antes de dar un servicio por no presentado intentamos comunicarnos
+        contigo por los
         medios que nos dejaste al reservar —teléfono, WhatsApp y correo—. Si
         dentro de ese plazo no hay respuesta, el servicio se marca como no
         presentado y el chofer se retira.

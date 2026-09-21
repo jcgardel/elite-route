@@ -65,11 +65,11 @@ export type Route = {
 /** Lo que se repite en todas las fichas y no vale la pena escribir seis veces. */
 const ESPERA_ES: readonly [string, string] = [
   "¿El chofer me espera si mi vuelo se retrasa?",
-  "Sí, y sin costo. La tarifa de salida desde aeropuerto ya incluye el estacionamiento y el tiempo de espera, por largo que sea el retraso. Danos tu número de vuelo al confirmar y lo monitoreamos. Desde que aterrizas tienes 60 minutos de cortesía para encontrarte con el chofer.",
+  "Sí, y sin costo. La tarifa de salida desde aeropuerto ya incluye el estacionamiento y el tiempo de espera, por largo que sea el retraso. Danos tu número de vuelo al confirmar y lo monitoreamos. Desde que aterrizas tienes 60 minutos de cortesía para encontrarte con el chofer, y hasta 30 más si nos avisas que sigues dentro del aeropuerto.",
 ];
 const ESPERA_EN: readonly [string, string] = [
   "Will the chauffeur wait if my flight is delayed?",
-  "Yes, at no extra cost. The airport pickup fare already covers parking and waiting time, however long the delay. Give us your flight number when you confirm and we track it. Once you land you have 60 courtesy minutes to meet your chauffeur.",
+  "Yes, at no extra cost. The airport pickup fare already covers parking and waiting time, however long the delay. Give us your flight number when you confirm and we track it. Once you land you have 60 courtesy minutes to meet your chauffeur, and up to 30 more if you let us know you are still inside the airport.",
 ];
 const ANTICIPACION_ES: readonly [string, string] = [
   "¿Con cuánta anticipación tengo que reservar?",

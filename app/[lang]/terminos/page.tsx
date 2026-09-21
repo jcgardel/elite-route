@@ -72,8 +72,10 @@ export default function TerminosPage() {
       <p>
         Las salidas desde cualquier aeropuerto incluyen{" "}
         <strong>estacionamiento y tiempo de espera por retraso de vuelo</strong>.
-        Monitoreamos el vuelo y el chofer espera el tiempo necesario sin costo
-        adicional. Para que funcione, danos tu número de vuelo al confirmar.
+        Monitoreamos el vuelo y el chofer espera sin costo adicional todo lo
+        que el vuelo se retrase. Para que funcione, danos tu número de vuelo al
+        confirmar. Una vez que aterrizas empiezan a correr los 60 minutos de
+        cortesía descritos abajo.
       </p>
 
       <h2>Equipaje y pasajeros</h2>
@@ -101,9 +103,12 @@ export default function TerminosPage() {
       </p>
       <p>
         <strong>No presentarse</strong> significa, en el aeropuerto, 60 minutos
-        después de la hora real de aterrizaje sin que el pasajero se comunique;
-        en cualquier otro punto, 30 minutos después de la hora de recogida
-        acordada.
+        después de la hora real de aterrizaje; en cualquier otro punto, 30
+        minutos después de la hora de recogida acordada. Antes de dar un
+        servicio por no presentado intentamos comunicarnos contigo por los
+        medios que nos dejaste al reservar —teléfono, WhatsApp y correo—. Si
+        dentro de ese plazo no hay respuesta, el servicio se marca como no
+        presentado y el chofer se retira.
       </p>
       <p>
         Los reembolsos se procesan por el mismo medio de pago, a través de

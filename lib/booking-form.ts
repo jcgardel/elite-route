@@ -16,3 +16,16 @@
  * texto llega entero al aviso del chofer sin recortes.
  */
 export const NOTAS_MAX = 300;
+
+/**
+ * Con cuánta anticipación se puede reservar, en horas.
+ *
+ * Lo comprueban el cotizador (antes de pedir precio) y la ruta de cobro
+ * (antes de crear la sesión de Stripe). Vive aquí para que las dos miren el
+ * mismo número: cuando estaban escritos por separado, cambiar uno dejaba al
+ * otro aceptando reservas que el equipo no podía cubrir.
+ *
+ * Los textos del sitio —términos, FAQ, páginas de ruta— dicen este mismo
+ * número a mano. Si cambia, hay que cambiarlos también.
+ */
+export const MIN_ADVANCE_HOURS = 12;

@@ -69,7 +69,7 @@ const TX = {
     howTitle: "Cómo funciona",
     how: [
       "Eliges las horas y el vehículo en el cotizador y ves el precio en pantalla, antes de dar cualquier dato de pago.",
-      "Pagas con tarjeta o lo confirmas por WhatsApp. Se necesitan seis horas de anticipación como mínimo.",
+      "Pagas con tarjeta o lo confirmas por WhatsApp. Se necesitan doce horas de anticipación como mínimo.",
       "El chofer llega al punto y a la hora acordados y se queda a tu disposición durante todo el bloque.",
     ],
 
@@ -115,7 +115,7 @@ const TX = {
       ],
       [
         "¿Con cuánta anticipación hay que reservar?",
-        "Seis horas como mínimo. Para un día completo o para varios vehículos, conviene avisar antes.",
+        "Doce horas como mínimo. Para un día completo o para varios vehículos, conviene avisar antes.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 
@@ -167,7 +167,7 @@ const TX = {
     howTitle: "How it works",
     how: [
       "Pick the hours and the vehicle in the quote form and see the price on screen, before handing over any payment details.",
-      "Pay by card or confirm over WhatsApp. Six hours' notice minimum.",
+      "Pay by card or confirm over WhatsApp. Twelve hours' notice minimum.",
       "Your chauffeur arrives at the agreed place and time and stays with you for the whole block.",
     ],
 
@@ -213,7 +213,7 @@ const TX = {
       ],
       [
         "How far ahead should I book?",
-        "Six hours minimum. For a full day or several vehicles, earlier is better.",
+        "Twelve hours minimum. For a full day or several vehicles, earlier is better.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 
@@ -432,6 +432,11 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
                       <span className="hp-veh-cap">
                         {lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap}
                       </span>
+                      {(lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note) && (
+                        <span className="hp-veh-cap">
+                          {lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note}
+                        </span>
+                      )}
                     </td>
                     {BLOCKS.map((h) => <td key={h}>{mxn(hourlyPrice(cat, h))}</td>)}
                     <td>{mxn(hourlyPrice(cat, FULL_DAY_HOURS))}</td>

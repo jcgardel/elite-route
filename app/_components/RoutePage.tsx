@@ -62,7 +62,7 @@ const TX = {
     faqTitle: "Preguntas frecuentes",
     ctaTitle: "Reserva esta ruta",
     ctaCopy:
-      "El cotizador calcula el precio exacto con tu dirección real y te deja pagar con tarjeta. Seis horas de anticipación como mínimo.",
+      "El cotizador calcula el precio exacto con tu dirección real y te deja pagar con tarjeta. Doce horas de anticipación como mínimo.",
     ctaBtn: "Cotizar ahora",
     othersTitle: "Otras rutas",
     allRates: "Ver todas las tarifas",
@@ -108,7 +108,7 @@ const TX = {
     faqTitle: "Frequently asked",
     ctaTitle: "Book this route",
     ctaCopy:
-      "The quote form works out the exact price from your real address and lets you pay by card. Six hours' notice minimum.",
+      "The quote form works out the exact price from your real address and lets you pay by card. Twelve hours' notice minimum.",
     ctaBtn: "Get a quote",
     othersTitle: "Other routes",
     allRates: "See all rates",
@@ -308,6 +308,11 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
                     <span className="rt-veh-cap">
                       {lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap}
                     </span>
+                    {(lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note) && (
+                      <span className="rt-veh-cap">
+                        {lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note}
+                      </span>
+                    )}
                   </td>
                   <td>{precio(cat, true)}</td>
                   <td>{precio(cat, false)}</td>

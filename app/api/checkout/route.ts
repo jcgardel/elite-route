@@ -13,7 +13,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
-import { NOTAS_MAX } from "@/lib/booking-form";
+import { MIN_ADVANCE_HOURS, NOTAS_MAX } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = CATEGORIES;
@@ -73,8 +73,8 @@ export async function POST(req: Request) {
 
     const startsAt = new Date(`${serviceDate}T${serviceTime}`);
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
-    if (!Number.isFinite(hoursUntilService) || hoursUntilService < 6) {
-      return NextResponse.json({ error: "El servicio requiere al menos 6 horas de anticipación" }, { status: 400 });
+    if (!Number.isFinite(hoursUntilService) || hoursUntilService < MIN_ADVANCE_HOURS) {
+      return NextResponse.json({ error: `El servicio requiere al menos ${MIN_ADVANCE_HOURS} horas de anticipación` }, { status: 400 });
     }
 
     // La distancia se vuelve a consultar aquí: el precio depende de los km, así

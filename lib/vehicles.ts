@@ -34,7 +34,22 @@ export const CATEGORIES: readonly Category[] = ["sedan", "executive", "minivan",
  * cotizador los tenía en inglés, y un cliente que comparaba las dos veía dos
  * catálogos distintos.
  */
-export const vehicles: Record<Category, { name: string; cap: string; capEs: string; tag: string }> = {
+export const vehicles: Record<
+  Category,
+  {
+    name: string;
+    cap: string;
+    capEs: string;
+    tag: string;
+    /**
+     * Matiz de capacidad para las categorías donde el máximo de pasajeros y
+     * el de maletas no caben a la vez. Opcional: sólo lo lleva quien lo
+     * necesita, y se pinta debajo de la capacidad.
+     */
+    note?: string;
+    noteEs?: string;
+  }
+> = {
   sedan: {
     name: "Sedan",
     cap: "1-3 passengers · 2 bags",
@@ -49,14 +64,16 @@ export const vehicles: Record<Category, { name: string; cap: string; capEs: stri
   },
   minivan: {
     name: "Minivan",
-    cap: "4-6 passengers · 4 bags",
-    capEs: "4-6 pasajeros · 4 maletas",
+    cap: "1-5 passengers · 4 bags",
+    capEs: "1-5 pasajeros · 4 maletas",
     tag: "Captiva",
   },
   suv: {
     name: "High SUV",
     cap: "1-6 passengers · 6 bags",
     capEs: "1-6 pasajeros · 6 maletas",
+    note: "recommended 4 passengers with full luggage",
+    noteEs: "recomendado 4 pasajeros con equipaje completo",
     tag: "Suburban · Escalade",
   },
 };

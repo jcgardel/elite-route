@@ -16,7 +16,7 @@ import type { Lang } from "./i18n";
  * NADA de lo que se afirma aquí sobre una zona es inventado: son hechos
  * generales de la ciudad —dónde se concentran las oficinas, qué tan lejos
  * está cada aeropuerto— y todo lo que promete el servicio (precio fijo,
- * espera incluida, 6 horas de anticipación) ya lo prometen los términos.
+ * espera incluida, 12 horas de anticipación) ya lo prometen los términos.
  */
 export type RouteKey =
   | "polanco"
@@ -73,11 +73,11 @@ const ESPERA_EN: readonly [string, string] = [
 ];
 const ANTICIPACION_ES: readonly [string, string] = [
   "¿Con cuánta anticipación tengo que reservar?",
-  "Seis horas como mínimo. El cotizador no deja elegir un horario más cercano. Si necesitas algo más inmediato, escríbenos por WhatsApp y te decimos si hay unidad disponible.",
+  "Doce horas como mínimo. El cotizador no deja elegir un horario más cercano. Si necesitas algo más inmediato, escríbenos por WhatsApp y te decimos si hay unidad disponible.",
 ];
 const ANTICIPACION_EN: readonly [string, string] = [
   "How far ahead do I need to book?",
-  "Six hours minimum. The quote form will not let you pick a closer time. For anything more immediate, message us on WhatsApp and we will tell you whether a vehicle is free.",
+  "Twelve hours minimum. The quote form will not let you pick a closer time. For anything more immediate, message us on WhatsApp and we will tell you whether a vehicle is free.",
 ];
 
 export const ROUTES: Record<RouteKey, Route> = {

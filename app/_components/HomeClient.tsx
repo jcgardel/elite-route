@@ -30,7 +30,7 @@ import {
   type Zone,
 } from "@/lib/vehicles";
 import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
-import { NOTAS_MAX } from "@/lib/booking-form";
+import { MIN_ADVANCE_HOURS, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
 
 const WHATSAPP_NUMBER = "525543582919";
@@ -212,7 +212,7 @@ const TX = {
     alertDateTime: "Select the service date and time.",
     alertMinHours: "Minimum hourly service is 2 hours.",
     alertPast: "Select a future date and time.",
-    alertAdvance: "At least 6 hours of advance notice are required.",
+    alertAdvance: "At least 12 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
     alertRouteErr: "We could not calculate the route. Please verify the addresses.",
     alertKmExceeded: (a: number, r: number) => `This service includes up to ${a} km. The calculated route is ${r} km.`,
@@ -292,7 +292,7 @@ const TX = {
     alertDateTime: "Selecciona la fecha y hora del servicio.",
     alertMinHours: "El servicio mínimo por hora es de 2 horas.",
     alertPast: "Selecciona una fecha y hora futura.",
-    alertAdvance: "Se requieren al menos 6 horas de anticipación.",
+    alertAdvance: "Se requieren al menos 12 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
     alertRouteErr: "No pudimos calcular la ruta. Por favor verifica las direcciones.",
     alertKmExceeded: (a: number, r: number) => `Este servicio incluye hasta ${a} km. La ruta calculada es de ${r} km.`,
@@ -677,6 +677,10 @@ export default function HomeClient({
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>
     lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap;
+  // Sólo la High SUV la lleva: su máximo de pasajeros y el de maletas no
+  // caben a la vez, y enterarse de eso en la banqueta es tarde.
+  const noteFor = (cat: Category) =>
+    lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note;
 
   // En móvil el formulario ocupa todo el ancho, así que un botón flotante fijo
   // acaba encima de sus campos. Se oculta mientras la tarjeta está a la vista.
@@ -822,7 +826,7 @@ export default function HomeClient({
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
     if (diff <= 0) { setAlert1(t.alertPast); return; }
-    if (diff < 6) { setAlert1(t.alertAdvance); return; }
+    if (diff < MIN_ADVANCE_HOURS) { setAlert1(t.alertAdvance); return; }
 
     setAlert1("");
     setLoading(true);
@@ -1213,6 +1217,7 @@ export default function HomeClient({
                       <div className="er-vehicle-name">{vehicles[cat].name}</div>
                       <div className="er-vehicle-tag">{vehicles[cat].tag}</div>
                       <div className="er-vehicle-cap">{capFor(cat)}</div>
+                      {noteFor(cat) && <div className="er-vehicle-cap">{noteFor(cat)}</div>}
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
                       </div>

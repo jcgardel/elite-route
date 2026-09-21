@@ -55,9 +55,16 @@ export function tablasB2b(): TablasB2b {
       if (leg) rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true);
     }
   }
+  // La tarifa por hora se deriva del bloque de dos horas, no del de una.
+  // El mínimo de cada categoría es mayor que su tarifa horaria, así que el
+  // bloque de una hora cuesta el mínimo y no la hora: enseñarlo como
+  // "tarifa / hora" daba el número de otra categoría. Dividir las dos horas
+  // entre dos garantiza además que la columna cuadre con las de la derecha.
+  const dosHoras = bloque(2);
   return {
     rutas,
     horas: Object.fromEntries(B2B_HORAS.map((h) => [h, bloque(h)])),
+    tarifaHora: porCategoria((c) => Math.round(dosHoras[c] / 2)),
   };
 }
 

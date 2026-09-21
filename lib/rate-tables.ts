@@ -75,8 +75,15 @@ export const B2B_SECTIONS: ReadonlyArray<{
   },
 ];
 
-/** Los bloques por hora que ofrece la página corporativa. */
-export const B2B_HORAS = [1, 2, 4, 8] as const;
+/**
+ * Los bloques por hora que ofrece la página corporativa.
+ *
+ * Sin el 1: el servicio mínimo es de dos horas, así que un bloque de una
+ * hora es un precio que nadie puede comprar. Además engañaba —el mínimo de
+ * cada categoría es mayor que su tarifa horaria, así que "una hora" costaba
+ * el mínimo—. La tarifa por hora va aparte, en `tarifaHora`.
+ */
+export const B2B_HORAS = [2, 4, 8] as const;
 
 /**
  * El rango de horas que deja elegir el cotizador de la portada. El precio de
@@ -100,7 +107,10 @@ export type TablasTarifas = {
 export type TablasB2b = {
   /** Indexado por `${code}:${destino}`, p. ej. "MEX:polanco". */
   rutas: Record<string, PrecioPorCategoria>;
+  /** Lo que cuesta cada bloque completo: 2, 4 y 8 horas. */
   horas: Record<number, PrecioPorCategoria>;
+  /** Lo que cuesta una hora dentro de un bloque, con IVA. */
+  tarifaHora: PrecioPorCategoria;
 };
 
 /** Lo que necesita el cotizador de la portada antes de conocer una ruta. */

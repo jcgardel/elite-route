@@ -14,14 +14,15 @@ export async function generateMetadata() {
 
 /**
  * Términos del servicio. Todo lo que se afirma aquí es lo que el sitio ya
- * hace: la anticipación de 6 horas está validada en el cotizador y en las dos
+ * hace: la anticipación de 12 horas está validada en el cotizador y en las dos
  * rutas de cobro, el precio con IVA sale de lib/booking.ts, el recargo de
  * aeropuerto y la espera por retraso de vuelo están en la lógica de precio, y
  * la confirmación por WhatsApp es el flujo real después del pago.
  *
- * PENDIENTE DEL DUEÑO — la sección de cancelaciones describe el proceso real
- * de hoy (revisión caso por caso, reembolso manual por Stripe) porque no hay
- * una tabla de porcentajes decidida. Cuando exista, sustituye ese bloque.
+ * La tabla de cancelaciones (sin costo con más de 24 h, 50% entre 12 y 24 h,
+ * 100% dentro de las 12 h o si no se presenta) la decidió el dueño el 20 de
+ * septiembre de 2026. Se aplica a mano: no hay automatismo de reembolso, así
+ * que el equipo la ejecuta desde Stripe al recibir el aviso.
  *
  * Su gemelo en inglés es app/[lang]/terms/page.tsx. Son el mismo documento:
  * cambiar uno sin el otro deja al sitio diciendo dos cosas distintas.
@@ -47,7 +48,7 @@ export default function TerminosPage() {
 
       <h2>Anticipación mínima</h2>
       <p>
-        Los traslados se reservan con un mínimo de <strong>6 horas de
+        Los traslados se reservan con un mínimo de <strong>12 horas de
         anticipación</strong>. El cotizador no permite seleccionar un horario
         más cercano. Para algo más inmediato, escríbenos por WhatsApp al{" "}
         <a href={LEGAL.whatsappUrl}>{LEGAL.whatsapp}</a> y te decimos si hay
@@ -91,11 +92,23 @@ export default function TerminosPage() {
         indicando el folio de tu reserva.
       </p>
       <p>
-        Hoy <strong>cada solicitud se revisa de forma individual</strong>: el
-        equipo confirma la modificación o el reembolso según la anticipación con
-        la que se avise y si la unidad ya fue asignada. Los reembolsos se
-        procesan por la misma vía del pago, a través de Stripe, y el banco puede
-        tardar varios días hábiles en reflejarlos.
+        <strong>Cancelaciones:</strong> sin costo con más de 24 horas de
+        anticipación; se cobra el <strong>50%</strong> entre 12 y 24 horas, y el{" "}
+        <strong>100%</strong> dentro de las 12 horas previas o si el pasajero no
+        se presenta. Las reservas confirmadas con menos de 24 horas de
+        anticipación quedan sujetas a estas condiciones desde el momento de la
+        confirmación.
+      </p>
+      <p>
+        <strong>No presentarse</strong> significa, en el aeropuerto, 60 minutos
+        después de la hora real de aterrizaje sin que el pasajero se comunique;
+        en cualquier otro punto, 30 minutos después de la hora de recogida
+        acordada.
+      </p>
+      <p>
+        Los reembolsos se procesan por el mismo medio de pago, a través de
+        Stripe. Las comisiones de procesamiento no son reembolsables, y el banco
+        puede tardar varios días hábiles en reflejar el abono.
       </p>
 
       <h2>Responsabilidad</h2>

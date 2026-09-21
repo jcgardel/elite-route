@@ -19,8 +19,9 @@ export async function generateMetadata() {
  * contrato se celebra en México y se juzga en tribunales mexicanos. Los dos
  * archivos se cambian juntos o no se cambia ninguno.
  *
- * PENDIENTE DEL DUEÑO — la sección de cancelaciones describe el proceso real
- * de hoy porque no hay una tabla de porcentajes decidida.
+ * La tabla de cancelaciones (sin costo con más de 24 h, 50% entre 12 y 24 h,
+ * 100% dentro de las 12 h o si no se presenta) la decidió el dueño el 20 de
+ * septiembre de 2026. Se aplica a mano desde Stripe.
  */
 export default function TermsPage() {
   return (
@@ -51,7 +52,7 @@ export default function TermsPage() {
 
       <h2>Minimum notice</h2>
       <p>
-        Transfers are booked at least <strong>6 hours in advance</strong>. The
+        Transfers are booked at least <strong>12 hours in advance</strong>. The
         quote form will not let you pick a closer time. For anything more
         immediate, message us on WhatsApp at{" "}
         <a href={LEGAL.whatsappUrl}>{LEGAL.whatsapp}</a> and we will tell you
@@ -96,11 +97,21 @@ export default function TermsPage() {
         quoting your booking reference.
       </p>
       <p>
-        Today <strong>each request is reviewed individually</strong>: the team
-        confirms the change or the refund depending on how much notice was given
-        and whether a vehicle had already been assigned. Refunds are processed
-        back through the original payment method via Stripe, and the bank may
-        take several business days to show them.
+        <strong>Cancellations:</strong> free of charge more than 24 hours before
+        pickup; <strong>50%</strong> between 12 and 24 hours; and{" "}
+        <strong>100%</strong> within 12 hours or in case of no-show. Bookings
+        confirmed less than 24 hours before pickup are subject to these terms
+        from the moment of confirmation.
+      </p>
+      <p>
+        <strong>No-show</strong> means, at the airport, 60 minutes after actual
+        landing time with no contact from the passenger; elsewhere, 30 minutes
+        after the scheduled pickup time.
+      </p>
+      <p>
+        Refunds are processed through the original payment method via Stripe.
+        Payment-processing fees are non-refundable, and the bank may take
+        several business days to show the credit.
       </p>
 
       <h2>Liability</h2>

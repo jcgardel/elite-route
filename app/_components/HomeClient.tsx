@@ -159,6 +159,8 @@ const TX = {
     kicker: "Elite Route Mexico City",
     heroTitle: "We move your level.",
     heroCopy: "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation.",
+    heroWaitStrong: "1 free hour of waiting at the airport.",
+    heroWaitRest: "We track your flight and the chauffeur adjusts to the actual landing time.",
     heroBtnReserve: "Reserve Now",
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
@@ -242,6 +244,8 @@ const TX = {
     kicker: "Elite Route Ciudad de México",
     heroTitle: "Movemos tu nivel.",
     heroCopy: "Tu chofer privado en Ciudad de México. Traslados al aeropuerto, servicio por hora y transporte ejecutivo.",
+    heroWaitStrong: "1 hora de espera gratuita en el aeropuerto.",
+    heroWaitRest: "Monitoreamos tu vuelo y el chofer se ajusta a la hora real de aterrizaje.",
     heroBtnReserve: "Reservar Ahora",
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
@@ -357,6 +361,10 @@ const styles = `
   .er-hero-btn:hover { background:#C8A46B; color:#0A0A0A; }
   .er-hero-mail { color:#BFC3C8; border-color:rgba(200,164,107,0.58); text-transform:none; letter-spacing:0.05em; font-size:14px; }
   .er-hero-footer { margin-top:30px; color:#BFC3C8; border-left:2px solid #C8A46B; padding-left:16px; max-width:560px; font-size:15px; line-height:1.6; }
+  .er-hero-wait { display:flex; align-items:flex-start; gap:10px; margin:20px 0 0; padding-left:14px;
+                  border-left:2px solid #C8A46B; max-width:540px; color:#BFC3C8; font-size:14px; line-height:1.55; }
+  .er-hero-wait svg { flex-shrink:0; margin-top:3px; }
+  .er-hero-wait strong { color:#FFFFFF; font-weight:600; }
   .er-proof { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; max-width:620px; margin-top:34px; }
   .er-proof-item { border-top:1px solid rgba(255,255,255,0.32); padding-top:14px; }
   .er-proof-value { font-family:var(--font-barlow-condensed),sans-serif; font-size:24px; font-weight:700; letter-spacing:0.08em; }
@@ -585,6 +593,7 @@ const styles = `
     .er-hero-copy { font-size:15px; }
     /* Compacta, no apilada: apilada empujaba el cotizador 200 px hacia
        abajo, justo lo que se quería evitar en móvil. */
+    .er-hero-wait { margin-top:16px; font-size:13px; padding-left:11px; gap:8px; }
     .er-proof { grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:24px; }
     .er-proof-value { font-size:16px; }
     .er-proof-label { font-size:11px; }
@@ -1008,6 +1017,19 @@ export default function HomeClient({
                 <div className="er-kicker">{t.kicker}</div>
                 <h1 className="er-hero-title">{t.heroTitle}</h1>
                 <p className="er-hero-copy">{t.heroCopy}</p>
+
+                {/* El miedo de quien reserva un aeropuerto no es el precio,
+                    es aterrizar tarde y que el chofer ya no esté. La política
+                    de los 60 minutos existe desde el 20 sep 2026 y vivía sólo
+                    en los términos y el FAQ; aquí se dice donde se decide.
+                    Si cambia el plazo, cambiarlo también en /terminos,
+                    /terms, el FAQ de /tarifas y /rates, la nota de /b2b y
+                    /corporate y ESPERA_ES/ESPERA_EN de lib/routes.ts. */}
+                <p className="er-hero-wait">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8A46B" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  <span><strong>{t.heroWaitStrong}</strong> {t.heroWaitRest}</span>
+                </p>
+
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>
                   <a className="er-hero-btn er-hero-mail" href="mailto:business@eliteroute.mx">

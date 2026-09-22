@@ -46,8 +46,8 @@ export default function TermsPage() {
         By paying through the quote form you are requesting a private transfer
         with a chauffeur for a given date, time, pickup and destination.{" "}
         <strong>The booking remains subject to final confirmation of availability</strong>{" "}
-        by {LEGAL.responsable}. We confirm by WhatsApp or email within minutes of
-        payment. If no vehicle is available, the full amount is refunded.
+        by {LEGAL.responsable}. We confirm by WhatsApp or email the same day. If
+        no vehicle is available, the full amount is refunded.
       </p>
 
       <h2>Minimum notice</h2>

@@ -6,6 +6,7 @@ import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import {
   GOOGLE_PLACE_URL,
+  GOOGLE_REVIEW_COUNT,
   GOOGLE_WRITE_REVIEW_URL,
   REVIEWS,
   TRANSFERS_PER_YEAR,
@@ -207,7 +208,7 @@ const TX = {
     paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
     whatsappBtn: "Prefer to confirm over WhatsApp?",
-    legal: "Paid bookings remain subject to final availability confirmation by Elite Route.",
+    legal: "We confirm your booking over WhatsApp the same day.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Enter the pickup location.",
     alertDest: "Enter the destination.",
@@ -289,7 +290,7 @@ const TX = {
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
     whatsappBtn: "¿Prefieres confirmar por WhatsApp?",
-    legal: "Las reservas pagadas están sujetas a confirmación final de disponibilidad por parte de Elite Route.",
+    legal: "Confirmamos tu reserva por WhatsApp el mismo día.",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Ingresa el lugar de recogida.",
     alertDest: "Ingresa el destino.",
@@ -1473,7 +1474,7 @@ export default function HomeClient({
                     <span className="er-reviews-score">5.0</span>
                     <span className="er-reviews-stars">★★★★★</span>
                   </span>
-                  <span className="er-reviews-label">{t.reviewsRatingLabel}</span>
+                  <span className="er-reviews-label">{t.reviewsCount(GOOGLE_REVIEW_COUNT)}</span>
                 </span>
               </a>
             </div>

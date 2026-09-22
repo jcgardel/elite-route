@@ -41,9 +41,9 @@ export default function TerminosPage() {
         Al pagar en el cotizador solicitas un traslado privado con chofer para
         una fecha, hora, origen y destino determinados.{" "}
         <strong>La reserva queda sujeta a confirmación final de disponibilidad</strong>{" "}
-        por parte de {LEGAL.responsable}. Confirmamos por WhatsApp o correo en
-        los minutos siguientes al pago. Si no hubiera disponibilidad, se
-        reembolsa el importe completo.
+        por parte de {LEGAL.responsable}. Confirmamos por WhatsApp o correo el
+        mismo día. Si no hubiera disponibilidad, se reembolsa el importe
+        completo.
       </p>
 
       <h2>Anticipación mínima</h2>

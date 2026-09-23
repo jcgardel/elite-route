@@ -64,8 +64,10 @@ export const vehicles: Record<
   },
   minivan: {
     name: "Minivan",
-    cap: "1-5 passengers · 4 bags",
-    capEs: "1-5 pasajeros · 4 maletas",
+    cap: "1-6 passengers · 4 bags",
+    capEs: "1-6 pasajeros · 4 maletas",
+    note: "recommended 4 passengers with full luggage",
+    noteEs: "recomendado 4 pasajeros con equipaje completo",
     tag: "Captiva",
   },
   suv: {

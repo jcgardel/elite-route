@@ -66,14 +66,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Corporate Executive Transportation in Mexico City | Elite Route",
       description:
-        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI electronic invoicing, vetted chauffeurs and payment by card or bank transfer.",
+        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI electronic invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
       keywords:
         "corporate transportation Mexico City, executive car service for companies, corporate ground transportation CDMX, business travel Mexico City",
     },
     es: {
       title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
       description:
-        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, choferes verificados y pago con tarjeta o transferencia bancaria.",
+        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con monitoreo GPS y pago con tarjeta o transferencia bancaria.",
       keywords:
         "transporte ejecutivo corporativo CDMX, cuenta corporativa traslados, factura CFDI transporte, choferes para empresas Ciudad de México",
     },

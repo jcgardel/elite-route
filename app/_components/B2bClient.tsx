@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import { GOOGLE_PLACE_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "@/lib/social-proof";
 import { B2B_HORAS, B2B_SECTIONS, type TablasB2b } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
@@ -45,23 +46,24 @@ const TX = {
     home: "Inicio", rates: "Tarifas", corporate: "Corporativo",
     contact: "Contactar →", openMenu: "Abrir menú", quoteServices: "Cotizar servicios",
     heroKicker: "Soluciones para empresas",
-    heroTitle: ["Tu equipo llega", "a tiempo"],
+    heroTitle: "Transporte Ejecutivo Corporativo en Ciudad de México",
+    heroTagline: "Tu equipo llega a tiempo.",
     heroCopy: "Transporte ejecutivo para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI y cuenta corporativa centralizada con atención prioritaria 24/7.",
     heroBtn1: "Cotizar servicios →", heroBtn2: "Hablar con un asesor",
     trustKicker: "Estándar corporativo",
     trustTitle: "Diseñado para empresas",
     cells: [
       ["Factura electrónica CFDI", "CFDI disponible por cada servicio. Proceso directo con tu área administrativa sin fricciones."],
-      ["Confirmación inmediata", "Reserva confirmada al instante. Sin llamadas, sin esperas, sin incertidumbre para tu coordinador de viajes."],
-      ["Monitoreo de vuelo", "Tu chofer rastrea el vuelo en tiempo real. Llegamos cuando tú llegas, sin cargos por demora."],
-      ["Choferes verificados", "Licencia profesional, antecedentes verificados y capacitación continua en etiqueta ejecutiva."],
-      ["Flota asegurada", "Todos los vehículos con seguro de cobertura amplia y mantenimiento preventivo certificado."],
-      ["Ingreso directo al aeropuerto", "Tu chofer ingresa a la zona de llegadas con tablet / iPad mostrando tu nombre. Sin confusiones, sin esperas en el exterior."],
-      ["Tarjeta digital del conductor", "Antes de cada traslado recibes foto del chofer, modelo del vehículo y placas. Cero incertidumbre para tu equipo."],
+      ["Confirmación y seguimiento operativo", "Validamos cada servicio y damos seguimiento antes y durante la operación."],
+      ["Monitoreo de vuelo en tiempo real", "Seguimos la hora real de aterrizaje para coordinar la recepción y ajustar el servicio si cambia el itinerario."],
+      ["Conductores profesionales", "Conductores identificados y seleccionados conforme a nuestros estándares de servicio y operación."],
+      ["Unidades aseguradas", "Todas las unidades con seguro vigente y monitoreo GPS las 24 horas."],
+      ["Recepción personalizada en aeropuerto", "Tu conductor te espera en la zona de llegadas con un letrero o tablet con tu nombre."],
+      ["Tarjeta digital del conductor", "Antes del servicio compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
     ],
     payLabel: "Métodos de pago aceptados",
     payCard: "· Tarjeta", payWallet: "· Tarjeta / wallet", payTransfer: "Transferencia", paySpei: "· SPEI / CoDi",
-    paySub: "Encriptación de grado bancario. Pago empresarial con referencia para conciliación contable.",
+    paySub: "Pagos procesados mediante plataformas de pago seguras. Pago empresarial con referencia para conciliación contable.",
     ratesKicker: "Tarifas corporativas · Aeropuertos",
     ratesTitle: "Precios fijos en los 3 aeropuertos",
     ratesCopy: "IVA incluido. Sin cargos ocultos. Recargo aeropuerto incluye ingreso a zona de llegadas, espera y estacionamiento.",
@@ -81,6 +83,12 @@ const TX = {
     hourRate: "Tarifa / hora c/IVA", h2: "2 horas", h4: "4 horas", h8: "8 horas",
     ratesFoot: "Todos los precios incluyen IVA · Recargo aeropuerto incluido (ingreso a zona de llegadas, espera y estacionamiento) · Distancias y tiempos estimados sujetos a tráfico",
     cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero; si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos adicionales sin costo.",
+    fleetNote: "Conoce las unidades que forman parte de nuestra operación. La reservación se realiza por categoría; marca, modelo y color se asignan según disponibilidad y requerimientos del servicio.",
+    orEquivalent: "o equivalente",
+    revKicker: "Reseñas",
+    revTitle: "Empresas y viajeros confían en Elite Route",
+    revCount: (n: number) => `${n} reseñas en Google`,
+    revCta: "Ver reseñas en Google",
     fleetKicker: "La flota",
     fleetTitle: "Cuatro categorías, unidades propias",
     fleetCopy: "Flota propia en operación, monitoreada por GPS las 24 horas. Cada categoría cubre un tipo de traslado distinto.",
@@ -103,23 +111,24 @@ const TX = {
     home: "Home", rates: "Rates", corporate: "Corporate",
     contact: "Contact us →", openMenu: "Open menu", quoteServices: "Request a quote",
     heroKicker: "Solutions for companies",
-    heroTitle: ["Your team arrives", "on time"],
+    heroTitle: "Corporate Executive Transportation in Mexico City",
+    heroTagline: "Your team arrives on time.",
     heroCopy: "Executive transportation for companies in Mexico City. Recurring routes, CFDI electronic invoicing and a central corporate account with priority attention 24/7.",
     heroBtn1: "Request a quote →", heroBtn2: "Talk to an advisor",
     trustKicker: "Corporate standard",
     trustTitle: "Built for companies",
     cells: [
       ["CFDI electronic invoice", "A CFDI invoice for every service, handled directly with your finance team without friction."],
-      ["Immediate confirmation", "Bookings confirmed on the spot. No calls, no waiting, no uncertainty for your travel coordinator."],
-      ["Flight tracking", "Your chauffeur tracks the flight in real time. We arrive when you arrive, with no delay charges."],
-      ["Vetted chauffeurs", "Professional licence, background checks and continuous training in executive etiquette."],
-      ["Insured fleet", "Every vehicle carries comprehensive insurance and certified preventive maintenance."],
-      ["Meet and greet inside", "Your chauffeur waits in the arrivals hall with a tablet showing your name. No confusion, no waiting outside."],
-      ["Digital driver card", "Before each transfer you receive the chauffeur's photo, the vehicle model and the plates. Zero uncertainty for your team."],
+      ["Confirmation and operational follow-up", "We validate every service and follow it before and during the operation."],
+      ["Real-time flight tracking", "We follow the actual landing time to coordinate the pickup and adjust the service if the itinerary changes."],
+      ["Professional chauffeurs", "Chauffeurs identified and selected according to our own service and operating standards."],
+      ["Insured vehicles", "Every vehicle insured and GPS-monitored around the clock."],
+      ["Meet and greet in arrivals", "Your chauffeur waits in the arrivals hall with a sign or tablet showing your name."],
+      ["Digital driver card", "Before the service we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
     ],
     payLabel: "Accepted payment methods",
     payCard: "· Card", payWallet: "· Card / wallet", payTransfer: "Bank transfer", paySpei: "· SPEI / CoDi",
-    paySub: "Bank-grade encryption. Corporate payment with a reference for accounting reconciliation.",
+    paySub: "Payments processed through secure payment platforms. Corporate payment with a reference for accounting reconciliation.",
     ratesKicker: "Corporate rates · Airports",
     ratesTitle: "Fixed prices at all three airports",
     ratesCopy: "VAT included. No hidden charges. The airport surcharge covers arrivals-hall pickup, waiting time and parking.",
@@ -139,6 +148,12 @@ const TX = {
     hourRate: "Rate / hour incl. VAT", h2: "2 hours", h4: "4 hours", h8: "8 hours",
     ratesFoot: "All prices include VAT · Airport surcharge included (arrivals-hall pickup, waiting time and parking) · Distances and times are estimates subject to traffic",
     cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger; if the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 extra minutes at no charge.",
+    fleetNote: "These are the vehicles in our operation. Bookings are made by category; make, model and colour are assigned according to availability and the requirements of the service.",
+    orEquivalent: "or equivalent",
+    revKicker: "Reviews",
+    revTitle: "Companies and travellers trust Elite Route",
+    revCount: (n: number) => (n === 1 ? "1 Google review" : `${n} Google reviews`),
+    revCta: "See the reviews on Google",
     fleetKicker: "The fleet",
     fleetTitle: "Four categories, our own vehicles",
     fleetCopy: "Our own fleet in service, GPS-monitored around the clock. Each category covers a different kind of transfer.",
@@ -208,12 +223,31 @@ export default function B2bClient({
         .b-kicker { font-size: 11px; letter-spacing: 0.22em; color: #C8A46B; text-transform: uppercase; margin-bottom: 18px; }
         .b-h1 { font-family: var(--font-cormorant), Georgia, serif; font-weight: 300; font-size: 62px; line-height: 1.0; margin-bottom: 22px; }
         .b-h1 span { color: #C8A46B; }
+        .b-hero-tagline { font-family: var(--font-cormorant), Georgia, serif; font-size: 27px; font-weight: 300; color: #C8A46B; margin: -8px 0 18px; }
         .b-hero-copy { color: #BFC3C8; font-size: 16px; line-height: 1.75; max-width: 520px; margin-bottom: 40px; }
         .b-hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
         .b-btn-primary { background: #C8A46B; color: #000; padding: 15px 30px; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: background 0.2s; display: inline-block; }
         .b-btn-primary:hover { background: #b8924f; }
         .b-btn-ghost { border: 1px solid #2e2e2e; color: #BFC3C8; padding: 15px 30px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
         .b-btn-ghost:hover { border-color: #8a8a8a; color: #fff; }
+
+        /* RESEÑAS */
+        .b-rev { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
+        .b-rev-score { display: flex; align-items: baseline; gap: 12px; margin: -14px 0 30px; }
+        .b-rev-num { font-family: var(--font-cormorant), Georgia, serif; font-size: 42px; color: #fff; line-height: 1; }
+        .b-rev-stars { color: #C8A46B; letter-spacing: 2px; font-size: 15px; }
+        .b-rev-count { color: #8B8B87; font-size: 13px; }
+        .b-rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+        .b-rev-card { border: 1px solid #272727; background: #0c0c0c; padding: 26px 24px; }
+        .b-rev-quote { color: #d6d6d2; font-size: 14px; line-height: 1.8; font-style: italic; }
+        .b-rev-name { color: #fff; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 16px; }
+        .b-rev-cta { display: inline-block; margin-top: 26px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #C8A46B; text-decoration: none; border-bottom: 1px solid rgba(200,164,107,0.45); padding-bottom: 3px; }
+        .b-rev-cta:hover { color: #fff; border-color: #fff; }
+        @media (max-width: 860px) {
+          .b-rev { padding: 56px 20px; }
+          .b-rev-grid { grid-template-columns: 1fr; }
+          .b-hero-tagline { font-size: 22px; }
+        }
 
         /* FLOTA */
         .b-fleet { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
@@ -320,7 +354,10 @@ export default function B2bClient({
 
         <section className="b-hero">
           <p className="b-kicker">{t.heroKicker}</p>
-          <h1 className="b-h1">{t.heroTitle[0]}<br />{t.heroTitle[1]}<span>.</span></h1>
+          {/* El H1 dice lo que se busca en Google; el lema, que es lo que
+              vende, baja a la línea de abajo. Un solo H1 en la página. */}
+          <h1 className="b-h1">{t.heroTitle}<span>.</span></h1>
+          <p className="b-hero-tagline">{t.heroTagline}</p>
           <p className="b-hero-copy">{t.heroCopy}</p>
           <div className="b-hero-btns">
             <Link href={quote} className="b-btn-primary">{t.heroBtn1}</Link>
@@ -454,6 +491,7 @@ export default function B2bClient({
           <p className="b-section-kicker">{t.fleetKicker}</p>
           <h2 className="b-h2">{t.fleetTitle}<span>.</span></h2>
           <p className="b-fleet-copy">{t.fleetCopy}</p>
+          <p className="b-fleet-copy" style={{ marginTop: "-18px" }}>{t.fleetNote}</p>
           <div className="b-fleet-grid">
             {(["suv", "executive", "minivan", "sedan"] as const).map((k) => {
               const v = vehicles[k];
@@ -469,6 +507,7 @@ export default function B2bClient({
                   />
                   <div className="b-fleet-meta">
                     <div className="b-fleet-name">{v.name}</div>
+                    <div className="b-fleet-cap">{v.tag} {t.orEquivalent}</div>
                     <div className="b-fleet-cap">{lang === "es" ? v.capEs : v.cap}</div>
                     {note && <div className="b-fleet-note">{note}</div>}
                   </div>
@@ -476,6 +515,29 @@ export default function B2bClient({
               );
             })}
           </div>
+        </section>
+
+        {/* Las reseñas salen de lib/social-proof.ts, la misma fuente de la
+            portada y de las páginas de ruta: si Google recalcula, cambia en
+            un sitio y se actualiza en todos. Tres, no cinco: aquí la prueba
+            social apoya, no es el argumento principal. */}
+        <section className="b-rev">
+          <p className="b-section-kicker">{t.revKicker}</p>
+          <h2 className="b-h2">{t.revTitle}<span>.</span></h2>
+          <div className="b-rev-score">
+            <span className="b-rev-num">{GOOGLE_RATING}</span>
+            <span className="b-rev-stars">★★★★★</span>
+            <span className="b-rev-count">{t.revCount(GOOGLE_REVIEW_COUNT)}</span>
+          </div>
+          <div className="b-rev-grid">
+            {REVIEWS.slice(0, 3).map((r) => (
+              <div className="b-rev-card" key={r.name}>
+                <p className="b-rev-quote">&ldquo;{r.quote}&rdquo;</p>
+                <div className="b-rev-name">{r.name}</div>
+              </div>
+            ))}
+          </div>
+          <a className="b-rev-cta" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">{t.revCta}</a>
         </section>
 
         <section className="b-proceso">

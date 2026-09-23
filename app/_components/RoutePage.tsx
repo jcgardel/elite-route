@@ -49,6 +49,9 @@ const TX = {
     tableNote:
       "Precios finales en pesos, IVA incluido. La salida desde aeropuerto incluye estacionamiento y espera por retraso de vuelo; por eso cuesta más que el trayecto de ida hacia el aeropuerto.",
     colVehicle: "Vehículo",
+    colPrice: "Precio del traslado",
+    tableNoteUnico:
+      "Precios finales en pesos, IVA incluido, con casetas y combustible. Esta ruta no sale del aeropuerto, así que no lleva el recargo de estacionamiento y espera.",
     fromAirport: (a: string) => `Desde ${a}`,
     toAirport: (a: string) => `Hacia ${a}`,
     aboutTitle: "Sobre esta ruta",
@@ -95,6 +98,9 @@ const TX = {
     tableNote:
       "Final prices in Mexican pesos, VAT included. The airport pickup covers parking and waiting for flight delays, which is why it costs more than the run towards the airport.",
     colVehicle: "Vehicle",
+    colPrice: "Transfer price",
+    tableNoteUnico:
+      "Final prices in Mexican pesos, VAT, tolls and fuel included. This route does not start at the airport, so it carries no parking-and-waiting surcharge.",
     fromAirport: (a: string) => `From ${a}`,
     toAirport: (a: string) => `To ${a}`,
     aboutTitle: "About this route",
@@ -250,6 +256,10 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
 
   const desde = Math.min(...cats.map((cat) => calculatePrice(route.km, route.minutes, cat, "route", 3, false)));
 
+  // Las foráneas no salen de una terminal: ni recargo de aeropuerto ni dos
+  // direcciones que comparar. Una sola columna de precio.
+  const unico = route.precioUnico === true;
+
   const otras = ROUTE_KEYS.filter((k) => k !== routeKey);
 
   return (
@@ -296,8 +306,14 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
             <thead>
               <tr>
                 <th>{t.colVehicle}</th>
-                <th>{t.fromAirport(c.airport)}</th>
-                <th>{t.toAirport(c.airport)}</th>
+                {unico ? (
+                  <th>{t.colPrice}</th>
+                ) : (
+                  <>
+                    <th>{t.fromAirport(c.airport)}</th>
+                    <th>{t.toAirport(c.airport)}</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -314,13 +330,19 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
                       </span>
                     )}
                   </td>
-                  <td>{precio(cat, true)}</td>
-                  <td>{precio(cat, false)}</td>
+                  {unico ? (
+                    <td>{precio(cat, false)}</td>
+                  ) : (
+                    <>
+                      <td>{precio(cat, true)}</td>
+                      <td>{precio(cat, false)}</td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="rt-note">{t.tableNote}</p>
+          <p className="rt-note">{unico ? t.tableNoteUnico : t.tableNote}</p>
         </section>
 
         {/* Reseñas reales de la ficha de Google, las cifras del dueño y

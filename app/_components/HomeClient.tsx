@@ -165,6 +165,11 @@ const TX = {
     heroBtnReserve: "Reserve Now",
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
+    fleetKicker: "The fleet",
+    fleetTitle: "Four categories for every transfer",
+    fleetCopy: "Our own vehicles, insured and GPS-monitored around the clock.",
+    fleetCta: "Quote my transfer →",
+    fleetAlt: (c: string) => `Elite Route ${c} category vehicles`,
     water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
     ac: "Vehicle with A/C", chauffeur: "Friendly, service-minded chauffeur",
     getQuote: "Get your quote",
@@ -251,6 +256,11 @@ const TX = {
     heroBtnReserve: "Reservar Ahora",
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
+    fleetKicker: "La flota",
+    fleetTitle: "Cuatro categorías para cada traslado",
+    fleetCopy: "Unidades propias, con seguro vigente y monitoreo GPS las 24 horas.",
+    fleetCta: "Cotizar mi traslado →",
+    fleetAlt: (c: string) => `Unidades de la categoría ${c} de Elite Route`,
     water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
     ac: "Vehículo con A/C", chauffeur: "Chofer amable y orientado al servicio",
     getQuote: "Obtén tu cotización",
@@ -493,6 +503,20 @@ const styles = `
   .er-summary-val { color:#fff; text-align:right; max-width:65%; line-height:1.4; }
   .er-summary-total { font-family:var(--font-cormorant),serif; font-size:22px; font-weight:400; font-variant-numeric:tabular-nums; }
 
+  .er-fleet { margin-top:58px; }
+  .er-fleet-kicker { font-size:11px; letter-spacing:0.18em; color:#C8A46B; text-transform:uppercase; margin-bottom:10px; }
+  .er-fleet-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:34px; color:#fff; margin:0 0 10px; }
+  .er-fleet-copy { color:#9a9a97; font-size:14px; line-height:1.8; max-width:560px; margin:0 0 28px; }
+  .er-fleet-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:22px; }
+  .er-fleet-card { border:1px solid #272727; background:#0c0c0c; overflow:hidden; }
+  .er-fleet-card img { display:block; width:100%; height:auto; aspect-ratio:16 / 9; object-fit:cover; }
+  .er-fleet-meta { padding:18px 20px 20px; }
+  .er-fleet-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
+  .er-fleet-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
+  .er-fleet-cap { font-size:12px; color:#b4b4b4; margin-top:8px; }
+  .er-fleet-note { font-size:11px; color:#8b8b88; line-height:1.6; margin-top:4px; }
+  .er-fleet-cta { display:inline-block; margin-top:24px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#C8A46B; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.45); padding-bottom:3px; }
+  .er-fleet-cta:hover { color:#fff; border-color:#fff; }
   .er-benefits { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:22px; margin-top:58px; }
   .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
   .er-benefit-title { font-weight:600; font-size:17px; margin-bottom:8px; }
@@ -607,6 +631,8 @@ const styles = `
     .er-svc-tab:last-child { border-bottom:none; }
     .er-vehicles { grid-template-columns:1fr; }
     .er-vehicle, .er-vehicle-content { min-height:330px; }
+    .er-fleet-grid { grid-template-columns:1fr; gap:16px; }
+    .er-fleet-title { font-size:27px; }
     .er-benefits { grid-template-columns:1fr; }
     .er-contact-grid { grid-template-columns:1fr; }
     .er-comfort { padding:20px; }
@@ -1431,6 +1457,39 @@ export default function HomeClient({
           </section>
 
           <main className="er-main">
+            {/* Las cuatro categorías también viven en el paso 2 del
+                cotizador, pero ahí sólo se ven después de escribir origen y
+                destino: están detrás de un formulario y la mayoría de las
+                visitas no llegan. Aquí se ven sin pedir nada. Sin precio a
+                propósito: el precio depende de la ruta y lo da el cotizador,
+                que está justo arriba. Imágenes y datos son los mismos que
+                usa /b2b — /flota/*.webp y lib/vehicles.ts. */}
+            <section className="er-fleet" aria-label={t.fleetTitle}>
+              <p className="er-fleet-kicker">{t.fleetKicker}</p>
+              <h2 className="er-fleet-title">{t.fleetTitle}</h2>
+              <p className="er-fleet-copy">{t.fleetCopy}</p>
+              <div className="er-fleet-grid">
+                {(["suv", "executive", "minivan", "sedan"] as const).map((k) => (
+                  <div className="er-fleet-card" key={k}>
+                    <img
+                      src={`/flota/${k === "suv" ? "high-suv" : k}.webp`}
+                      alt={t.fleetAlt(vehicles[k].name)}
+                      width={1400}
+                      height={788}
+                      loading="lazy"
+                    />
+                    <div className="er-fleet-meta">
+                      <div className="er-fleet-name">{vehicles[k].name}</div>
+                      <div className="er-fleet-tag">{vehicles[k].tag}</div>
+                      <div className="er-fleet-cap">{capFor(k)}</div>
+                      {noteFor(k) && <div className="er-fleet-note">{noteFor(k)}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <a className="er-fleet-cta" href="#quote">{t.fleetCta}</a>
+            </section>
+
             <section className="er-benefits" aria-label="Elite Route benefits">
                 <div className="er-benefit">
                   <div className="er-benefit-title">{t.benefit1Title}</div>

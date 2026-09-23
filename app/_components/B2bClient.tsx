@@ -86,6 +86,14 @@ const TX = {
     cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero; si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos adicionales sin costo.",
     fleetNote: "Conoce las unidades que forman parte de nuestra operación. La reservación se realiza por categoría; marca, modelo y color se asignan según disponibilidad y requerimientos del servicio.",
     orEquivalent: "o equivalente",
+    solKicker: "Soluciones",
+    solTitle: "Soluciones de transporte para empresas",
+    solCopy: "Coordinamos transporte ejecutivo para empresas, equipos y organizadores que necesitan puntualidad, seguimiento y atención personalizada en Ciudad de México.",
+    solItems: [
+      ["Viajes corporativos", "Traslados a los tres aeropuertos, servicios ejecutivos y transporte por hora para tu equipo."],
+      ["Asistentes de dirección", "Coordinación de traslados para directivos, invitados y visitantes, con un solo interlocutor."],
+      ["Eventos y reuniones", "Operaciones con varios vehículos, horarios escalonados y distintos puntos de recogida."],
+    ],
     partKicker: "Partners y operadores",
     partTitle: "Partner local de transporte ejecutivo en Ciudad de México",
     partCopy: "Trabajamos con agencias, operadores de transporte y compañías internacionales que necesitan cobertura local en Ciudad de México. Coordinamos traslados aeroportuarios, servicio por hora, movimientos corporativos y operaciones con varios vehículos.",
@@ -165,6 +173,14 @@ const TX = {
     cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger; if the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 extra minutes at no charge.",
     fleetNote: "These are the vehicles in our operation. Bookings are made by category; make, model and colour are assigned according to availability and the requirements of the service.",
     orEquivalent: "or equivalent",
+    solKicker: "Solutions",
+    solTitle: "Transport solutions for companies",
+    solCopy: "We coordinate executive transport for companies, teams and organisers who need punctuality, follow-up and a single point of contact in Mexico City.",
+    solItems: [
+      ["Corporate travel", "Transfers to all three airports, executive services and hourly transport for your team."],
+      ["Executive assistants", "Transport coordinated for directors, guests and visitors, through one point of contact."],
+      ["Events and meetings", "Multi-vehicle operations, staggered schedules and several pickup points."],
+    ],
     partKicker: "Partners and operators",
     partTitle: "Your local chauffeur partner in Mexico City",
     partCopy: "We work with agencies, ground transportation operators and international chauffeur companies that need local coverage in Mexico City. We handle airport transfers, hourly service, corporate movements and multi-vehicle operations.",
@@ -259,6 +275,18 @@ export default function B2bClient({
         .b-btn-primary:hover { background: #b8924f; }
         .b-btn-ghost { border: 1px solid #2e2e2e; color: #BFC3C8; padding: 15px 30px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
         .b-btn-ghost:hover { border-color: #8a8a8a; color: #fff; }
+
+        /* SOLUCIONES */
+        .b-sol { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
+        .b-sol-copy { color: #BFC3C8; font-size: 15px; line-height: 1.85; max-width: 620px; margin: -18px 0 36px; }
+        .b-sol-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: #2e2e2e; border: 1px solid #2e2e2e; }
+        .b-sol-cell { background: #080808; padding: 30px 26px; }
+        .b-sol-name { font-family: var(--font-barlow-condensed), sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; margin-bottom: 10px; }
+        .b-sol-copy-sm { color: #8B8B87; font-size: 13.5px; line-height: 1.8; }
+        @media (max-width: 860px) {
+          .b-sol { padding: 56px 20px; }
+          .b-sol-grid { grid-template-columns: 1fr; }
+        }
 
         /* PARTNERS */
         .b-part { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
@@ -440,6 +468,27 @@ export default function B2bClient({
               </div>
               <div className="b-payment-sub">{t.paySub}</div>
             </div>
+          </div>
+        </section>
+
+        {/* Va ANTES de las tarifas a propósito: primero para qué sirve el
+            servicio, después cuánto cuesta. Tres perfiles, no seis: son los
+            que el dueño tiene hoy. Los demás entran cuando haya clientes
+            reales de cada uno — una tarjeta sin cliente detrás es una
+            promesa que nadie ha cumplido todavía. No duplica la sección de
+            partners: aquella es para operadores que revenden, esta para
+            quien viaja o organiza. */}
+        <section className="b-sol">
+          <p className="b-section-kicker">{t.solKicker}</p>
+          <h2 className="b-h2">{t.solTitle}<span>.</span></h2>
+          <p className="b-sol-copy">{t.solCopy}</p>
+          <div className="b-sol-grid">
+            {t.solItems.map(([name, copy]) => (
+              <div className="b-sol-cell" key={name}>
+                <div className="b-sol-name">{name}</div>
+                <p className="b-sol-copy-sm">{copy}</p>
+              </div>
+            ))}
           </div>
         </section>
 

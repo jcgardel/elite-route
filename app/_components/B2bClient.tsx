@@ -81,6 +81,10 @@ const TX = {
     hourRate: "Tarifa / hora c/IVA", h2: "2 horas", h4: "4 horas", h8: "8 horas",
     ratesFoot: "Todos los precios incluyen IVA · Recargo aeropuerto incluido (ingreso a zona de llegadas, espera y estacionamiento) · Distancias y tiempos estimados sujetos a tráfico",
     cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero; si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos adicionales sin costo.",
+    fleetKicker: "La flota",
+    fleetTitle: "Cuatro categorías, unidades propias",
+    fleetCopy: "Flota propia en operación, monitoreada por GPS las 24 horas. Cada categoría cubre un tipo de traslado distinto.",
+    fleetAlt: (c: string) => `Unidades de la categoría ${c} de Elite Route`,
     stepsKicker: "Cómo funciona",
     stepsTitle: "Tu cuenta activa en 24 hrs",
     steps: [
@@ -135,6 +139,10 @@ const TX = {
     hourRate: "Rate / hour incl. VAT", h2: "2 hours", h4: "4 hours", h8: "8 hours",
     ratesFoot: "All prices include VAT · Airport surcharge included (arrivals-hall pickup, waiting time and parking) · Distances and times are estimates subject to traffic",
     cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger; if the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 extra minutes at no charge.",
+    fleetKicker: "The fleet",
+    fleetTitle: "Four categories, our own vehicles",
+    fleetCopy: "Our own fleet in service, GPS-monitored around the clock. Each category covers a different kind of transfer.",
+    fleetAlt: (c: string) => `Elite Route ${c} category vehicles`,
     stepsKicker: "How it works",
     stepsTitle: "Your account live in 24 hrs",
     steps: [
@@ -206,6 +214,21 @@ export default function B2bClient({
         .b-btn-primary:hover { background: #b8924f; }
         .b-btn-ghost { border: 1px solid #2e2e2e; color: #BFC3C8; padding: 15px 30px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
         .b-btn-ghost:hover { border-color: #8a8a8a; color: #fff; }
+
+        /* FLOTA */
+        .b-fleet { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
+        .b-fleet-copy { color: #8B8B87; font-size: 14px; line-height: 1.9; max-width: 640px; margin: -20px 0 36px; }
+        .b-fleet-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .b-fleet-card { border: 1px solid #2e2e2e; background: #080808; }
+        .b-fleet-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+        .b-fleet-meta { padding: 20px 24px 24px; }
+        .b-fleet-name { font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; color: #fff; }
+        .b-fleet-cap { color: #8B8B87; font-size: 13px; letter-spacing: 0.04em; margin-top: 6px; }
+        .b-fleet-note { color: #6f6f6c; font-size: 12px; line-height: 1.7; margin-top: 8px; }
+        @media (max-width: 860px) {
+          .b-fleet { padding: 56px 20px; }
+          .b-fleet-grid { grid-template-columns: 1fr; gap: 18px; }
+        }
 
         /* TRUST */
         .b-trust { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
@@ -420,6 +443,39 @@ export default function B2bClient({
 
           <p style={{color:"#8B8B87",fontSize:"11px",marginTop:"32px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.ratesFoot}</p>
           <p style={{color:"#8B8B87",fontSize:"11px",marginTop:"10px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.cancelNote}</p>
+        </section>
+
+        {/* La flota va aquí a propósito: entre ver el precio y que le pidan
+            abrir cuenta había un salto seco. Las imágenes son las cuatro de
+            categoría del catálogo corporativo; los modelos y capacidades
+            salen de lib/vehicles.ts, que es la misma fuente del cotizador,
+            así que no pueden contradecirse. */}
+        <section className="b-fleet">
+          <p className="b-section-kicker">{t.fleetKicker}</p>
+          <h2 className="b-h2">{t.fleetTitle}<span>.</span></h2>
+          <p className="b-fleet-copy">{t.fleetCopy}</p>
+          <div className="b-fleet-grid">
+            {(["suv", "executive", "minivan", "sedan"] as const).map((k) => {
+              const v = vehicles[k];
+              const note = lang === "es" ? v.noteEs : v.note;
+              return (
+                <div className="b-fleet-card" key={k}>
+                  <img
+                    src={`/flota/${k === "suv" ? "high-suv" : k}.webp`}
+                    alt={t.fleetAlt(v.name)}
+                    width={1400}
+                    height={788}
+                    loading="lazy"
+                  />
+                  <div className="b-fleet-meta">
+                    <div className="b-fleet-name">{v.name}</div>
+                    <div className="b-fleet-cap">{lang === "es" ? v.capEs : v.cap}</div>
+                    {note && <div className="b-fleet-note">{note}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <section className="b-proceso">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
 import { GOOGLE_PLACE_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "@/lib/social-proof";
+import { LEGAL } from "@/lib/legal";
 import { B2B_HORAS, B2B_SECTIONS, type TablasB2b } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
@@ -85,6 +86,20 @@ const TX = {
     cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero; si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos adicionales sin costo.",
     fleetNote: "Conoce las unidades que forman parte de nuestra operación. La reservación se realiza por categoría; marca, modelo y color se asignan según disponibilidad y requerimientos del servicio.",
     orEquivalent: "o equivalente",
+    partKicker: "Partners y operadores",
+    partTitle: "Partner local de transporte ejecutivo en Ciudad de México",
+    partCopy: "Trabajamos con agencias, operadores de transporte y compañías internacionales que necesitan cobertura local en Ciudad de México. Coordinamos traslados aeroportuarios, servicio por hora, movimientos corporativos y operaciones con varios vehículos.",
+    partItems: [
+      "Tarifas B2B",
+      "Atención operativa 24/7",
+      "Monitoreo de vuelo",
+      "Recepción en sala de llegadas",
+      "Datos del conductor y la unidad",
+      "Factura CFDI",
+      "Coordinación de operaciones con varios vehículos",
+    ],
+    partCta: "Solicitar tarifas B2B / Affiliate",
+    partMailSubject: "Tarifas B2B / Affiliate — Elite Route",
     revKicker: "Reseñas",
     revTitle: "Empresas y viajeros confían en Elite Route",
     revCount: (n: number) => `${n} reseñas en Google`,
@@ -150,6 +165,20 @@ const TX = {
     cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger; if the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 extra minutes at no charge.",
     fleetNote: "These are the vehicles in our operation. Bookings are made by category; make, model and colour are assigned according to availability and the requirements of the service.",
     orEquivalent: "or equivalent",
+    partKicker: "Partners and operators",
+    partTitle: "Your local chauffeur partner in Mexico City",
+    partCopy: "We work with agencies, ground transportation operators and international chauffeur companies that need local coverage in Mexico City. We handle airport transfers, hourly service, corporate movements and multi-vehicle operations.",
+    partItems: [
+      "B2B rates",
+      "24/7 operations desk",
+      "Flight tracking",
+      "Meet and greet in arrivals",
+      "Chauffeur and vehicle details",
+      "CFDI invoicing",
+      "Multi-vehicle coordination",
+    ],
+    partCta: "Request B2B / affiliate rates",
+    partMailSubject: "B2B / Affiliate rates — Elite Route",
     revKicker: "Reviews",
     revTitle: "Companies and travellers trust Elite Route",
     revCount: (n: number) => (n === 1 ? "1 Google review" : `${n} Google reviews`),
@@ -230,6 +259,17 @@ export default function B2bClient({
         .b-btn-primary:hover { background: #b8924f; }
         .b-btn-ghost { border: 1px solid #2e2e2e; color: #BFC3C8; padding: 15px 30px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; transition: border-color 0.2s, color 0.2s; display: inline-block; }
         .b-btn-ghost:hover { border-color: #8a8a8a; color: #fff; }
+
+        /* PARTNERS */
+        .b-part { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
+        .b-part-copy { color: #BFC3C8; font-size: 15px; line-height: 1.85; max-width: 640px; margin: -18px 0 34px; }
+        .b-part-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px 40px; max-width: 760px; }
+        .b-part-item { display: flex; align-items: flex-start; gap: 10px; color: #d6d6d2; font-size: 14px; line-height: 1.6; border-top: 1px solid #232323; padding-top: 13px; }
+        .b-part-item span { color: #C8A46B; flex-shrink: 0; }
+        @media (max-width: 860px) {
+          .b-part { padding: 56px 20px; }
+          .b-part-grid { grid-template-columns: 1fr; }
+        }
 
         /* RESEÑAS */
         .b-rev { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
@@ -515,6 +555,31 @@ export default function B2bClient({
               );
             })}
           </div>
+        </section>
+
+        {/* El operador internacional que necesita cobertura en CDMX es un
+            comprador distinto del corporativo local: no cotiza un traslado,
+            busca proveedor. Va después de la flota —ya vio precio y unidades—
+            y antes de las reseñas. El CTA es correo, no WhatsApp: este
+            comprador manda tarifarios y contratos, no mensajes. */}
+        <section className="b-part">
+          <p className="b-section-kicker">{t.partKicker}</p>
+          <h2 className="b-h2">{t.partTitle}<span>.</span></h2>
+          <p className="b-part-copy">{t.partCopy}</p>
+          <div className="b-part-grid">
+            {t.partItems.map((item) => (
+              <div className="b-part-item" key={item}>
+                <span aria-hidden="true">—</span>{item}
+              </div>
+            ))}
+          </div>
+          <a
+            className="b-btn-primary"
+            style={{ display: "inline-block", marginTop: "34px" }}
+            href={`mailto:${LEGAL.correoComercial}?subject=${encodeURIComponent(t.partMailSubject)}`}
+          >
+            {t.partCta}
+          </a>
         </section>
 
         {/* Las reseñas salen de lib/social-proof.ts, la misma fuente de la

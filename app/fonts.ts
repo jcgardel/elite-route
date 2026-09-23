@@ -13,7 +13,10 @@ import { Barlow, Barlow_Condensed, Cormorant_Garamond } from "next/font/google";
 // bloqueaba el render al venir de un @import dentro del CSS.
 export const barlow = Barlow({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  // 500 salió el 23 sep 2026: lo usaban dos elementos del cotizador (que
+  // ahora van en 600) y una regla de /tarifas que no casaba con nada. Un
+  // archivo woff2 menos, ~15 KB, sin cambio visible.
+  weight: ["300", "400", "600", "700"],
   variable: "--font-barlow",
   display: "swap",
 });

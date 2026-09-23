@@ -208,7 +208,6 @@ const styles = `
   .tf-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
   .tf-table tr:hover td { background: rgba(200,164,107,0.05); }
   .tf-table .tf-route { color: #BFC3C8; font-size: 13px; }
-  .tf-table .tf-route strong { color: #fff; display: block; font-size: 14px; font-weight: 500; margin-bottom: 2px; }
   .tf-table .tf-price { font-family: var(--font-cormorant), serif; font-size: 22px; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .tf-table .tf-price-note { font-size: 10px; color: #9a9a9a; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 2px; }
 

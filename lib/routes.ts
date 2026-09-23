@@ -24,7 +24,14 @@ export type RouteKey =
   | "centro"
   | "satelite"
   | "aifa"
-  | "toluca";
+  | "toluca"
+  | "interlomas"
+  | "coyoacan"
+  | "delvalle"
+  | "puebla"
+  | "queretaro"
+  | "cuernavaca"
+  | "sanmiguel";
 
 export const ROUTE_KEYS: readonly RouteKey[] = [
   "polanco",
@@ -33,8 +40,20 @@ export const ROUTE_KEYS: readonly RouteKey[] = [
   "satelite",
   "aifa",
   "toluca",
+  "interlomas",
+  "coyoacan",
+  "delvalle",
+  "puebla",
+  "queretaro",
+  "cuernavaca",
+  "sanmiguel",
 ];
 
+/**
+ * Las rutas foráneas no salen del aeropuerto: son Ciudad de México ↔ otra
+ * ciudad. El recargo cubre estacionamiento y espera en terminal, así que
+ * ahí no aplica y la tabla enseña un solo precio en vez de dos columnas.
+ */
 type Copy = {
   /** Lo que va en la URL. Distinto por idioma, como el resto del sitio. */
   slug: string;
@@ -55,6 +74,8 @@ type Copy = {
 };
 
 export type Route = {
+  /** Sin recargo de aeropuerto: una sola columna de precio. */
+  precioUnico?: true;
   /** Distancia y duración estimadas. Las mismas que publica /tarifas. */
   km: number;
   minutes: number;
@@ -434,6 +455,415 @@ export const ROUTES: Record<RouteKey, Route> = {
       ],
     },
   },
+  interlomas: {
+    km: 38,
+    minutes: 55,
+    es: {
+      slug: "aicm-interlomas-huixquilucan",
+      airport: "AICM",
+      zone: "Interlomas",
+      title: "Traslado del AICM a Interlomas",
+      metaTitle: "Traslado AICM a Interlomas y Huixquilucan | Precio Fijo | Elite Route",
+      metaDescription:
+        "Traslado privado del aeropuerto AICM a Interlomas, Huixquilucan y Bosques de las Lomas. 38 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+      keywords:
+        "traslado AICM Interlomas, transporte aeropuerto Huixquilucan, chofer privado Interlomas, traslado aeropuerto Bosques de las Lomas",
+      intro:
+        "Treinta y ocho kilómetros de punta a punta de la ciudad: del oriente, donde está el AICM, al poniente alto. Sin tráfico son unos cincuenta y cinco minutos; en hora pico, bastante más. El precio no cambia por eso.",
+      about:
+        "Interlomas y Huixquilucan crecieron como zona corporativa y residencial sin dejar de estar lejos del aeropuerto, y el trayecto cruza la ciudad entera por el Periférico o por Reforma. Es de las rutas donde más se nota llevar chofer: son casi dos horas de manejo en hora pico que el pasajero no tiene que hacer.",
+      faqs: [
+        [
+          "¿Cuánto se tarda del AICM a Interlomas?",
+          "Unos 55 minutos con tráfico ligero. A media tarde entre semana puede pasar de la hora y media. El precio es el mismo en los dos casos.",
+        ],
+        ESPERA_ES,
+        [
+          "¿Llegan también a Bosques de las Lomas y Santa Fe?",
+          "Sí. Bosques de las Lomas entra en esta misma tarifa; Santa Fe tiene su propia página porque la distancia es distinta.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-airport-interlomas",
+      airport: "Mexico City International Airport (AICM)",
+      zone: "Interlomas",
+      title: "Airport transfer to Interlomas",
+      metaTitle: "Mexico City Airport to Interlomas Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Interlomas, Huixquilucan and Bosques de las Lomas. 38 km. Fixed price, VAT included.",
+      keywords:
+        "Mexico City airport to Interlomas, MEX airport transfer Huixquilucan, private driver Interlomas, airport transfer Bosques de las Lomas",
+      intro:
+        "Thirty-eight kilometres from one end of the city to the other: from the east, where the AICM sits, to the high western side. Without traffic it is about fifty-five minutes; at rush hour, considerably more. The price does not change for that.",
+      about:
+        "Interlomas and Huixquilucan grew into a corporate and residential district without getting any closer to the airport, and the drive crosses the whole city along the Periférico or Reforma. It is one of the routes where a chauffeur earns their keep: at rush hour it is close to two hours of driving the passenger does not have to do.",
+      faqs: [
+        [
+          "How long does the AICM to Interlomas transfer take?",
+          "About 55 minutes in light traffic. On a weekday afternoon it can pass an hour and a half. The price is the same either way.",
+        ],
+        ESPERA_EN,
+        [
+          "Do you also serve Bosques de las Lomas and Santa Fe?",
+          "Yes. Bosques de las Lomas falls under this same fare; Santa Fe has its own page because the distance is different.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  coyoacan: {
+    km: 22,
+    minutes: 35,
+    es: {
+      slug: "aicm-coyoacan-san-angel",
+      airport: "AICM",
+      zone: "Coyoacán y San Ángel",
+      title: "Traslado del AICM a Coyoacán y San Ángel",
+      metaTitle: "Traslado AICM a Coyoacán y San Ángel | Precio Fijo | Elite Route",
+      metaDescription:
+        "Traslado privado del aeropuerto AICM a Coyoacán, San Ángel y Ciudad Universitaria. 22 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+      keywords:
+        "traslado AICM Coyoacán, transporte aeropuerto San Ángel, chofer privado Coyoacán, traslado aeropuerto Ciudad Universitaria",
+      intro:
+        "Veintidós kilómetros hacia el sur por Viaducto y Tlalpan. Unos treinta y cinco minutos sin tráfico, y el precio incluye IVA y no se mueve si el camino se complica.",
+      about:
+        "El sur de la ciudad recibe un tipo de viajero distinto: congresos en Ciudad Universitaria, hoteles pequeños en Coyoacán, visitas a los museos de San Ángel. Es una zona de calles estrechas y sentidos cambiantes donde llegar con chofer evita dar vueltas buscando dónde dejar el coche.",
+      faqs: [
+        [
+          "¿Cuánto tarda el traslado del AICM a Coyoacán?",
+          "Unos 35 minutos sin tráfico por Viaducto y Calzada de Tlalpan. En hora pico puede llegar a una hora.",
+        ],
+        ESPERA_ES,
+        [
+          "¿Cubren Ciudad Universitaria y el Pedregal?",
+          "Sí, los dos entran en esta tarifa junto con Coyoacán y San Ángel. Si el destino queda más al sur, el cotizador calcula el precio exacto.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-airport-coyoacan",
+      airport: "Mexico City International Airport (AICM)",
+      zone: "Coyoacán and San Ángel",
+      title: "Airport transfer to Coyoacán and San Ángel",
+      metaTitle: "Mexico City Airport to Coyoacán Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Coyoacán, San Ángel and Ciudad Universitaria. 22 km. Fixed price, VAT included.",
+      keywords:
+        "Mexico City airport to Coyoacan, MEX airport transfer San Angel, private driver Coyoacan, airport transfer UNAM",
+      intro:
+        "Twenty-two kilometres south along Viaducto and Tlalpan. About thirty-five minutes without traffic, VAT included, and the price does not move if the drive gets complicated.",
+      about:
+        "The south of the city draws a different traveller: conferences at Ciudad Universitaria, small hotels in Coyoacán, the museums of San Ángel. It is a district of narrow streets and shifting one-ways where arriving with a chauffeur saves circling for somewhere to leave the car.",
+      faqs: [
+        [
+          "How long does the AICM to Coyoacán transfer take?",
+          "About 35 minutes without traffic, along Viaducto and Calzada de Tlalpan. At rush hour it can reach an hour.",
+        ],
+        ESPERA_EN,
+        [
+          "Do you cover Ciudad Universitaria and Pedregal?",
+          "Yes, both fall under this fare along with Coyoacán and San Ángel. For destinations further south, the quote form gives the exact price.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  delvalle: {
+    km: 18,
+    minutes: 30,
+    es: {
+      slug: "aicm-del-valle-insurgentes-sur",
+      airport: "AICM",
+      zone: "Del Valle e Insurgentes Sur",
+      title: "Traslado del AICM a Del Valle e Insurgentes Sur",
+      metaTitle: "Traslado AICM a Del Valle e Insurgentes Sur | Precio Fijo | Elite Route",
+      metaDescription:
+        "Traslado privado del aeropuerto AICM a Del Valle, Insurgentes Sur y Nápoles. 18 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+      keywords:
+        "traslado AICM Del Valle, transporte aeropuerto Insurgentes Sur, chofer privado Nápoles, traslado aeropuerto World Trade Center",
+      intro:
+        "Dieciocho kilómetros, la ruta más corta de las que publicamos. Media hora sin tráfico entre las terminales y el corredor de Insurgentes Sur, con precio fijo e IVA incluido.",
+      about:
+        "Insurgentes Sur concentra oficinas, el World Trade Center y buena parte de las agencias y despachos de la ciudad, así que es una ruta de lunes a viernes y de maleta de mano. Al ser corta, el mínimo de cada categoría pesa más que la distancia: por eso el Sedan cuesta aquí casi lo mismo que en trayectos algo más largos.",
+      faqs: [
+        [
+          "¿Cuánto tarda el traslado del AICM a Del Valle?",
+          "Unos 30 minutos sin tráfico por Viaducto. Es de las rutas más rápidas desde el aeropuerto.",
+        ],
+        ESPERA_ES,
+        [
+          "¿Entra el World Trade Center y la colonia Nápoles?",
+          "Sí. Nápoles, Del Valle y el tramo de Insurgentes Sur hasta Mixcoac comparten esta tarifa.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-airport-del-valle",
+      airport: "Mexico City International Airport (AICM)",
+      zone: "Del Valle and Insurgentes Sur",
+      title: "Airport transfer to Del Valle and Insurgentes Sur",
+      metaTitle: "Mexico City Airport to Del Valle Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Del Valle, Insurgentes Sur and Nápoles. 18 km. Fixed price, VAT included.",
+      keywords:
+        "Mexico City airport to Del Valle, MEX airport transfer Insurgentes Sur, private driver Napoles, airport transfer World Trade Center",
+      intro:
+        "Eighteen kilometres, the shortest route we publish. Half an hour without traffic between the terminals and the Insurgentes Sur corridor, at a fixed price with VAT included.",
+      about:
+        "Insurgentes Sur holds offices, the World Trade Center and much of the city's agency and professional-services world, which makes this a Monday-to-Friday, carry-on-only route. Being short, each category's minimum weighs more than the distance — which is why the Sedan costs about the same here as on somewhat longer trips.",
+      faqs: [
+        [
+          "How long does the AICM to Del Valle transfer take?",
+          "About 30 minutes without traffic, along Viaducto. It is one of the quickest routes from the airport.",
+        ],
+        ESPERA_EN,
+        [
+          "Does it include the World Trade Center and Nápoles?",
+          "Yes. Nápoles, Del Valle and the stretch of Insurgentes Sur down to Mixcoac share this fare.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  puebla: {
+    precioUnico: true,
+    km: 135,
+    minutes: 120,
+    es: {
+      slug: "cdmx-puebla",
+      airport: "Ciudad de México",
+      zone: "Puebla",
+      title: "Traslado de Ciudad de México a Puebla",
+      metaTitle: "Traslado privado CDMX a Puebla | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a Puebla con chofer. 135 km por la autopista, unas dos horas. Precio fijo con IVA incluido, sin cargo por esperas razonables.",
+      keywords:
+        "traslado CDMX Puebla, chofer privado a Puebla, transporte ejecutivo Puebla, viaje privado México Puebla precio",
+      intro:
+        "Ciento treinta y cinco kilómetros por la México-Puebla. Unas dos horas de camino, precio cerrado con IVA y sin recargo de aeropuerto: esta ruta no sale de la terminal.",
+      about:
+        "Puebla está lo bastante cerca para ir y volver en el día y lo bastante lejos para que manejarlo uno mismo arruine la jornada. Es la foránea que más piden las empresas, normalmente para una reunión de mañana con regreso por la tarde. El chofer espera durante la estancia si el servicio se contrata por el día.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a Puebla?",
+          "Unas dos horas por la autopista en condiciones normales. La salida de la ciudad es lo que más varía según la hora.",
+        ],
+        [
+          "¿El precio incluye casetas?",
+          "Sí. El precio que ves es final: incluye IVA, casetas y combustible. No hay nada que liquidar al llegar.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-puebla",
+      airport: "Mexico City",
+      zone: "Puebla",
+      title: "Private transfer from Mexico City to Puebla",
+      metaTitle: "Mexico City to Puebla Private Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to Puebla. 135 km by motorway, about two hours. Fixed price including VAT and tolls.",
+      keywords:
+        "Mexico City to Puebla transfer, private driver Puebla, executive transport Puebla, chauffeur Mexico City Puebla",
+      intro:
+        "One hundred and thirty-five kilometres along the México-Puebla motorway. About two hours on the road, at a closed price including VAT, with no airport surcharge — this route does not start at a terminal.",
+      about:
+        "Puebla is close enough for a same-day return and far enough that driving yourself ruins the working day. It is the intercity route companies ask for most, usually a morning meeting with an afternoon return. The chauffeur waits through the stay when the service is booked by the day.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to Puebla?",
+          "About two hours by motorway under normal conditions. Getting out of the city is the part that varies most with the hour.",
+        ],
+        [
+          "Are tolls included in the price?",
+          "Yes. The price you see is final: VAT, tolls and fuel included. There is nothing to settle on arrival.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  queretaro: {
+    precioUnico: true,
+    km: 220,
+    minutes: 170,
+    es: {
+      slug: "cdmx-queretaro",
+      airport: "Ciudad de México",
+      zone: "Querétaro",
+      title: "Traslado de Ciudad de México a Querétaro",
+      metaTitle: "Traslado privado CDMX a Querétaro | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a Querétaro con chofer. 220 km, unas tres horas. Precio fijo con IVA, casetas incluidas.",
+      keywords:
+        "traslado CDMX Querétaro, chofer privado Querétaro, transporte ejecutivo Querétaro, viaje privado México Querétaro",
+      intro:
+        "Doscientos veinte kilómetros por la México-Querétaro. Cerca de tres horas de camino, con precio cerrado, IVA y casetas incluidas.",
+      about:
+        "El corredor industrial del Bajío mueve un tipo de viaje muy concreto: directivos que van a planta por el día y vuelven de noche. Tres horas por lado son demasiado para manejar antes de una junta, y el vuelo no siempre compensa por lo que se pierde en el aeropuerto.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a Querétaro?",
+          "Unas tres horas por la autopista. Es un trayecto parejo salvo la salida de la ciudad.",
+        ],
+        [
+          "¿Conviene contratar el día completo?",
+          "Si hay reunión y regreso el mismo día, normalmente sí: el servicio por día deja al chofer disponible durante la estancia en vez de cobrar dos viajes sueltos.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-queretaro",
+      airport: "Mexico City",
+      zone: "Querétaro",
+      title: "Private transfer from Mexico City to Querétaro",
+      metaTitle: "Mexico City to Queretaro Private Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to Querétaro. 220 km, about three hours. Fixed price including VAT and tolls.",
+      keywords:
+        "Mexico City to Queretaro transfer, private driver Queretaro, executive transport Queretaro, Bajio chauffeur",
+      intro:
+        "Two hundred and twenty kilometres along the México-Querétaro motorway. Close to three hours on the road, at a closed price with VAT and tolls included.",
+      about:
+        "The Bajío industrial corridor generates a very specific kind of trip: directors visiting a plant for the day and returning at night. Three hours each way is too much to drive before a meeting, and flying does not always pay once airport time is counted.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to Querétaro?",
+          "About three hours by motorway. It is a steady run except for getting out of the city.",
+        ],
+        [
+          "Is the full-day service worth it?",
+          "For a meeting with a same-day return, usually yes: the day service keeps the chauffeur available throughout the stay instead of charging two separate trips.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  cuernavaca: {
+    precioUnico: true,
+    km: 105,
+    minutes: 95,
+    es: {
+      slug: "cdmx-cuernavaca",
+      airport: "Ciudad de México",
+      zone: "Cuernavaca",
+      title: "Traslado de Ciudad de México a Cuernavaca",
+      metaTitle: "Traslado privado CDMX a Cuernavaca | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a Cuernavaca con chofer. 105 km, alrededor de hora y media. Precio fijo con IVA y casetas incluidas.",
+      keywords:
+        "traslado CDMX Cuernavaca, chofer privado Cuernavaca, transporte ejecutivo Morelos, viaje privado México Cuernavaca",
+      intro:
+        "Ciento cinco kilómetros por la autopista del sol. Alrededor de hora y media, con precio cerrado, IVA y casetas incluidas.",
+      about:
+        "Cuernavaca es la escapada corta de la Ciudad de México y también sede de eventos y bodas de fin de semana. La bajada es rápida y la subida de regreso, los domingos por la tarde, es justo cuando nadie quiere manejar.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a Cuernavaca?",
+          "Hora y media aproximadamente. Los domingos por la tarde el regreso puede alargarse bastante por el tráfico de la autopista.",
+        ],
+        [
+          "¿Hacen el viaje redondo el mismo día?",
+          "Sí. Para ida y vuelta en el día suele salir mejor el servicio por horas, porque el chofer se queda disponible en vez de cobrarse dos traslados.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-cuernavaca",
+      airport: "Mexico City",
+      zone: "Cuernavaca",
+      title: "Private transfer from Mexico City to Cuernavaca",
+      metaTitle: "Mexico City to Cuernavaca Private Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to Cuernavaca. 105 km, around an hour and a half. Fixed price including VAT and tolls.",
+      keywords:
+        "Mexico City to Cuernavaca transfer, private driver Cuernavaca, executive transport Morelos, chauffeur Cuernavaca",
+      intro:
+        "One hundred and five kilometres along the Autopista del Sol. Around an hour and a half, at a closed price with VAT and tolls included.",
+      about:
+        "Cuernavaca is Mexico City's short escape and a weekend venue for events and weddings. The drive down is quick; the climb back on a Sunday afternoon is exactly when nobody wants to be at the wheel.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to Cuernavaca?",
+          "About an hour and a half. On Sunday afternoons the return can stretch considerably with motorway traffic.",
+        ],
+        [
+          "Do you do the round trip in one day?",
+          "Yes. For a same-day return the hourly service usually works out better, since the chauffeur stays available instead of charging two separate transfers.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  sanmiguel: {
+    precioUnico: true,
+    km: 290,
+    minutes: 230,
+    es: {
+      slug: "cdmx-san-miguel-de-allende",
+      airport: "Ciudad de México",
+      zone: "San Miguel de Allende",
+      title: "Traslado de Ciudad de México a San Miguel de Allende",
+      metaTitle: "Traslado privado CDMX a San Miguel de Allende | Precio Fijo | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a San Miguel de Allende con chofer. 290 km, unas cuatro horas. Precio fijo con IVA y casetas incluidas.",
+      keywords:
+        "traslado CDMX San Miguel de Allende, chofer privado San Miguel, transporte aeropuerto San Miguel de Allende, viaje privado a San Miguel",
+      intro:
+        "Doscientos noventa kilómetros y cerca de cuatro horas de camino. Precio cerrado, con IVA y casetas incluidas, y sin recargo de aeropuerto.",
+      about:
+        "San Miguel de Allende recibe sobre todo viajeros que aterrizan en Ciudad de México y no quieren un segundo vuelo ni cuatro horas de autobús. Es la ruta más larga que publicamos, y la que más agradece salir temprano: el tramo final por el Bajío se disfruta con luz.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a San Miguel de Allende?",
+          "Alrededor de cuatro horas por autopista, con una parada breve si el pasajero la pide.",
+        ],
+        [
+          "¿Recogen directamente en el aeropuerto?",
+          "Sí, y es lo más común en esta ruta. Danos el número de vuelo al reservar para monitorear la llegada.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-san-miguel-de-allende",
+      airport: "Mexico City",
+      zone: "San Miguel de Allende",
+      title: "Private transfer from Mexico City to San Miguel de Allende",
+      metaTitle: "Mexico City to San Miguel de Allende Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to San Miguel de Allende. 290 km, about four hours. Fixed price including VAT and tolls.",
+      keywords:
+        "Mexico City to San Miguel de Allende transfer, private driver San Miguel, airport transfer San Miguel de Allende, chauffeur Bajio",
+      intro:
+        "Two hundred and ninety kilometres and close to four hours on the road. A closed price, VAT and tolls included, with no airport surcharge.",
+      about:
+        "San Miguel de Allende mostly receives travellers who land in Mexico City and want neither a second flight nor four hours on a coach. It is the longest route we publish, and the one that rewards an early start: the final stretch through the Bajío is better seen in daylight.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to San Miguel de Allende?",
+          "Around four hours by motorway, with a short stop if the passenger asks for one.",
+        ],
+        [
+          "Do you pick up directly at the airport?",
+          "Yes, and it is the most common arrangement on this route. Give us the flight number when booking so we can track the arrival.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
 };
 
 /** El slug de una ruta en un idioma. */

@@ -4,6 +4,7 @@ import { calculatePrice } from "@/lib/booking";
 import { CATEGORIES, type Category } from "@/lib/vehicles";
 import { isLang, path, SITE } from "@/lib/i18n";
 import { ROUTE_KEYS, ROUTES, routeFromSlug, routePath, routeSlug } from "@/lib/routes";
+import { LEGS } from "@/lib/distances";
 
 const LANG = "en" as const;
 const PARAM = "route";
@@ -59,9 +60,10 @@ export default async function Page({ params }: Props) {
   // barato sin recargo y el más caro con él. Inventar un precio en los datos
   // estructurados que no coincida con lo que se ve es justo lo que hace que
   // Google deje de creerte.
+  const leg = LEGS[key];
   const precios = cats.flatMap((cat) => [
-    calculatePrice(route.km, route.minutes, cat, "route", 3, false),
-    calculatePrice(route.km, route.minutes, cat, "route", 3, true),
+    calculatePrice(leg.km, leg.min, cat, "route", 3, false),
+    calculatePrice(leg.km, leg.min, cat, "route", 3, true),
   ]);
 
   const jsonLd = {

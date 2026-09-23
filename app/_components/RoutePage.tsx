@@ -6,6 +6,7 @@ import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import { ROUTE_KEYS, ROUTES, routePath, type RouteKey } from "@/lib/routes";
+import { LEGS } from "@/lib/distances";
 import {
   GOOGLE_PLACE_URL,
   GOOGLE_RATING,
@@ -251,10 +252,15 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
 
   // El mismo cálculo que /tarifas: el trayecto de salida lleva el recargo de
   // aeropuerto —estacionamiento y espera—, el de vuelta no.
-  const precio = (cat: Category, airport: boolean) =>
-    mxn(calculatePrice(route.km, route.minutes, cat, "route", 3, airport));
+  // La distancia sale de lib/distances.ts, que es server-only: esta página
+  // es un componente de servidor, así que puede leerla, pero el dato no
+  // llega al navegador ni se pinta.
+  const leg = LEGS[routeKey];
 
-  const desde = Math.min(...cats.map((cat) => calculatePrice(route.km, route.minutes, cat, "route", 3, false)));
+  const precio = (cat: Category, airport: boolean) =>
+    mxn(calculatePrice(leg.km, leg.min, cat, "route", 3, airport));
+
+  const desde = Math.min(...cats.map((cat) => calculatePrice(leg.km, leg.min, cat, "route", 3, false)));
 
   // Las foráneas no salen de una terminal: ni recargo de aeropuerto ni dos
   // direcciones que comparar. Una sola columna de precio.
@@ -286,12 +292,11 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
         <p className="rt-intro">{c.intro}</p>
 
         <div className="rt-facts">
+          {/* La distancia salió de aquí el 23 sep 2026: publicarla junto al
+              precio deja despejar la tarifa por kilómetro. La duración sí se
+              queda, que es lo que el pasajero pregunta de verdad. */}
           <div className="rt-fact">
-            <div className="rt-fact-value">{t.km(route.km)}</div>
-            <div className="rt-fact-label">{t.distance}</div>
-          </div>
-          <div className="rt-fact">
-            <div className="rt-fact-value">{t.minutes(route.minutes)}</div>
+            <div className="rt-fact-value">{t.minutes(leg.min)}</div>
             <div className="rt-fact-label">{t.duration}</div>
           </div>
           <div className="rt-fact">

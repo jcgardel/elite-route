@@ -9,7 +9,7 @@ import type { Lang } from "./i18n";
  * sobre *todas* las tarifas y competía contra páginas dedicadas a esa ruta
  * exacta. Perdía siempre.
  *
- * Los kilómetros y los minutos son los mismos que ya publicaba /tarifas: no
+ * Las duraciones son las mismas que ya publicaba /tarifas: no
  * hay dos fuentes de verdad, y el precio de cada página lo calcula
  * `calculatePrice` en el momento, igual que en el resto del sitio.
  *
@@ -76,9 +76,13 @@ type Copy = {
 export type Route = {
   /** Sin recargo de aeropuerto: una sola columna de precio. */
   precioUnico?: true;
-  /** Distancia y duración estimadas. Las mismas que publica /tarifas. */
-  km: number;
-  minutes: number;
+  /**
+   * La distancia y la duración NO viven aquí: están en lib/distances.ts,
+   * que es server-only. Este archivo lo importa TarifasClient —componente
+   * de cliente— para armar los enlaces, así que todo lo que contenga viaja
+   * al navegador. Hasta el 23 sep 2026 se iban con él los kilómetros de las
+   * trece rutas, y con el precio publicado al lado eso entrega la tarifa.
+   */
   es: Copy;
   en: Copy;
 };
@@ -103,8 +107,6 @@ const ANTICIPACION_EN: readonly [string, string] = [
 
 export const ROUTES: Record<RouteKey, Route> = {
   polanco: {
-    km: 22,
-    minutes: 30,
     es: {
       slug: "aicm-polanco",
       airport: "AICM",
@@ -112,11 +114,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Polanco",
       metaTitle: "Traslado AICM a Polanco | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Polanco y Lomas de Chapultepec. 22 km, unos 30 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Polanco y Lomas de Chapultepec. Unos 30 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Polanco, taxi aeropuerto Polanco, chofer privado Polanco, transporte aeropuerto Lomas de Chapultepec, traslado aeropuerto Polanco precio",
       intro:
-        "Veintidós kilómetros y unos treinta minutos sin tráfico entre las terminales del AICM y Polanco. El precio es fijo y con IVA incluido: no cambia si el tráfico se pone pesado ni si tu vuelo llega tarde.",
+        "Unos treinta minutos sin tráfico entre las terminales del AICM y Polanco. El precio es fijo y con IVA incluido: no cambia si el tráfico se pone pesado ni si tu vuelo llega tarde.",
       about:
         "Polanco y Lomas de Chapultepec concentran buena parte de los hoteles de negocios y las oficinas corporativas de la ciudad, así que es la ruta que más piden los viajeros que aterrizan en el AICM por trabajo. El tráfico decide el tiempo: a media mañana o a la salida de oficinas los treinta minutos se pueden convertir en cincuenta, y la tarifa no se mueve por eso.",
       faqs: [
@@ -139,11 +141,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Polanco",
       metaTitle: "Mexico City Airport to Polanco Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Polanco and Lomas de Chapultepec. 22 km, about 30 minutes. Fixed price, VAT included, flight tracked, waiting covered.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Polanco and Lomas de Chapultepec. About 30 minutes. Fixed price, VAT included, flight tracked, waiting covered.",
       keywords:
         "Mexico City airport to Polanco, MEX airport transfer Polanco, private driver Polanco, airport transfer Lomas de Chapultepec",
       intro:
-        "Twenty-two kilometres and about thirty minutes without traffic between the AICM terminals and Polanco. The price is fixed and includes VAT: it does not change if traffic turns heavy or if your flight lands late.",
+        "About thirty minutes without traffic between the AICM terminals and Polanco. The price is fixed and includes VAT: it does not change if traffic turns heavy or if your flight lands late.",
       about:
         "Polanco and Lomas de Chapultepec hold much of the city's business hotels and corporate offices, which makes this the route most often requested by travellers landing at AICM for work. Traffic decides the time: mid-morning or at the end of the working day the thirty minutes can stretch to fifty, and the fare does not move for it.",
       faqs: [
@@ -162,8 +164,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   santafe: {
-    km: 35,
-    minutes: 50,
     es: {
       slug: "aicm-santa-fe",
       airport: "AICM",
@@ -171,11 +171,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Santa Fe",
       metaTitle: "Traslado AICM a Santa Fe | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Santa Fe e Interlomas. 35 km, unos 50 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Santa Fe e Interlomas. Unos 50 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Santa Fe, transporte aeropuerto Santa Fe CDMX, chofer privado Interlomas, traslado aeropuerto Santa Fe precio",
       intro:
-        "Treinta y cinco kilómetros de punta a punta de la ciudad: es el traslado más largo dentro de la Ciudad de México y el que más castiga el tráfico. El precio es fijo, así que la hora a la que aterrices no cambia lo que pagas.",
+        "De punta a punta de la ciudad: es el traslado más largo dentro de la Ciudad de México y el que más castiga el tráfico. El precio es fijo, así que la hora a la que aterrices no cambia lo que pagas.",
       about:
         "Santa Fe es el distrito corporativo del poniente, y llegar ahí desde el AICM significa cruzar la ciudad entera. Es justo la ruta donde un taxi con taxímetro se vuelve impredecible: cincuenta minutos en un buen día, mucho más si se atraviesa la hora pico. Aquí el precio fijo no es un detalle de mercadotecnia, es la diferencia entre saber y no saber cuánto vas a pagar.",
       faqs: [
@@ -198,11 +198,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Santa Fe",
       metaTitle: "Mexico City Airport to Santa Fe Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Santa Fe and Interlomas. 35 km, about 50 minutes. Fixed price, VAT included, flight tracked.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Santa Fe and Interlomas. About 50 minutes. Fixed price, VAT included, flight tracked.",
       keywords:
         "Mexico City airport to Santa Fe, MEX airport transfer Santa Fe, private driver Interlomas, airport transfer Santa Fe price",
       intro:
-        "Thirty-five kilometres from one end of the city to the other: the longest transfer inside Mexico City, and the one traffic punishes hardest. The price is fixed, so the hour you land does not change what you pay.",
+        "From one end of the city to the other: the longest transfer inside Mexico City, and the one traffic punishes hardest. The price is fixed, so the hour you land does not change what you pay.",
       about:
         "Santa Fe is the corporate district on the western edge, and reaching it from AICM means crossing the entire city. This is exactly the route where a metered taxi turns unpredictable: fifty minutes on a good day, considerably more through rush hour. Here a fixed price is not a marketing detail — it is the difference between knowing and not knowing what you will pay.",
       faqs: [
@@ -221,8 +221,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   centro: {
-    km: 15,
-    minutes: 25,
     es: {
       slug: "aicm-centro-roma-condesa",
       airport: "AICM",
@@ -230,11 +228,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM al Centro, Roma y Condesa",
       metaTitle: "Traslado AICM a Centro, Roma y Condesa | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM al Centro Histórico, la Roma y la Condesa. 15 km, unos 25 minutos. Precio fijo con IVA y espera incluida.",
+        "Traslado privado del aeropuerto AICM al Centro Histórico, la Roma y la Condesa. Unos 25 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
         "traslado AICM Centro Histórico, transporte aeropuerto Roma Condesa, chofer privado Condesa, taxi aeropuerto Centro CDMX",
       intro:
-        "Quince kilómetros y unos veinticinco minutos: es la ruta más corta que hacemos desde el AICM. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Unos veinticinco minutos: es la ruta más corta que hacemos desde el AICM. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       about:
         "El Centro Histórico, la Roma y la Condesa son la zona a la que llega quien viene por turismo o por una estancia corta, y también la más cercana al aeropuerto. Ser la más corta no la hace la más simple: son calles estrechas, de un solo sentido y con carga y descarga a media mañana. Un chofer que conoce la zona ahorra más tiempo aquí que en una autopista.",
       faqs: [
@@ -257,11 +255,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Downtown, Roma and Condesa",
       metaTitle: "Mexico City Airport to Downtown, Roma & Condesa | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Centro Histórico, Roma and Condesa. 15 km, about 25 minutes. Fixed price, VAT included.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Centro Histórico, Roma and Condesa. About 25 minutes. Fixed price, VAT included.",
       keywords:
         "Mexico City airport to Roma Norte, MEX airport transfer Condesa, airport to downtown Mexico City, private driver Centro Historico",
       intro:
-        "Fifteen kilometres and about twenty-five minutes: the shortest route we run from AICM. Fixed price with VAT, flight tracking and waiting included.",
+        "About twenty-five minutes: the shortest route we run from AICM. Fixed price with VAT, flight tracking and waiting included.",
       about:
         "Centro Histórico, Roma and Condesa are where visitors on a short stay tend to land, and the closest of our zones to the airport. Shortest does not mean simplest: narrow one-way streets, and loading and unloading through the middle of the morning. A chauffeur who knows these blocks saves more time here than on a motorway.",
       faqs: [
@@ -280,8 +278,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   satelite: {
-    km: 30,
-    minutes: 40,
     es: {
       slug: "aicm-satelite-naucalpan",
       airport: "AICM",
@@ -289,11 +285,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Satélite y Naucalpan",
       metaTitle: "Traslado AICM a Satélite y Naucalpan | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Ciudad Satélite y Naucalpan. 30 km, unos 40 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Ciudad Satélite y Naucalpan. Unos 40 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Satélite, transporte aeropuerto Naucalpan, chofer privado Ciudad Satélite, taxi aeropuerto Satélite precio",
       intro:
-        "Treinta kilómetros hacia el norponiente, unos cuarenta minutos. Salir del aeropuerto hacia el Estado de México es de los trayectos donde más varía lo que te cobran; aquí el precio se fija antes de que subas.",
+        "Hacia el norponiente, unos cuarenta minutos. Salir del aeropuerto hacia el Estado de México es de los trayectos donde más varía lo que te cobran; aquí el precio se fija antes de que subas.",
       about:
         "Satélite y Naucalpan quedan ya en el Estado de México, cruzando el Periférico. Es una ruta habitual de trabajo —parques industriales y corporativos del norponiente— y una donde el transporte por aplicación suele encarecerse justo en las horas en que la gente la necesita. La tarifa se calcula por la distancia real de tu dirección, no por la hora del día.",
       faqs: [
@@ -316,11 +312,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Satélite and Naucalpan",
       metaTitle: "Mexico City Airport to Satélite & Naucalpan | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Ciudad Satélite and Naucalpan. 30 km, about 40 minutes. Fixed price, VAT included.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Ciudad Satélite and Naucalpan. About 40 minutes. Fixed price, VAT included.",
       keywords:
         "Mexico City airport to Satelite, MEX airport transfer Naucalpan, private driver Ciudad Satelite, airport transfer Estado de Mexico",
       intro:
-        "Thirty kilometres to the north-west, about forty minutes. Leaving the airport for Estado de México is one of the trips where the fare varies most; here it is settled before you get in.",
+        "To the north-west, about forty minutes. Leaving the airport for Estado de México is one of the trips where the fare varies most; here it is settled before you get in.",
       about:
         "Satélite and Naucalpan sit in Estado de México, across the Periférico ring road. It is a routine work run — the industrial parks and corporate offices of the north-west — and one where ride-hailing tends to surge at exactly the hours people need it. The fare is calculated from the real distance to your address, not from the time of day.",
       faqs: [
@@ -339,8 +335,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   aifa: {
-    km: 68,
-    minutes: 75,
     es: {
       slug: "aifa-cdmx",
       airport: "AIFA",
@@ -348,11 +342,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AIFA a la Ciudad de México",
       metaTitle: "Traslado AIFA a CDMX | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a cualquier zona de la Ciudad de México. 68 km, unos 75 minutos. Precio fijo con IVA y espera incluida.",
+        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a cualquier zona de la Ciudad de México. Unos 75 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
         "traslado AIFA CDMX, transporte aeropuerto Felipe Ángeles, chofer privado AIFA, cómo llegar del AIFA a la ciudad, traslado AIFA precio",
       intro:
-        "Sesenta y ocho kilómetros y hora y cuarto de camino: el AIFA está lejos de la ciudad, y esa distancia es todo lo que hay que saber para entender por qué conviene llevar el traslado resuelto de antemano.",
+        "Hora y cuarto de camino: el AIFA está lejos de la ciudad, y esa distancia es todo lo que hay que saber para entender por qué conviene llevar el traslado resuelto de antemano.",
       about:
         "El Aeropuerto Internacional Felipe Ángeles queda en Zumpango, al norte del Estado de México, y la oferta de transporte a la salida es bastante más delgada que en el AICM. Llegar sin nada arreglado a las once de la noche es una mala idea. Reservar antes fija el precio, garantiza la unidad y pone a alguien esperándote con tu nombre en cuanto salgas.",
       faqs: [
@@ -375,11 +369,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "AIFA airport transfer to Mexico City",
       metaTitle: "AIFA Airport to Mexico City Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to any part of Mexico City. 68 km, about 75 minutes. Fixed price, VAT included, flight tracked.",
+        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to any part of Mexico City. About 75 minutes. Fixed price, VAT included, flight tracked.",
       keywords:
         "AIFA to Mexico City, Felipe Angeles airport transfer, NLU airport transfer, how to get from AIFA to Mexico City, AIFA private driver",
       intro:
-        "Sixty-eight kilometres and an hour and a quarter on the road: AIFA sits well outside the city, and that distance is all you need to know to see why this transfer is worth arranging in advance.",
+        "An hour and a quarter on the road: AIFA sits well outside the city, and that distance is all you need to know to see why this transfer is worth arranging in advance.",
       about:
         "Felipe Ángeles International Airport is in Zumpango, north of Mexico City in Estado de México, and the ground transport waiting outside is considerably thinner than at AICM. Arriving with nothing arranged at eleven at night is a bad idea. Booking ahead fixes the price, guarantees the vehicle, and puts someone holding your name at the door.",
       faqs: [
@@ -398,8 +392,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   toluca: {
-    km: 80,
-    minutes: 85,
     es: {
       slug: "toluca-cdmx",
       airport: "Aeropuerto de Toluca",
@@ -407,11 +399,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del Aeropuerto de Toluca a la CDMX",
       metaTitle: "Traslado Aeropuerto de Toluca a CDMX | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del Aeropuerto Internacional de Toluca (TLC) a la Ciudad de México. 80 km, unos 85 minutos. Precio fijo con IVA y espera incluida.",
+        "Traslado privado del Aeropuerto Internacional de Toluca (TLC) a la Ciudad de México. Unos 85 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
         "traslado Toluca CDMX, transporte aeropuerto Toluca, chofer privado aeropuerto Toluca, TLC a Ciudad de México, traslado Toluca precio",
       intro:
-        "Ochenta kilómetros por carretera, alrededor de hora y media. Es el traslado más largo del catálogo y el que más agradece llevarse resuelto desde antes de despegar.",
+        "Alrededor de hora y media por carretera. Es el traslado más largo del catálogo y el que más agradece llevarse resuelto desde antes de despegar.",
       about:
         "El Aeropuerto Internacional de Toluca recibe sobre todo vuelos privados y de bajo costo, y está fuera de la ciudad: se llega por la carretera México-Toluca, cruzando la sierra. No es un trayecto que convenga improvisar de noche ni con equipaje. El precio se fija antes y no cambia por el tráfico de la salida a Constituyentes, que es donde suele perderse el tiempo.",
       faqs: [
@@ -434,11 +426,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Toluca airport transfer to Mexico City",
       metaTitle: "Toluca Airport to Mexico City Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Toluca International Airport (TLC) to Mexico City. 80 km, about 85 minutes. Fixed price, VAT included, flight tracked and waiting covered.",
+        "Private transfer from Toluca International Airport (TLC) to Mexico City. About 85 minutes. Fixed price, VAT included, flight tracked and waiting covered.",
       keywords:
         "Toluca airport to Mexico City, TLC airport transfer, Toluca private driver, Toluca to CDMX transfer price",
       intro:
-        "Eighty kilometres of highway, around an hour and a half. The longest transfer we run, and the one that most rewards arranging before you take off.",
+        "Around an hour and a half of highway. The longest transfer we run, and the one that most rewards arranging before you take off.",
       about:
         "Toluca International Airport handles mostly private and low-cost flights, and it sits outside the city: the way in is the México–Toluca highway, over the mountains. Not a trip to improvise at night or with luggage. The price is settled beforehand and does not move with the traffic on the Constituyentes approach, which is where the time usually goes.",
       faqs: [
@@ -456,8 +448,6 @@ export const ROUTES: Record<RouteKey, Route> = {
     },
   },
   interlomas: {
-    km: 38,
-    minutes: 55,
     es: {
       slug: "aicm-interlomas-huixquilucan",
       airport: "AICM",
@@ -465,11 +455,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Interlomas",
       metaTitle: "Traslado AICM a Interlomas y Huixquilucan | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Interlomas, Huixquilucan y Bosques de las Lomas. 38 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Interlomas, Huixquilucan y Bosques de las Lomas. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Interlomas, transporte aeropuerto Huixquilucan, chofer privado Interlomas, traslado aeropuerto Bosques de las Lomas",
       intro:
-        "Treinta y ocho kilómetros de punta a punta de la ciudad: del oriente, donde está el AICM, al poniente alto. Sin tráfico son unos cincuenta y cinco minutos; en hora pico, bastante más. El precio no cambia por eso.",
+        "De punta a punta de la ciudad: del oriente, donde está el AICM, al poniente alto. Sin tráfico son unos cincuenta y cinco minutos; en hora pico, bastante más. El precio no cambia por eso.",
       about:
         "Interlomas y Huixquilucan crecieron como zona corporativa y residencial sin dejar de estar lejos del aeropuerto, y el trayecto cruza la ciudad entera por el Periférico o por Reforma. Es de las rutas donde más se nota llevar chofer: son casi dos horas de manejo en hora pico que el pasajero no tiene que hacer.",
       faqs: [
@@ -492,11 +482,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Interlomas",
       metaTitle: "Mexico City Airport to Interlomas Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Interlomas, Huixquilucan and Bosques de las Lomas. 38 km. Fixed price, VAT included.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Interlomas, Huixquilucan and Bosques de las Lomas. Fixed price, VAT included.",
       keywords:
         "Mexico City airport to Interlomas, MEX airport transfer Huixquilucan, private driver Interlomas, airport transfer Bosques de las Lomas",
       intro:
-        "Thirty-eight kilometres from one end of the city to the other: from the east, where the AICM sits, to the high western side. Without traffic it is about fifty-five minutes; at rush hour, considerably more. The price does not change for that.",
+        "From one end of the city to the other: from the east, where the AICM sits, to the high western side. Without traffic it is about fifty-five minutes; at rush hour, considerably more. The price does not change for that.",
       about:
         "Interlomas and Huixquilucan grew into a corporate and residential district without getting any closer to the airport, and the drive crosses the whole city along the Periférico or Reforma. It is one of the routes where a chauffeur earns their keep: at rush hour it is close to two hours of driving the passenger does not have to do.",
       faqs: [
@@ -515,8 +505,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   coyoacan: {
-    km: 22,
-    minutes: 35,
     es: {
       slug: "aicm-coyoacan-san-angel",
       airport: "AICM",
@@ -524,11 +512,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Coyoacán y San Ángel",
       metaTitle: "Traslado AICM a Coyoacán y San Ángel | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Coyoacán, San Ángel y Ciudad Universitaria. 22 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Coyoacán, San Ángel y Ciudad Universitaria. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Coyoacán, transporte aeropuerto San Ángel, chofer privado Coyoacán, traslado aeropuerto Ciudad Universitaria",
       intro:
-        "Veintidós kilómetros hacia el sur por Viaducto y Tlalpan. Unos treinta y cinco minutos sin tráfico, y el precio incluye IVA y no se mueve si el camino se complica.",
+        "Hacia el sur por Viaducto y Tlalpan, unos treinta y cinco minutos sin tráfico, y el precio incluye IVA y no se mueve si el camino se complica.",
       about:
         "El sur de la ciudad recibe un tipo de viajero distinto: congresos en Ciudad Universitaria, hoteles pequeños en Coyoacán, visitas a los museos de San Ángel. Es una zona de calles estrechas y sentidos cambiantes donde llegar con chofer evita dar vueltas buscando dónde dejar el coche.",
       faqs: [
@@ -551,11 +539,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Coyoacán and San Ángel",
       metaTitle: "Mexico City Airport to Coyoacán Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Coyoacán, San Ángel and Ciudad Universitaria. 22 km. Fixed price, VAT included.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Coyoacán, San Ángel and Ciudad Universitaria. Fixed price, VAT included.",
       keywords:
         "Mexico City airport to Coyoacan, MEX airport transfer San Angel, private driver Coyoacan, airport transfer UNAM",
       intro:
-        "Twenty-two kilometres south along Viaducto and Tlalpan. About thirty-five minutes without traffic, VAT included, and the price does not move if the drive gets complicated.",
+        "South along Viaducto and Tlalpan, about thirty-five minutes without traffic, VAT included, and the price does not move if the drive gets complicated.",
       about:
         "The south of the city draws a different traveller: conferences at Ciudad Universitaria, small hotels in Coyoacán, the museums of San Ángel. It is a district of narrow streets and shifting one-ways where arriving with a chauffeur saves circling for somewhere to leave the car.",
       faqs: [
@@ -574,8 +562,6 @@ export const ROUTES: Record<RouteKey, Route> = {
   },
 
   delvalle: {
-    km: 18,
-    minutes: 30,
     es: {
       slug: "aicm-del-valle-insurgentes-sur",
       airport: "AICM",
@@ -583,11 +569,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AICM a Del Valle e Insurgentes Sur",
       metaTitle: "Traslado AICM a Del Valle e Insurgentes Sur | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado del aeropuerto AICM a Del Valle, Insurgentes Sur y Nápoles. 18 km. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del aeropuerto AICM a Del Valle, Insurgentes Sur y Nápoles. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
         "traslado AICM Del Valle, transporte aeropuerto Insurgentes Sur, chofer privado Nápoles, traslado aeropuerto World Trade Center",
       intro:
-        "Dieciocho kilómetros, la ruta más corta de las que publicamos. Media hora sin tráfico entre las terminales y el corredor de Insurgentes Sur, con precio fijo e IVA incluido.",
+        "La ruta más corta de las que publicamos: media hora sin tráfico entre las terminales y el corredor de Insurgentes Sur, con precio fijo e IVA incluido.",
       about:
         "Insurgentes Sur concentra oficinas, el World Trade Center y buena parte de las agencias y despachos de la ciudad, así que es una ruta de lunes a viernes y de maleta de mano. Al ser corta, el mínimo de cada categoría pesa más que la distancia: por eso el Sedan cuesta aquí casi lo mismo que en trayectos algo más largos.",
       faqs: [
@@ -610,11 +596,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Del Valle and Insurgentes Sur",
       metaTitle: "Mexico City Airport to Del Valle Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Del Valle, Insurgentes Sur and Nápoles. 18 km. Fixed price, VAT included.",
+        "Private transfer from Mexico City International Airport (MEX/AICM) to Del Valle, Insurgentes Sur and Nápoles. Fixed price, VAT included.",
       keywords:
         "Mexico City airport to Del Valle, MEX airport transfer Insurgentes Sur, private driver Napoles, airport transfer World Trade Center",
       intro:
-        "Eighteen kilometres, the shortest route we publish. Half an hour without traffic between the terminals and the Insurgentes Sur corridor, at a fixed price with VAT included.",
+        "The shortest route we publish: half an hour without traffic between the terminals and the Insurgentes Sur corridor, at a fixed price with VAT included.",
       about:
         "Insurgentes Sur holds offices, the World Trade Center and much of the city's agency and professional-services world, which makes this a Monday-to-Friday, carry-on-only route. Being short, each category's minimum weighs more than the distance — which is why the Sedan costs about the same here as on somewhat longer trips.",
       faqs: [
@@ -634,8 +620,6 @@ export const ROUTES: Record<RouteKey, Route> = {
 
   puebla: {
     precioUnico: true,
-    km: 135,
-    minutes: 120,
     es: {
       slug: "cdmx-puebla",
       airport: "Ciudad de México",
@@ -643,11 +627,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a Puebla",
       metaTitle: "Traslado privado CDMX a Puebla | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado de Ciudad de México a Puebla con chofer. 135 km por la autopista, unas dos horas. Precio fijo con IVA incluido, sin cargo por esperas razonables.",
+        "Traslado privado de Ciudad de México a Puebla con chofer. Unas dos horas por la autopista. Precio fijo con IVA incluido, sin cargo por esperas razonables.",
       keywords:
         "traslado CDMX Puebla, chofer privado a Puebla, transporte ejecutivo Puebla, viaje privado México Puebla precio",
       intro:
-        "Ciento treinta y cinco kilómetros por la México-Puebla. Unas dos horas de camino, precio cerrado con IVA y sin recargo de aeropuerto: esta ruta no sale de la terminal.",
+        "Unas dos horas de camino por la México-Puebla, precio cerrado con IVA y sin recargo de aeropuerto: esta ruta no sale de la terminal.",
       about:
         "Puebla está lo bastante cerca para ir y volver en el día y lo bastante lejos para que manejarlo uno mismo arruine la jornada. Es la foránea que más piden las empresas, normalmente para una reunión de mañana con regreso por la tarde. El chofer espera durante la estancia si el servicio se contrata por el día.",
       faqs: [
@@ -669,11 +653,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Private transfer from Mexico City to Puebla",
       metaTitle: "Mexico City to Puebla Private Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private chauffeured transfer from Mexico City to Puebla. 135 km by motorway, about two hours. Fixed price including VAT and tolls.",
+        "Private chauffeured transfer from Mexico City to Puebla. About two hours by motorway. Fixed price including VAT and tolls.",
       keywords:
         "Mexico City to Puebla transfer, private driver Puebla, executive transport Puebla, chauffeur Mexico City Puebla",
       intro:
-        "One hundred and thirty-five kilometres along the México-Puebla motorway. About two hours on the road, at a closed price including VAT, with no airport surcharge — this route does not start at a terminal.",
+        "About two hours on the road along the México-Puebla motorway, at a closed price including VAT, with no airport surcharge — this route does not start at a terminal.",
       about:
         "Puebla is close enough for a same-day return and far enough that driving yourself ruins the working day. It is the intercity route companies ask for most, usually a morning meeting with an afternoon return. The chauffeur waits through the stay when the service is booked by the day.",
       faqs: [
@@ -692,8 +676,6 @@ export const ROUTES: Record<RouteKey, Route> = {
 
   queretaro: {
     precioUnico: true,
-    km: 220,
-    minutes: 170,
     es: {
       slug: "cdmx-queretaro",
       airport: "Ciudad de México",
@@ -701,11 +683,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a Querétaro",
       metaTitle: "Traslado privado CDMX a Querétaro | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado de Ciudad de México a Querétaro con chofer. 220 km, unas tres horas. Precio fijo con IVA, casetas incluidas.",
+        "Traslado privado de Ciudad de México a Querétaro con chofer. Unas tres horas. Precio fijo con IVA, casetas incluidas.",
       keywords:
         "traslado CDMX Querétaro, chofer privado Querétaro, transporte ejecutivo Querétaro, viaje privado México Querétaro",
       intro:
-        "Doscientos veinte kilómetros por la México-Querétaro. Cerca de tres horas de camino, con precio cerrado, IVA y casetas incluidas.",
+        "Cerca de tres horas de camino por la México-Querétaro, con precio cerrado, IVA y casetas incluidas.",
       about:
         "El corredor industrial del Bajío mueve un tipo de viaje muy concreto: directivos que van a planta por el día y vuelven de noche. Tres horas por lado son demasiado para manejar antes de una junta, y el vuelo no siempre compensa por lo que se pierde en el aeropuerto.",
       faqs: [
@@ -727,11 +709,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Private transfer from Mexico City to Querétaro",
       metaTitle: "Mexico City to Queretaro Private Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private chauffeured transfer from Mexico City to Querétaro. 220 km, about three hours. Fixed price including VAT and tolls.",
+        "Private chauffeured transfer from Mexico City to Querétaro. About three hours. Fixed price including VAT and tolls.",
       keywords:
         "Mexico City to Queretaro transfer, private driver Queretaro, executive transport Queretaro, Bajio chauffeur",
       intro:
-        "Two hundred and twenty kilometres along the México-Querétaro motorway. Close to three hours on the road, at a closed price with VAT and tolls included.",
+        "Close to three hours on the road along the México-Querétaro motorway, at a closed price with VAT and tolls included.",
       about:
         "The Bajío industrial corridor generates a very specific kind of trip: directors visiting a plant for the day and returning at night. Three hours each way is too much to drive before a meeting, and flying does not always pay once airport time is counted.",
       faqs: [
@@ -750,8 +732,6 @@ export const ROUTES: Record<RouteKey, Route> = {
 
   cuernavaca: {
     precioUnico: true,
-    km: 105,
-    minutes: 95,
     es: {
       slug: "cdmx-cuernavaca",
       airport: "Ciudad de México",
@@ -759,11 +739,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a Cuernavaca",
       metaTitle: "Traslado privado CDMX a Cuernavaca | Precio Fijo con IVA | Elite Route",
       metaDescription:
-        "Traslado privado de Ciudad de México a Cuernavaca con chofer. 105 km, alrededor de hora y media. Precio fijo con IVA y casetas incluidas.",
+        "Traslado privado de Ciudad de México a Cuernavaca con chofer. Alrededor de hora y media. Precio fijo con IVA y casetas incluidas.",
       keywords:
         "traslado CDMX Cuernavaca, chofer privado Cuernavaca, transporte ejecutivo Morelos, viaje privado México Cuernavaca",
       intro:
-        "Ciento cinco kilómetros por la autopista del sol. Alrededor de hora y media, con precio cerrado, IVA y casetas incluidas.",
+        "Alrededor de hora y media por la autopista del sol, con precio cerrado, IVA y casetas incluidas.",
       about:
         "Cuernavaca es la escapada corta de la Ciudad de México y también sede de eventos y bodas de fin de semana. La bajada es rápida y la subida de regreso, los domingos por la tarde, es justo cuando nadie quiere manejar.",
       faqs: [
@@ -785,11 +765,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Private transfer from Mexico City to Cuernavaca",
       metaTitle: "Mexico City to Cuernavaca Private Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private chauffeured transfer from Mexico City to Cuernavaca. 105 km, around an hour and a half. Fixed price including VAT and tolls.",
+        "Private chauffeured transfer from Mexico City to Cuernavaca. Around an hour and a half. Fixed price including VAT and tolls.",
       keywords:
         "Mexico City to Cuernavaca transfer, private driver Cuernavaca, executive transport Morelos, chauffeur Cuernavaca",
       intro:
-        "One hundred and five kilometres along the Autopista del Sol. Around an hour and a half, at a closed price with VAT and tolls included.",
+        "Around an hour and a half along the Autopista del Sol, at a closed price with VAT and tolls included.",
       about:
         "Cuernavaca is Mexico City's short escape and a weekend venue for events and weddings. The drive down is quick; the climb back on a Sunday afternoon is exactly when nobody wants to be at the wheel.",
       faqs: [
@@ -808,8 +788,6 @@ export const ROUTES: Record<RouteKey, Route> = {
 
   sanmiguel: {
     precioUnico: true,
-    km: 290,
-    minutes: 230,
     es: {
       slug: "cdmx-san-miguel-de-allende",
       airport: "Ciudad de México",
@@ -817,11 +795,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a San Miguel de Allende",
       metaTitle: "Traslado privado CDMX a San Miguel de Allende | Precio Fijo | Elite Route",
       metaDescription:
-        "Traslado privado de Ciudad de México a San Miguel de Allende con chofer. 290 km, unas cuatro horas. Precio fijo con IVA y casetas incluidas.",
+        "Traslado privado de Ciudad de México a San Miguel de Allende con chofer. Unas cuatro horas. Precio fijo con IVA y casetas incluidas.",
       keywords:
         "traslado CDMX San Miguel de Allende, chofer privado San Miguel, transporte aeropuerto San Miguel de Allende, viaje privado a San Miguel",
       intro:
-        "Doscientos noventa kilómetros y cerca de cuatro horas de camino. Precio cerrado, con IVA y casetas incluidas, y sin recargo de aeropuerto.",
+        "Cerca de cuatro horas de camino. Precio cerrado, con IVA y casetas incluidas, y sin recargo de aeropuerto.",
       about:
         "San Miguel de Allende recibe sobre todo viajeros que aterrizan en Ciudad de México y no quieren un segundo vuelo ni cuatro horas de autobús. Es la ruta más larga que publicamos, y la que más agradece salir temprano: el tramo final por el Bajío se disfruta con luz.",
       faqs: [
@@ -843,11 +821,11 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Private transfer from Mexico City to San Miguel de Allende",
       metaTitle: "Mexico City to San Miguel de Allende Transfer | Fixed Price | Elite Route",
       metaDescription:
-        "Private chauffeured transfer from Mexico City to San Miguel de Allende. 290 km, about four hours. Fixed price including VAT and tolls.",
+        "Private chauffeured transfer from Mexico City to San Miguel de Allende. About four hours. Fixed price including VAT and tolls.",
       keywords:
         "Mexico City to San Miguel de Allende transfer, private driver San Miguel, airport transfer San Miguel de Allende, chauffeur Bajio",
       intro:
-        "Two hundred and ninety kilometres and close to four hours on the road. A closed price, VAT and tolls included, with no airport surcharge.",
+        "Close to four hours on the road. A closed price, VAT and tolls included, with no airport surcharge.",
       about:
         "San Miguel de Allende mostly receives travellers who land in Mexico City and want neither a second flight nor four hours on a coach. It is the longest route we publish, and the one that rewards an early start: the final stretch through the Bajío is better seen in daylight.",
       faqs: [

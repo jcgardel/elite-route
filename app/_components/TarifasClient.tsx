@@ -327,7 +327,6 @@ export default function TarifasClient({
                         <Link className="tf-route-link" href={routePath(lang, r.key as RouteKey)}>
                           {t.routes[r.key]}
                         </Link>
-                        {r.zona}
                       </div>
                     </td>
                     {cats.map((cat) => (

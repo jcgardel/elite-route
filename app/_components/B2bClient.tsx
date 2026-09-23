@@ -72,8 +72,8 @@ const TX = {
     colCategory: "Categoría", quoteIt: "Cotizar",
     airportNotes: [
       "El aeropuerto más cercano al centro de CDMX.",
-      "~55 km al norte de CDMX. Zona industrial Tultitlán.",
-      "~65 km al poniente. Conexión directa a Santa Fe.",
+      "Al norte de la ciudad, junto a la zona industrial de Tultitlán.",
+      "Al poniente, con conexión directa a Santa Fe.",
     ],
     cols: [
       ["→ Polanco", "→ Santa Fe", "→ Centro", "→ Pedregal / Sur"],
@@ -160,8 +160,8 @@ const TX = {
     colCategory: "Category", quoteIt: "On request",
     airportNotes: [
       "The airport closest to central Mexico City.",
-      "~55 km north of Mexico City, by the Tultitlán industrial area.",
-      "~65 km west. Direct connection to Santa Fe.",
+      "North of the city, by the Tultitlán industrial area.",
+      "West of the city, with a direct connection to Santa Fe.",
     ],
     cols: [
       ["→ Polanco", "→ Santa Fe", "→ Downtown", "→ Pedregal / South"],

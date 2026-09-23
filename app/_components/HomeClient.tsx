@@ -164,6 +164,7 @@ const TX = {
     heroWaitRest: "We track your flight and the chauffeur adjusts to the actual landing time.",
     heroBtnReserve: "Reserve Now",
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
+    insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
     water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
     ac: "Vehicle with A/C", chauffeur: "Friendly, service-minded chauffeur",
     getQuote: "Get your quote",
@@ -249,6 +250,7 @@ const TX = {
     heroWaitRest: "Monitoreamos tu vuelo y el chofer se ajusta a la hora real de aterrizaje.",
     heroBtnReserve: "Reservar Ahora",
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
+    insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
     water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
     ac: "Vehículo con A/C", chauffeur: "Chofer amable y orientado al servicio",
     getQuote: "Obtén tu cotización",
@@ -1383,7 +1385,31 @@ export default function HomeClient({
                   <h2 className="er-comfort-title">
                     {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
                   </h2>
+                  {/* La seguridad va PRIMERO: el título de la sección la
+                      promete y la lista arrancaba con la botella de agua.
+                      Las dos afirmaciones las confirmó el dueño el 22 sep
+                      2026 y están en su catálogo corporativo. No añadir aquí
+                      cobertura, monto ni proceso de selección de choferes:
+                      eso no está confirmado. */}
                   <ul className="er-comfort-list">
+                    <li>
+                      <span className="er-comfort-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                          <path d="M12 3l7 3v6c0 4.2-2.9 7.8-7 9-4.1-1.2-7-4.8-7-9V6l7-3z" />
+                          <path d="M9 12l2 2 4-4" />
+                        </svg>
+                      </span>
+                      {t.insured}
+                    </li>
+                    <li>
+                      <span className="er-comfort-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                          <path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z" />
+                          <circle cx="12" cy="10" r="2.5" />
+                        </svg>
+                      </span>
+                      {t.gps}
+                    </li>
                     <li>
                       <span className="er-comfort-icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">

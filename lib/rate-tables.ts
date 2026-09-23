@@ -12,67 +12,48 @@
  */
 import type { Category } from "./vehicles";
 
-/** Un tramo con la distancia y el tiempo que usa la tabla. */
-export type Leg = { km: number; min: number };
+/**
+ * Este archivo SÍ cruza al navegador: lo importan cuatro componentes de
+ * cliente. Por eso desde el 23 sep 2026 no contiene distancias: sólo las
+ * claves de cada fila y las etiquetas. Los kilómetros viven en
+ * lib/distances.ts, que es server-only, porque publicarlos junto al precio
+ * entrega la tarifa por kilómetro.
+ */
 
-/** Salidas desde aeropuerto que publica /tarifas. */
+/** Salidas desde aeropuerto que publica /tarifas, en orden. */
 export const RUTAS_DESDE = [
-  { key: "centro", zona: "~15 km", km: 15, min: 25 },
-  { key: "polanco", zona: "~22 km", km: 22, min: 30 },
-  { key: "santafe", zona: "~35 km", km: 35, min: 50 },
-  { key: "satelite", zona: "~30 km", km: 30, min: 40 },
-  { key: "aifa", zona: "~68 km", km: 68, min: 75 },
-  { key: "toluca", zona: "~80 km", km: 80, min: 85 },
+  { key: "centro" },
+  { key: "polanco" },
+  { key: "santafe" },
+  { key: "satelite" },
+  { key: "aifa" },
+  { key: "toluca" },
 ] as const;
 
 /** Trayectos hacia el aeropuerto, sin el recargo de espera. */
 export const RUTAS_HACIA = [
-  { key: "centro", km: 15, min: 25 },
-  { key: "santafe", km: 35, min: 50 },
-  { key: "polanco", km: 22, min: 30 },
-  { key: "aifa", km: 68, min: 75 },
-  { key: "toluca", km: 80, min: 85 },
+  { key: "centro" },
+  { key: "santafe" },
+  { key: "polanco" },
+  { key: "aifa" },
+  { key: "toluca" },
 ] as const;
 
 /** Los bloques por hora de /tarifas. El 10 es el día completo. */
 export const DURACIONES = [2, 3, 4, 5, 6, 10] as const;
 
-/** Rutas de la página corporativa, agrupadas por aeropuerto de salida. */
+/**
+ * Las secciones de la página corporativa: qué aeropuertos se publican y qué
+ * zonas tiene cada uno. Las distancias están en lib/distances.ts.
+ */
 export const B2B_SECTIONS: ReadonlyArray<{
   airport: string;
   code: string;
-  routes: { polanco: Leg | null; santafe: Leg | null; centro: Leg | null; sur: Leg | null };
+  zones: ReadonlyArray<"polanco" | "santafe" | "centro" | "sur">;
 }> = [
-  {
-    airport: "AICM · Benito Juárez",
-    code: "MEX",
-    routes: {
-      polanco: { km: 22, min: 30 },
-      santafe: { km: 35, min: 50 },
-      centro: { km: 15, min: 25 },
-      sur: { km: 25, min: 36 },
-    },
-  },
-  {
-    airport: "AIFA · Felipe Ángeles",
-    code: "NLU",
-    routes: {
-      polanco: { km: 55, min: 61 },
-      santafe: { km: 68, min: 75 },
-      centro: { km: 50, min: 56 },
-      sur: null,
-    },
-  },
-  {
-    airport: "Aeropuerto Toluca",
-    code: "TLC",
-    routes: {
-      polanco: { km: 65, min: 69 },
-      santafe: { km: 45, min: 48 },
-      centro: { km: 70, min: 74 },
-      sur: null,
-    },
-  },
+  { airport: "AICM · Benito Juárez", code: "MEX", zones: ["polanco", "santafe", "centro", "sur"] },
+  { airport: "AIFA · Felipe Ángeles", code: "NLU", zones: ["polanco", "santafe", "centro"] },
+  { airport: "Aeropuerto Toluca", code: "TLC", zones: ["polanco", "santafe", "centro"] },
 ];
 
 /**

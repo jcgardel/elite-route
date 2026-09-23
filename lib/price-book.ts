@@ -25,6 +25,7 @@ import {
   type TablasTarifas,
 } from "./rate-tables";
 import { CATEGORIES, type Category } from "./vehicles";
+import { LEGS, B2B_LEGS, type LegKey } from "./distances";
 
 function porCategoria(fn: (cat: Category) => number): PrecioPorCategoria {
   return Object.fromEntries(CATEGORIES.map((c) => [c, fn(c)])) as PrecioPorCategoria;
@@ -41,8 +42,8 @@ export function tablasTarifas(): TablasTarifas {
   return {
     // La salida desde aeropuerto lleva el recargo de estacionamiento y
     // espera; el trayecto hacia el aeropuerto no.
-    desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(r.km, r.min, true)])),
-    hacia: Object.fromEntries(RUTAS_HACIA.map((r) => [r.key, ruta(r.km, r.min, false)])),
+    desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, true)])),
+    hacia: Object.fromEntries(RUTAS_HACIA.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, false)])),
     horas: Object.fromEntries(DURACIONES.map((h) => [h, bloque(h)])),
   };
 }
@@ -51,7 +52,8 @@ export function tablasTarifas(): TablasTarifas {
 export function tablasB2b(): TablasB2b {
   const rutas: Record<string, PrecioPorCategoria> = {};
   for (const s of B2B_SECTIONS) {
-    for (const [destino, leg] of Object.entries(s.routes)) {
+    for (const destino of s.zones) {
+      const leg = B2B_LEGS[s.code]?.[destino];
       if (leg) rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true);
     }
   }

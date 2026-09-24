@@ -157,9 +157,9 @@ const TX = {
     // "Dispositions" era calco de "Disposiciones": en inglés significa
     // carácter o temperamento, no servicio por horas.
     services: "Hourly", airports: "Transfers", corporate: "Corporate", contact: "Contact", reserveNow: "Reserve Now",
-    kicker: "Elite Route Mexico City",
+    kicker: "Executive transportation and private chauffeur in Mexico City",
     heroTitle: "We move your level.",
-    heroCopy: "Your private chauffeur in Mexico City. Airport transfers, hourly service and executive transportation.",
+    heroCopy: "Airport transfers, hourly service and executive transport for companies.",
     heroWaitStrong: "1 free hour of waiting at the airport.",
     heroWaitRest: "We track your flight and the chauffeur adjusts to the actual landing time.",
     heroBtnReserve: "Reserve Now",
@@ -248,9 +248,9 @@ const TX = {
   },
   es: {
     services: "Disposiciones", airports: "Traslados", corporate: "Corporativo", contact: "Contacto", reserveNow: "Reservar",
-    kicker: "Elite Route Ciudad de México",
+    kicker: "Transporte ejecutivo y chofer privado en Ciudad de México",
     heroTitle: "Movemos tu nivel.",
-    heroCopy: "Tu chofer privado en Ciudad de México. Traslados al aeropuerto, servicio por hora y transporte ejecutivo.",
+    heroCopy: "Traslados al aeropuerto, servicio por hora y transporte ejecutivo para empresas.",
     heroWaitStrong: "1 hora de espera gratuita en el aeropuerto.",
     heroWaitRest: "Monitoreamos tu vuelo y el chofer se ajusta a la hora real de aterrizaje.",
     heroBtnReserve: "Reservar Ahora",
@@ -385,6 +385,7 @@ const styles = `
      orden cambia para que el cotizador quede antes que las amenidades. */
   .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:34px 48px; align-items:start; }
   .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
+  .er-hero-h1 { font-size:14px; letter-spacing:0.17em; font-weight:600; margin:0 0 16px; max-width:640px; line-height:1.6; }
   .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; text-wrap:balance; }
   .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
   .er-hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
@@ -635,6 +636,7 @@ const styles = `
     .er-nav-right { gap:12px; }
     .er-hero-inner { padding:22px 18px 54px; gap:26px; }
     .er-hero-title { font-size:42px; }
+    .er-hero-h1 { font-size:12px; letter-spacing:0.14em; line-height:1.55; }
     .er-hero-copy { font-size:15px; }
     /* Compacta, no apilada: apilada empujaba el cotizador 200 px hacia
        abajo, justo lo que se quería evitar en móvil. */
@@ -1061,8 +1063,13 @@ export default function HomeClient({
 
             <div className="er-hero-inner">
               <div className="er-hero-lede">
-                <div className="er-kicker">{t.kicker}</div>
-                <h1 className="er-hero-title">{t.heroTitle}</h1>
+                {/* El H1 dice lo que la gente busca; el lema conserva su
+                    tamaño y su peso, pero deja de ser el encabezado. La
+                    portada decía "Movemos tu nivel" como H1: buena frase,
+                    nula para búsqueda, y la línea de arriba no decía más que
+                    el nombre de la empresa, que ya está en el logotipo. */}
+                <h1 className="er-kicker er-hero-h1">{t.kicker}</h1>
+                <p className="er-hero-title">{t.heroTitle}</p>
                 <p className="er-hero-copy">{t.heroCopy}</p>
 
                 {/* El miedo de quien reserva un aeropuerto no es el precio,

@@ -33,6 +33,7 @@ export type Page =
   | "hourly"
   | "chauffeur"
   | "executive"
+  | "airport"
   | "corporate"
   | "quote"
   | "privacy"
@@ -59,6 +60,11 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   // bloque de horas sigue siendo de /chofer-por-horas.
   chauffeur: { en: "private-chauffeur-mexico-city", es: "chofer-privado-cdmx" },
   executive: { en: "executive-transportation-mexico-city", es: "transporte-ejecutivo-cdmx" },
+  // La búsqueda de aeropuerto SIN destino: "traslado aeropuerto CDMX",
+  // "Mexico City airport transfer". Las trece páginas de ruta contestan
+  // "del AICM a Polanco", pero nadie contestaba la genérica, y es la que
+  // hace el viajero que todavía no sabe cómo se escribe su colonia.
+  airport: { en: "mexico-city-airport-transfer", es: "traslado-aeropuerto-cdmx" },
   corporate: { en: "corporate", es: "b2b" },
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },

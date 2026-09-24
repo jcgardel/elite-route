@@ -94,6 +94,22 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "transporte ejecutivo CDMX, transporte ejecutivo Ciudad de México, servicio de transporte ejecutivo, traslados ejecutivos CDMX, transporte privado ejecutivo México",
     },
   },
+  airport: {
+    en: {
+      title: "Mexico City Airport Transfers | AICM, AIFA and Toluca | Elite Route",
+      description:
+        "Private airport transfers in Mexico City from AICM, AIFA and Toluca. We track your flight, one hour of waiting is included and the price is fixed with VAT.",
+      keywords:
+        "Mexico City airport transfer, AICM airport transfer, AIFA airport transfer, Toluca airport transfer, airport pickup Mexico City, airport taxi Mexico City, private transfer Mexico City airport",
+    },
+    es: {
+      title: "Traslados de Aeropuerto en CDMX | AICM, AIFA y Toluca | Elite Route",
+      description:
+        "Traslados privados desde y hacia los aeropuertos AICM, AIFA y Toluca. Monitoreamos tu vuelo, la primera hora de espera va incluida y el precio es fijo con IVA.",
+      keywords:
+        "traslado aeropuerto CDMX, transporte aeropuerto Ciudad de México, traslado AICM, traslado AIFA, traslado aeropuerto Toluca, taxi aeropuerto CDMX, recoger en el aeropuerto Ciudad de México",
+    },
+  },
   corporate: {
     en: {
       title: "Corporate Executive Transportation in Mexico City | Elite Route",

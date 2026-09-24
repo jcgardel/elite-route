@@ -62,6 +62,38 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "chofer por horas CDMX, chofer privado por horas Ciudad de México, auto con chofer por horas, renta de chofer por día CDMX, chofer ejecutivo por horas, disposición de vehículo con chofer",
     },
   },
+  chauffeur: {
+    en: {
+      title: "Private Chauffeur in Mexico City | Fixed Price | Elite Route",
+      description:
+        "Hire a private chauffeur in Mexico City: the same driver for the whole service, an insured and GPS-monitored vehicle, and a fixed price with VAT. By the trip, by the hour or by the day.",
+      keywords:
+        "private chauffeur Mexico City, private driver Mexico City, hire a chauffeur CDMX, personal driver Mexico City, chauffeur service Mexico City, car with driver Mexico City",
+    },
+    es: {
+      title: "Chofer Privado en CDMX | Precio Fijo con IVA | Elite Route",
+      description:
+        "Contrata un chofer privado en Ciudad de México: el mismo conductor durante todo el servicio, unidad asegurada con monitoreo GPS y precio fijo con IVA. Por traslado, por horas o por día.",
+      keywords:
+        "chofer privado CDMX, chofer privado Ciudad de México, contratar chofer privado, chofer particular CDMX, auto con chofer Ciudad de México, servicio de chofer privado",
+    },
+  },
+  executive: {
+    en: {
+      title: "Executive Transportation in Mexico City | Elite Route",
+      description:
+        "Executive ground transportation in Mexico City: airport transfers, hourly service, full days and out-of-town routes. Own fleet, fixed price with VAT and CFDI invoicing.",
+      keywords:
+        "executive transportation Mexico City, executive car service CDMX, executive transfers Mexico City, executive ground transportation Mexico, chauffeured transport CDMX",
+    },
+    es: {
+      title: "Transporte Ejecutivo en CDMX | Los 4 Servicios | Elite Route",
+      description:
+        "Transporte ejecutivo en Ciudad de México: traslados al aeropuerto, servicio por horas, día completo y rutas foráneas. Flota propia, precio fijo con IVA y factura CFDI.",
+      keywords:
+        "transporte ejecutivo CDMX, transporte ejecutivo Ciudad de México, servicio de transporte ejecutivo, traslados ejecutivos CDMX, transporte privado ejecutivo México",
+    },
+  },
   corporate: {
     en: {
       title: "Corporate Executive Transportation in Mexico City | Elite Route",

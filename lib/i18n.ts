@@ -31,6 +31,8 @@ export type Page =
   | "home"
   | "rates"
   | "hourly"
+  | "chauffeur"
+  | "executive"
   | "corporate"
   | "quote"
   | "privacy"
@@ -45,6 +47,18 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   // Mexico City". Hasta ahora esa búsqueda caía en /tarifas, que habla de
   // todos los servicios a la vez y por eso no gana ninguno.
   hourly: { en: "hourly-chauffeur", es: "chofer-por-horas" },
+  // Las dos búsquedas genéricas del sector. Hasta ahora las dos caían en la
+  // portada, que es un cotizador con poco texto: gana una página con el
+  // término en el H1 y contenido que lo sostenga.
+  //
+  // No se pisan entre ellas ni con lo que ya existe, y eso fue deliberado:
+  // "chofer privado" es la persona —quién maneja, qué hace mientras esperas,
+  // en qué se diferencia de una aplicación— y "transporte ejecutivo" es el
+  // catálogo —los cuatro servicios y las cuatro categorías, con la puerta a
+  // cada página concreta—. La cuenta corporativa sigue siendo de /b2b y el
+  // bloque de horas sigue siendo de /chofer-por-horas.
+  chauffeur: { en: "private-chauffeur-mexico-city", es: "chofer-privado-cdmx" },
+  executive: { en: "executive-transportation-mexico-city", es: "transporte-ejecutivo-cdmx" },
   corporate: { en: "corporate", es: "b2b" },
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },

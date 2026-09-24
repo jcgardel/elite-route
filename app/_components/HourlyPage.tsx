@@ -135,6 +135,8 @@ const TX = {
     ctaBtn: "Cotizar ahora",
 
     alsoTitle: "También te puede servir",
+    alsoChauffeur: "Chofer privado",
+    alsoExecutive: "Transporte ejecutivo",
     alsoRates: "Todas las tarifas",
     alsoCorporate: "Cuentas corporativas",
 
@@ -233,6 +235,8 @@ const TX = {
     ctaBtn: "Get a quote",
 
     alsoTitle: "You may also need",
+    alsoChauffeur: "Private chauffeur",
+    alsoExecutive: "Executive transportation",
     alsoRates: "All rates",
     alsoCorporate: "Corporate accounts",
 
@@ -536,6 +540,8 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
         <section className="hp-section">
           <h2 className="hp-h2">{t.alsoTitle}</h2>
           <div className="hp-also">
+            <Link href={path(lang, "chauffeur")}>{t.alsoChauffeur}</Link>
+            <Link href={path(lang, "executive")}>{t.alsoExecutive}</Link>
             <Link href={path(lang, "rates")}>{t.alsoRates}</Link>
             <Link href={path(lang, "corporate")}>{t.alsoCorporate}</Link>
           </div>

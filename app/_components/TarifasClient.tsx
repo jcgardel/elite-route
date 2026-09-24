@@ -30,6 +30,7 @@ function mxn(n: number) {
 const TX = {
   es: {
     corporate: "Corporativo",
+    services: "Servicios",
     quoteNow: "Cotizar ahora",
     quoteShort: "Cotizar",
     kicker: "Elite Route · Ciudad de México",
@@ -98,6 +99,7 @@ const TX = {
   },
   en: {
     corporate: "Corporate",
+    services: "Services",
     quoteNow: "Get a quote",
     quoteShort: "Quote",
     kicker: "Elite Route · Mexico City",
@@ -278,6 +280,7 @@ export default function TarifasClient({
             <BrandMark size={17} compact={14} />
           </Link>
           <div className="tf-nav-right">
+            <Link href={path(lang, "executive")} className="tf-nav-link">{t.services}</Link>
             <Link href={path(lang, "corporate")} className="tf-nav-link">{t.corporate}</Link>
             <Link className="tf-nav-cta" href={`${home}#quote`} aria-label={t.quoteNow}>
               <span className="tf-cta-largo">{t.quoteNow}</span>

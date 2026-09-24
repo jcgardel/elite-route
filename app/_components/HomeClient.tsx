@@ -207,6 +207,8 @@ const TX = {
     footPrivacy: "Privacy",
     footRates: "Rates",
     footHourly: "Hourly chauffeur",
+    footChauffeur: "Private chauffeur",
+    footExecutive: "Executive transportation",
     // Sin año: se pintaría en el servidor y otra vez en el navegador, y en
     // el cambio de año los dos no coinciden. No vale una advertencia de
     // hidratación por un dato que no aporta.
@@ -298,6 +300,8 @@ const TX = {
     footPrivacy: "Aviso de privacidad",
     footRates: "Tarifas",
     footHourly: "Chofer por horas",
+    footChauffeur: "Chofer privado",
+    footExecutive: "Transporte ejecutivo",
     footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
@@ -1660,6 +1664,11 @@ export default function HomeClient({
                     baja al cotizador, no una dirección: un buscador no puede
                     seguirlo. Este sí. */}
                 <a href={path(lang, "hourly")}>{t.footHourly}</a>
+                {/* Las dos páginas de servicio. Sin un enlace desde aquí
+                    sólo las alcanzaría el sitemap, y una página a la que el
+                    propio sitio no enlaza pesa mucho menos. */}
+                <a href={path(lang, "chauffeur")}>{t.footChauffeur}</a>
+                <a href={path(lang, "executive")}>{t.footExecutive}</a>
                 <a href={corporate}>{t.corporate}</a>
                 <a href={path(lang, "terms")}>{t.footTerms}</a>
                 <a href={path(lang, "privacy")}>{t.footPrivacy}</a>

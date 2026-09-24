@@ -56,15 +56,25 @@ export default async function Page({ params }: Props) {
   const route = ROUTES[key];
   const c = route[LANG];
   const cats: readonly Category[] = CATEGORIES;
-  // El rango que se anuncia es el mismo que la tabla de la página: el más
-  // barato sin recargo y el más caro con él. Inventar un precio en los datos
-  // estructurados que no coincida con lo que se ve es justo lo que hace que
-  // Google deje de creerte.
+  // El rango que se anuncia es EXACTAMENTE el de la tabla de la página.
+  // Inventar un precio en los datos estructurados que no coincida con lo que
+  // se ve es justo lo que hace que Google deje de creerte.
+  //
+  // Por eso se mira `precioUnico`: esas rutas no salen de una terminal, así
+  // que su tabla enseña UNA columna sin el recargo de aeropuerto y la
+  // variante con recargo no existe para ellas. Hasta el 24 sep 2026 se
+  // calculaban las dos y el tope anunciado no estaba en ninguna parte de la
+  // página: San Miguel declaraba $15,635 cuando su precio más alto visible
+  // era $12,508.
   const leg = LEGS[key];
-  const precios = cats.flatMap((cat) => [
-    calculatePrice(leg.km, leg.min, cat, "route", 3, false),
-    calculatePrice(leg.km, leg.min, cat, "route", 3, true),
-  ]);
+  const precios = cats.flatMap((cat) =>
+    route.precioUnico === true
+      ? [calculatePrice(leg.km, leg.min, cat, "route", 0, false)]
+      : [
+          calculatePrice(leg.km, leg.min, cat, "route", 0, false),
+          calculatePrice(leg.km, leg.min, cat, "route", 0, true),
+        ],
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",

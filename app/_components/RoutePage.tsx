@@ -71,6 +71,7 @@ const TX = {
     othersTitle: "Otras rutas",
     allRates: "Ver todas las tarifas",
     allExecutive: "Todos los servicios",
+    allAirport: "Traslados de aeropuerto",
     trustTitle: "Quién te va a llevar",
     trustRating: `${GOOGLE_REVIEW_COUNT} reseñas en Google`,
     trustSeeAll: "Ver las reseñas en Google",
@@ -121,6 +122,7 @@ const TX = {
     othersTitle: "Other routes",
     allRates: "See all rates",
     allExecutive: "All services",
+    allAirport: "Airport transfers",
     trustTitle: "Who is driving you",
     trustRating: `${GOOGLE_REVIEW_COUNT} reviews on Google`,
     trustSeeAll: "Read the reviews on Google",
@@ -442,6 +444,7 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
             ))}
             {/* La salida hacia arriba: quien llegó buscando una ruta y no era
                 la suya se queda sin a dónde ir si aquí sólo hay más rutas. */}
+            <Link href={path(lang, "airport")} className="rt-other">{t.allAirport}</Link>
             <Link href={path(lang, "executive")} className="rt-other">{t.allExecutive}</Link>
           </div>
         </section>

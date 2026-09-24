@@ -176,6 +176,7 @@ const TX = {
     ctaBtn: "Cotizar ahora",
 
     alsoTitle: "También te puede servir",
+    alsoAirport: "Traslados de aeropuerto",
     alsoChauffeur: "Chofer privado",
     alsoHourly: "Chofer por horas",
     alsoRates: "Todas las tarifas",
@@ -283,6 +284,7 @@ const TX = {
     ctaBtn: "Get a quote",
 
     alsoTitle: "You may also need",
+    alsoAirport: "Airport transfers",
     alsoChauffeur: "Private chauffeur",
     alsoHourly: "Hourly chauffeur",
     alsoRates: "All rates",
@@ -428,7 +430,7 @@ export default function ExecutivePage({ lang }: { lang: Lang }) {
   // Una fila por servicio. El enlace va sólo donde hay una página dedicada;
   // las foráneas viven en la lista de rutas que está justo debajo.
   const servicios: Array<{ name: string; href?: string; from: number; how: string }> = [
-    { name: t.svcTransfer, href: rates, from: desdeTraslado(), how: t.svcTransferHow },
+    { name: t.svcTransfer, href: path(lang, "airport"), from: desdeTraslado(), how: t.svcTransferHow },
     { name: t.svcHourly, href: hourly, from: desdeHoras(), how: t.svcHourlyHow },
     { name: t.svcDay, href: hourly, from: desdeDia(), how: t.svcDayHow },
     { name: t.svcIntercity, from: desdeForanea(), how: t.svcIntercityHow },
@@ -623,6 +625,7 @@ export default function ExecutivePage({ lang }: { lang: Lang }) {
         <section className="ex-section">
           <h2 className="ex-h2">{t.alsoTitle}</h2>
           <div className="ex-also">
+            <Link href={path(lang, "airport")}>{t.alsoAirport}</Link>
             <Link href={path(lang, "chauffeur")}>{t.alsoChauffeur}</Link>
             <Link href={hourly}>{t.alsoHourly}</Link>
             <Link href={rates}>{t.alsoRates}</Link>

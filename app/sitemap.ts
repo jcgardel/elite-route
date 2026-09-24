@@ -25,6 +25,9 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
   // portada, que es un cotizador y no una respuesta.
   { page: "chauffeur", priority: 0.9, changeFrequency: "monthly" },
   { page: "executive", priority: 0.9, changeFrequency: "monthly" },
+  // La genérica de aeropuerto, que es la búsqueda con más intención de
+  // compra del negocio.
+  { page: "airport", priority: 0.9, changeFrequency: "monthly" },
   { page: "corporate", priority: 0.7, changeFrequency: "monthly" },
   { page: "quote", priority: 0.6, changeFrequency: "monthly" },
   { page: "terms", priority: 0.3, changeFrequency: "yearly" },

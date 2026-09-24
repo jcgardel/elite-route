@@ -55,6 +55,7 @@ const TX = {
     hourLabel: "Servicio por hora y día completo",
     hourTitle: "Chofer por horas en CDMX",
     hourMore: "Todo sobre el chofer por horas",
+    airportMore: "Todo sobre los traslados de aeropuerto",
     hourCopy:
       "Tu chofer permanece disponible durante las horas contratadas. Incluye 20 km por hora. Ideal para reuniones, eventos o días de trabajo intenso.",
     colRoute: "Ruta",
@@ -124,6 +125,7 @@ const TX = {
     hourLabel: "Hourly and full-day service",
     hourTitle: "Chauffeur by the hour in Mexico City",
     hourMore: "Everything about hourly service",
+    airportMore: "Everything about airport transfers",
     hourCopy:
       "Your chauffeur stays available for the hours booked, with 20 km included per hour. Ideal for meetings, events or long working days.",
     colRoute: "Route",
@@ -345,6 +347,12 @@ export default function TarifasClient({
           </div>
           <p className="tf-note">
             <strong>{t.fromNote[0]}</strong>{t.fromNote[1]}
+          </p>
+          {/* Esta tabla da el precio; el hub explica la llegada —terminal,
+              punto de encuentro, qué pasa si el vuelo se retrasa—, que es lo
+              que de verdad pregunta quien acaba de aterrizar. */}
+          <p className="tf-more">
+            <Link href={path(lang, "airport")}>{t.airportMore} →</Link>
           </p>
         </section>
 

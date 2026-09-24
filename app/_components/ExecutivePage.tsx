@@ -114,6 +114,7 @@ const TX = {
     fleetCopy:
       "La reserva se hace por categoría. Marca, modelo y color se asignan según la disponibilidad y lo que pida el servicio.",
     fleetAlt: (n: string) => `Categoría ${n} de la flota de Elite Route`,
+    fleetMore: "Cuál elegir, y cuándo no",
     orEquivalent: "o equivalente",
 
     routesTitle: "Rutas con precio publicado",
@@ -177,6 +178,7 @@ const TX = {
 
     alsoTitle: "También te puede servir",
     alsoAirport: "Traslados de aeropuerto",
+    alsoFleet: "La flota",
     alsoChauffeur: "Chofer privado",
     alsoHourly: "Chofer por horas",
     alsoRates: "Todas las tarifas",
@@ -222,6 +224,7 @@ const TX = {
     fleetCopy:
       "Bookings are made by category. Make, model and colour are assigned according to availability and what the service calls for.",
     fleetAlt: (n: string) => `${n} category in the Elite Route fleet`,
+    fleetMore: "Which one to choose, and when not to",
     orEquivalent: "or equivalent",
 
     routesTitle: "Routes with a published price",
@@ -285,6 +288,7 @@ const TX = {
 
     alsoTitle: "You may also need",
     alsoAirport: "Airport transfers",
+    alsoFleet: "The fleet",
     alsoChauffeur: "Private chauffeur",
     alsoHourly: "Hourly chauffeur",
     alsoRates: "All rates",
@@ -526,6 +530,11 @@ export default function ExecutivePage({ lang }: { lang: Lang }) {
               );
             })}
           </div>
+          {/* Aquí se ven las cuatro categorías; la página de flota dice cuál
+              elegir y cuándo no, que es la parte que no cabe en un listado. */}
+          <p className="ex-note" style={{ marginTop: 20 }}>
+            <Link href={path(lang, "fleet")} style={{ color: "#C8A46B" }}>{t.fleetMore} →</Link>
+          </p>
         </section>
 
         <section className="ex-section">
@@ -626,6 +635,7 @@ export default function ExecutivePage({ lang }: { lang: Lang }) {
           <h2 className="ex-h2">{t.alsoTitle}</h2>
           <div className="ex-also">
             <Link href={path(lang, "airport")}>{t.alsoAirport}</Link>
+            <Link href={path(lang, "fleet")}>{t.alsoFleet}</Link>
             <Link href={path(lang, "chauffeur")}>{t.alsoChauffeur}</Link>
             <Link href={hourly}>{t.alsoHourly}</Link>
             <Link href={rates}>{t.alsoRates}</Link>

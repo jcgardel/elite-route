@@ -187,6 +187,7 @@ const TX = {
 
     alsoTitle: "También te puede servir",
     alsoAirport: "Traslados de aeropuerto",
+    alsoFleet: "La flota",
     alsoHourly: "Chofer por horas",
     alsoExecutive: "Transporte ejecutivo",
     alsoRates: "Todas las tarifas",
@@ -308,6 +309,7 @@ const TX = {
 
     alsoTitle: "You may also need",
     alsoAirport: "Airport transfers",
+    alsoFleet: "The fleet",
     alsoHourly: "Hourly chauffeur",
     alsoExecutive: "Executive transportation",
     alsoRates: "All rates",
@@ -610,6 +612,7 @@ export default function ChauffeurPage({ lang }: { lang: Lang }) {
           <h2 className="cf-h2">{t.alsoTitle}</h2>
           <div className="cf-also">
             <Link href={path(lang, "airport")}>{t.alsoAirport}</Link>
+            <Link href={path(lang, "fleet")}>{t.alsoFleet}</Link>
             <Link href={path(lang, "hourly")}>{t.alsoHourly}</Link>
             <Link href={path(lang, "executive")}>{t.alsoExecutive}</Link>
             <Link href={path(lang, "rates")}>{t.alsoRates}</Link>

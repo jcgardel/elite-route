@@ -110,6 +110,22 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "traslado aeropuerto CDMX, transporte aeropuerto Ciudad de México, traslado AICM, traslado AIFA, traslado aeropuerto Toluca, taxi aeropuerto CDMX, recoger en el aeropuerto Ciudad de México",
     },
   },
+  fleet: {
+    en: {
+      title: "Our Fleet: Which Vehicle to Choose | Elite Route",
+      description:
+        "The four vehicle categories at Elite Route in Mexico City: how many passengers and suitcases each one really takes, what each is for and when not to choose it. Own fleet, insured and GPS-monitored.",
+      keywords:
+        "executive car with driver Mexico City, SUV with chauffeur Mexico City, van with driver Mexico City, vehicle for 6 passengers with driver, Suburban with chauffeur CDMX, fleet executive transport Mexico City",
+    },
+    es: {
+      title: "Nuestra Flota: Qué Vehículo Elegir | Elite Route",
+      description:
+        "Las cuatro categorías de vehículo de Elite Route en CDMX: cuántos pasajeros y cuántas maletas entran de verdad en cada una, para qué sirve y cuándo no elegirla. Flota propia, asegurada y con GPS.",
+      keywords:
+        "auto con chofer CDMX, camioneta con chofer Ciudad de México, van para 6 personas con chofer, Suburban con chofer CDMX, suv ejecutiva con chofer, flota transporte ejecutivo CDMX",
+    },
+  },
   corporate: {
     en: {
       title: "Corporate Executive Transportation in Mexico City | Elite Route",

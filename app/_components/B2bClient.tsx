@@ -87,6 +87,7 @@ const TX = {
     cancelNote: "Cancelaciones: sin costo con más de 24 horas de anticipación; 50% entre 12 y 24 horas; 100% dentro de las 12 horas previas o si el pasajero no se presenta. Se considera no presentado 60 minutos después del aterrizaje real en aeropuerto y 30 minutos en cualquier otro punto, tras intentar contactar al pasajero; si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos adicionales sin costo.",
     fleetNote: "Conoce las unidades que forman parte de nuestra operación. La reservación se realiza por categoría; marca, modelo y color se asignan según disponibilidad y requerimientos del servicio.",
     orEquivalent: "o equivalente",
+    fleetMore: "Cuál elegir, y cuándo no",
     solKicker: "Soluciones",
     solTitle: "Soluciones de transporte para empresas",
     solCopy: "Coordinamos transporte ejecutivo para empresas, equipos y organizadores que necesitan puntualidad, seguimiento y atención personalizada en Ciudad de México.",
@@ -175,6 +176,7 @@ const TX = {
     cancelNote: "Cancellations: free of charge more than 24 hours before pickup; 50% between 12 and 24 hours; 100% within 12 hours or in case of no-show. A no-show is 60 minutes after the actual landing time at airports and 30 minutes anywhere else, after attempting to contact the passenger; if the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 extra minutes at no charge.",
     fleetNote: "These are the vehicles in our operation. Bookings are made by category; make, model and colour are assigned according to availability and the requirements of the service.",
     orEquivalent: "or equivalent",
+    fleetMore: "Which one to choose, and when not to",
     solKicker: "Solutions",
     solTitle: "Transport solutions for companies",
     solCopy: "We coordinate executive transport for companies, teams and organisers who need punctuality, follow-up and a single point of contact in Mexico City.",
@@ -606,6 +608,13 @@ export default function B2bClient({
               );
             })}
           </div>
+          {/* La página de flota resuelve la duda real de quien compara:
+              cuántos caben CON equipaje y cuándo no hace falta subir. */}
+          <p className="b-fleet-copy" style={{ marginTop: 28, marginBottom: 0 }}>
+            <Link href={path(lang, "fleet")} style={{ color: "#C8A46B", textDecoration: "none" }}>
+              {t.fleetMore} →
+            </Link>
+          </p>
         </section>
 
         {/* El operador internacional que necesita cobertura en CDMX es un

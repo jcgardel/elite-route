@@ -34,6 +34,7 @@ export type Page =
   | "chauffeur"
   | "executive"
   | "airport"
+  | "fleet"
   | "corporate"
   | "quote"
   | "privacy"
@@ -65,6 +66,10 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   // "del AICM a Polanco", pero nadie contestaba la genérica, y es la que
   // hace el viajero que todavía no sabe cómo se escribe su colonia.
   airport: { en: "mexico-city-airport-transfer", es: "traslado-aeropuerto-cdmx" },
+  // La flota. No existe para enseñar fotos —sólo hay cuatro imágenes de
+  // categoría, las mismas de /b2b— sino para contestar la pregunta que el
+  // sitio no contestaba en ningún sitio: CUÁL ELEGIR, y cuándo no elegirla.
+  fleet: { en: "fleet", es: "flota" },
   corporate: { en: "corporate", es: "b2b" },
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },

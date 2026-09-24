@@ -25,6 +25,17 @@ export const LEGS = {
   santafe: { km: 35, min: 50 },
   satelite: { km: 30, min: 40 },
   aifa: { km: 68, min: 75 },
+  // Los dos destinos concretos del AIFA. Las distancias son las que ya
+  // usaba la matriz corporativa (B2B_LEGS.NLU), así que no entra un dato
+  // nuevo: sólo deja de estar en un solo sitio.
+  //
+  // Ojo con `aifasantafe`: son los mismos 68 km que `aifa`, porque la
+  // distancia representativa del AIFA "a la Ciudad de México" se tomó en su
+  // día del cruce hasta Santa Fe. Las dos páginas publican, por tanto, la
+  // misma tabla. Es deliberado —lo decidió el dueño el 24 sep 2026— y se
+  // compensa con texto distinto y enlaces cruzados entre ambas.
+  aifapolanco: { km: 55, min: 61 },
+  aifasantafe: { km: 68, min: 75 },
   toluca: { km: 80, min: 85 },
   interlomas: { km: 38, min: 55 },
   coyoacan: { km: 22, min: 35 },
@@ -32,6 +43,9 @@ export const LEGS = {
   puebla: { km: 135, min: 120 },
   queretaro: { km: 220, min: 170 },
   cuernavaca: { km: 105, min: 95 },
+  // Distancia y tiempo validados por el dueño el 24 sep 2026 antes de
+  // escribir la página: el precio se publica en firme.
+  vallebravo: { km: 155, min: 160 },
   sanmiguel: { km: 290, min: 230 },
 } as const satisfies Record<string, Leg>;
 

@@ -24,6 +24,8 @@ export type RouteKey =
   | "centro"
   | "satelite"
   | "aifa"
+  | "aifapolanco"
+  | "aifasantafe"
   | "toluca"
   | "interlomas"
   | "coyoacan"
@@ -31,7 +33,8 @@ export type RouteKey =
   | "puebla"
   | "queretaro"
   | "cuernavaca"
-  | "sanmiguel";
+  | "sanmiguel"
+  | "vallebravo";
 
 export const ROUTE_KEYS: readonly RouteKey[] = [
   "polanco",
@@ -39,6 +42,8 @@ export const ROUTE_KEYS: readonly RouteKey[] = [
   "centro",
   "satelite",
   "aifa",
+  "aifapolanco",
+  "aifasantafe",
   "toluca",
   "interlomas",
   "coyoacan",
@@ -47,6 +52,7 @@ export const ROUTE_KEYS: readonly RouteKey[] = [
   "queretaro",
   "cuernavaca",
   "sanmiguel",
+  "vallebravo",
 ];
 
 /**
@@ -385,6 +391,136 @@ export const ROUTES: Record<RouteKey, Route> = {
         [
           "Do you reach any part of Mexico City from AIFA?",
           "Yes. The base fare covers the city; if your destination lies south or west the distance grows and the quote form reflects it from the exact address.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  aifapolanco: {
+    es: {
+      slug: "aifa-polanco",
+      airport: "AIFA",
+      zone: "Polanco",
+      title: "Traslado del AIFA a Polanco",
+      metaTitle: "Traslado AIFA a Polanco | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Polanco y Lomas de Chapultepec. Poco más de una hora. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+      keywords:
+        "traslado AIFA Polanco, transporte AIFA a Polanco, chofer privado AIFA Polanco, taxi AIFA Polanco precio, traslado Felipe Ángeles Polanco",
+      intro:
+        "Poco más de una hora entre el AIFA y Polanco cuando la carretera está libre. El precio es fijo y con IVA incluido: no lo mueve el tráfico ni un vuelo que llegue tarde.",
+      about:
+        "El AIFA queda al norte, fuera de la ciudad, y Polanco es el destino que más piden quienes aterrizan ahí por trabajo: es donde están buena parte de los hoteles de negocios y de las oficinas corporativas. El camino entra a la ciudad por el norte, así que la hora del día pesa más que en un traslado corto: a media mañana y a la salida de oficinas la hora larga se puede convertir en hora y media, y la tarifa no cambia por eso.",
+      faqs: [
+        [
+          "¿Cuánto tarda el traslado del AIFA a Polanco?",
+          "Poco más de una hora con la carretera libre. En hora pico puede acercarse a hora y media. El precio es el mismo en los dos casos: no se cobra el tiempo detenido.",
+        ],
+        ESPERA_ES,
+        [
+          "¿Por qué cuesta más que un traslado desde el AICM?",
+          "Porque el AIFA está bastante más lejos de la ciudad que el AICM, y el trayecto es más largo en tiempo y en camino. Cada aeropuerto tiene su propia tarifa y las dos están publicadas.",
+        ],
+        [
+          "¿Cuál es la diferencia con la página del AIFA a la Ciudad de México?",
+          "Aquélla cubre la ciudad en general y toma como referencia un cruce más largo. Ésta es el trayecto concreto a Polanco y Lomas de Chapultepec, que queda más cerca y por eso cuesta menos. Si tu destino es otro, el cotizador lo calcula con la dirección exacta.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "aifa-airport-polanco",
+      airport: "Felipe Ángeles Airport (AIFA)",
+      zone: "Polanco",
+      title: "AIFA airport transfer to Polanco",
+      metaTitle: "AIFA Airport to Polanco Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to Polanco and Lomas de Chapultepec. Just over an hour. Fixed price, VAT included, flight tracked.",
+      keywords:
+        "AIFA to Polanco, Felipe Angeles airport to Polanco, NLU to Polanco transfer, AIFA private driver Polanco, airport transfer Polanco",
+      intro:
+        "Just over an hour between AIFA and Polanco when the road is clear. The price is fixed, VAT included: neither traffic nor a late flight moves it.",
+      about:
+        "AIFA sits north of the city, well outside it, and Polanco is the destination most people ask for when they land there on business: much of the city's business hotels and corporate offices are there. The drive enters Mexico City from the north, so time of day matters more than on a short transfer: mid-morning or at the end of the working day the long hour can stretch towards an hour and a half, and the fare does not change for it.",
+      faqs: [
+        [
+          "How long does the AIFA to Polanco transfer take?",
+          "Just over an hour with a clear road. At peak times it can approach an hour and a half. The price is the same either way: standing still is not billed.",
+        ],
+        ESPERA_EN,
+        [
+          "Why does it cost more than a transfer from AICM?",
+          "Because AIFA is considerably further from the city than AICM, and the run is longer in both time and road. Each airport has its own fare and both are published.",
+        ],
+        [
+          "How is this different from the AIFA to Mexico City page?",
+          "That one covers the city in general and takes a longer crossing as its reference. This is the specific run to Polanco and Lomas de Chapultepec, which is closer and therefore cheaper. If your destination is elsewhere, the quote form works it out from the exact address.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  aifasantafe: {
+    es: {
+      slug: "aifa-santa-fe",
+      airport: "AIFA",
+      zone: "Santa Fe",
+      title: "Traslado del AIFA a Santa Fe",
+      metaTitle: "Traslado AIFA a Santa Fe | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Santa Fe. Alrededor de hora y cuarto. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+      keywords:
+        "traslado AIFA Santa Fe, transporte AIFA a Santa Fe, chofer privado AIFA Santa Fe, traslado Felipe Ángeles Santa Fe, taxi AIFA Santa Fe precio",
+      intro:
+        "Alrededor de hora y cuarto, y es el cruce más largo que publicamos dentro de la zona metropolitana: el AIFA está al norte y Santa Fe al poniente, en la esquina opuesta. El precio es fijo y con IVA incluido.",
+      about:
+        "Santa Fe concentra corporativos, hoteles de negocios y dos universidades, y desde el AIFA hay que atravesar la ciudad entera para llegar. Eso convierte la hora del día en el factor que manda: fuera de hora la hora y cuarto se sostiene, y en hora pico se alarga. Para el vuelo de regreso conviene salir con más margen del que uno calcularía desde cualquier otra zona, porque el tráfico de Santa Fe hacia el norte es de los peores de la ciudad.",
+      faqs: [
+        [
+          "¿Cuánto tarda el traslado del AIFA a Santa Fe?",
+          "Hora y cuarto aproximadamente con la vialidad despejada. En hora pico se alarga: es el cruce más largo que hacemos dentro de la zona metropolitana. El precio no cambia por el tiempo detenido.",
+        ],
+        ESPERA_ES,
+        [
+          "¿Con cuánto margen debo salir de Santa Fe hacia el AIFA?",
+          "Con más del que calcularías desde otra zona. Al tiempo del traslado hay que sumarle la salida de Santa Fe, que en horas de oficina es lenta. Al reservar dinos la hora de tu vuelo y te proponemos la hora de recogida.",
+        ],
+        [
+          "¿Es lo mismo que la página del AIFA a la Ciudad de México?",
+          "El precio coincide, y no es un error: la tarifa general del AIFA toma como referencia justo un cruce de esta longitud. Esta página existe para el detalle del trayecto a Santa Fe; si vas a Polanco, que queda más cerca, esa ruta tiene su propia página y cuesta menos.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "aifa-airport-santa-fe",
+      airport: "Felipe Ángeles Airport (AIFA)",
+      zone: "Santa Fe",
+      title: "AIFA airport transfer to Santa Fe",
+      metaTitle: "AIFA Airport to Santa Fe Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to Santa Fe. Around an hour and a quarter. Fixed price, VAT included, flight tracked.",
+      keywords:
+        "AIFA to Santa Fe, Felipe Angeles airport to Santa Fe, NLU to Santa Fe transfer, AIFA private driver Santa Fe, airport transfer Santa Fe",
+      intro:
+        "Around an hour and a quarter, and the longest crossing we publish inside the metropolitan area: AIFA is north, Santa Fe is west, opposite corners. The price is fixed, VAT included.",
+      about:
+        "Santa Fe holds corporate headquarters, business hotels and two universities, and reaching it from AIFA means crossing the whole city. That makes time of day the deciding factor: off-peak the hour and a quarter holds, at rush hour it stretches. For the flight back, leave more margin than you would from anywhere else, because traffic out of Santa Fe heading north is among the worst in the city.",
+      faqs: [
+        [
+          "How long does the AIFA to Santa Fe transfer take?",
+          "About an hour and a quarter with clear roads. At peak times it stretches: it is the longest crossing we make inside the metropolitan area. Standing still does not change the price.",
+        ],
+        ESPERA_EN,
+        [
+          "How much margin should I leave from Santa Fe to AIFA?",
+          "More than you would from anywhere else. On top of the transfer itself you have to add getting out of Santa Fe, which is slow during office hours. Tell us your flight time when booking and we will propose a pickup time.",
+        ],
+        [
+          "Is this the same as the AIFA to Mexico City page?",
+          "The price matches, and that is not a mistake: the general AIFA fare takes a crossing of exactly this length as its reference. This page exists for the detail of the run to Santa Fe; if you are heading to Polanco, which is closer, that route has its own page and costs less.",
         ],
         ANTICIPACION_EN,
       ],
@@ -836,6 +972,78 @@ export const ROUTES: Record<RouteKey, Route> = {
         [
           "Do you pick up directly at the airport?",
           "Yes, and it is the most common arrangement on this route. Give us the flight number when booking so we can track the arrival.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  vallebravo: {
+    precioUnico: true,
+    es: {
+      slug: "cdmx-valle-de-bravo",
+      airport: "Ciudad de México",
+      zone: "Valle de Bravo",
+      title: "Traslado de Ciudad de México a Valle de Bravo",
+      metaTitle: "Traslado privado CDMX a Valle de Bravo | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a Valle de Bravo con chofer. Cerca de dos horas y media. Precio fijo con IVA y casetas incluidas.",
+      keywords:
+        "traslado CDMX Valle de Bravo, chofer privado Valle de Bravo, transporte Valle de Bravo desde CDMX, traslado aeropuerto Valle de Bravo, viaje privado México Valle de Bravo",
+      intro:
+        "Cerca de dos horas y media por la autopista a Toluca y el descenso hacia el lago. Precio cerrado, con IVA, casetas y combustible incluidos.",
+      about:
+        "Valle de Bravo es destino de fin de semana, de bodas y de reuniones fuera de la oficina, y el último tramo es carretera de montaña con curvas: no es un camino que apetezca manejar de noche ni después de un evento. Los viernes por la tarde la salida de la ciudad es lenta y los domingos el regreso también, así que conviene reservar con la hora pensada en función de eso y no del reloj de la autopista.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a Valle de Bravo?",
+          "Cerca de dos horas y media con la vialidad despejada. Los viernes por la tarde y los domingos de regreso se alarga bastante, y el precio no cambia por eso.",
+        ],
+        [
+          "¿El precio incluye casetas y gasolina?",
+          "Sí. Es un precio cerrado con IVA que cubre las casetas de la ruta cotizada y el combustible. No se cobra nada aparte al llegar.",
+        ],
+        [
+          "¿Recogen directo en el aeropuerto?",
+          "Sí, y es una salida habitual. Danos el número de vuelo al reservar y monitoreamos la llegada para ajustar la hora del chofer al aterrizaje real.",
+        ],
+        [
+          "¿Hacen el viaje redondo el mismo día?",
+          "Sí. Para ida y vuelta en el día suele convenir el servicio por horas o el día completo, porque el chofer se queda disponible en vez de cobrarse dos traslados.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-valle-de-bravo",
+      airport: "Mexico City",
+      zone: "Valle de Bravo",
+      title: "Private transfer from Mexico City to Valle de Bravo",
+      metaTitle: "Mexico City to Valle de Bravo Private Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to Valle de Bravo. Close to two and a half hours. Fixed price including VAT and tolls.",
+      keywords:
+        "Mexico City to Valle de Bravo transfer, private driver Valle de Bravo, Valle de Bravo airport transfer, chauffeur Valle de Bravo, transport to Valle de Bravo",
+      intro:
+        "Close to two and a half hours along the Toluca motorway and down towards the lake. A closed price, with VAT, tolls and fuel included.",
+      about:
+        "Valle de Bravo is a weekend destination, a wedding venue and a place for meetings held away from the office, and the final stretch is a winding mountain road: not a drive anyone wants after dark or after an event. Getting out of the city on a Friday afternoon is slow, and so is the Sunday return, so it pays to book with that in mind rather than with the motorway clock.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to Valle de Bravo?",
+          "Close to two and a half hours with clear roads. Friday afternoons out and Sunday returns stretch considerably, and the price does not change for it.",
+        ],
+        [
+          "Does the price include tolls and fuel?",
+          "Yes. It is a closed price with VAT that covers the tolls on the quoted route and the fuel. Nothing extra is charged on arrival.",
+        ],
+        [
+          "Do you pick up directly at the airport?",
+          "Yes, and it is a common arrangement. Give us the flight number when booking and we track the arrival to match the chauffeur's time to the actual landing.",
+        ],
+        [
+          "Do you do the round trip in one day?",
+          "Yes. For a same-day return the hourly service or a full day usually works out better, since the chauffeur stays available instead of charging two separate transfers.",
         ],
         ANTICIPACION_EN,
       ],

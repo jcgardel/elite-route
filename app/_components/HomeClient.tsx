@@ -210,6 +210,7 @@ const TX = {
     footChauffeur: "Private chauffeur",
     footExecutive: "Executive transportation",
     footAirport: "Airport transfers",
+    footFleet: "Fleet",
     // Sin año: se pintaría en el servidor y otra vez en el navegador, y en
     // el cambio de año los dos no coinciden. No vale una advertencia de
     // hidratación por un dato que no aporta.
@@ -304,6 +305,7 @@ const TX = {
     footChauffeur: "Chofer privado",
     footExecutive: "Transporte ejecutivo",
     footAirport: "Traslados de aeropuerto",
+    footFleet: "Flota",
     footRights: "Elite Route MX · Ciudad de México",
     paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
@@ -1672,6 +1674,7 @@ export default function HomeClient({
                 <a href={path(lang, "airport")}>{t.footAirport}</a>
                 <a href={path(lang, "chauffeur")}>{t.footChauffeur}</a>
                 <a href={path(lang, "executive")}>{t.footExecutive}</a>
+                <a href={path(lang, "fleet")}>{t.footFleet}</a>
                 <a href={corporate}>{t.corporate}</a>
                 <a href={path(lang, "terms")}>{t.footTerms}</a>
                 <a href={path(lang, "privacy")}>{t.footPrivacy}</a>

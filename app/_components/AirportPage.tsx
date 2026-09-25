@@ -159,6 +159,7 @@ const TX = {
       "La categoría se reserva por lo que llevas, no sólo por cuántos son. Estas son las capacidades reales de cada una.",
     colVehicle: "Vehículo",
     colCap: "Capacidad",
+    bagsMore: "Cuál elegir, y cuándo no",
 
     routesTitle: "A dónde te llevamos",
     routesCopy:
@@ -223,6 +224,7 @@ const TX = {
 
     alsoTitle: "También te puede servir",
     alsoExecutive: "Transporte ejecutivo",
+    alsoFleet: "La flota",
     alsoChauffeur: "Chofer privado",
     alsoRates: "Todas las tarifas",
     alsoCorporate: "Cuentas corporativas",
@@ -279,6 +281,7 @@ const TX = {
       "The category is booked for what you are carrying, not only for how many of you there are. These are the real capacities.",
     colVehicle: "Vehicle",
     colCap: "Capacity",
+    bagsMore: "Which one to choose, and when not to",
 
     routesTitle: "Where we take you",
     routesCopy:
@@ -343,6 +346,7 @@ const TX = {
 
     alsoTitle: "You may also need",
     alsoExecutive: "Executive transportation",
+    alsoFleet: "The fleet",
     alsoChauffeur: "Private chauffeur",
     alsoRates: "All rates",
     alsoCorporate: "Corporate accounts",
@@ -579,6 +583,11 @@ export default function AirportPage({ lang }: { lang: Lang }) {
               </tbody>
             </table>
           </div>
+          {/* La duda del equipaje no se resuelve con la capacidad a secas:
+              la página de flota dice cuál elegir y cuándo no. */}
+          <p className="ap-note">
+            <Link href={path(lang, "fleet")} style={{ color: "#C8A46B" }}>{t.bagsMore} →</Link>
+          </p>
         </section>
 
         <section className="ap-section">
@@ -671,6 +680,7 @@ export default function AirportPage({ lang }: { lang: Lang }) {
           <h2 className="ap-h2">{t.alsoTitle}</h2>
           <div className="ap-also">
             <Link href={path(lang, "executive")}>{t.alsoExecutive}</Link>
+            <Link href={path(lang, "fleet")}>{t.alsoFleet}</Link>
             <Link href={path(lang, "chauffeur")}>{t.alsoChauffeur}</Link>
             <Link href={path(lang, "rates")}>{t.alsoRates}</Link>
             <Link href={path(lang, "corporate")}>{t.alsoCorporate}</Link>

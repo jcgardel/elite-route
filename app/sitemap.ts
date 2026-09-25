@@ -28,6 +28,9 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
   // La genérica de aeropuerto, que es la búsqueda con más intención de
   // compra del negocio.
   { page: "airport", priority: 0.9, changeFrequency: "monthly" },
+  // Más baja que las de servicio: la flota se consulta ANTES de reservar,
+  // pero nadie busca "flota" con la tarjeta en la mano.
+  { page: "fleet", priority: 0.7, changeFrequency: "monthly" },
   { page: "corporate", priority: 0.7, changeFrequency: "monthly" },
   { page: "quote", priority: 0.6, changeFrequency: "monthly" },
   { page: "terms", priority: 0.3, changeFrequency: "yearly" },

@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import { isAirportAddress, isAirportPlace, vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import { esVueloValido } from "@/lib/booking-form";
 import type { PrecioPorCategoria, TablasQuote } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
@@ -163,8 +164,11 @@ type Service = {
   origen: string;
   destino: string;
   vehiculo: Category;
+  /** El ORIGEN es aeropuerto. Dispara el recargo: no mezclar con el destino. */
   airport: boolean;   // auto-detectado, no visible al usuario
-  vuelo: string;      // obligatorio cuando airport = true
+  /** El DESTINO es aeropuerto. NO cobra recargo; sólo obliga a dar el vuelo. */
+  airportDest: boolean;
+  vuelo: string;      // obligatorio cuando el viaje toca un aeropuerto
   notas: string;
   km: number;
   minutes: number;
@@ -217,6 +221,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
   // palabra "aeropuerto" en su formatted_address, así que hay que recordarla
   // para no perder el recargo — y soltarla si el cliente edita el campo.
   const airportPlaceRef = useRef("");
+  const destAirportPlaceRef = useRef("");
   const destInputRef   = useRef<HTMLInputElement>(null);
   const [calculating, setCalculating] = useState(false);
   const [routeErr, setRouteErr]       = useState("");
@@ -262,7 +267,14 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
     const place = destAcRef.current?.getPlace();
     if (!place?.formatted_address) return;
     const addr = place.formatted_address;
-    onUpdate(s.id, { destino: addr, km: 0, minutes: 0, prices: null });
+    // Llegar a una terminal NO cambia el precio —el recargo cubre el
+    // estacionamiento y la espera al SALIR—, pero sí obliga a dar el vuelo.
+    const airp = isAirportPlace(place, addr);
+    destAirportPlaceRef.current = airp ? addr : "";
+    onUpdate(s.id, {
+      destino: addr, airportDest: airp, km: 0, minutes: 0, prices: null,
+      vuelo: airp || s.airport ? s.vuelo : "",
+    });
     setHasDestino(true);
     if (s.origen) fetchRoute(s.origen, addr, s.airport);
   }
@@ -278,7 +290,13 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
   function clearDestino() {
     if (destInputRef.current) destInputRef.current.value = "";
     setHasDestino(false);
-    onUpdate(s.id, { destino: "", km: 0, minutes: 0, prices: null });
+    destAirportPlaceRef.current = "";
+    // El vuelo se conserva si el ORIGEN sigue siendo aeropuerto: borrar el
+    // destino no debe hacerle reescribir un dato que sigue haciendo falta.
+    onUpdate(s.id, {
+      destino: "", airportDest: false, km: 0, minutes: 0, prices: null,
+      vuelo: s.airport ? s.vuelo : "",
+    });
     destInputRef.current?.focus();
   }
 
@@ -337,7 +355,15 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
             <Autocomplete onLoad={(a) => { destAcRef.current = a; }} onPlaceChanged={onDestinationChanged} options={acOptions}>
               <input ref={destInputRef} className="cq-ac-input" type="text" placeholder={t.addressPh}
                 defaultValue={s.destino}
-                onChange={(e) => { setHasDestino(!!e.target.value); if (!e.target.value) onUpdate(s.id, { destino:"", km:0, minutes:0, prices:null }); }} />
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setHasDestino(!!v);
+                  if (!v) { onUpdate(s.id, { destino:"", airportDest:false, km:0, minutes:0, prices:null, vuelo: s.airport ? s.vuelo : "" }); return; }
+                  // Igual que en el origen: escribir "AICM" a mano cuenta, y
+                  // si el texto deja de ser el aeropuerto confirmado, se cae.
+                  const airp = isAirportAddress(v) || destAirportPlaceRef.current === v;
+                  if (airp !== s.airportDest) onUpdate(s.id, { airportDest: airp, vuelo: airp || s.airport ? s.vuelo : "" });
+                }} />
             </Autocomplete>
           ) : (
             <input className="cq-ac-input" type="text" placeholder={t.loadingMaps} disabled />
@@ -349,8 +375,9 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
         </div>
       </div>
 
-      {/* Vuelo — aparece solo cuando origen es aeropuerto */}
-      {s.airport && (
+      {/* Vuelo — aparece si el viaje toca un aeropuerto por CUALQUIERA de los
+          dos extremos. El recargo sigue siendo cosa del origen; esto no. */}
+      {(s.airport || s.airportDest) && (
         <div className="cq-vuelo-row">
           <div className="cq-f" style={{ maxWidth:240 }}>
             <label>{t.flight}</label>
@@ -400,7 +427,7 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
 // ─── Página principal ──────────────────────────────────────────────────────
 const INITIAL_SERVICE: Service = {
   id:1, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan",
-  airport:false, vuelo:"", notas:"", km:0, minutes:0, prices:null,
+  airport:false, airportDest:false, vuelo:"", notas:"", km:0, minutes:0, prices:null,
 };
 
 export default function QuoteClient({
@@ -427,7 +454,7 @@ export default function QuoteClient({
   function addService() {
     if (services.length >= MAX_SERVICES) return;
     const id = idRef.current++;
-    setServices((p) => [...p, { id, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan", airport:false, vuelo:"", notas:"", km:0, minutes:0, prices:null }]);
+    setServices((p) => [...p, { id, fecha:"", hora:"", origen:"", destino:"", vehiculo:"sedan", airport:false, airportDest:false, vuelo:"", notas:"", km:0, minutes:0, prices:null }]);
   }
   function removeService(id: number) { setServices((p) => p.filter((x) => x.id !== id)); }
   function updateService(id: number, patch: Partial<Service>) {
@@ -466,7 +493,7 @@ export default function QuoteClient({
       lines.push(`${i+1}. ${s.fecha} ${s.hora} | ${v}`);
       lines.push(`   Origen:  ${s.origen}`);
       lines.push(`   Destino: ${s.destino}`);
-      if (s.airport && s.vuelo) lines.push(`   Vuelo:   ${s.vuelo}`);
+      if ((s.airport || s.airportDest) && s.vuelo) lines.push(`   Vuelo:   ${s.vuelo}`);
       if (s.km > 0) lines.push(`   Ruta:    ${s.km} km / ${s.minutes} min`);
       lines.push(`   Total (IVA inc.): ${fmt(r.total)}  [Subtotal ${fmt(r.base)} + IVA ${fmt(r.iva)}]${r.estimate ? " *estimado" : ""}`);
       if (s.notas) lines.push(`   Notas:   ${s.notas}`);
@@ -496,7 +523,7 @@ export default function QuoteClient({
     services.length > 0 &&
     services.every((s) =>
       s.fecha && s.hora && s.origen.trim() && s.destino.trim() &&
-      (!s.airport || s.vuelo.trim() !== "")
+      (!(s.airport || s.airportDest) || esVueloValido(s.vuelo))
     );
 
   const CSS = `

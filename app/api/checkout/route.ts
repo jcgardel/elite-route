@@ -13,7 +13,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
-import { MIN_ADVANCE_HOURS, NOTAS_MAX } from "@/lib/booking-form";
+import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 
 const categories = CATEGORIES;
@@ -48,6 +48,7 @@ export async function POST(req: Request) {
     // porque el límite del formulario no obliga a nadie que llame a la API
     // directamente, y de aquí sale hacia Stripe, el correo y WhatsApp.
     const notes = String(body.notes || "").trim().slice(0, NOTAS_MAX);
+    const flightNumber = String(body.flightNumber || "").trim().toUpperCase().slice(0, VUELO_MAX);
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
     if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
@@ -70,6 +71,23 @@ export async function POST(req: Request) {
     // el cliente puede detectarlo por el tipo de lugar de Google (que el
     // servidor no ve), pero no puede quitarlo mandando false.
     const airportPickup = isAirportAddress(origin) || Boolean(body.airportPickup);
+
+    // La LLEGADA a una terminal se mira aparte y NO toca el precio: el
+    // recargo cubre estacionamiento y espera al salir del aeropuerto, y un
+    // traslado hacia allá no los necesita. Sirve sólo para exigir el vuelo.
+    const airportDropoff =
+      serviceType === "route" && (isAirportAddress(destination) || Boolean(body.airportDropoff));
+
+    // Sin número de vuelo no se puede monitorear el vuelo, que es lo que el
+    // sitio promete en el hero, en el FAQ y en las páginas de ruta. Se
+    // comprueba también aquí porque la validación del navegador no obliga a
+    // quien llame a la API directamente.
+    if ((airportPickup || airportDropoff) && !esVueloValido(flightNumber)) {
+      return NextResponse.json(
+        { error: "El número de vuelo es obligatorio en traslados de aeropuerto" },
+        { status: 400 },
+      );
+    }
 
     const startsAt = new Date(`${serviceDate}T${serviceTime}`);
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
@@ -146,6 +164,8 @@ export async function POST(req: Request) {
         km: String(km),
         minutes: String(minutes),
         airportPickup: String(airportPickup),
+        airportDropoff: String(airportDropoff),
+        flightNumber: trimMetadata(flightNumber),
         notes: trimMetadata(notes),
         priceMxn: String(price),
       },

@@ -31,7 +31,7 @@ import {
   type Zone,
 } from "@/lib/vehicles";
 import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
-import { MIN_ADVANCE_HOURS, NOTAS_MAX } from "@/lib/booking-form";
+import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
 
 const WHATSAPP_NUMBER = "525543582919";
@@ -190,6 +190,11 @@ const TX = {
     airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included",
     vatIncluded: "VAT included",
     fullName: "Full Name", fullNamePlaceholder: "As shown on ID", phone: "Phone",
+    flight: "Flight number",
+    flightPh: "AM234, AA1234, LA456…",
+    flightHelpFrom: "We track this flight and the chauffeur adjusts to the real landing time. The waiting is already included in the fare.",
+    flightHelpTo: "So we can check your flight before setting off and choose the pickup time with it in mind.",
+    alertFlight: "The flight number is required for airport transfers.",
     notes: "Anything we should know? (optional)",
     notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
     notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
@@ -285,6 +290,11 @@ const TX = {
     airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos",
     vatIncluded: "IVA incluido",
     fullName: "Nombre completo", fullNamePlaceholder: "Como aparece en identificación", phone: "Teléfono",
+    flight: "Número de vuelo",
+    flightPh: "AM234, AA1234, LA456…",
+    flightHelpFrom: "Monitoreamos este vuelo y el chofer se ajusta a la hora real de aterrizaje. La espera ya va incluida en la tarifa.",
+    flightHelpTo: "Para revisar tu vuelo antes de salir y elegir la hora de recogida con eso en la mano.",
+    alertFlight: "El número de vuelo es obligatorio en traslados de aeropuerto.",
     notes: "¿Algo que debamos saber? (opcional)",
     notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
     notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
@@ -462,6 +472,13 @@ const styles = `
   .er-wa-link svg { color:#25D366; flex-shrink:0; }
   .er-wa-link:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
   .er-wa-link:focus-visible { outline:2px solid #C8A46B; outline-offset:2px; }
+  /* El campo de vuelo se distingue del resto: es obligatorio y aparece de
+     golpe en el último paso, así que tiene que leerse como parte del viaje
+     y no como un extra que se puede dejar en blanco. */
+  .er-flight { border:1px solid rgba(200,164,107,0.35); border-radius:3px; padding:14px 16px 12px; background:rgba(200,164,107,0.06); }
+  .er-flight .er-label { color:#C8A46B; }
+  .er-flight-help { margin:8px 0 0; font-size:12px; line-height:1.55; color:#BFC3C8; }
+
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
   .er-input-clear {
@@ -796,6 +813,13 @@ export default function HomeClient({
   // (y no un booleano) para que el recargo se caiga solo si el cliente edita
   // el campo después de haber elegido el aeropuerto en el autocompletado.
   const [airportPlace, setAirportPlace] = useState("");
+  // El aeropuerto del DESTINO se guarda aparte del de origen a propósito.
+  // `airportPickup` dispara el recargo del 25% —estacionamiento y espera en
+  // terminal— y eso sólo aplica cuando se SALE de una terminal. Mezclarlos
+  // encarecería un 25% todos los traslados hacia el aeropuerto sin que nadie
+  // lo pidiera.
+  const [destAirportPlace, setDestAirportPlace] = useState("");
+  const [flightNumber, setFlightNumber] = useState("");
   const [fullName, setFullName] = useState("");
   /** Solicitudes extra del cliente. Opcional: la reserva es válida sin ellas. */
   const [notes, setNotes] = useState("");
@@ -809,6 +833,12 @@ export default function HomeClient({
   // escriba "AICM" o "aeropuerto" a mano sin elegir sugerencia— o del lugar
   // que Google confirmó como aeropuerto.
   const airportPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
+  /** Deja al pasajero en una terminal. No cobra recargo: sólo pide el vuelo. */
+  const airportDropoff =
+    serviceType === "route" &&
+    (isAirportAddress(destination) || (!!destAirportPlace && destination === destAirportPlace));
+  /** El viaje toca un aeropuerto por cualquiera de los dos extremos. */
+  const airportTrip = airportPickup || airportDropoff;
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
   const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
@@ -880,7 +910,10 @@ export default function HomeClient({
   }
   function onDestinationChanged() {
     const place = destinationRef.current?.getPlace();
-    if (place?.formatted_address) setDestination(place.formatted_address);
+    const address = place?.formatted_address;
+    if (!address) return;
+    setDestination(address);
+    setDestAirportPlace(isAirportPlace(place, address) ? address : "");
   }
 
   async function validateStep1() {
@@ -961,6 +994,7 @@ export default function HomeClient({
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : null,
+      airportTrip && flightNumber.trim() ? `✈️ Vuelo: ${flightNumber.trim().toUpperCase()}` : null,
       // Junto al resto del servicio y no al final: es parte de lo que hay
       // que preparar, no una posdata.
       notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : null,
@@ -977,6 +1011,7 @@ export default function HomeClient({
     if (!fullName.trim()) { setAlert3(t.alertName); return; }
     if (!phone) { setAlert3(t.alertPhone); return; }
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
+    if (airportTrip && !esVueloValido(flightNumber)) { setAlert3(t.alertFlight); return; }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
     setAlert3("");
     // Después de las validaciones: un clic que sólo enseñó "falta el nombre"
@@ -998,6 +1033,7 @@ export default function HomeClient({
     if (!fullName.trim()) { setAlert3(t.alertName); return; }
     if (!phone) { setAlert3(t.alertPhone); return; }
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
+    if (airportTrip && !esVueloValido(flightNumber)) { setAlert3(t.alertFlight); return; }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
 
     setAlert3("");
@@ -1016,6 +1052,11 @@ export default function HomeClient({
         body: JSON.stringify({
           serviceType, rentalHours, origin, destination, serviceDate, serviceTime, notes,
           km, minutes, zone, category, fullName, phone, airportPickup, lang,
+          airportDropoff,
+          // Sólo si el viaje lo necesita: un vuelo escrito y luego
+          // abandonado al cambiar de destino no debe colarse en el aviso
+          // del equipo ni en la metadata de la reserva.
+          flightNumber: airportTrip ? flightNumber.trim().toUpperCase() : "",
         }),
       });
       const data = await res.json();
@@ -1346,6 +1387,38 @@ export default function HomeClient({
                   value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
               </div>
             </div>
+
+            {/* El número de vuelo. Aparece SÓLO si el viaje toca un
+                aeropuerto por cualquiera de los dos extremos, y entonces es
+                obligatorio: sin él no se puede monitorear el vuelo, que es
+                justo lo que el sitio promete en el hero, en el FAQ y en las
+                dieciséis páginas de ruta.
+
+                Marco dorado y no un campo más: el visitante llega aquí con
+                el precio delante y la tarjeta en la mano, y un campo nuevo
+                que parece opcional se salta. La ayuda cambia según el
+                sentido —llegada o salida— porque el motivo es distinto. */}
+            {airportTrip && (
+              <div className="er-field er-flight" style={{ marginBottom: 20 }}>
+                <label className="er-label" htmlFor="flight-input">
+                  {t.flight} <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="flight-input"
+                  className="er-input"
+                  placeholder={t.flightPh}
+                  value={flightNumber}
+                  maxLength={VUELO_MAX}
+                  required
+                  autoComplete="off"
+                  aria-describedby="flight-help"
+                  onChange={(e) => setFlightNumber(e.target.value.toUpperCase())}
+                />
+                <p id="flight-help" className="er-flight-help">
+                  {airportPickup ? t.flightHelpFrom : t.flightHelpTo}
+                </p>
+              </div>
+            )}
 
             {/* Solicitudes extra. Va antes del resumen y del pago porque es
                 parte de lo que se está reservando, no un añadido posterior:

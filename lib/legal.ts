@@ -78,6 +78,11 @@ export const LEGAL = {
       forWhat: "Sending the booking confirmation email.",
     },
     {
+      // Esta entrada AFIRMA que la publicidad está desactivada, y es verdad
+      // sólo mientras las dos banderas de app/_components/Analytics.tsx sigan
+      // en false. Si algún día se encienden para remarketing, este texto y el
+      // párrafo de cookies de las dos páginas de privacidad se cambian en el
+      // MISMO commit. README → "Google Ads".
       nombre: "Google Analytics",
       para: "Contar visitas y saber en qué paso del cotizador se queda la gente. Está configurado sólo para medir: las señales de publicidad y la personalización de anuncios están desactivadas, así que estos datos no alimentan audiencias publicitarias.",
       forWhat: "Counting visits and seeing where people stop in the quote form. It is configured for measurement only: Google's advertising signals and ad personalisation are switched off, so this data does not feed advertising audiences.",

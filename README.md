@@ -62,9 +62,9 @@ measurement on; no code change needed.
 
 The tag starts with `allow_google_signals` and
 `allow_ad_personalization_signals` off, so GA4 measures and does not build
-advertising audiences. That is what the privacy notice promises, so if you
-ever turn those on for remarketing, update `app/[lang]/privacidad/page.tsx`
-and its English twin in the same change.
+advertising audiences. **The privacy notice states this as a promise, in three
+separate places**, and all three have to move together — see "Google Ads"
+below before touching either flag.
 
 Funnel events, named in Spanish because the owner reads them in the GA4
 console: `cotizacion_iniciada`, `ruta_completada`, `vehiculo_seleccionado`,
@@ -73,6 +73,86 @@ live in `lib/analytics.ts`.
 
 > `.env.example` is not versioned — the `.env*` rule in `.gitignore` covers it
 > — so this table is the tracked place where variables get documented.
+
+## Google Ads
+
+Nothing here is wired yet: the site carries the GA4 tag (`G-…`) and **no Ads
+tag** (`AW-…`). These are the two steps to take when advertising starts, in
+order. Step 1 is free and touches no code; step 2 costs a privacy-notice
+change and should not be done casually.
+
+Console menu paths were accurate in September 2026 and Google moves them
+regularly — trust the concepts, not the exact clicks.
+
+### 1. Import GA4 conversions into Ads — no code
+
+**Before you start, the funnel events must have fired at least once.** GA4
+only lets you mark an event as a key event after it has arrived, and Ads can
+only import key events. As of September 2026 only `page_view` had ever fired,
+so this step is blocked until real traffic converts. Do not fabricate test
+events to unblock it: they land in the owner's reports and stay there.
+
+1. **Mark the key events.** GA4 → Admin → Data display → Events, then star
+   `reserva_pagada`, `pago_iniciado` and `clic_whatsapp`.
+2. **Link the accounts.** GA4 → Admin → Product links → Google Ads links.
+   Needs Editor on the GA4 property and admin on the Ads account.
+3. **Import.** Google Ads → Goals → Conversions → New conversion action →
+   Import → Google Analytics 4 properties → Web.
+
+Then set each one up deliberately, because this decides what Google buys:
+
+| event | role in Ads | why |
+|---|---|---|
+| `reserva_pagada` | **Primary** | The only one that is money in the bank |
+| `pago_iniciado` | Secondary | Useful to read, must not drive bidding |
+| `clic_whatsapp` | Secondary | Same — see below |
+
+**Making `clic_whatsapp` primary is the mistake to avoid.** Smart bidding buys
+whatever the primary conversion rewards, so a primary WhatsApp click teaches
+Google to find people who message and never pay. Keep it secondary until
+there is a way to tie a WhatsApp conversation back to a paid booking.
+
+Two things about the imported data:
+
+- `reserva_pagada` already sends `value` and `currency: "MXN"` with the
+  **amount actually charged**, plus the folio as `transaction_id`, so choose
+  "use the value from the event" and let the dedup work.
+- The event is not named `purchase`, on purpose — the owner reads these
+  reports in Spanish. Ads imports any event name, so this costs nothing here;
+  it only means GA4's built-in Monetization reports stay empty.
+
+Imported GA4 conversions arrive with a delay and are attributed by GA4's
+model, not the Ads tag. If same-day numbers ever matter more than keeping the
+code untouched, the alternative is an `AW-` tag fired next to `track()`.
+
+### 2. Remarketing — code AND privacy notice, in the same commit
+
+Remarketing needs the two flags in `app/_components/Analytics.tsx` turned on:
+
+```js
+allow_google_signals: false,            // → true
+allow_ad_personalization_signals: false // → true
+```
+
+**The site currently promises the opposite in three separate files.** Flipping
+the flags without changing all three leaves a false statement in a legal
+document:
+
+| file | what it says |
+|---|---|
+| `lib/legal.ts` | the `Google Analytics` entry in `encargados` — both `para` and `forWhat` |
+| `app/[lang]/privacidad/page.tsx` | the cookie paragraph: "las señales de publicidad y la personalización de anuncios están desactivadas" |
+| `app/[lang]/privacy/page.tsx` | the English twin of that paragraph |
+
+The rule is one commit: flags and all three texts, or neither. Never "flip it
+now and update the notice later" — in between, the site is collecting for a
+purpose it tells visitors it does not collect for.
+
+Also worth knowing before spending the effort: Google requires a minimum
+audience size before a remarketing list can serve at all (historically around
+100 users in 30 days for Display and far more for Search — check the current
+figure, it moves). At the traffic this site had in September 2026, a list
+would not have filled. Remarketing is a step for later, not for launch.
 
 ## WhatsApp payment notifications
 

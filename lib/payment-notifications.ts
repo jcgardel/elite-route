@@ -78,6 +78,10 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     `Fecha: ${meta.serviceDate || "—"} ${meta.serviceTime || ""}`.trim(),
     `Origen: ${meta.origin || "—"}`,
     `Destino: ${meta.destination || "—"}`,
+    // El vuelo va con el servicio y no al final: es lo que el equipo necesita
+    // para monitorear la llegada y ajustar la hora del chofer, y sólo sale en
+    // los traslados de aeropuerto.
+    ...(meta.flightNumber ? [`✈️ Vuelo: ${meta.flightNumber}`] : []),
     "",
     "*Ruta y unidad*",
     `Vehículo: ${meta.vehicle || meta.category || "—"}`,
@@ -160,6 +164,7 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
   const originText = escapeHtml(meta.origin || "—");
   const destinationText = escapeHtml(meta.destination || "");
   const notesText = escapeHtml(meta.notes || "");
+  const flightText = escapeHtml(meta.flightNumber || "");
 
   const html = `
     <!DOCTYPE html>
@@ -201,6 +206,10 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
                 ${destinationText && destinationText !== "Disposición libre" ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
                   <span style="font-size:13px;color:#777">Destino</span>
                   <span style="font-size:13px;color:#fff;float:right">${destinationText}</span>
+                </td></tr>` : ""}
+                ${flightText ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
+                  <span style="font-size:13px;color:#777">Vuelo</span>
+                  <span style="font-size:13px;color:#fff;float:right">${flightText}</span>
                 </td></tr>` : ""}
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
                   <span style="font-size:13px;color:#777">Vehículo</span>

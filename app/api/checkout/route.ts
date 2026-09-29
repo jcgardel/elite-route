@@ -130,6 +130,28 @@ export async function POST(req: Request) {
     const serviceLabel = serviceTypeLabelEs(serviceType, rentalHours);
 
     const stripe = getStripe();
+    /** Todo lo que hace falta para operar el servicio, en un solo sitio. */
+    const reserva = {
+      fullName: trimMetadata(fullName),
+      phone: trimMetadata(phone),
+      serviceType,
+      serviceLabel: trimMetadata(serviceLabel),
+      serviceDate,
+      serviceTime,
+      origin: trimMetadata(origin),
+      destination: trimMetadata(serviceType === "route" ? destination : "Disposición libre"),
+      vehicle,
+      category,
+      zone,
+      km: String(km),
+      minutes: String(minutes),
+      airportPickup: String(airportPickup),
+      airportDropoff: String(airportDropoff),
+      flightNumber: trimMetadata(flightNumber),
+      notes: trimMetadata(notes),
+      priceMxn: String(price),
+    };
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_creation: "if_required",
@@ -149,26 +171,15 @@ export async function POST(req: Request) {
       ],
       success_url: `${appUrl}${path(lang, "success")}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}${path(lang, "cancel")}`,
-      metadata: {
-        fullName: trimMetadata(fullName),
-        phone: trimMetadata(phone),
-        serviceType,
-        serviceLabel: trimMetadata(serviceLabel),
-        serviceDate,
-        serviceTime,
-        origin: trimMetadata(origin),
-        destination: trimMetadata(serviceType === "route" ? destination : "Disposición libre"),
-        vehicle,
-        category,
-        zone,
-        km: String(km),
-        minutes: String(minutes),
-        airportPickup: String(airportPickup),
-        airportDropoff: String(airportDropoff),
-        flightNumber: trimMetadata(flightNumber),
-        notes: trimMetadata(notes),
-        priceMxn: String(price),
-      },
+      // La MISMA reserva se guarda en DOS sitios de Stripe, y no es
+      // duplicar por duplicar: la sesión de Checkout y el cobro son objetos
+      // distintos, y la pantalla de "Pagos" —que es donde se mira cuando
+      // entra dinero— sólo enseña la del cobro. Sin `payment_intent_data`
+      // hay que ir a Desarrolladores → Eventos y leer un JSON para saber qué
+      // reservó el cliente. Eso es exactamente lo que pasó el 28 de
+      // septiembre de 2026 con cuatro reservas reales.
+      payment_intent_data: { metadata: reserva },
+      metadata: reserva,
     });
 
     return NextResponse.json({ url: session.url });

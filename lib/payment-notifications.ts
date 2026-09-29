@@ -1,4 +1,5 @@
 import type Stripe from "stripe";
+import { LEGAL } from "./legal";
 
 /**
  * Escapa el texto que escribió el cliente antes de meterlo en un correo.
@@ -18,9 +19,23 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#39;");
 }
 
+/**
+ * A dónde va el aviso de cada reserva pagada. Lo fijó el dueño el 28 de
+ * septiembre de 2026, después de que cuatro reservas reales pasaran sin que
+ * nadie se enterara.
+ *
+ * Son valores por defecto EN EL CÓDIGO, no sólo variables de entorno, a
+ * propósito: una variable que falta deja el aviso sin destino y el sistema
+ * se calla. Con esto, lo peor que puede pasar es que el aviso llegue al sitio
+ * correcto. Las variables siguen mandando si existen, para poder cambiar el
+ * destino sin desplegar.
+ */
+const AVISO_CORREO = LEGAL.correoComercial;
+const AVISO_WHATSAPP = LEGAL.whatsapp.replace(/[^0-9]/g, "");
+
 async function sendEmailNotification(session: Stripe.Checkout.Session, message: string) {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.RESEND_NOTIFY_TO || "jcgd.31@gmail.com";
+  const to = process.env.RESEND_NOTIFY_TO || AVISO_CORREO;
   if (!apiKey) return false;
 
   const meta = session.metadata || {};
@@ -123,8 +138,8 @@ async function sendToAutomationWebhook(session: Stripe.Checkout.Session, message
 async function sendToWhatsAppCloud(message: string) {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const to = process.env.WHATSAPP_NOTIFY_TO;
-  if (!token || !phoneNumberId || !to) return false;
+  const to = process.env.WHATSAPP_NOTIFY_TO || AVISO_WHATSAPP;
+  if (!token || !phoneNumberId) return false;
 
   const response = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
     method: "POST",
@@ -269,17 +284,50 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
 
 export async function sendPaidBookingNotification(session: Stripe.Checkout.Session) {
   const message = buildPaidBookingMessage(session);
-  const [sentToWebhook, sentToWhatsApp, sentToEmail] = await Promise.allSettled([
+  const canales = ["webhook", "whatsapp", "email"] as const;
+  const resultados = await Promise.allSettled([
     sendToAutomationWebhook(session, message),
     sendToWhatsAppCloud(message),
     sendEmailNotification(session, message),
-  ]).then(results => results.map(r => r.status === "fulfilled" && r.value === true));
+  ]);
 
-  return {
-    message,
-    sent: sentToWebhook || sentToWhatsApp || sentToEmail,
-    sentToWebhook,
-    sentToWhatsApp,
-    sentToEmail,
-  };
+  /**
+   * POR QUÉ SE GUARDAN LOS MOTIVOS Y NO SÓLO SÍ/NO.
+   *
+   * Hasta el 28 de septiembre de 2026 esto colapsaba los tres resultados a
+   * tres booleanos y tiraba la excepción. Consecuencia real: cuatro reservas
+   * pagadas —dos de ellas de un cliente que llegaba en tres días— pasaron sin
+   * que nadie se enterara, y no quedó ni un rastro de por qué. Stripe marcaba
+   * 200 OK, así que desde su panel todo se veía perfecto.
+   *
+   * El motivo del fallo es lo único que permite arreglarlo: "el dominio no
+   * está verificado en Resend" y "falta la variable de WhatsApp" se atienden
+   * de formas distintas, y sin el texto del error no se distinguen.
+   */
+  const fallos: string[] = [];
+  const estado = resultados.map((r, i) => {
+    if (r.status === "fulfilled" && r.value === true) return true;
+    if (r.status === "rejected") {
+      fallos.push(`${canales[i]}: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`);
+    } else {
+      fallos.push(`${canales[i]}: sin configurar`);
+    }
+    return false;
+  });
+
+  const [sentToWebhook, sentToWhatsApp, sentToEmail] = estado;
+  const sent = sentToWebhook || sentToWhatsApp || sentToEmail;
+
+  if (!sent) {
+    // Ruidoso a propósito: este console.error es lo que hace visible en los
+    // registros que una reserva cobrada se quedó sin avisar.
+    console.error("Elite Route · RESERVA PAGADA SIN AVISAR", {
+      sessionId: session.id,
+      cliente: session.metadata?.fullName,
+      fecha: session.metadata?.serviceDate,
+      fallos,
+    });
+  }
+
+  return { message, sent, sentToWebhook, sentToWhatsApp, sentToEmail, fallos };
 }

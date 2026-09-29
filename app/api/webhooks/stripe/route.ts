@@ -50,6 +50,33 @@ export async function POST(req: Request) {
     } else {
       console.error("Elite Route client email error:", clientEmailResult.reason);
     }
+
+    /**
+     * SI NO SE AVISÓ A NADIE, ESTO NO FUE UN ÉXITO.
+     *
+     * Antes del 28 de septiembre de 2026 esta ruta contestaba 200 pasara lo
+     * que pasara. El único trabajo del webhook es avisar de que entró una
+     * reserva; cuando ninguno de los canales lo consigue, devolver 200 es
+     * mentirle a Stripe, y su panel enseñaba 0% de error mientras cuatro
+     * reservas pagadas se quedaban sin atender.
+     *
+     * Con un 5xx, Stripe hace dos cosas que aquí valen oro: marca el endpoint
+     * en rojo —se ve sin tener que ir a buscarlo— y REINTENTA durante días,
+     * así que en cuanto el correo o el WhatsApp vuelvan a funcionar, los
+     * avisos pendientes se entregan solos, sin tener que rescatarlos a mano.
+     *
+     * El cobro no se toca: ya ocurrió y es válido. Lo que se reintenta es el
+     * aviso.
+     */
+    const avisado =
+      notificationResult.status === "fulfilled" && notificationResult.value.sent === true;
+
+    if (!avisado) {
+      return NextResponse.json(
+        { error: "Reserva cobrada pero no se pudo avisar por ningún canal" },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ received: true });

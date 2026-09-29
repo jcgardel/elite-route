@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
 import { LEGAL } from "./legal";
+import { buildGoogleCalendarUrl, buildIcs, tituloParaOperador, type EventoReserva } from "./calendar";
 
 /**
  * Escapa el texto que escribió el cliente antes de meterlo en un correo.
@@ -33,6 +34,56 @@ function escapeHtml(value: string) {
 const AVISO_CORREO = LEGAL.correoComercial;
 const AVISO_WHATSAPP = LEGAL.whatsapp.replace(/[^0-9]/g, "");
 
+/**
+ * La reserva convertida en evento de agenda PARA EL DUEÑO.
+ *
+ * El traslado de aeropuerto suele ser de madrugada, y lo que de verdad evita
+ * un servicio perdido es que la cita entre sola en el teléfono. Por eso el
+ * aviso lleva botón y adjunto: el botón para quien usa Google Calendar, el
+ * `.ics` para cualquier otro y para el iPhone.
+ */
+function eventoDeLaReserva(session: Stripe.Checkout.Session): EventoReserva | null {
+  const meta = session.metadata || {};
+  const fecha = String(meta.serviceDate || "");
+  const hora = String(meta.serviceTime || "");
+  if (!fecha || !hora) return null;
+
+  const origen = String(meta.origin || "");
+  const destino = String(meta.destination || "");
+  const minutos = Number(meta.minutes);
+
+  const detalle = [
+    `Cliente: ${meta.fullName || "—"}`,
+    `Teléfono: ${meta.phone || "—"}`,
+    `Vehículo: ${meta.vehicle || meta.category || "—"}`,
+    `Servicio: ${meta.serviceLabel || meta.serviceType || "—"}`,
+    `Total pagado: ${formatMoney(session.amount_total, session.currency)}`,
+    "",
+    `Origen: ${origen || "—"}`,
+    `Destino: ${destino || "—"}`,
+    ...(meta.flightNumber ? [`Vuelo: ${meta.flightNumber}`] : []),
+    ...(meta.notes ? ["", `Solicitudes: ${meta.notes}`] : []),
+    "",
+    `Stripe: ${session.id}`,
+  ];
+
+  return {
+    titulo: tituloParaOperador(String(meta.fullName || ""), origen, destino),
+    detalle,
+    lugar: origen,
+    fecha,
+    hora,
+    // La duración real de la ruta cuando se conoce; si el servicio es por
+    // horas no hay trayecto que medir y el bloque por defecto sirve.
+    minutos: Number.isFinite(minutos) && minutos > 0 ? minutos : undefined,
+    // El id de Stripe como UID: si el aviso se reintenta —y ahora se
+    // reintenta— el calendario reconoce el mismo evento y no lo duplica.
+    uid: `${session.id}@eliteroute.mx`,
+    aviso: "Traslado Elite Route",
+    recordatorios: [1440, 120],
+  };
+}
+
 async function sendEmailNotification(session: Stripe.Checkout.Session, message: string) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.RESEND_NOTIFY_TO || AVISO_CORREO;
@@ -45,6 +96,19 @@ async function sendEmailNotification(session: Stripe.Checkout.Session, message: 
     .replace(/\*([^*]+)\*/g, "<strong>$1</strong>")
     .replace(/\n/g, "<br>");
 
+  // El calendario. Si la reserva no trae fecha y hora utilizables, el aviso
+  // sale igual: perder el botón es molesto, perder el correo entero no.
+  const evento = eventoDeLaReserva(session);
+  const ics = evento ? buildIcs(evento) : null;
+  const googleUrl = evento ? buildGoogleCalendarUrl(evento) : null;
+
+  const botonCalendario = googleUrl
+    ? `<div style="margin:18px 0 6px">
+         <a href="${googleUrl}" style="display:inline-block;background:#C8A46B;color:#0A0A0A;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:13px 22px;border-radius:2px">Añadir a mi calendario</a>
+       </div>
+       <p style="margin:0;font-size:12px;color:#777;line-height:1.6">El botón abre Google Calendar. En iPhone o cualquier otra agenda, abre el archivo <strong>reserva.ics</strong> que va adjunto.</p>`
+    : "";
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -55,7 +119,18 @@ async function sendEmailNotification(session: Stripe.Checkout.Session, message: 
       from: "Elite Route <notificaciones@eliteroute.mx>",
       to: [to],
       subject: `✅ Pago confirmado · ${meta.fullName || "Cliente"} · ${meta.serviceDate || ""}`.slice(0, 200),
-      html: `<pre style="font-family:monospace;font-size:14px;line-height:1.6">${htmlBody}</pre>`,
+      html: `<pre style="font-family:monospace;font-size:14px;line-height:1.6">${htmlBody}</pre>${botonCalendario}`,
+      ...(ics
+        ? {
+            attachments: [
+              {
+                filename: "reserva.ics",
+                content: Buffer.from(ics, "utf-8").toString("base64"),
+                contentType: "text/calendar; charset=utf-8; method=PUBLISH",
+              },
+            ],
+          }
+        : {}),
     }),
   });
 

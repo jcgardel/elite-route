@@ -3,6 +3,7 @@ import { buildPaidBookingMessage } from "@/lib/payment-notifications";
 import { getStripe } from "@/lib/stripe";
 import SuccessClient, { type Booking } from "../../_components/SuccessClient";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
+import { buildGoogleCalendarUrl, buildIcs } from "@/lib/calendar";
 
 /** La etiqueta del evento de calendario y el aviso previo van en el idioma
  *  del cliente: acaban en SU teléfono, no en el nuestro. */
@@ -12,6 +13,8 @@ const CAL = {
 } as const;
 
 const WHATSAPP_NUMBER = "525543582919";
+/** El mismo número, como lo lee una persona en el cuerpo del evento. */
+const WHATSAPP_NUMBER_DISPLAY = "+52 55 4358 2919";
 
 export const dynamic = "force-dynamic";
 
@@ -24,70 +27,41 @@ export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }));
 }
 
-/** Formato de fecha para calendario: 20260823T150000 (hora local de CDMX). */
-function calendarStamp(fecha: string, hora: string, addHours = 0) {
-  const [y, m, d] = fecha.split("-").map(Number);
-  const [hh, mm] = hora.split(":").map(Number);
-  if (!y || !m || !d || Number.isNaN(hh)) return null;
-  const start = new Date(Date.UTC(y, m - 1, d, hh + addHours, mm || 0));
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return (
-    `${start.getUTCFullYear()}${pad(start.getUTCMonth() + 1)}${pad(start.getUTCDate())}` +
-    `T${pad(start.getUTCHours())}${pad(start.getUTCMinutes())}00`
-  );
-}
-
 /**
- * Enlaces de calendario. El traslado al aeropuerto suele ser de madrugada:
- * que la cita entre sola al teléfono vale más que cualquier detalle visual.
- * Las horas van sin zona horaria y con TZID de CDMX, que es como se captura
- * el servicio en el cotizador.
+ * Los enlaces de calendario que ve EL CLIENTE.
+ *
+ * El `.ics` lo arma `lib/calendar.ts`, compartido con el aviso que recibe el
+ * dueño: hasta el 29 de septiembre de 2026 había una sola copia aquí, y en
+ * cuanto hizo falta lo mismo en el correo, mantener dos era cuestión de
+ * tiempo hasta que divergieran.
+ *
+ * Lo que NO se comparte es el título. El cliente tiene una sola reserva y
+ * "Elite Route · High SUV" le dice quién lo recoge; el dueño tiene varias el
+ * mismo día y necesita cliente y ruta para distinguirlas.
  */
 function buildCalendarLinks(booking: Omit<Booking, "googleCalendarUrl" | "icsHref">, lang: Lang) {
-  const start = calendarStamp(booking.fecha, booking.hora);
-  const end = calendarStamp(booking.fecha, booking.hora, 2);
-  if (!start || !end) return { googleCalendarUrl: null, icsHref: null };
-
   const c = CAL[lang];
-  const titulo = `Elite Route · ${booking.vehiculo}`;
-  const detalle = [
-    `${c.service}: ${booking.servicio}`,
-    `${c.from}: ${booking.origen}`,
-    `${c.to}: ${booking.destino}`,
-    `${c.ref}: ${booking.folio}`,
-    `${c.contact}: +52 55 4358 2919`,
-  ].join("\n");
+  const evento = {
+    titulo: `Elite Route · ${booking.vehiculo}`,
+    detalle: [
+      `${c.service}: ${booking.servicio}`,
+      `${c.from}: ${booking.origen}`,
+      `${c.to}: ${booking.destino}`,
+      `${c.ref}: ${booking.folio}`,
+      `${c.contact}: ${WHATSAPP_NUMBER_DISPLAY}`,
+    ],
+    lugar: booking.origen,
+    fecha: booking.fecha,
+    hora: booking.hora,
+    uid: `${booking.folio}@eliteroute.mx`,
+    aviso: c.alarm,
+  };
 
-  const googleCalendarUrl =
-    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-    `&text=${encodeURIComponent(titulo)}` +
-    `&dates=${start}/${end}` +
-    "&ctz=America/Mexico_City" +
-    `&details=${encodeURIComponent(detalle)}` +
-    `&location=${encodeURIComponent(booking.origen)}`;
-
-  const ics = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    `PRODID:-//Elite Route//Booking//${lang.toUpperCase()}`,
-    "BEGIN:VEVENT",
-    `UID:${booking.folio}@eliteroute.mx`,
-    `SUMMARY:${titulo}`,
-    `DTSTART;TZID=America/Mexico_City:${start}`,
-    `DTEND;TZID=America/Mexico_City:${end}`,
-    `LOCATION:${booking.origen.replace(/,/g, "\\,")}`,
-    `DESCRIPTION:${detalle.replace(/\n/g, "\\n").replace(/,/g, "\\,")}`,
-    "BEGIN:VALARM",
-    "TRIGGER:-PT24H",
-    "ACTION:DISPLAY",
-    `DESCRIPTION:${c.alarm}`,
-    "END:VALARM",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\r\n");
+  const ics = buildIcs(evento);
+  if (!ics) return { googleCalendarUrl: null, icsHref: null };
 
   return {
-    googleCalendarUrl,
+    googleCalendarUrl: buildGoogleCalendarUrl(evento),
     icsHref: `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`,
   };
 }

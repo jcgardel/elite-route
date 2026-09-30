@@ -372,19 +372,26 @@ export const ROUTES: Record<RouteKey, Route> = {
       slug: "aifa-mexico-city",
       airport: "Felipe Ángeles Airport (AIFA)",
       zone: "Mexico City",
-      title: "AIFA airport transfer to Mexico City",
-      metaTitle: "AIFA Airport to Mexico City Transfer | Fixed Price | Elite Route",
+      // Mismo caso que Toluca, con menos volumen: 87 impresiones y cero clics
+      // en los 28 días a septiembre de 2026. Ver la nota larga en `toluca.en`
+      // para el porqué de "shuttle" y por qué nunca va sin "private".
+      title: "Private airport shuttle from AIFA to Mexico City",
+      metaTitle: "Private AIFA Airport Shuttle to Mexico City | Elite Route",
       metaDescription:
-        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to any part of Mexico City. About 75 minutes. Fixed price, VAT included, flight tracked.",
+        "Private door-to-door shuttle from Felipe Ángeles airport (NLU/AIFA) to any part of Mexico City. Your own vehicle, never shared. Fixed price, VAT included.",
       keywords:
-        "AIFA to Mexico City, Felipe Angeles airport transfer, NLU airport transfer, how to get from AIFA to Mexico City, AIFA private driver",
+        "AIFA airport shuttle to Mexico City, private shuttle service from AIFA, NLU airport transfer, door to door shuttle AIFA, how to get from AIFA to Mexico City, AIFA private driver",
       intro:
-        "An hour and a quarter on the road: AIFA sits well outside the city, and that distance is all you need to know to see why this transfer is worth arranging in advance.",
+        "An hour and a quarter on the road, door to door, in a private car rather than a shared van. AIFA sits well outside the city, and that distance is all you need to know to see why this run is worth arranging in advance.",
       about:
         "Felipe Ángeles International Airport is in Zumpango, north of Mexico City in Estado de México, and the ground transport waiting outside is considerably thinner than at AICM. Arriving with nothing arranged at eleven at night is a bad idea. Booking ahead fixes the price, guarantees the vehicle, and puts someone holding your name at the door.",
       faqs: [
         [
-          "How long does the AIFA to Mexico City transfer take?",
+          "Is this a shared shuttle?",
+          "No. The vehicle is yours alone: no other passengers, no stops to pick anyone else up, no waiting for the van to fill. The chauffeur meets you and drives you straight to your address. That is also why the price is per vehicle and not per seat.",
+        ],
+        [
+          "How long does the AIFA to Mexico City shuttle take?",
           "Around 75 minutes to the centre of the city, depending on the exact area. It is the longest run we make regularly.",
         ],
         ESPERA_EN,
@@ -559,22 +566,50 @@ export const ROUTES: Record<RouteKey, Route> = {
       slug: "toluca-airport-mexico-city",
       airport: "Toluca Airport",
       zone: "Mexico City",
-      title: "Toluca airport transfer to Mexico City",
-      metaTitle: "Toluca Airport to Mexico City Transfer | Fixed Price | Elite Route",
+      /**
+       * ESTA PÁGINA DICE "SHUTTLE" A PROPÓSITO, y el resto del catálogo no.
+       *
+       * Search Console, 28 días a septiembre de 2026: recibió **324
+       * impresiones y CERO clics**. Las búsquedas que las generaban eran
+       * "private shuttle service from toluca to mexico city" (50),
+       * "round trip shuttle from toluca to mexico city" (49), "door to door
+       * shuttle from toluca to mexico city" (41) y "shuttle" (115). La página
+       * decía "transfer" 83 veces y "shuttle" ninguna. Google la enseñaba
+       * —entiende que son sinónimos— pero el usuario no veía ni una de las
+       * palabras que había escrito y se iba al siguiente resultado.
+       *
+       * OJO AL MATIZ: en Estados Unidos "shuttle" suele significar VAN
+       * COMPARTIDA, que no es lo que vendemos. Por eso la palabra nunca va
+       * sola —siempre pegada a "private"— y hay una pregunta frecuente que lo
+       * aclara sin rodeos. Se usa el término del cliente para que nos
+       * encuentre, y se le dice de inmediato en qué nos diferenciamos.
+       */
+      title: "Private airport shuttle from Toluca (TLC) to Mexico City",
+      metaTitle: "Private Toluca Airport Shuttle to Mexico City | Elite Route",
       metaDescription:
-        "Private transfer from Toluca International Airport (TLC) to Mexico City. About 85 minutes. Fixed price, VAT included, flight tracked and waiting covered.",
+        "Private door-to-door shuttle from Toluca airport (TLC) to Mexico City. Your own vehicle, never shared. Round trips available. Fixed price, VAT included.",
       keywords:
-        "Toluca airport to Mexico City, TLC airport transfer, Toluca private driver, Toluca to CDMX transfer price",
+        "Toluca airport shuttle to Mexico City, private shuttle service from Toluca to Mexico City, door to door shuttle Toluca, round trip shuttle Toluca Mexico City, TLC airport transfer, Toluca private driver",
       intro:
-        "Around an hour and a half of highway. The longest transfer we run, and the one that most rewards arranging before you take off.",
+        "Around an hour and a half of highway, door to door. A private car with your name on it, not a shared van waiting to fill up. The longest run we make, and the one that most rewards arranging before you take off.",
       about:
         "Toluca International Airport handles mostly private and low-cost flights, and it sits outside the city: the way in is the México–Toluca highway, over the mountains. Not a trip to improvise at night or with luggage. The price is settled beforehand and does not move with the traffic on the Constituyentes approach, which is where the time usually goes.",
       faqs: [
+        // Va PRIMERA porque es la duda que trae el visitante que buscó
+        // "shuttle": quiere saber si acabará esperando a que se llene una van.
         [
-          "How long does the Toluca airport to Mexico City transfer take?",
+          "Is this a shared shuttle?",
+          "No. The vehicle is yours alone: no other passengers, no stops to pick anyone else up, no waiting for the van to fill. The chauffeur meets you and drives you straight to your address. That is also why the price is per vehicle and not per seat.",
+        ],
+        [
+          "How long does the Toluca airport shuttle to Mexico City take?",
           "Around 85 minutes to the west of the city. To the centre or the south, longer. The fare is worked out from the real distance to your address.",
         ],
         ESPERA_EN,
+        [
+          "Can I book a round trip?",
+          "Yes. Book each leg separately in the quote form so that every pickup carries its own date, time and flight number. The return to the airport costs less, because it carries no parking and waiting charge.",
+        ],
         [
           "Do you also run Mexico City to Toluca airport?",
           "Yes, both directions. The run towards the airport costs less because it carries no parking and waiting charge.",

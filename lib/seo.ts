@@ -31,12 +31,23 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     },
   },
   rates: {
+    /**
+     * 208 impresiones y CERO clics en los 28 días a septiembre de 2026.
+     *
+     * El título decía "Executive Transfer Rates", que es como lo diría la
+     * empresa y no como lo busca el cliente: en inglés se pregunta "how
+     * much", "cost" y "price", y al servicio se le llama "shuttle" o "car
+     * service" antes que "transfer". Publicar el precio abierto es la ventaja
+     * real frente a quien obliga a pedir cotización, así que conviene que se
+     * note ya desde el resultado de búsqueda. Ver la nota larga en
+     * `toluca.en` de `lib/routes.ts` para el porqué de "shuttle".
+     */
     en: {
-      title: "Executive Transfer Rates in Mexico City | Elite Route",
+      title: "Mexico City Airport Shuttle Prices | Private Car | Elite Route",
       description:
-        "Fixed rates for executive transfers in Mexico City. VAT-included prices for AICM, AIFA and Toluca airports and corporate routes. Sedan, Executive, Minivan and High SUV.",
+        "How much a private airport shuttle costs in Mexico City. Fixed, VAT-included prices for AICM, AIFA and Toluca, charged per vehicle and not per seat. No quote request needed.",
       keywords:
-        "Mexico City airport transfer price, AICM to Polanco rate, executive car service rates Mexico City, private driver cost Mexico City",
+        "how much is a shuttle from Mexico City airport, Mexico City airport transfer price, private airport shuttle cost Mexico City, AICM to Polanco rate, private driver cost Mexico City",
     },
     es: {
       title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",

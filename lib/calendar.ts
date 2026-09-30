@@ -94,17 +94,35 @@ export function buildIcs(e: EventoReserva): string | null {
 }
 
 /** El enlace de "añadir a Google Calendar", para quien prefiere un clic. */
+/**
+ * Tope del detalle que viaja DENTRO de la URL de Google Calendar.
+ *
+ * Las solicitudes del cliente son texto libre y entran aquí enteras, y
+ * `encodeURIComponent` triplica el tamaño (cada espacio se vuelve `%20`). Una
+ * nota larga convertía este enlace en una URL de decenas de miles de
+ * caracteres: rota para Google, rota para el `href` del correo, y por encima
+ * del límite de 4096 de un mensaje de Telegram.
+ *
+ * El `.ics` adjunto NO tiene este tope y sigue llevando el detalle completo:
+ * es el que de verdad mete el evento en la agenda. Esta URL es el atajo.
+ */
+const TOPE_DETALLE_URL = 1000;
+
 export function buildGoogleCalendarUrl(e: EventoReserva): string | null {
   const start = calendarStamp(e.fecha, e.hora);
   const end = calendarStamp(e.fecha, e.hora, e.minutos && e.minutos > 0 ? e.minutos : 120);
   if (!start || !end) return null;
+
+  const detalle = e.detalle.join("\n");
+  const detalleAcotado =
+    detalle.length > TOPE_DETALLE_URL ? `${detalle.slice(0, TOPE_DETALLE_URL)}…` : detalle;
 
   return (
     "https://calendar.google.com/calendar/render?action=TEMPLATE" +
     `&text=${encodeURIComponent(e.titulo)}` +
     `&dates=${start}/${end}` +
     "&ctz=America/Mexico_City" +
-    `&details=${encodeURIComponent(e.detalle.join("\n"))}` +
+    `&details=${encodeURIComponent(detalleAcotado)}` +
     `&location=${encodeURIComponent(e.lugar)}`
   );
 }

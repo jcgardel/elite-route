@@ -197,7 +197,6 @@ const TX = {
     alertFlight: "The flight number is required for airport transfers.",
     airportAsk: "Does this trip touch an airport?",
     airportAskFrom: "You are picked up at an airport",
-    airportAskFromNote: "Adds terminal parking and flight-delay waiting to the fare.",
     airportAskTo: "You are dropped off at an airport",
     airportAskHelp: "Tick it if you wrote the city instead of the terminal. We use it to track your flight and have the chauffeur there at the right time.",
     notes: "Anything we should know? (optional)",
@@ -302,7 +301,6 @@ const TX = {
     alertFlight: "El número de vuelo es obligatorio en traslados de aeropuerto.",
     airportAsk: "¿Este viaje toca un aeropuerto?",
     airportAskFrom: "Te recogemos en un aeropuerto",
-    airportAskFromNote: "Añade a la tarifa el estacionamiento en terminal y la espera por retraso del vuelo.",
     airportAskTo: "Te dejamos en un aeropuerto",
     airportAskHelp: "Márcalo si escribiste la ciudad en lugar de la terminal. Nos sirve para monitorear tu vuelo y que el chofer esté ahí a la hora correcta.",
     notes: "¿Algo que debamos saber? (opcional)",
@@ -500,7 +498,6 @@ const styles = `
   /* 17px y no el tamaño por defecto: en iOS la casilla nativa se encoge tanto
      que cuesta atinarle con el pulgar, y esto se contesta desde el teléfono. */
   .er-check input { width:17px; height:17px; margin:1px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
-  .er-check-note { display:block; margin-top:3px; font-size:11.5px; line-height:1.5; color:#8B8B87; }
 
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
@@ -1327,10 +1324,18 @@ export default function HomeClient({
                   <label className="er-check">
                     <input type="checkbox" checked={manualAirportPickup}
                       onChange={(e) => setManualAirportPickup(e.target.checked)}/>
-                    <span>
-                      {t.airportAskFrom}
-                      <span className="er-check-note">{t.airportAskFromNote}</span>
-                    </span>
+                    {/*
+                      Aquí NO va el aviso del recargo, a propósito. Decirle al
+                      cliente "marcar esto te sube la tarifa" justo al lado de
+                      la casilla invita a no marcarla, y entonces la pregunta
+                      no sirve para nada: volvemos al hueco que vino a cerrar.
+
+                      No es un cargo oculto. El recargo se explica con todas
+                      sus letras en `airportNote` —estacionamiento y espera por
+                      retraso de vuelo— en los pasos 2 y 3, al lado del importe
+                      y antes de que nadie pague.
+                    */}
+                    <span>{t.airportAskFrom}</span>
                   </label>
                 )}
                 {serviceType === "route" && !detectaDropoff && (

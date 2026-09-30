@@ -195,6 +195,11 @@ const TX = {
     flightHelpFrom: "We track this flight and the chauffeur adjusts to the real landing time. The waiting is already included in the fare.",
     flightHelpTo: "So we can check your flight before setting off and choose the pickup time with it in mind.",
     alertFlight: "The flight number is required for airport transfers.",
+    airportAsk: "Does this trip touch an airport?",
+    airportAskFrom: "You are picked up at an airport",
+    airportAskFromNote: "Adds terminal parking and flight-delay waiting to the fare.",
+    airportAskTo: "You are dropped off at an airport",
+    airportAskHelp: "Tick it if you wrote the city instead of the terminal. We use it to track your flight and have the chauffeur there at the right time.",
     notes: "Anything we should know? (optional)",
     notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
     notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
@@ -295,6 +300,11 @@ const TX = {
     flightHelpFrom: "Monitoreamos este vuelo y el chofer se ajusta a la hora real de aterrizaje. La espera ya va incluida en la tarifa.",
     flightHelpTo: "Para revisar tu vuelo antes de salir y elegir la hora de recogida con eso en la mano.",
     alertFlight: "El número de vuelo es obligatorio en traslados de aeropuerto.",
+    airportAsk: "¿Este viaje toca un aeropuerto?",
+    airportAskFrom: "Te recogemos en un aeropuerto",
+    airportAskFromNote: "Añade a la tarifa el estacionamiento en terminal y la espera por retraso del vuelo.",
+    airportAskTo: "Te dejamos en un aeropuerto",
+    airportAskHelp: "Márcalo si escribiste la ciudad en lugar de la terminal. Nos sirve para monitorear tu vuelo y que el chofer esté ahí a la hora correcta.",
     notes: "¿Algo que debamos saber? (opcional)",
     notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
     notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
@@ -478,6 +488,19 @@ const styles = `
   .er-flight { border:1px solid rgba(200,164,107,0.35); border-radius:3px; padding:14px 16px 12px; background:rgba(200,164,107,0.06); }
   .er-flight .er-label { color:#C8A46B; }
   .er-flight-help { margin:8px 0 0; font-size:12px; line-height:1.55; color:#BFC3C8; }
+
+  /* La pregunta de aeropuerto del paso 1. Deliberadamente DISCRETA —sin el
+     borde dorado del campo de vuelo—: la ve todo el mundo en cada cotización
+     y la mayoría no la necesita, así que no puede competir con las
+     direcciones ni con la fecha, que sí son obligatorias. */
+  .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
+  .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
+  .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#8B8B87; }
+  .er-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:5px 0; font-size:13.5px; line-height:1.45; color:#E8E8E6; }
+  /* 17px y no el tamaño por defecto: en iOS la casilla nativa se encoge tanto
+     que cuesta atinarle con el pulgar, y esto se contesta desde el teléfono. */
+  .er-check input { width:17px; height:17px; margin:1px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
+  .er-check-note { display:block; margin-top:3px; font-size:11.5px; line-height:1.5; color:#8B8B87; }
 
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
@@ -819,6 +842,18 @@ export default function HomeClient({
   // encarecería un 25% todos los traslados hacia el aeropuerto sin que nadie
   // lo pidiera.
   const [destAirportPlace, setDestAirportPlace] = useState("");
+  /**
+   * Lo que el cliente declara a mano, cuando la dirección no lo delata.
+   *
+   * POR QUÉ EXISTEN. El 1 de octubre de 2026 un cliente reservó un traslado
+   * llegando en el vuelo UA 783 y escribió "Mexico City" como origen, no la
+   * terminal. Ninguna detección puede adivinar eso: el texto es una ciudad,
+   * no un aeropuerto. Resultado: no se le pidió el número de vuelo, no se
+   * activó el monitoreo de la llegada y no se cobró el recargo del 25% que
+   * sí correspondía. Preguntarlo es lo único que cierra ese hueco.
+   */
+  const [manualAirportPickup, setManualAirportPickup] = useState(false);
+  const [manualAirportDropoff, setManualAirportDropoff] = useState(false);
   const [flightNumber, setFlightNumber] = useState("");
   const [fullName, setFullName] = useState("");
   /** Solicitudes extra del cliente. Opcional: la reserva es válida sin ellas. */
@@ -829,14 +864,20 @@ export default function HomeClient({
   const [alert1, setAlert1] = useState("");
   const [alert3, setAlert3] = useState("");
 
-  // El recargo sale del texto del origen —así funciona aunque el cliente
-  // escriba "AICM" o "aeropuerto" a mano sin elegir sugerencia— o del lugar
-  // que Google confirmó como aeropuerto.
-  const airportPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
-  /** Deja al pasajero en una terminal. No cobra recargo: sólo pide el vuelo. */
-  const airportDropoff =
+  // Lo que la dirección delata por sí sola: el texto del origen —así funciona
+  // aunque el cliente escriba "AICM" o "aeropuerto" a mano sin elegir
+  // sugerencia— o el lugar que Google confirmó como aeropuerto.
+  const detectaPickup = isAirportAddress(origin) || (!!airportPlace && origin === airportPlace);
+  const detectaDropoff =
     serviceType === "route" &&
     (isAirportAddress(destination) || (!!destAirportPlace && destination === destAirportPlace));
+
+  // La detección MANDA sobre la casilla, nunca al revés. Quien eligió la
+  // terminal en el autocompletado no puede desmarcarla para ahorrarse el
+  // recargo: la casilla ni siquiera aparece en ese caso. Sólo suma.
+  const airportPickup = detectaPickup || manualAirportPickup;
+  /** Deja al pasajero en una terminal. No cobra recargo: sólo pide el vuelo. */
+  const airportDropoff = detectaDropoff || (serviceType === "route" && manualAirportDropoff);
   /** El viaje toca un aeropuerto por cualquiera de los dos extremos. */
   const airportTrip = airportPickup || airportDropoff;
 
@@ -1266,6 +1307,40 @@ export default function HomeClient({
                       onClick={() => setDestination("")}>×</button>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/*
+              La pregunta va AQUÍ, en el paso 1, porque cambia el precio: el
+              recargo se calcula en /api/maps junto con los kilómetros, antes
+              de enseñar las tarifas del paso 2. Ponerla más adelante obligaría
+              a recalcular con el importe ya en pantalla.
+
+              Cada casilla se esconde en cuanto la dirección de ese extremo ya
+              delata el aeropuerto: repetir la pregunta a quien eligió la
+              terminal en el autocompletado sólo invita a desmarcarla.
+            */}
+            {(!detectaPickup || (serviceType === "route" && !detectaDropoff)) && (
+              <div className="er-airport-ask">
+                <p className="er-airport-ask-q">{t.airportAsk}</p>
+                {!detectaPickup && (
+                  <label className="er-check">
+                    <input type="checkbox" checked={manualAirportPickup}
+                      onChange={(e) => setManualAirportPickup(e.target.checked)}/>
+                    <span>
+                      {t.airportAskFrom}
+                      <span className="er-check-note">{t.airportAskFromNote}</span>
+                    </span>
+                  </label>
+                )}
+                {serviceType === "route" && !detectaDropoff && (
+                  <label className="er-check">
+                    <input type="checkbox" checked={manualAirportDropoff}
+                      onChange={(e) => setManualAirportDropoff(e.target.checked)}/>
+                    <span>{t.airportAskTo}</span>
+                  </label>
+                )}
+                <p className="er-airport-ask-help">{t.airportAskHelp}</p>
               </div>
             )}
 

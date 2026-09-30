@@ -154,24 +154,76 @@ audience size before a remarketing list can serve at all (historically around
 figure, it moves). At the traffic this site had in September 2026, a list
 would not have filled. Remarketing is a step for later, not for launch.
 
-## WhatsApp payment notifications
+## Paid booking notifications
 
-When Stripe sends `checkout.session.completed`, the app builds a WhatsApp-ready
-message with the payment, customer, route and vehicle details.
+When Stripe sends `checkout.session.completed`, the app builds one message with
+the payment, customer, route and vehicle details and fans it out over every
+channel that is configured. A channel with no credentials reports itself as
+`sin configurar` instead of failing, so the others still go out.
 
-Configure either an automation webhook:
+**If no channel succeeds, the webhook answers 5xx on purpose.** Stripe then
+flags the endpoint in red and keeps retrying for days, so a booking that could
+not be announced is delivered as soon as a channel is fixed. Answering 200 is
+how four paid bookings went unnoticed in September 2026.
+
+### Telegram (the channel actually in use)
 
 ```bash
-WHATSAPP_NOTIFY_WEBHOOK_URL=https://hook.make.com/...
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
 ```
 
-Or configure WhatsApp Cloud API directly:
+One-time setup, about three minutes:
+
+1. In Telegram, message `@BotFather`, send `/newbot`, and name the bot. It
+   replies with the token that goes in `TELEGRAM_BOT_TOKEN`.
+2. Send any message to your own new bot. A bot cannot open a conversation, so
+   without this first message every notification comes back `chat not found`.
+3. Read the chat id from `https://api.telegram.org/bot<TOKEN>/getUpdates` — it
+   is `result[0].message.chat.id` — and put it in `TELEGRAM_CHAT_ID`.
+
+Unlike the email and WhatsApp destinations, the chat id has **no default in
+code**: it is an opaque number, and a made-up fallback would only mail a
+customer's booking to a stranger.
+
+### WhatsApp — wired up, but not usable as-is
+
+`sendToWhatsAppCloud` sends `type: "text"`, and Meta **rejects free-form text**
+on a business-initiated message outside the 24-hour service window. Since the
+owner never writes to the bot first, that window is never open: the code has to
+send an approved **template** before these variables are worth filling.
+
+Registering a number with the Cloud API also **removes it from the WhatsApp
+app**, so `+52 55 4358 2919` — the number behind every WhatsApp button across
+the site — cannot be the sender. That is why Telegram was chosen instead.
 
 ```bash
 WHATSAPP_ACCESS_TOKEN=
 WHATSAPP_PHONE_NUMBER_ID=
 WHATSAPP_NOTIFY_TO=525543582919
 ```
+
+### Automation webhook
+
+A plain `POST` with the booking as JSON, for Make, n8n or anything else:
+
+```bash
+WHATSAPP_NOTIFY_WEBHOOK_URL=https://hook.make.com/...
+```
+
+### Email
+
+Sent through Resend from `notificaciones@eliteroute.mx`, with the calendar
+button and the `.ics` attachment.
+
+```bash
+RESEND_API_KEY=
+RESEND_NOTIFY_TO=business@eliteroute.mx
+```
+
+`RESEND_NOTIFY_TO` **overrides** the `business@eliteroute.mx` default that
+lives in the code. If it is set to anything else, that is where the bookings
+go — check it before assuming the address in `lib/legal.ts` is being used.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

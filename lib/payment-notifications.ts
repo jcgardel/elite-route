@@ -182,7 +182,13 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     // en cada aviso enseña a ignorar el renglón, y justo este no conviene
     // que se ignore.
     ...(meta.notes ? ["", "*⚠️ Solicitudes del cliente*", meta.notes] : []),
-  ].filter(Boolean).join("\n");
+    // Sin `.filter(Boolean)`: los "" de arriba son los renglones en blanco que
+    // separan los bloques, y filtrar por verdadero se los comía todos. El
+    // aviso salía como un párrafo apretado de doce renglones seguidos, que es
+    // justo lo que no quieres leer a las cuatro de la mañana. Los apartados
+    // condicionales ya se omiten solos con el spread de un arreglo vacío, así
+    // que el filtro no protegía de nada.
+  ].join("\n");
 }
 
 async function sendToAutomationWebhook(session: Stripe.Checkout.Session, message: string) {
@@ -233,6 +239,122 @@ async function sendToWhatsAppCloud(message: string) {
   if (!response.ok) {
     const body = await response.text();
     throw new Error(`WhatsApp notification failed with ${response.status}: ${body}`);
+  }
+
+  return true;
+}
+
+/** Telegram rechaza con 400 cualquier mensaje de más de 4096 caracteres. */
+const LIMITE_TELEGRAM = 4096;
+
+/**
+ * Recorta por RENGLONES COMPLETOS, nunca a media línea.
+ *
+ * El texto que se recorta ya viene convertido a HTML, y ahí cortar por el
+ * número de caracteres puede partir un `<b>` o un `&amp;` por la mitad.
+ * Telegram no perdona eso: responde 400 y se pierde el aviso entero. Perder
+ * el último renglón de una nota larguísima es un mal menor sin comparación.
+ *
+ * Esto es seguro porque el formato en negritas es de un solo renglón (ver
+ * `formatearParaTelegram`): ninguna etiqueta cruza un salto de línea.
+ */
+function recortarPorRenglones(html: string, limite: number) {
+  if (html.length <= limite) return html;
+
+  const salida: string[] = [];
+  let usado = 0;
+  for (const renglon of html.split("\n")) {
+    // +1 por el salto de línea, +2 por el "\n…" que cierra el recorte.
+    if (usado + renglon.length + 1 > limite - 2) break;
+    salida.push(renglon);
+    usado += renglon.length + 1;
+  }
+
+  return `${salida.join("\n")}\n…`;
+}
+
+/**
+ * El asterisco se convierte en negrita, pero SÓLO dentro de un mismo renglón.
+ *
+ * `[^*\n]+` en vez de `[^*]+` no es un detalle de estilo: las solicitudes del
+ * cliente son texto libre, y un solo asterisco suelto ahí haría que la
+ * negrita se abriera y cruzara varios renglones. Con eso, el recorte de
+ * arriba podría dejar un `<b>` sin cerrar y Telegram devolvería 400.
+ *
+ * Se escapa PRIMERO y se da formato después, igual que en el correo: al revés,
+ * el `<b>` que acabamos de poner se convertiría en texto visible.
+ */
+function formatearParaTelegram(message: string) {
+  return escapeHtml(message).replace(/\*([^*\n]+)\*/g, "<b>$1</b>");
+}
+
+/**
+ * Telegram: el segundo canal de aviso, elegido el 29 de septiembre de 2026.
+ *
+ * POR QUÉ NO ES WHATSAPP, que era lo que el dueño quería. Meta no permite que
+ * un número esté a la vez en la app de WhatsApp y en la Cloud API: al
+ * registrarlo en la API, deja de funcionar en el teléfono. El +52 55 4358 2919
+ * está en todos los botones del sitio y es por donde le escriben los clientes,
+ * así que no puede sacrificarse como remitente del bot, y montar la API exigía
+ * dar de alta un número nuevo sólo para eso. Encima, un mensaje que inicia el
+ * negocio fuera de la ventana de 24 h no admite texto libre: obliga a una
+ * plantilla aprobada por Meta, y una reserva no cabe en huecos de plantilla.
+ * Telegram no cobra por mensaje, no pide aprobación y admite el aviso entero.
+ *
+ * SIN DESTINO POR DEFECTO, al revés que el correo y el WhatsApp. Un `chat_id`
+ * es un número opaco que no se puede adivinar; inventarle un respaldo sólo
+ * serviría para mandarle la reserva de un cliente a un desconocido. Si falta
+ * la variable, este canal se declara "sin configurar" y los demás responden.
+ */
+async function sendToTelegram(session: Stripe.Checkout.Session, message: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return false;
+
+  // El mismo botón de calendario que lleva el correo. Si la reserva no trae
+  // fecha y hora utilizables, el aviso sale igual: perder el enlace es
+  // molesto, perder el aviso no.
+  const evento = eventoDeLaReserva(session);
+  const googleUrl = evento ? buildGoogleCalendarUrl(evento) : null;
+  const enlace = googleUrl ? `\n\n<a href="${googleUrl}">📅 Añadir a mi calendario</a>` : "";
+
+  /**
+   * Red de seguridad: si el botón no cabe, se cae el botón, nunca la reserva.
+   *
+   * Hoy no se dispara. La URL de Google lleva dentro el detalle del servicio,
+   * y como `buildGoogleCalendarUrl` le puso tope, ni con la nota más larga
+   * pasa de unos 1 800 caracteres. Esto está aquí porque ese tope y este
+   * límite viven en archivos distintos: el día que alguien suba
+   * `TOPE_DETALLE_URL`, Telegram empezaría a rechazar avisos con un 400 y
+   * nadie relacionaría una cosa con la otra. Un aviso sin atajo a la agenda
+   * sirve; uno rechazado por pasarse de 4096 caracteres no sirve de nada.
+   */
+  const sufijo = enlace.length <= LIMITE_TELEGRAM / 2 ? enlace : "";
+
+  const cuerpo = recortarPorRenglones(
+    formatearParaTelegram(message),
+    LIMITE_TELEGRAM - sufijo.length,
+  );
+
+  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: `${cuerpo}${sufijo}`,
+      parse_mode: "HTML",
+      // Sin esto, el enlace del calendario abre una tarjeta de vista previa
+      // enorme que tapa la reserva en la pantalla del teléfono.
+      disable_web_page_preview: true,
+    }),
+  });
+
+  if (!response.ok) {
+    // El cuerpo de Telegram trae un `description` que dice exactamente qué
+    // pasó ("chat not found", "can't parse entities"...). Es justo el dato
+    // que faltó en septiembre para poder arreglar los canales caídos.
+    const body = await response.text();
+    throw new Error(`Telegram notification failed with ${response.status}: ${body}`);
   }
 
   return true;
@@ -359,11 +481,14 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
 
 export async function sendPaidBookingNotification(session: Stripe.Checkout.Session) {
   const message = buildPaidBookingMessage(session);
-  const canales = ["webhook", "whatsapp", "email"] as const;
+  // El orden de `canales` tiene que seguir al de `resultados`: es lo que hace
+  // que un fallo salga en los registros con el nombre del canal correcto.
+  const canales = ["webhook", "whatsapp", "email", "telegram"] as const;
   const resultados = await Promise.allSettled([
     sendToAutomationWebhook(session, message),
     sendToWhatsAppCloud(message),
     sendEmailNotification(session, message),
+    sendToTelegram(session, message),
   ]);
 
   /**
@@ -390,8 +515,8 @@ export async function sendPaidBookingNotification(session: Stripe.Checkout.Sessi
     return false;
   });
 
-  const [sentToWebhook, sentToWhatsApp, sentToEmail] = estado;
-  const sent = sentToWebhook || sentToWhatsApp || sentToEmail;
+  const [sentToWebhook, sentToWhatsApp, sentToEmail, sentToTelegram] = estado;
+  const sent = sentToWebhook || sentToWhatsApp || sentToEmail || sentToTelegram;
 
   if (!sent) {
     // Ruidoso a propósito: este console.error es lo que hace visible en los
@@ -404,5 +529,5 @@ export async function sendPaidBookingNotification(session: Stripe.Checkout.Sessi
     });
   }
 
-  return { message, sent, sentToWebhook, sentToWhatsApp, sentToEmail, fallos };
+  return { message, sent, sentToWebhook, sentToWhatsApp, sentToEmail, sentToTelegram, fallos };
 }

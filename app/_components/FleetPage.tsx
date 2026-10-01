@@ -70,9 +70,9 @@ export function fleetPriceRange() {
 const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; notEn: string }> = {
   suv: {
     forEs:
-      "Es la que más equipaje admite y la que más se pide para aeropuerto con familia o con equipo. Va cómoda en carretera, así que también es la de las rutas foráneas largas.",
+      "Es la que más equipaje admite y la que más se pide para aeropuerto con familia o con equipo. Va cómoda en carretera, así que también es la de las rutas foráneas largas. Es una de las dos categorías que llevan chofer bilingüe.",
     forEn:
-      "It takes the most luggage and is the one most asked for at the airport with family or with equipment. It is comfortable on the motorway, so it is also the one for the long out-of-town routes.",
+      "It takes the most luggage and is the one most asked for at the airport with family or with equipment. It is comfortable on the motorway, so it is also the one for the long out-of-town routes. It is also one of the two categories that travel with a bilingual chauffeur.",
     notEs:
       "Si van tres personas con poco equipaje, es más auto del que necesitas: la Executive cuesta menos y llega igual de bien.",
     notEn:
@@ -80,9 +80,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
   },
   executive: {
     forEs:
-      "Es la de presentación: recoger a un cliente, un directivo que llega de fuera, una cena. Lleva la misma gente que el Sedan pero una maleta más y un vehículo de otra gama.",
+      "Es la de presentación: recoger a un cliente, un directivo que llega de fuera, una cena. Lleva la misma gente que el Sedan pero una maleta más y un vehículo de otra gama. Va con chofer bilingüe, que es lo que la vuelve la opción habitual para recibir a alguien del extranjero.",
     forEn:
-      "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan but one more suitcase, and in a different class of car.",
+      "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan but one more suitcase, and in a different class of car. It travels with a bilingual chauffeur, which is why it is the usual choice for a guest arriving from abroad.",
     notEs:
       "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la Minivan o la High SUV.",
     notEn:
@@ -94,9 +94,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the group one: six people seated without squeezing, easy access and a good height for getting in and out. It costs less than the Executive because it is more space, not more class.",
     notEs:
-      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, hay que ir a la High SUV o a dos unidades.",
+      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, hay que ir a la High SUV o a dos unidades. Tampoco lleva chofer bilingüe: para eso es la Executive o la High SUV.",
     notEn:
-      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, it has to be the High SUV or two vehicles.",
+      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, it has to be the High SUV or two vehicles. It does not travel with a bilingual chauffeur either — for that it is the Executive or the High SUV.",
   },
   sedan: {
     forEs:
@@ -104,9 +104,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the efficient one: one or two people, hand luggage or a case each, within the city. Most business transfers fit here.",
     notEs:
-      "Con tres pasajeros y tres maletas se queda corta, y para un vuelo internacional con equipaje documentado también. Mejor subir una categoría que llegar y no cerrar la cajuela.",
+      "Con tres pasajeros y tres maletas se queda corta, y para un vuelo internacional con equipaje documentado también. Mejor subir una categoría que llegar y no cerrar la cajuela. Tampoco lleva chofer bilingüe: si eso te importa, la Executive es donde empieza.",
     notEn:
-      "With three passengers and three cases it falls short, and the same goes for an international flight with checked bags. Better to go up a category than to arrive and not be able to close the boot.",
+      "With three passengers and three cases it falls short, and the same goes for an international flight with checked bags. Better to go up a category than to arrive and not be able to close the boot. Its chauffeur does not speak English either: if that matters to you, the Executive is where it starts.",
   },
 };
 

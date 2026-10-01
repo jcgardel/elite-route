@@ -846,8 +846,8 @@ export default function HomeClient({
    * llegando en el vuelo UA 783 y escribió "Mexico City" como origen, no la
    * terminal. Ninguna detección puede adivinar eso: el texto es una ciudad,
    * no un aeropuerto. Resultado: no se le pidió el número de vuelo, no se
-   * activó el monitoreo de la llegada y no se cobró el recargo del 25% que
-   * sí correspondía. Preguntarlo es lo único que cierra ese hueco.
+   * activó el monitoreo de la llegada y no se cobró el recargo de aeropuerto
+   * que sí correspondía. Preguntarlo es lo único que cierra ese hueco.
    */
   const [manualAirportPickup, setManualAirportPickup] = useState(false);
   const [manualAirportDropoff, setManualAirportDropoff] = useState(false);

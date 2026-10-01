@@ -72,6 +72,37 @@ const kmDiscount: Record<Category, { mid: number; far: number }> = {
 };
 
 /**
+ * TECHO DEL RECARGO DE AEROPUERTO, en pesos ya CON IVA — tal como el cliente
+ * lo ve sumado en su tarifa.
+ *
+ * El recargo sigue siendo del 25%, pero deja de crecer al llegar aquí. Lo
+ * decidió el dueño el 30 de septiembre de 2026, y la razón es que un
+ * porcentaje cobraba mal un costo que es FIJO: el recargo paga el
+ * estacionamiento en terminal y la espera del chofer, que cuestan lo mismo
+ * vaya el pasajero a Polanco o a San Miguel de Allende. Sin techo, el mismo
+ * estacionamiento y la misma hora de espera salían en $430 en un AIFA–CDMX
+ * en Sedan y en $3,127 en un San Miguel en SUV. Siete veces más por lo mismo.
+ *
+ * DE DÓNDE SALEN ESTOS NÚMEROS. De las tarifas por hora de este mismo
+ * archivo: Sedan cobra ~$232 la hora adicional, Executive ~$464, Minivan
+ * ~$534 y SUV ~$696. Un techo cubre entonces el estacionamiento (unos $200)
+ * más la espera que de verdad se absorbe. Son valores de negocio, no se
+ * derivan unos de otros, y el dueño los puede mover sin tocar nada más.
+ *
+ * REGLA ÚTIL PARA AJUSTARLOS: el techo empieza a morder en una tarifa de
+ * exactamente CUATRO VECES su valor, porque el 25% de 4x es x. Con $400, el
+ * recargo crece normal hasta una tarifa de $1,600 y de ahí se congela.
+ *
+ * Un techo nunca encarece: lo peor que puede pasar es que no se aplique.
+ */
+export const RECARGO_AEROPUERTO_MAX: Record<Category, number> = {
+  sedan: 400,
+  executive: 400,
+  minivan: 400,
+  suv: 600,
+};
+
+/**
  * Costo del tramo por kilómetro con descuento escalonado, como una tabla
  * de ISR: cada tramo de distancia paga su propia tarifa, no la tarifa
  * completa aplicada retroactivamente a todo el viaje. Así un viaje más
@@ -108,6 +139,11 @@ export function calculatePrice(
     base = Math.max(kmCost(km, tariff.km, category), hours * tariff.hour, tariff.min);
   }
 
-  if (airport) base *= 1.25;
+  // El 25% de siempre, pero con techo. Se divide entre 1.16 porque
+  // `RECARGO_AEROPUERTO_MAX` está expresado con IVA —que es como lo ve el
+  // cliente— y aquí todavía estamos trabajando sobre la base sin impuesto.
+  if (airport) {
+    base += Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16);
+  }
   return Math.round(base * 1.16);
 }

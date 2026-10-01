@@ -371,6 +371,34 @@ const TX = {
         "Do I need to tip the chauffeur?",
         "No. The price you see is the whole price and nothing is added at the end. A tip is welcome if the service was good, as anywhere, but it is not expected and nobody will ask for one.",
       ],
+      /*
+        LAS TRES DE ABAJO SALEN DE LO QUE PIDIERON CLIENTES REALES, no de una
+        lluvia de ideas. De las cuatro primeras reservas extranjeras, dos
+        pidieron letrero con su nombre —una de ellas especificando el nombre,
+        "Zeus"—, una viajaba con un niño de nueve años y tres escribieron algo
+        sobre el idioma en sus notas. Nada de eso estaba contestado en inglés:
+        "name sign" y "meet and greet" sólo aparecían en la página corporativa
+        y como ejemplo dentro del campo de notas del cotizador, y
+        "English-speaking" no aparecía en ninguna parte.
+
+        EL DATO DEL IDIOMA ES UNA RESTRICCIÓN, NO UN ESLOGAN. Lo confirmó el
+        dueño el 1 de octubre de 2026: **sólo Executive y High SUV llevan
+        chofer bilingüe**. Sedan y Minivan no. Prometerlo de todas las
+        categorías sería mentir justo en lo que este cliente más valora, y se
+        descubre el día del viaje.
+      */
+      [
+        "Will someone be waiting for me with a sign?",
+        "Yes. The chauffeur waits in the arrivals hall with a sign showing your name — tell us the name you want on it when you book, and we confirm the meeting point over WhatsApp on the day. If you would rather be met at baggage claim, say so and we arrange it.",
+      ],
+      [
+        "Do your chauffeurs speak English?",
+        "In the Executive and High SUV categories, yes — those two travel with a bilingual chauffeur. The Sedan and Minivan do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
+      ],
+      [
+        "Do you have child seats?",
+        "Yes, both infant seats and booster seats for older children. Ask for it when you book — tell us the child's age and we confirm it over WhatsApp before the day.",
+      ],
     ] as ReadonlyArray<readonly [string, string]>,
 
     trustTitle: "Who is driving you",

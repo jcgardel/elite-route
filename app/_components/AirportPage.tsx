@@ -350,9 +350,22 @@ const TX = {
         "Uber or a private transfer from the airport?",
         "An on-demand ride is usually cheaper, and if you travel light it is a perfectly reasonable way into the city. A private transfer buys different things: a price fixed before you fly instead of one that moves with demand at the moment you land; a chauffeur already assigned and tracking your flight, so a two-hour delay changes nothing; a vehicle chosen for your luggage rather than whatever happens to arrive; and someone waiting with your name at the meeting point. For a late arrival, a family with suitcases or a first trip to the city, that is usually what people are paying for.",
       ],
+      /*
+        OJO AL REDACTAR ESTA: se comprobó en el panel de Stripe el 1 de
+        octubre de 2026, no se supuso. **Adaptive Pricing está ACTIVO** en
+        Checkout, y convierte a la moneda local de unos 130 países —Estados
+        Unidos USD, Reino Unido GBP, Francia y la zona euro EUR—. Elite Route
+        sigue cobrando en pesos: Stripe liquida en la moneda de la cuenta.
+
+        La primera versión de esta respuesta decía que se cobraba en pesos y
+        que el banco del cliente aplicaba su tipo de cambio. Era FALSO para
+        esos 130 países, y lo habría leído justo el visitante al que está
+        dirigida. Si algún día se apaga Adaptive Pricing, esta respuesta hay
+        que volver a escribirla.
+      */
       [
-        "Can I pay with a card issued outside Mexico?",
-        "Yes. Payment runs through Stripe and takes international cards. Prices are quoted and charged in Mexican pesos, so your own bank applies the exchange rate. Nothing is paid to the chauffeur.",
+        "Can I pay in US dollars, pounds or euros?",
+        "Yes. Prices on this site are shown in Mexican pesos, but at checkout the amount is converted to your own currency before you confirm — dollars, pounds, euros and most other currencies. Your card is charged in that currency, so there is no guessing at your bank's exchange rate afterwards. International cards are accepted and nothing is paid to the chauffeur.",
       ],
       [
         "Do I need to tip the chauffeur?",

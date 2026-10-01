@@ -195,6 +195,7 @@ const TX = {
     flightHelpFrom: "We track this flight and the chauffeur adjusts to the real landing time. The waiting is already included in the fare.",
     flightHelpTo: "So we can check your flight before setting off and choose the pickup time with it in mind.",
     alertFlight: "The flight number is required for airport transfers.",
+    currencyNote: "Prices are in Mexican pesos. At checkout the amount is converted to your own currency — dollars, pounds, euros — and you see it before confirming.",
     routesTitle: "Every route, with its price in the open",
     routesAirport: "Airport transfers",
     routesOut: "Out of town",
@@ -303,6 +304,7 @@ const TX = {
     flightHelpFrom: "Monitoreamos este vuelo y el chofer se ajusta a la hora real de aterrizaje. La espera ya va incluida en la tarifa.",
     flightHelpTo: "Para revisar tu vuelo antes de salir y elegir la hora de recogida con eso en la mano.",
     alertFlight: "El número de vuelo es obligatorio en traslados de aeropuerto.",
+    currencyNote: "Los precios están en pesos mexicanos. Al pagar, el importe se convierte a tu moneda y lo ves antes de confirmar.",
     routesTitle: "Cada ruta, con su precio por delante",
     routesAirport: "Traslados de aeropuerto",
     routesOut: "Viajes foráneos",
@@ -564,6 +566,7 @@ const styles = `
   .er-btn-wa { width:100%; background:#25D366; color:#000; border:none; border-radius:2px; padding:18px; font-family:var(--font-barlow),sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
   .er-btn-wa:hover { background:#1fb85a; }
   .er-payment-note { color:#BFC3C8; font-size:12px; line-height:1.6; margin:-8px 0 14px; text-align:center; }
+  .er-currency-note { margin:-6px 0 14px; font-size:12px; line-height:1.55; color:#8B8B87; text-align:center; }
 
   .er-alert { padding:12px 16px; border-radius:2px; font-size:13px; margin-bottom:16px; }
   .er-alert-err { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; }
@@ -1583,6 +1586,21 @@ export default function HomeClient({
             {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
 
             <p className="er-payment-note">{t.paymentNote}</p>
+
+            {/*
+              SÓLO EN INGLÉS, y a propósito.
+
+              Stripe tiene Adaptive Pricing activo y convierte a la moneda
+              local de unos 130 países. Para quien paga desde México no cambia
+              nada —peso a peso—, así que el aviso sería ruido. Para quien mira
+              "$4,851" desde Londres o Nueva York resuelve dos dudas a la vez y
+              justo en el peor momento para tenerlas: tener que convertir de
+              cabeza, y temerle al tipo de cambio de su banco.
+
+              Está redactado para ser cierto en los dos casos: si el visitante
+              está en México, su moneda ES el peso.
+            */}
+            {lang === "en" && <p className="er-currency-note">{t.currencyNote}</p>}
 
             <button className="er-btn-primary" onClick={handleCheckout} disabled={paymentLoading} type="button">
               {paymentLoading ? t.payLoading : t.payBtn}

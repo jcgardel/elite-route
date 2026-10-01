@@ -107,6 +107,16 @@ const TX = {
     title: ["Executive transfer rates", "in Mexico City"],
     subtitle:
       "Fixed prices with VAT included. No traffic surcharges, no surprises. Transfers to AICM, AIFA and Toluca airports, plus corporate routes.",
+    /*
+      SÓLO EN INGLÉS. Stripe convierte a la moneda local de unos 130 países
+      —Adaptive Pricing, comprobado en el panel el 1 oct 2026—, y nosotros
+      cobramos en pesos. A quien paga desde México el aviso no le dice nada;
+      a quien llega de Nueva York, Londres o París le quita de encima tener
+      que convertir de cabeza y temerle al cambio de su banco. Esta página es
+      donde vive esa duda: es la que más impresiones recibe de todo el sitio.
+    */
+    currencyNote:
+      "All prices are in Mexican pesos. At checkout the amount is converted to your own currency — US dollars, pounds, euros — and shown to you before you confirm, so your card is charged in the currency you already think in.",
     badges: [
       ["VAT included", "Final price, no hidden charges"],
       ["Fixed price", "No variation for traffic"],
@@ -190,6 +200,7 @@ const styles = `
   .tf-kicker { color: #C8A46B; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; }
   .tf-title { font-family: var(--font-cormorant), serif; font-size: clamp(40px, 6vw, 72px); font-weight: 300; line-height: 1; margin-bottom: 20px; color: #fff; text-wrap: balance; }
   .tf-subtitle { color: #BFC3C8; font-size: 17px; line-height: 1.7; max-width: 620px; margin: 0 auto 32px; }
+  .tf-currency-note { color: #8B8B87; font-size: 13.5px; line-height: 1.65; max-width: 620px; margin: -22px auto 32px; }
   .tf-badge { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
   .tf-badge-item { font-size: 12px; color: #BFC3C8; letter-spacing: 0.1em; border-left: 2px solid #C8A46B; padding-left: 12px; text-align: left; }
   .tf-badge-val { color: #fff; font-weight: 600; display: block; font-size: 14px; margin-bottom: 2px; }
@@ -297,6 +308,9 @@ export default function TarifasClient({
         <p className="tf-kicker">{t.kicker}</p>
         <h1 className="tf-title">{t.title[0]}<br />{t.title[1]}</h1>
         <p className="tf-subtitle">{t.subtitle}</p>
+        {"currencyNote" in t && (
+          <p className="tf-currency-note">{(t as { currencyNote: string }).currencyNote}</p>
+        )}
         <div className="tf-badge">
           {t.badges.map(([val, note]) => (
             <div className="tf-badge-item" key={val}>

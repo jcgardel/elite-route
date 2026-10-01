@@ -366,7 +366,21 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
   if (!apiKey || !clientEmail) return false;
 
   const meta = session.metadata || {};
-  const total = formatMoney(session.amount_total, session.currency);
+  /**
+   * El total LLEVA "MXN" PEGADO, y no es un adorno.
+   *
+   * Stripe tiene Adaptive Pricing activo: a un cliente de Estados Unidos le
+   * cobra en dólares, a uno de Londres en libras, a uno de París en euros —y
+   * a nosotros nos liquida en pesos—. Así que `session.amount_total` viene en
+   * pesos y se formatea con `es-MX`, donde el símbolo del peso es "$".
+   *
+   * Resultado hasta el 1 de octubre de 2026: Marco Lopez, de Houston, pagó
+   * unos 97 dólares con su tarjeta y recibió un correo que decía "$1,801.00"
+   * a secas. Leído desde Texas eso son mil ochocientos dólares. No es una
+   * molestia estética: es una disputa de cargo esperando a ocurrir, y le pasa
+   * justo a los clientes extranjeros, que son todos los que han pagado.
+   */
+  const total = `${formatMoney(session.amount_total, session.currency)} MXN`;
   // Todo lo que se interpola en el HTML de abajo pasa por escapeHtml: son
   // datos que escribió el cliente en el formulario.
   const vehicle = escapeHtml(meta.vehicle || meta.category || "Vehículo ejecutivo");
@@ -438,6 +452,14 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
                 </td></tr>
               </table>
 
+              <!-- Bilingüe a propósito y en una sola línea: el correo está en
+                   español, pero quien más necesita leer esto es justo quien no
+                   lo habla. Si pagó en dólares, libras o euros, el importe que
+                   ve en su estado de cuenta NO es el de arriba. -->
+              <p style="margin:0 0 8px;font-size:12px;color:#555;line-height:1.6">
+                El importe está en pesos mexicanos. Si pagaste con una tarjeta extranjera, el cargo aparece en tu moneda al tipo de cambio de Stripe.<br>
+                <span style="color:#777">Amount in Mexican pesos. If you paid with a card from outside Mexico, your statement shows the charge in your own currency.</span>
+              </p>
               <p style="margin:0 0 8px;font-size:12px;color:#555;line-height:1.6">
                 Referencia de pago: <span style="color:#888;font-family:monospace">${session.id}</span>
               </p>

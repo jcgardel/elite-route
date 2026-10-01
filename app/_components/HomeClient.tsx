@@ -195,6 +195,10 @@ const TX = {
     flightHelpFrom: "We track this flight and the chauffeur adjusts to the real landing time. The waiting is already included in the fare.",
     flightHelpTo: "So we can check your flight before setting off and choose the pickup time with it in mind.",
     alertFlight: "The flight number is required for airport transfers.",
+    routesTitle: "Every route, with its price in the open",
+    routesAirport: "Airport transfers",
+    routesOut: "Out of town",
+    routesHelp: "Fixed prices, VAT included. No quote request, no surprises on arrival.",
     airportAsk: "Does this trip touch an airport?",
     airportAskFrom: "You are picked up at an airport",
     airportAskTo: "You are dropped off at an airport",
@@ -299,6 +303,10 @@ const TX = {
     flightHelpFrom: "Monitoreamos este vuelo y el chofer se ajusta a la hora real de aterrizaje. La espera ya va incluida en la tarifa.",
     flightHelpTo: "Para revisar tu vuelo antes de salir y elegir la hora de recogida con eso en la mano.",
     alertFlight: "El número de vuelo es obligatorio en traslados de aeropuerto.",
+    routesTitle: "Cada ruta, con su precio por delante",
+    routesAirport: "Traslados de aeropuerto",
+    routesOut: "Viajes foráneos",
+    routesHelp: "Precios fijos con IVA incluido. Sin pedir cotización y sin sorpresas al llegar.",
     airportAsk: "¿Este viaje toca un aeropuerto?",
     airportAskFrom: "Te recogemos en un aeropuerto",
     airportAskTo: "Te dejamos en un aeropuerto",
@@ -585,6 +593,18 @@ const styles = `
   .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
   .er-benefit-title { font-weight:600; font-size:17px; margin-bottom:8px; }
   .er-benefit-copy { color:#BFC3C8; line-height:1.6; font-size:14px; }
+  /* El índice de rutas. Sobrio a propósito: es un bloque de navegación y de
+     señal para el buscador, no una sección de venta — no puede competir con
+     la flota ni con el cotizador. */
+  .er-routes { margin-top:58px; border-top:1px solid rgba(200,164,107,0.32); padding-top:28px; }
+  .er-routes-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:30px; line-height:1.15; margin:0 0 8px; }
+  .er-routes-help { margin:0 0 24px; font-size:13.5px; color:#8B8B87; line-height:1.6; }
+  .er-routes-group + .er-routes-group { margin-top:24px; }
+  .er-routes-sub { font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; font-weight:600; margin:0 0 12px; }
+  .er-routes-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 24px; }
+  .er-routes-list a { color:#BFC3C8; text-decoration:none; font-size:14px; line-height:1.5; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
+  .er-routes-list a:hover { color:#fff; border-bottom-color:rgba(200,164,107,0.6); }
+
   .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
   .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
   .er-contact-title { color:#fff; font-weight:600; font-size:17px; margin-bottom:8px; }
@@ -700,6 +720,10 @@ const styles = `
     .er-fleet-title { font-size:27px; }
     .er-benefits { grid-template-columns:1fr; }
     .er-contact-grid { grid-template-columns:1fr; }
+    /* Dieciséis rutas en una columna son una lista larguísima en el teléfono,
+       y dos tercios del tráfico es móvil: van en dos columnas. */
+    .er-routes-list { grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px 14px; }
+    .er-routes-title { font-size:26px; }
     .er-comfort { padding:20px; }
     .er-comfort-list { grid-template-columns:1fr; }
     .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
@@ -753,9 +777,13 @@ const styles = `
   .er-wa-fab:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; border-radius:2px; }
 `;
 
+/** Un enlace de ruta ya resuelto en el servidor. Ver `app/[lang]/page.tsx`. */
+export type EnlaceDeRuta = { href: string; label: string; foranea: boolean };
+
 export default function HomeClient({
   lang,
   tablas,
+  rutas,
 }: {
   lang: Lang;
   /**
@@ -766,6 +794,12 @@ export default function HomeClient({
    * plano dentro del JavaScript del sitio.
    */
   tablas: TablasCotizador;
+  /**
+   * Las 16 rutas, reducidas a enlace y etiqueta en el servidor por el mismo
+   * motivo que los precios: `lib/routes.ts` lleva el texto completo de todas
+   * ellas en los dos idiomas y no tiene por qué viajar al navegador.
+   */
+  rutas: EnlaceDeRuta[];
 }) {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -1693,6 +1727,40 @@ export default function HomeClient({
                   <div className="er-benefit-title">{t.benefit4Title}</div>
                   <div className="er-benefit-copy">{t.benefit4Copy}</div>
                 </div>
+              </section>
+
+              {/*
+                LAS 16 RUTAS, ENLAZADAS DESDE LA PORTADA.
+
+                Hasta el 30 de septiembre de 2026 la portada no enlazaba a
+                NINGUNA página de ruta: se llegaba a ellas sólo desde el hub de
+                aeropuerto y desde tarifas. La portada es la página más fuerte
+                del sitio —el mejor CTR de todas, 8.6% en Search Console— y
+                era un callejón sin salida: su autoridad se quedaba ahí en vez
+                de repartirse a las dieciséis páginas que necesitan posicionar.
+
+                Para el visitante también sirve: quien llega buscando "chofer
+                privado" ve de un vistazo que su ruta concreta ya tiene precio
+                publicado, sin tener que cotizar para enterarse.
+              */}
+              <section className="er-routes" aria-label={t.routesTitle}>
+                <h2 className="er-routes-title">{t.routesTitle}</h2>
+                <p className="er-routes-help">{t.routesHelp}</p>
+                {([
+                  [t.routesAirport, rutas.filter((r) => !r.foranea)],
+                  [t.routesOut, rutas.filter((r) => r.foranea)],
+                ] as const).map(([titulo, lista]) => (
+                  <div key={titulo} className="er-routes-group">
+                    <h3 className="er-routes-sub">{titulo}</h3>
+                    <ul className="er-routes-list">
+                      {lista.map((r) => (
+                        <li key={r.href}>
+                          <a href={r.href}>{r.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </section>
 
               <section id="contacto" className="er-contact-grid" aria-label="Elite Route contact emails">

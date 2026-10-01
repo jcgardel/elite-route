@@ -327,6 +327,37 @@ const TX = {
         "Will all my luggage fit?",
         "Check the capacity table above. On the Minivan and the High SUV the maximum passengers and the maximum suitcases do not fit at the same time: with full luggage we recommend four passengers. If you are unsure, write to us and we will tell you which category to ask for.",
       ],
+      /*
+        LAS CUATRO DE ABAJO SON PARA EL VIAJERO EXTRANJERO, y van sólo en
+        inglés a propósito.
+
+        Search Console, septiembre de 2026: las páginas en inglés no decían
+        "is it safe" ni "uber" ni una sola vez, y "taxi" sólo dos. Son
+        exactamente las preguntas que se hace quien nunca ha estado en México,
+        y los clientes que han pagado son todos de Estados Unidos, Londres y
+        París. En Estados Unidos el problema medido NO es la posición —ya
+        salimos entre el puesto 1 y el 9 para las rutas concretas—, es que
+        aparecemos en poquísimas búsquedas. Esto existe para aparecer en más.
+
+        Se responde con honestidad, incluido que un viaje de app suele salir
+        más barato. Decir lo contrario sería falso y se nota.
+      */
+      [
+        "Is it safe to take a taxi from Mexico City airport?",
+        "The airport has authorised taxi desks inside the terminals, and the usual advice is to arrange ground transport inside the building rather than with someone who approaches you in the arrivals hall. Booking ahead removes the decision altogether: the chauffeur is assigned before you land, you get the name and the vehicle beforehand, and the price is already settled — so there is nothing to agree while you are tired and holding your luggage.",
+      ],
+      [
+        "Uber or a private transfer from the airport?",
+        "An on-demand ride is usually cheaper, and if you travel light it is a perfectly reasonable way into the city. A private transfer buys different things: a price fixed before you fly instead of one that moves with demand at the moment you land; a chauffeur already assigned and tracking your flight, so a two-hour delay changes nothing; a vehicle chosen for your luggage rather than whatever happens to arrive; and someone waiting with your name at the meeting point. For a late arrival, a family with suitcases or a first trip to the city, that is usually what people are paying for.",
+      ],
+      [
+        "Can I pay with a card issued outside Mexico?",
+        "Yes. Payment runs through Stripe and takes international cards. Prices are quoted and charged in Mexican pesos, so your own bank applies the exchange rate. Nothing is paid to the chauffeur.",
+      ],
+      [
+        "Do I need to tip the chauffeur?",
+        "No. The price you see is the whole price and nothing is added at the end. A tip is welcome if the service was good, as anywhere, but it is not expected and nobody will ask for one.",
+      ],
     ] as ReadonlyArray<readonly [string, string]>,
 
     trustTitle: "Who is driving you",

@@ -57,6 +57,28 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "tarifa traslado aeropuerto CDMX, precio chofer ejecutivo Ciudad de México, tarifa AICM Polanco, costo traslado AIFA CDMX, transporte ejecutivo precio, tarifa chofer privado CDMX",
     },
   },
+  /**
+   * El título persigue la frase literal que escribe el viajero extranjero —
+   * "Teotihuacan day trip from Mexico City"— y no el nombre interno del
+   * producto. Lleva "private driver" porque eso es lo que lo distingue de los
+   * tours en autobús, que es contra quien compite en esa búsqueda.
+   */
+  teotihuacan: {
+    en: {
+      title: "Teotihuacan Day Trip from Mexico City | Private Driver | Elite Route",
+      description:
+        "Private car and chauffeur for a day at Teotihuacan. No group, no guide, no fixed schedule: the driver waits while you walk the pyramids. Fixed price, VAT included.",
+      keywords:
+        "Teotihuacan day trip from Mexico City, private driver to Teotihuacan, Teotihuacan without a tour, Teotihuacan private transport, how to get to Teotihuacan from Mexico City",
+    },
+    es: {
+      title: "Viaje a Teotihuacán desde CDMX con Chofer Privado | Elite Route",
+      description:
+        "Auto y chofer privado para un día en Teotihuacán. Sin grupo, sin guía y sin horarios: el chofer espera mientras recorres las pirámides. Precio fijo con IVA.",
+      keywords:
+        "viaje a Teotihuacán desde CDMX, chofer privado Teotihuacán, transporte privado a las pirámides, ir a Teotihuacán sin tour, Teotihuacán día completo",
+    },
+  },
   hourly: {
     en: {
       title: "Hourly Chauffeur Service in Mexico City | Elite Route",

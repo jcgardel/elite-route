@@ -31,6 +31,7 @@ export type Page =
   | "home"
   | "rates"
   | "hourly"
+  | "teotihuacan"
   | "chauffeur"
   | "executive"
   | "airport"
@@ -49,6 +50,11 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   // Mexico City". Hasta ahora esa búsqueda caía en /tarifas, que habla de
   // todos los servicios a la vez y por eso no gana ninguno.
   hourly: { en: "hourly-chauffeur", es: "chofer-por-horas" },
+  // Quien busca esto escribe "Teotihuacan day trip from Mexico City" desde
+  // San Francisco o "viaje a Teotihuacán desde CDMX" desde aquí. El slug
+  // persigue esas dos frases, no el nombre interno del producto —que es el
+  // servicio por horas y no lo busca nadie así—.
+  teotihuacan: { en: "teotihuacan-day-trip", es: "teotihuacan-desde-cdmx" },
   // Las dos búsquedas genéricas del sector. Hasta ahora las dos caían en la
   // portada, que es un cotizador con poco texto: gana una página con el
   // término en el H1 y contenido que lo sostenga.

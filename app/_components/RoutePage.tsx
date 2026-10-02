@@ -55,6 +55,26 @@ const TX = {
       "Precios finales en pesos, IVA incluido, con casetas y combustible. Esta ruta no sale del aeropuerto, así que no lleva el recargo de estacionamiento y espera.",
     fromAirport: (a: string) => `Desde ${a}`,
     toAirport: (a: string) => `Hacia ${a}`,
+    /*
+      EL BLOQUE DE IDA Y VUELTA EN EL DÍA, sólo en las foráneas.
+
+      Se comprobó antes de escribirlo y el resultado cambió el texto: NINGUNA
+      foránea cabe en el servicio por horas. Éste incluye 20 km por hora, así
+      que un día completo de diez horas cubre 200 km, y el viaje redondo son
+      210 a Cuernavaca, 270 a Puebla, 310 a Valle de Bravo, 440 a Querétaro y
+      580 a San Miguel. Decirle a alguien "reserva diez horas y te llevamos y
+      traemos" sería venderle algo fuera de nuestros propios términos.
+
+      Teotihuacán sí cabe —unos 100 km redondos contra 180 incluidos en nueve
+      horas— y por eso aquélla sí tiene tabla de precios y ésta manda a
+      cotizar. La diferencia no es de estilo: es de kilómetros.
+    */
+    diaTitle: "¿Ir y volver el mismo día?",
+    diaCopy:
+      "La tabla de arriba es el traslado sencillo, en un sentido. Si quieres ir, pasar el día y volver con el chofer esperándote, es un viaje redondo con espera: la distancia se sale de lo que cubre el servicio por horas, así que lo cotizamos a la medida. Escríbenos y te lo armamos.",
+    diaAlt:
+      "Si no necesitas el auto durante el día, sale más barato reservar dos traslados sencillos —uno de ida y otro de vuelta— directamente en el cotizador.",
+    diaBtn: "Cotizar por WhatsApp",
     aboutTitle: "Sobre esta ruta",
     includedTitle: "Qué incluye",
     included: [
@@ -106,6 +126,12 @@ const TX = {
       "Final prices in Mexican pesos, VAT, tolls and fuel included. This route does not start at the airport, so it carries no parking-and-waiting surcharge.",
     fromAirport: (a: string) => `From ${a}`,
     toAirport: (a: string) => `To ${a}`,
+    diaTitle: "Going and coming back the same day?",
+    diaCopy:
+      "The table above is the one-way transfer. If you want to go, spend the day and come back with the chauffeur waiting for you, that is a round trip with waiting: the distance goes beyond what the by-the-hour service covers, so we quote it to measure. Write to us and we put it together.",
+    diaAlt:
+      "If you do not need the car during the day, two one-way transfers — one out, one back — come to less, and you can book both in the quote form.",
+    diaBtn: "Quote it on WhatsApp",
     aboutTitle: "About this route",
     includedTitle: "What it covers",
     included: [
@@ -170,6 +196,16 @@ const styles = `
   .rt-table td:first-child { color:#fff; }
   .rt-veh-cap { display:block; color:#8B8B87; font-size:12px; margin-top:2px; }
   .rt-note { color:#8B8B87; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
+
+  /* Deliberadamente sobrio y DESPUÉS de la tabla: el producto principal de
+     esta página es el traslado sencillo, que es el que rankea. Esto es la
+     segunda puerta, no la primera. */
+  .rt-dia { margin-top:30px; border:1px solid rgba(200,164,107,0.3); border-radius:3px; background:rgba(200,164,107,0.05); padding:22px 24px; max-width:66ch; }
+  .rt-dia-title { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:15px; letter-spacing:0.04em; color:#fff; margin:0 0 10px; }
+  .rt-dia-copy { color:#BFC3C8; font-size:14.5px; line-height:1.7; margin:0 0 10px; }
+  .rt-dia-alt { color:#8B8B87; font-size:13px; line-height:1.65; margin:0 0 16px; }
+  .rt-dia-btn { display:inline-block; border:1px solid #C8A46B; color:#fff; text-decoration:none; font-weight:700; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; padding:11px 20px; border-radius:2px; }
+  .rt-dia-btn:hover { background:#C8A46B; color:#0A0A0A; }
 
   .rt-list { color:#BFC3C8; font-size:16px; line-height:1.75; max-width:66ch; margin:0; padding-left:20px; }
   .rt-list li { margin-bottom:10px; }
@@ -352,6 +388,25 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
             </tbody>
           </table>
           <p className="rt-note">{unico ? t.tableNoteUnico : t.tableNote}</p>
+
+          {/* Sólo en las foráneas: son las únicas donde "ir y volver en el
+              día" es una pregunta real, y la única respuesta honesta es una
+              cotización a la medida. Ver la nota larga en el diccionario. */}
+          {unico && (
+            <div className="rt-dia">
+              <h3 className="rt-dia-title">{t.diaTitle}</h3>
+              <p className="rt-dia-copy">{t.diaCopy}</p>
+              <p className="rt-dia-alt">{t.diaAlt}</p>
+              <a
+                className="rt-dia-btn"
+                href={LEGAL.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.diaBtn}
+              </a>
+            </div>
+          )}
         </section>
 
         {/* Reseñas reales de la ficha de Google, las cifras del dueño y

@@ -61,6 +61,11 @@ function eventoDeLaReserva(session: Stripe.Checkout.Session): EventoReserva | nu
     "",
     `Origen: ${origen || "—"}`,
     `Destino: ${destino || "—"}`,
+    // El renglón que evita que el chofer deje al pasajero y se vaya. Va junto
+    // al destino y no al final por eso mismo.
+    ...(meta.redondo === "true"
+      ? [`IDA Y VUELTA — esperar ${meta.horasEspera || "?"} h y regresar al pasajero`]
+      : []),
     ...(meta.flightNumber ? [`Vuelo: ${meta.flightNumber}`] : []),
     ...(meta.notes ? ["", `Solicitudes: ${meta.notes}`] : []),
     "",
@@ -168,6 +173,11 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     `Fecha: ${meta.serviceDate || "—"} ${meta.serviceTime || ""}`.trim(),
     `Origen: ${meta.origin || "—"}`,
     `Destino: ${meta.destination || "—"}`,
+    // Lo mismo que en el aviso corto: un redondo mal leído es un pasajero
+    // abandonado en Cuernavaca.
+    ...(meta.redondo === "true"
+      ? [`⏳ *IDA Y VUELTA* — esperar ${meta.horasEspera || "?"} h y regresar al pasajero`]
+      : []),
     // El vuelo va con el servicio y no al final: es lo que el equipo necesita
     // para monitorear la llegada y ajustar la hora del chofer, y sólo sale en
     // los traslados de aeropuerto.

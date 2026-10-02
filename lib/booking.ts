@@ -27,6 +27,7 @@
 import "server-only";
 
 import { type Category } from "./vehicles";
+import { REDONDO_HORAS_CORTESIA, REDONDO_HORAS_MAX } from "./service-limits";
 
 export {
   type Category,
@@ -146,4 +147,71 @@ export function calculatePrice(
     base += Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16);
   }
   return Math.round(base * 1.16);
+}
+
+/**
+ * EL FACTOR DEL VIAJE REDONDO. Interno: vive aquí y no en service-limits.ts
+ * porque es la fórmula, no el hecho. Al cliente se le enseña el importe.
+ *
+ * Que sea 1.5 y no 2 es la oferta entera: ir y volver cuesta vez y media el
+ * traslado sencillo en lugar de dos, y con dos horas de espera incluidas. Lo
+ * que lo hace rentable es que el chofer no vuelve vacío —en dos traslados
+ * sueltos sí, dos veces—, así que la mitad que se descuenta es un costo que
+ * de verdad no se incurre.
+ */
+const REDONDO_FACTOR = 1.5;
+
+/**
+ * Lo que cuesta cada hora de espera por encima de las de cortesía, con IVA.
+ *
+ * Es la mitad de la tarifa por hora de la categoría: el chofer está parado,
+ * no conduciendo. Sale de `tariffs` y no de una tabla aparte justamente para
+ * que siga a la tarifa por hora si el dueño la mueve. Hoy da $232 en Sedan,
+ * $348 en Executive, $336 en Minivan y $522 en High SUV.
+ */
+export function precioHoraExtraRedondo(category: Category) {
+  return Math.round(tariffs[category].hour * 0.5 * 1.16);
+}
+
+/**
+ * Precio del viaje redondo foráneo: ida y vuelta el mismo día, con el chofer
+ * esperando.
+ *
+ * Se construye SOBRE `calculatePrice` y no en paralelo a él, para que el
+ * redondo no pueda desviarse del sencillo que publica cada página de ruta.
+ * `airport` va en false a propósito: ninguna foránea sale de una terminal, y
+ * el recargo de estacionamiento y espera no aplica.
+ *
+ * Las horas se recortan contra el tope antes de cobrar, así que pedir más de
+ * la cuenta nunca encarece de más: lo peor que pasa es que se cobre el tope.
+ * La validación de que el cliente no pida más vive en quien llama; esto sólo
+ * garantiza que el importe sea el correcto pase lo que pase.
+ */
+export function precioRedondo(
+  km: number,
+  minutes: number,
+  category: Category,
+  horasEspera: number,
+  airport = false,
+) {
+  const sencillo = calculatePrice(km, minutes, category, "route", 0, false);
+  const base = Math.round(sencillo * REDONDO_FACTOR);
+
+  // EL RECARGO DE AEROPUERTO SE SUMA UNA VEZ, NO VEZ Y MEDIA. Un redondo que
+  // empieza en el AICM —Cuernavaca, Puebla y las demás se cotizan desde ahí—
+  // sí paga estacionamiento en terminal y espera por retraso del vuelo, pero
+  // los paga AL RECOGER, una sola vez. Multiplicarlos por 1.5 cobraría media
+  // hora de espera y medio estacionamiento que nadie incurre: hasta $300 de
+  // más. Por eso la base se calcula limpia y el recargo entra aparte.
+  //
+  // Esto además no mueve la comparación contra dos traslados sueltos: de ida
+  // se paga el recargo y de vuelta no, así que la diferencia sigue siendo
+  // medio traslado a favor del cliente, igual que sin aeropuerto.
+  const recargo = airport
+    ? calculatePrice(km, minutes, category, "route", 0, true) - sencillo
+    : 0;
+
+  const horas = Math.min(Math.max(horasEspera, REDONDO_HORAS_CORTESIA), REDONDO_HORAS_MAX);
+  const extras = horas - REDONDO_HORAS_CORTESIA;
+  return base + recargo + extras * precioHoraExtraRedondo(category);
 }

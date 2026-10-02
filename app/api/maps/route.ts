@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { getMapsLimiter, getIp } from "@/lib/rate-limit";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
-import { calculatePrice } from "@/lib/booking";
+import { calculatePrice, precioHoraExtraRedondo, precioRedondo } from "@/lib/booking";
 import { CATEGORIES, isAirportAddress } from "@/lib/vehicles";
+import { admiteRedondo, REDONDO_HORAS_CORTESIA } from "@/lib/service-limits";
+import type { PrecioPorCategoria, TablasRedondo } from "@/lib/rate-tables";
 
 /**
  * Devuelve la ruta y, con ella, el precio de las cuatro categorías.
@@ -50,7 +52,21 @@ export async function POST(req: Request) {
       CATEGORIES.map((c) => [c, calculatePrice(km, minutes, c, "route", 0, airport)]),
     );
 
-    return NextResponse.json({ km, minutes, airport, prices });
+    // El viaje redondo sólo existe en las foráneas, y quien lo decide es la
+    // distancia que acaba de medir el servidor —no una bandera del cliente—.
+    // Va resuelto en las cuatro categorías para que el selector de horas se
+    // mueva sin pedir nada más. /api/checkout lo vuelve a comprobar todo: esto
+    // es para pintar, no para cobrar.
+    const porCat = (fn: (c: (typeof CATEGORIES)[number]) => number) =>
+      Object.fromEntries(CATEGORIES.map((c) => [c, fn(c)])) as PrecioPorCategoria;
+    const redondo: TablasRedondo | null = admiteRedondo(km)
+      ? {
+          base: porCat((c) => precioRedondo(km, minutes, c, REDONDO_HORAS_CORTESIA, airport)),
+          horaExtra: porCat(precioHoraExtraRedondo),
+        }
+      : null;
+
+    return NextResponse.json({ km, minutes, airport, prices, redondo });
   } catch (error) {
     if (error instanceof RouteLookupError) {
       return NextResponse.json(

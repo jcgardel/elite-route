@@ -107,3 +107,19 @@ export type TablasQuote = {
   minimo: PrecioPorCategoria;
   minimoAeropuerto: PrecioPorCategoria;
 };
+
+/**
+ * El viaje redondo de una ruta foránea, ya resuelto en el servidor.
+ *
+ * `base` es lo que cuesta con las horas de cortesía incluidas; `horaExtra`,
+ * lo que suma cada hora por encima. Van las cuatro categorías de una vez,
+ * igual que los precios del traslado: así cambiar de vehículo o mover el
+ * selector de horas no dispara otra petición ni obliga al navegador a
+ * conocer la fórmula.
+ *
+ * `null` cuando la ruta no es foránea y el redondo no se ofrece.
+ */
+export type TablasRedondo = {
+  base: PrecioPorCategoria;
+  horaExtra: PrecioPorCategoria;
+};

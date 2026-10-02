@@ -46,3 +46,9 @@ next-env.d.ts
 # instaladores sueltos que se descargan a la raíz (p. ej. el de Homebrew):
 # no son del proyecto y GitHub Desktop los ofrece palomeados en cada commit
 /install.sh
+
+# Caché de npm que aparece cuando HOME no resuelve dentro del sandbox: npm
+# cae a un directorio literal "Inicio" dentro del repo. Se coló una vez en un
+# commit el 1 oct 2026 por un `git add -A`.
+Inicio/
+.npm/

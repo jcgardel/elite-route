@@ -7,6 +7,7 @@ import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
 import { routePath, type RouteKey } from "@/lib/routes";
+import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * Tarifas, en los dos idiomas del sitio.
@@ -57,7 +58,7 @@ const TX = {
     hourMore: "Todo sobre el chofer por horas",
     airportMore: "Todo sobre los traslados de aeropuerto",
     hourCopy:
-      "Tu chofer permanece disponible durante las horas contratadas. Incluye 20 km por hora. Ideal para reuniones, eventos o días de trabajo intenso.",
+      `Tu chofer permanece disponible durante las horas contratadas. Incluye ${KM_POR_HORA} km por hora dentro de ${ZONA_POR_HORAS.es}. Ideal para reuniones, eventos o días de trabajo intenso.`,
     colRoute: "Ruta",
     colDuration: "Duración",
     priceNote: "MXN c/IVA",
@@ -137,7 +138,7 @@ const TX = {
     hourMore: "Everything about hourly service",
     airportMore: "Everything about airport transfers",
     hourCopy:
-      "Your chauffeur stays available for the hours booked, with 20 km included per hour. Ideal for meetings, events or long working days.",
+      `Your chauffeur stays available for the hours booked, with ${KM_POR_HORA} km included per hour within ${ZONA_POR_HORAS.en}. Ideal for meetings, events or long working days.`,
     colRoute: "Route",
     colDuration: "Duration",
     priceNote: "MXN incl. VAT",

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import HourlyPage, { hourlyFaqs, hourlyPriceRange } from "../../_components/HourlyPage";
 import { pageMetadata } from "@/lib/seo";
 import { isLang, path, SITE, url } from "@/lib/i18n";
+import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * /es/chofer-por-horas. Su gemela en inglés es /en/hourly-chauffeur.
@@ -29,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Chofer por horas en Ciudad de México",
     description:
-      "Chofer privado y vehículo a disposición por bloques de horas en Ciudad de México, con 20 km incluidos por hora y precio fijo con IVA.",
+      `Chofer privado y vehículo a disposición por bloques de horas en ${ZONA_POR_HORAS.es}, con ${KM_POR_HORA} km incluidos por hora y precio fijo con IVA.`,
     serviceType: "Servicio de chofer por horas",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Ciudad de México" },

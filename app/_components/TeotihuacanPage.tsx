@@ -5,6 +5,7 @@ import { calculatePrice } from "@/lib/booking";
 import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
+import { KM_POR_HORA as KM_HORA } from "@/lib/service-limits";
 
 /**
  * Teotihuacán, con página propia.
@@ -35,8 +36,8 @@ const cats: Category[] = ["sedan", "executive", "minivan", "suv"];
 /** Las dos duraciones que de verdad cubren el día. La de Justine fueron 9. */
 const BLOQUES = [9, 10] as const;
 
-/** Kilómetros incluidos por hora contratada. Lo fija el cotizador. */
-const KM_POR_HORA = 20;
+/** Kilómetros incluidos por hora. Vive en lib/service-limits.ts. */
+const KM_POR_HORA = KM_HORA;
 
 /** Las dos categorías con chofer bilingüe. Confirmado por el dueño. */
 const BILINGUES: Category[] = ["executive", "suv"];

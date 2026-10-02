@@ -33,6 +33,7 @@ import {
 import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
+import { HORAS_DIA_COMPLETO, KM_POR_HORA, kmIncluidos } from "@/lib/service-limits";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
@@ -175,9 +176,9 @@ const TX = {
     getQuote: "Get your quote",
     stepRoute: "Route", stepVehicle: "Vehicle", stepConfirm: "Confirm",
     transfer: "Transfer", hourly: "Hourly", fullDay: "Full Day",
-    hourlyNote: (h: number) => `Hourly service · 20 km included per hour · Up to ${h * 20} km`,
+    hourlyNote: (h: number) => `Hourly service · ${KM_POR_HORA} km included per hour · Up to ${kmIncluidos(h)} km`,
     hourlyNote2: "Your chauffeur remains available during the contracted hours.",
-    dayNote: "Full-day service · 10 hours · Up to 200 km included",
+    dayNote: `Full-day service · ${HORAS_DIA_COMPLETO} hours · Up to ${kmIncluidos(HORAS_DIA_COMPLETO)} km included`,
     dayNote2: "Ideal for meetings, events or city transportation in Mexico City.",
     duration: "Service Duration", hours: "hours",
     decreaseHours: "Decrease hours", increaseHours: "Increase hours",
@@ -284,9 +285,9 @@ const TX = {
     getQuote: "Obtén tu cotización",
     stepRoute: "Ruta", stepVehicle: "Vehículo", stepConfirm: "Confirmar",
     transfer: "Traslado", hourly: "Por hora", fullDay: "Día completo",
-    hourlyNote: (h: number) => `Servicio por hora · 20 km incluidos por hora · Hasta ${h * 20} km`,
+    hourlyNote: (h: number) => `Servicio por hora · ${KM_POR_HORA} km incluidos por hora · Hasta ${kmIncluidos(h)} km`,
     hourlyNote2: "Tu chofer permanece disponible durante las horas contratadas.",
-    dayNote: "Servicio día completo · 10 horas · Hasta 200 km incluidos",
+    dayNote: `Servicio día completo · ${HORAS_DIA_COMPLETO} horas · Hasta ${kmIncluidos(HORAS_DIA_COMPLETO)} km incluidos`,
     dayNote2: "Ideal para reuniones, eventos o traslados en la Ciudad de México.",
     duration: "Duración del servicio", hours: "horas",
     decreaseHours: "Disminuir horas", increaseHours: "Aumentar horas",
@@ -916,7 +917,7 @@ export default function HomeClient({
   const airportTrip = airportPickup || airportDropoff;
 
   const serviceHours = serviceType === "day" ? 10 : rentalHours;
-  const maxAllowedKm = serviceType === "route" ? 0 : serviceHours * 20;
+  const maxAllowedKm = serviceType === "route" ? 0 : kmIncluidos(serviceHours);
   const locale = lang === "es" ? "es-MX" : "en-US";
 
   /**
@@ -1018,7 +1019,7 @@ export default function HomeClient({
       }
 
       const routeKm = Number(data.km.toFixed(1));
-      const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;
+      const allowedKm = kmIncluidos(serviceType === "day" ? HORAS_DIA_COMPLETO : rentalHours);
       if (serviceType !== "route" && routeKm > allowedKm) {
         setAlert1(t.alertKmExceeded(allowedKm, routeKm));
         return;
@@ -1428,7 +1429,7 @@ export default function HomeClient({
               <div className="er-route-stats">
                 <div>
                   <div className="er-stat-val">
-                    {serviceType === "route" ? km : (serviceType === "hour" ? maxAllowedKm : 200)}
+                    {serviceType === "route" ? km : maxAllowedKm}
                   </div>
                   <div className="er-stat-lbl">{serviceType === "route" ? t.kilometers : t.includedKm}</div>
                 </div>

@@ -13,6 +13,7 @@ import {
   TRANSFERS_PER_YEAR,
   YEARS_OPERATING,
 } from "@/lib/social-proof";
+import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * El chofer por horas, con su propia dirección.
@@ -37,8 +38,8 @@ const BLOCKS = [2, 4] as const;
 /** El día completo son diez horas; lo fija `calculatePrice`, no esta página. */
 const FULL_DAY_HOURS = 10;
 
-/** Kilómetros incluidos por cada hora contratada. */
-const KM_PER_HOUR = 20;
+/** Kilómetros incluidos por hora. Vive en lib/service-limits.ts. */
+const KM_PER_HOUR = KM_POR_HORA;
 
 function mxn(n: number) {
   return "$" + n.toLocaleString("es-MX");
@@ -64,7 +65,7 @@ const TX = {
     colVehicle: "Vehículo",
     colHours: (h: number) => `${h} horas`,
     colDay: `Día completo · ${FULL_DAY_HOURS} h`,
-    tableNote: `Precios finales en pesos con IVA incluido. Cada hora contratada incluye ${KM_PER_HOUR} km dentro de la Ciudad de México: cuatro horas son 80 km y el día completo, ${FULL_DAY_HOURS * KM_PER_HOUR} km. Si la ruta se pasa de ahí, el cotizador lo dice antes de cobrar.`,
+    tableNote: `Precios finales en pesos con IVA incluido. Cada hora contratada incluye ${KM_PER_HOUR} km dentro de ${ZONA_POR_HORAS.es}: cuatro horas son ${4 * KM_PER_HOUR} km y el día completo, ${FULL_DAY_HOURS * KM_PER_HOUR} km. Si tu día se sale de ahí, lo ajustamos contigo antes del servicio.`,
 
     howTitle: "Cómo funciona",
     how: [
@@ -85,7 +86,7 @@ const TX = {
     includedTitle: "Qué incluye",
     included: [
       "Chofer profesional y vehículo en condiciones de operar, a tu disposición durante las horas contratadas.",
-      `${KM_PER_HOUR} km incluidos por cada hora, dentro de la Ciudad de México.`,
+      `${KM_PER_HOUR} km incluidos por cada hora, dentro de ${ZONA_POR_HORAS.es}.`,
       "Precio fijo con IVA: no cambia por tráfico, horario nocturno ni por las paradas que hagas.",
       "Agua de cortesía, cargadores y climatización.",
       "Factura CFDI a solicitud.",
@@ -103,7 +104,7 @@ const TX = {
       ],
       [
         "¿Cuántos kilómetros incluye?",
-        `Veinte kilómetros por cada hora contratada, dentro de la Ciudad de México. Cuatro horas incluyen 80 km y el día completo, ${FULL_DAY_HOURS * KM_PER_HOUR} km.`,
+        `${KM_PER_HOUR} kilómetros por cada hora contratada, dentro de ${ZONA_POR_HORAS.es}. Cuatro horas incluyen ${4 * KM_PER_HOUR} km y el día completo, ${FULL_DAY_HOURS * KM_PER_HOUR} km.`,
       ],
       [
         "¿El precio cambia por el tráfico o por la hora?",
@@ -165,7 +166,7 @@ const TX = {
     colVehicle: "Vehicle",
     colHours: (h: number) => `${h} hours`,
     colDay: `Full day · ${FULL_DAY_HOURS} h`,
-    tableNote: `Final prices in Mexican pesos, VAT included. Every booked hour covers ${KM_PER_HOUR} km within Mexico City: four hours come to 80 km and a full day to ${FULL_DAY_HOURS * KM_PER_HOUR} km. If the route runs past that, the quote form says so before you pay.`,
+    tableNote: `Final prices in Mexican pesos, VAT included. Every booked hour covers ${KM_PER_HOUR} km within ${ZONA_POR_HORAS.en}: four hours come to ${4 * KM_PER_HOUR} km and a full day to ${FULL_DAY_HOURS * KM_PER_HOUR} km. If your day runs past that, we settle it with you before the service.`,
 
     howTitle: "How it works",
     how: [
@@ -186,7 +187,7 @@ const TX = {
     includedTitle: "What it covers",
     included: [
       "A professional chauffeur and a roadworthy vehicle, at your disposal for the booked hours.",
-      `${KM_PER_HOUR} km included per hour, within Mexico City.`,
+      `${KM_PER_HOUR} km included per hour, within ${ZONA_POR_HORAS.en}.`,
       "Fixed price with VAT: unchanged by traffic, night hours or how many stops you make.",
       "Complimentary water, chargers and climate control.",
       "CFDI invoice on request.",
@@ -204,7 +205,7 @@ const TX = {
       ],
       [
         "How many kilometres are included?",
-        `Twenty kilometres for every hour booked, within Mexico City. Four hours cover 80 km and a full day ${FULL_DAY_HOURS * KM_PER_HOUR} km.`,
+        `${KM_PER_HOUR} kilometres for every hour booked, within ${ZONA_POR_HORAS.en}. Four hours cover ${4 * KM_PER_HOUR} km and a full day ${FULL_DAY_HOURS * KM_PER_HOUR} km.`,
       ],
       [
         "Does the price change with traffic or time of day?",

@@ -15,6 +15,7 @@ import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
+import { HORAS_DIA_COMPLETO, kmIncluidos } from "@/lib/service-limits";
 
 const categories = CATEGORIES;
 const serviceTypes: ServiceType[] = ["route", "hour", "day"];
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
 
     // Tope de kilómetros incluidos, también validado en el servidor.
     if (serviceType !== "route") {
-      const allowedKm = serviceType === "day" ? 200 : rentalHours * 20;
+      const allowedKm = kmIncluidos(serviceType === "day" ? HORAS_DIA_COMPLETO : rentalHours);
       if (km > allowedKm) {
         return NextResponse.json(
           { error: `Este servicio incluye hasta ${allowedKm} km. La ruta calculada es de ${km} km.` },

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import HourlyPage, { hourlyFaqs, hourlyPriceRange } from "../../_components/HourlyPage";
 import { pageMetadata } from "@/lib/seo";
 import { isLang, path, SITE, url } from "@/lib/i18n";
+import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * /en/hourly-chauffeur. Su gemela en español es /es/chofer-por-horas: el
@@ -30,7 +31,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Hourly chauffeur service in Mexico City",
     description:
-      "A private chauffeur and vehicle at your disposal by the hour in Mexico City, with 20 km included per hour and a fixed price including VAT.",
+      `A private chauffeur and vehicle at your disposal by the hour in ${ZONA_POR_HORAS.en}, with ${KM_POR_HORA} km included per hour and a fixed price including VAT.`,
     serviceType: "Hourly chauffeur service",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Ciudad de México" },

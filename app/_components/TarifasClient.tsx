@@ -2,12 +2,23 @@
 
 import Link from "next/link";
 import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
-import { DURACIONES, RUTAS_DESDE, RUTAS_HACIA, type TablasTarifas } from "@/lib/rate-tables";
+import {
+  DURACIONES,
+  RUTAS_DESDE,
+  RUTAS_HACIA,
+  RUTAS_REDONDO,
+  type TablasTarifas,
+} from "@/lib/rate-tables";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
 import { routePath, type RouteKey } from "@/lib/routes";
-import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
+import {
+  KM_POR_HORA,
+  ZONA_POR_HORAS,
+  REDONDO_HORAS_CORTESIA,
+  REDONDO_HORAS_MAX,
+} from "@/lib/service-limits";
 
 /**
  * Tarifas, en los dos idiomas del sitio.
@@ -71,6 +82,19 @@ const TX = {
       satelite: "AICM → Satélite / Naucalpan",
       aifa: "AIFA → CDMX (cualquier zona)",
       toluca: "Aeropuerto Toluca → CDMX",
+    },
+    rtLabel: "Ida y vuelta el mismo día",
+    rtTitle: "Viaje redondo a destinos foráneos",
+    rtCopy:
+      `El chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que reservar dos traslados por separado e incluye ${REDONDO_HORAS_CORTESIA} horas de espera. Si necesitas más tiempo, puedes añadir horas al reservar, hasta ${REDONDO_HORAS_MAX} en total.`,
+    rtExtraNote: "Hora de espera adicional:",
+    rtBook: "Reservar un viaje redondo",
+    routesRedondo: {
+      cuernavaca: "CDMX ⇄ Cuernavaca",
+      puebla: "CDMX ⇄ Puebla",
+      vallebravo: "CDMX ⇄ Valle de Bravo",
+      queretaro: "CDMX ⇄ Querétaro",
+      sanmiguel: "CDMX ⇄ San Miguel de Allende",
     },
     routesTo: {
       centro: "Centro Histórico / Roma / Condesa → AICM",
@@ -151,6 +175,19 @@ const TX = {
       satelite: "AICM → Satélite / Naucalpan",
       aifa: "AIFA → Mexico City (any area)",
       toluca: "Toluca Airport → Mexico City",
+    },
+    rtLabel: "Out and back the same day",
+    rtTitle: "Round trips to out-of-town destinations",
+    rtCopy:
+      `Your chauffeur drives you there, waits and brings you back the same day. It costs less than booking two separate transfers and includes ${REDONDO_HORAS_CORTESIA} hours of waiting. Need longer? You can add hours when you book, up to ${REDONDO_HORAS_MAX} in total.`,
+    rtExtraNote: "Each additional waiting hour:",
+    rtBook: "Book a round trip",
+    routesRedondo: {
+      cuernavaca: "Mexico City ⇄ Cuernavaca",
+      puebla: "Mexico City ⇄ Puebla",
+      vallebravo: "Mexico City ⇄ Valle de Bravo",
+      queretaro: "Mexico City ⇄ Querétaro",
+      sanmiguel: "Mexico City ⇄ San Miguel de Allende",
     },
     routesTo: {
       centro: "Historic Center / Roma / Condesa → AICM",
@@ -401,6 +438,62 @@ export default function TarifasClient({
                     ))}
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/*
+          EL VIAJE REDONDO. Va aquí, entre los traslados y el servicio por
+          horas, porque es lo que es: un traslado con espera. Y publica
+          precio en firme —no "cotiza con nosotros"— porque desde el 2 de
+          octubre de 2026 se puede reservar y pagar en línea; una tabla con
+          números es además lo que puede rankear por "viaje redondo a
+          Cuernavaca", que una invitación a escribir por WhatsApp no hace.
+
+          Los importes son los de las horas de cortesía incluidas. Las horas
+          extra van en su propio renglón debajo en lugar de multiplicar la
+          tabla por siete columnas.
+        */}
+        <section className="tf-section" aria-labelledby="viaje-redondo">
+          <p className="tf-section-label">{t.rtLabel}</p>
+          <h2 className="tf-section-title" id="viaje-redondo">{t.rtTitle}</h2>
+          <p className="tf-section-copy">{t.rtCopy}</p>
+          <div className="tf-table-wrap">
+            <table className="tf-table">
+              <thead>
+                <tr>
+                  <th>{t.colRoute}</th>
+                  {cats.map((cat) => <th key={cat}>{vehicles[cat].name}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {RUTAS_REDONDO.map((r) => (
+                  <tr key={r.key}>
+                    <td>
+                      <div className="tf-route">
+                        <Link className="tf-route-link" href={routePath(lang, r.key as RouteKey)}>
+                          {t.routesRedondo[r.key]}
+                        </Link>
+                      </div>
+                    </td>
+                    {cats.map((cat) => (
+                      <td key={cat}>
+                        <span className="tf-price">{mxn(tablas.redondo[r.key][cat])}</span>
+                        <span className="tf-price-note">{t.priceNote}</span>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                <tr>
+                  <td><div className="tf-route">{t.rtExtraNote}</div></td>
+                  {cats.map((cat) => (
+                    <td key={cat}>
+                      <span className="tf-price">{mxn(tablas.redondoHoraExtra[cat])}</span>
+                      <span className="tf-price-note">{t.priceNote}</span>
+                    </td>
+                  ))}
+                </tr>
               </tbody>
             </table>
           </div>

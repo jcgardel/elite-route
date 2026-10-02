@@ -58,23 +58,27 @@ const TX = {
     /*
       EL BLOQUE DE IDA Y VUELTA EN EL DÍA, sólo en las foráneas.
 
-      Se comprobó antes de escribirlo y el resultado cambió el texto: NINGUNA
-      foránea cabe en el servicio por horas. Éste incluye 20 km por hora, así
-      que un día completo de diez horas cubre 200 km, y el viaje redondo son
-      210 a Cuernavaca, 270 a Puebla, 310 a Valle de Bravo, 440 a Querétaro y
-      580 a San Miguel. Decirle a alguien "reserva diez horas y te llevamos y
-      traemos" sería venderle algo fuera de nuestros propios términos.
+      POR QUÉ NO ES EL SERVICIO POR HORAS. Ninguna foránea cabe en él. Hoy
+      incluye 25 km por hora, así que un día completo de diez horas cubre 250,
+      y el viaje redondo son 210 a Cuernavaca, 270 a Puebla, 310 a Valle de
+      Bravo, 440 a Querétaro y 580 a San Miguel: sólo Cuernavaca entra, y el
+      dueño dejó el servicio por horas limitado a la CDMX y a los aeropuertos
+      de AIFA y Toluca. Teotihuacán sí cabe —unos 100 km redondos— y por eso
+      aquélla tiene tabla por horas y éstas no.
 
-      Teotihuacán sí cabe —unos 100 km redondos contra 180 incluidos en nueve
-      horas— y por eso aquélla sí tiene tabla de precios y ésta manda a
-      cotizar. La diferencia no es de estilo: es de kilómetros.
+      QUÉ CAMBIÓ EL 2 DE OCTUBRE DE 2026. Hasta esa fecha este bloque mandaba
+      a cotizar por WhatsApp, porque no había forma de reservarlo. Ahora el
+      cotizador lo vende: en una ruta de más de 90 km aparece la casilla de
+      viaje redondo. El texto cambió con el producto —seguir diciendo "te lo
+      cotizamos" cuando ya se puede pagar en línea mandaría a la gente al
+      canal lento por nada—.
     */
     diaTitle: "¿Ir y volver el mismo día?",
     diaCopy:
-      "La tabla de arriba es el traslado sencillo, en un sentido. Si quieres ir, pasar el día y volver con el chofer esperándote, es un viaje redondo con espera: la distancia se sale de lo que cubre el servicio por horas, así que lo cotizamos a la medida. Escríbenos y te lo armamos.",
+      "La tabla de arriba es el traslado sencillo, en un sentido. Si quieres ir, pasar el día y volver con el mismo chofer esperándote, resérvalo como viaje redondo en el cotizador: cuesta menos que dos traslados por separado e incluye dos horas de espera.",
     diaAlt:
-      "Si no necesitas el auto durante el día, sale más barato reservar dos traslados sencillos —uno de ida y otro de vuelta— directamente en el cotizador.",
-    diaBtn: "Cotizar por WhatsApp",
+      "Pon tu origen y este destino, continúa al paso 2 y marca «viaje redondo». Si necesitas más espera, puedes añadir horas antes de pagar.",
+    diaBtn: "Reservar viaje redondo",
     aboutTitle: "Sobre esta ruta",
     includedTitle: "Qué incluye",
     included: [
@@ -128,10 +132,10 @@ const TX = {
     toAirport: (a: string) => `To ${a}`,
     diaTitle: "Going and coming back the same day?",
     diaCopy:
-      "The table above is the one-way transfer. If you want to go, spend the day and come back with the chauffeur waiting for you, that is a round trip with waiting: the distance goes beyond what the by-the-hour service covers, so we quote it to measure. Write to us and we put it together.",
+      "The table above is the one-way transfer. If you want to go, spend the day and come back with the same chauffeur waiting for you, book it as a round trip in the quote form: it costs less than two separate transfers and includes two hours of waiting.",
     diaAlt:
-      "If you do not need the car during the day, two one-way transfers — one out, one back — come to less, and you can book both in the quote form.",
-    diaBtn: "Quote it on WhatsApp",
+      "Enter your pickup and this destination, continue to step 2 and tick \u201cround trip\u201d. If you need longer, you can add waiting hours before paying.",
+    diaBtn: "Book a round trip",
     aboutTitle: "About this route",
     includedTitle: "What it covers",
     included: [
@@ -397,14 +401,9 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
               <h3 className="rt-dia-title">{t.diaTitle}</h3>
               <p className="rt-dia-copy">{t.diaCopy}</p>
               <p className="rt-dia-alt">{t.diaAlt}</p>
-              <a
-                className="rt-dia-btn"
-                href={LEGAL.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link className="rt-dia-btn" href={quote}>
                 {t.diaBtn}
-              </a>
+              </Link>
             </div>
           )}
         </section>

@@ -30,10 +30,16 @@ import {
   type ServiceType,
   type Zone,
 } from "@/lib/vehicles";
-import type { PrecioPorCategoria, TablasCotizador } from "@/lib/rate-tables";
+import type { PrecioPorCategoria, TablasCotizador, TablasRedondo } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
-import { HORAS_DIA_COMPLETO, KM_POR_HORA, kmIncluidos } from "@/lib/service-limits";
+import {
+  HORAS_DIA_COMPLETO,
+  KM_POR_HORA,
+  kmIncluidos,
+  REDONDO_HORAS_CORTESIA,
+  REDONDO_HORAS_MAX,
+} from "@/lib/service-limits";
 
 const WHATSAPP_NUMBER = "525543582919";
 const GOOGLE_MAPS_KEY =
@@ -205,6 +211,27 @@ const TX = {
     airportAskFrom: "You are picked up at an airport",
     airportAskTo: "You are dropped off at an airport",
     airportAskHelp: "Tick it if you wrote the city instead of the terminal. We use it to track your flight and have the chauffeur there at the right time.",
+    rtTitle: "Want to come back the same day?",
+    rtLabel: "Round trip with the chauffeur waiting",
+    rtHelp: (h: number) =>
+      `Your chauffeur waits for you and drives you back. ${h} hours of waiting are included; the prices below already show the round trip.`,
+    rtWait: "Waiting time",
+    rtHours: "hours",
+    rtIncluded: (h: number) => `${h} hours included`,
+    rtExtra: (n: number, money: string) =>
+      `${n} extra ${n === 1 ? "hour" : "hours"} · ${money} each`,
+    rtMax: (h: number) => `Need more than ${h} hours? Write to us and we quote it for you.`,
+    rtDecrease: "Less waiting time",
+    rtIncrease: "More waiting time",
+    rtSummary: (h: number) => `Round trip · ${h} h waiting`,
+    routesOutRt: (
+      <>
+        <strong>Going and coming back the same day?</strong> On these routes you can
+        book a round trip with the chauffeur waiting for you. It costs less than two
+        separate transfers — pick your destination in the quote form above and tick it
+        in step 2.
+      </>
+    ),
     notes: "Anything we should know? (optional)",
     notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
     notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
@@ -314,6 +341,26 @@ const TX = {
     airportAskFrom: "Te recogemos en un aeropuerto",
     airportAskTo: "Te dejamos en un aeropuerto",
     airportAskHelp: "Márcalo si escribiste la ciudad en lugar de la terminal. Nos sirve para monitorear tu vuelo y que el chofer esté ahí a la hora correcta.",
+    rtTitle: "¿Quieres regresar el mismo día?",
+    rtLabel: "Viaje redondo con el chofer esperándote",
+    rtHelp: (h: number) =>
+      `El chofer te espera y te regresa. Incluye ${h} horas de espera; los precios de abajo ya son los del viaje redondo.`,
+    rtWait: "Horas de espera",
+    rtHours: "horas",
+    rtIncluded: (h: number) => `${h} horas incluidas`,
+    rtExtra: (n: number, money: string) =>
+      `${n} ${n === 1 ? "hora extra" : "horas extra"} · ${money} cada una`,
+    rtMax: (h: number) => `¿Necesitas más de ${h} horas? Escríbenos y te lo cotizamos.`,
+    rtDecrease: "Menos horas de espera",
+    rtIncrease: "Más horas de espera",
+    rtSummary: (h: number) => `Viaje redondo · ${h} h de espera`,
+    routesOutRt: (
+      <>
+        <strong>¿Ir y volver el mismo día?</strong> En estas rutas puedes reservar el
+        viaje redondo con el chofer esperándote. Cuesta menos que dos traslados por
+        separado: elige tu destino en el cotizador de arriba y márcalo en el paso 2.
+      </>
+    ),
     notes: "¿Algo que debamos saber? (opcional)",
     notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
     notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
@@ -533,6 +580,21 @@ const styles = `
   .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
 
   .er-section-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:42px; font-weight:300; margin:42px 0 20px; text-wrap:balance; }
+  /* El viaje redondo. Mismo lenguaje visual que er-airport-ask —es la otra
+     pregunta que cambia el precio— pero en dorado, porque ésta es una oferta
+     y aquélla es un dato que nos hace falta.
+     Ojo: nada de comillas invertidas aquí dentro. Esto vive en una plantilla
+     de texto y una comilla invertida la cierra a media hoja de estilos. */
+  .er-rt { border:1px solid rgba(200,164,107,0.32); background:rgba(200,164,107,0.06); border-radius:3px; padding:16px 18px; margin-bottom:22px; }
+  .er-rt-q { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:#C8A46B; margin:0 0 10px; }
+  .er-rt-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color:#ECEAE6; font-size:15px; line-height:1.45; }
+  .er-rt-check input { width:17px; height:17px; margin:2px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
+  .er-rt-help { color:#8B8B87; font-size:12.5px; line-height:1.6; margin:8px 0 0 27px; }
+  .er-rt-wait { margin-top:14px; padding-top:13px; border-top:1px solid rgba(200,164,107,0.25); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .er-rt-wait-lbl { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
+  .er-rt-wait-note { color:#8B8B87; font-size:12.5px; line-height:1.5; margin-top:4px; }
+  .er-rt-max { color:#8B8B87; font-size:12px; line-height:1.5; margin:10px 0 0; }
+
   .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
@@ -608,6 +670,8 @@ const styles = `
   .er-routes-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 24px; }
   .er-routes-list a { color:#BFC3C8; text-decoration:none; font-size:14px; line-height:1.5; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
   .er-routes-list a:hover { color:#fff; border-bottom-color:rgba(200,164,107,0.6); }
+  .er-routes-rt { margin:14px 0 0; font-size:13px; line-height:1.65; color:#8B8B87; }
+  .er-routes-rt strong { color:#C8A46B; font-weight:600; }
 
   .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
   .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
@@ -866,6 +930,21 @@ export default function HomeClient({
   /** Precio de las cuatro categorías para la ruta cotizada, tal como lo
    *  devolvió el servidor. `null` mientras no haya una ruta calculada. */
   const [routePrices, setRoutePrices] = useState<PrecioPorCategoria | null>(null);
+  /**
+   * EL VIAJE REDONDO FORÁNEO. Llega resuelto desde /api/maps —base y hora
+   * extra de las cuatro categorías— y es `null` cuando la ruta no da para
+   * ofrecerlo. Quien decide eso es la distancia que midió el servidor, no
+   * esta pantalla: aquí no hay forma de encenderlo escribiendo un destino.
+   */
+  const [redondoTabla, setRedondoTabla] = useState<TablasRedondo | null>(null);
+  /**
+   * Desmarcado a propósito. El precio que el visitante ve al llegar al paso 2
+   * es el del traslado sencillo, que es el más bajo y el que vino buscando;
+   * el redondo lo enciende él. Marcarlo por defecto sería subir la tarifa en
+   * pantalla sin que nadie lo pidiera.
+   */
+  const [redondo, setRedondo] = useState(false);
+  const [horasEspera, setHorasEspera] = useState(REDONDO_HORAS_CORTESIA);
   const [category, setCategory] = useState<Category>("executive");
   // Dirección exacta que Google confirmó como aeropuerto. Se guarda el texto
   // (y no un booleano) para que el recargo se caiga solo si el cliente edita
@@ -928,16 +1007,38 @@ export default function HomeClient({
    * precio llega junto con los kilómetros en la respuesta de /api/maps y
    * vive en `routePrices` hasta que el visitante cambie el recorrido.
    */
+  /** El redondo está activo sólo si la ruta lo admite Y el cliente lo marcó. */
+  const redondoActivo = redondo && redondoTabla !== null;
+
   function priceFor(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;
     if (serviceType === "hour") return tablas.horas[rentalHours]?.[cat] ?? 0;
+    if (redondoActivo && redondoTabla) {
+      // La base ya trae las horas de cortesía; sólo se suman las de encima.
+      const extras = Math.max(0, horasEspera - REDONDO_HORAS_CORTESIA);
+      return (redondoTabla.base[cat] ?? 0) + extras * (redondoTabla.horaExtra[cat] ?? 0);
+    }
     return routePrices?.[cat] ?? 0;
   }
   const price = priceFor(category);
 
+  /**
+   * Cómo se llama el servicio en el resumen y en el mensaje de WhatsApp.
+   *
+   * El redondo tiene que decir su nombre y sus horas en los dos sitios donde
+   * el cliente revisa antes de pagar. Rotularlo "Traslado punto a punto"
+   * —que es lo que `serviceType` sigue siendo por dentro— le escondería la
+   * mitad de lo que está comprando justo en la pantalla de confirmar.
+   */
+  const labelServicio = redondoActivo
+    ? t.rtSummary(horasEspera)
+    : lang === "es"
+      ? serviceTypeLabelEs(serviceType, rentalHours)
+      : serviceTypeLabel(serviceType, rentalHours);
+
   const summaryRows: Array<[string, string]> = lang === "es"
     ? [
-        [t.stServiceType, serviceTypeLabelEs(serviceType, rentalHours)],
+        [t.stServiceType, labelServicio],
         ...(serviceType !== "route" ? [[t.stIncludedKm, `${maxAllowedKm} km`] as [string, string]] : []),
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
@@ -948,7 +1049,7 @@ export default function HomeClient({
           : [t.stDuration, serviceTypeLabelEs(serviceType, rentalHours)],
       ]
     : [
-        [t.stServiceType, serviceTypeLabel(serviceType, rentalHours)],
+        [t.stServiceType, labelServicio],
         ...(serviceType !== "route" ? [[t.stIncludedKm, `${maxAllowedKm} km`] as [string, string]] : []),
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
@@ -975,7 +1076,11 @@ export default function HomeClient({
   }
   // El precio se borra junto con la ruta: si se quedara, el visitante podría
   // ver el importe del recorrido anterior mientras edita el nuevo.
-  function goBackToStep1() { setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null); goStep(1); }
+  function goBackToStep1() {
+    setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null);
+    setRedondoTabla(null); setRedondo(false); setHorasEspera(REDONDO_HORAS_CORTESIA);
+    goStep(1);
+  }
 
   function onOriginChanged() {
     const place = originRef.current?.getPlace();
@@ -1029,6 +1134,12 @@ export default function HomeClient({
       setMinutes(Number(data.minutes));
       setZone(detectZone(data.km));
       setRoutePrices(data.prices ?? null);
+      // Cada ruta nueva reinicia el redondo. Dejar marcada la casilla de una
+      // cotización anterior encendería un servicio que esta ruta puede ni
+      // siquiera admitir, y el precio en pantalla dejaría de ser el suyo.
+      setRedondoTabla(data.redondo ?? null);
+      setRedondo(false);
+      setHorasEspera(REDONDO_HORAS_CORTESIA);
       track("ruta_completada", {
         tipo_servicio: serviceType,
         km: routeKm,
@@ -1058,7 +1169,7 @@ export default function HomeClient({
       `Tel: ${phone}`,
       "",
       "*Servicio*",
-      `Tipo: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
+      `Tipo: ${redondoActivo ? `Viaje redondo foráneo · ${horasEspera} h de espera` : serviceTypeLabelEs(serviceType, rentalHours)}`,
       serviceType !== "route" ? `Kilómetros incluidos: ${maxAllowedKm} km` : null,
       `Fecha: ${formatDateTime(serviceDate, serviceTime, "es-MX")}`,
       `Origen: ${origin}`,
@@ -1133,6 +1244,12 @@ export default function HomeClient({
           // abandonado al cambiar de destino no debe colarse en el aviso
           // del equipo ni en la metadata de la reserva.
           flightNumber: airportTrip ? flightNumber.trim().toUpperCase() : "",
+          // Se manda lo que de verdad está activo, no lo que quedó en el
+          // estado: `redondoActivo` ya exige que la ruta lo admita. El
+          // servidor lo vuelve a comprobar contra sus propios kilómetros y
+          // rechaza la reserva si no cuadra.
+          redondo: redondoActivo,
+          horasEspera: redondoActivo ? horasEspera : undefined,
         }),
       });
       const data = await res.json();
@@ -1442,6 +1559,63 @@ export default function HomeClient({
               </div>
             </div>
 
+
+            {/*
+              EL VIAJE REDONDO VA AQUÍ, EN EL PASO 2, y no junto a la pregunta
+              de aeropuerto del paso 1 por una razón dura: en el paso 1 el
+              cotizador todavía no sabe la distancia. Los kilómetros los mide
+              /api/maps al pasar al paso 2, y son ellos —no el texto que el
+              cliente escribió— los que deciden si esta ruta es foránea.
+              Ofrecerlo antes obligaría a adivinar el destino por su nombre.
+
+              Puesto arriba de las tarjetas, además, marcar la casilla cambia
+              los cuatro precios a la vista: el cliente compara el redondo en
+              las cuatro categorías de un vistazo, sin volver a cotizar.
+            */}
+            {redondoTabla && (
+              <div className="er-rt">
+                <p className="er-rt-q">{t.rtTitle}</p>
+                <label className="er-rt-check">
+                  <input type="checkbox" checked={redondo}
+                    onChange={(e) => {
+                      setRedondo(e.target.checked);
+                      setHorasEspera(REDONDO_HORAS_CORTESIA);
+                      if (e.target.checked) track("redondo_marcado", { km, categoria: category });
+                    }}/>
+                  <span>{t.rtLabel}</span>
+                </label>
+                <p className="er-rt-help">{t.rtHelp(REDONDO_HORAS_CORTESIA)}</p>
+
+                {redondo && (
+                  <>
+                    <div className="er-rt-wait">
+                      <div>
+                        <div className="er-rt-wait-lbl" id="rt-hours-label">{t.rtWait}</div>
+                        <div className="er-rt-wait-note">
+                          {horasEspera <= REDONDO_HORAS_CORTESIA
+                            ? t.rtIncluded(REDONDO_HORAS_CORTESIA)
+                            : t.rtExtra(
+                                horasEspera - REDONDO_HORAS_CORTESIA,
+                                `$${(redondoTabla.horaExtra[category] ?? 0).toLocaleString("es-MX")}`,
+                              )}
+                        </div>
+                      </div>
+                      <div className="er-hours-selector" role="group" aria-labelledby="rt-hours-label">
+                        <button type="button" className="er-hr-btn" aria-label={t.rtDecrease}
+                          onClick={() => setHorasEspera((h) => Math.max(REDONDO_HORAS_CORTESIA, h - 1))}>−</button>
+                        <div className="er-hr-count" role="status" aria-atomic="true">{horasEspera}</div>
+                        <div className="er-hr-unit">{t.rtHours}</div>
+                        <button type="button" className="er-hr-btn" aria-label={t.rtIncrease}
+                          onClick={() => setHorasEspera((h) => Math.min(REDONDO_HORAS_MAX, h + 1))}>+</button>
+                      </div>
+                    </div>
+                    {horasEspera >= REDONDO_HORAS_MAX && (
+                      <p className="er-rt-max">{t.rtMax(REDONDO_HORAS_MAX)}</p>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
 
             <div className="er-vehicles">
               {CATEGORIES.map((cat) => {
@@ -1765,10 +1939,15 @@ export default function HomeClient({
               <section className="er-routes" aria-label={t.routesTitle}>
                 <h2 className="er-routes-title">{t.routesTitle}</h2>
                 <p className="er-routes-help">{t.routesHelp}</p>
+                {/* La nota del redondo cuelga SÓLO del grupo foráneo. Es el
+                    único sitio de la portada donde alguien está mirando
+                    justamente los destinos que lo admiten; ponerla arriba, en
+                    el encabezado general, se la enseñaría también a quien
+                    busca un traslado de aeropuerto, donde no se ofrece. */}
                 {([
-                  [t.routesAirport, rutas.filter((r) => !r.foranea)],
-                  [t.routesOut, rutas.filter((r) => r.foranea)],
-                ] as const).map(([titulo, lista]) => (
+                  [t.routesAirport, rutas.filter((r) => !r.foranea), null],
+                  [t.routesOut, rutas.filter((r) => r.foranea), t.routesOutRt],
+                ] as const).map(([titulo, lista, nota]) => (
                   <div key={titulo} className="er-routes-group">
                     <h3 className="er-routes-sub">{titulo}</h3>
                     <ul className="er-routes-list">
@@ -1778,6 +1957,7 @@ export default function HomeClient({
                         </li>
                       ))}
                     </ul>
+                    {nota && <p className="er-routes-rt">{nota}</p>}
                   </div>
                 ))}
               </section>

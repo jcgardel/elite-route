@@ -3,6 +3,7 @@ import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import {
   calculatePrice,
+  precioRedondo,
   detectZone,
   isAirportAddress,
   serviceTypeLabelEs,
@@ -15,7 +16,13 @@ import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
-import { HORAS_DIA_COMPLETO, kmIncluidos } from "@/lib/service-limits";
+import {
+  HORAS_DIA_COMPLETO,
+  kmIncluidos,
+  admiteRedondo,
+  REDONDO_HORAS_CORTESIA,
+  REDONDO_HORAS_MAX,
+} from "@/lib/service-limits";
 
 const categories = CATEGORIES;
 const serviceTypes: ServiceType[] = ["route", "hour", "day"];
@@ -49,6 +56,10 @@ export async function POST(req: Request) {
     // porque el límite del formulario no obliga a nadie que llame a la API
     // directamente, y de aquí sale hacia Stripe, el correo y WhatsApp.
     const notes = String(body.notes || "").trim().slice(0, NOTAS_MAX);
+    // Viaje redondo foráneo. Se lee aquí y se valida más abajo, cuando ya se
+    // conocen los kilómetros que midió el servidor.
+    const quiereRedondo = Boolean(body.redondo);
+    const horasEspera = Number(body.horasEspera);
     const flightNumber = String(body.flightNumber || "").trim().toUpperCase().slice(0, VUELO_MAX);
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
@@ -116,8 +127,41 @@ export async function POST(req: Request) {
       }
     }
 
+    // EL VIAJE REDONDO, validado contra los kilómetros del servidor.
+    //
+    // Se RECHAZA en vez de caer al traslado sencillo, y la dirección importa:
+    // caer al sencillo cobraría la mitad del servicio a quien cree haber
+    // reservado ida y vuelta, y eso se descubre con el chofer ya en la puerta.
+    // Un 400 se descubre antes de pagar.
+    if (quiereRedondo) {
+      if (serviceType !== "route") {
+        return NextResponse.json(
+          { error: "El viaje redondo sólo aplica a traslados" },
+          { status: 400 },
+        );
+      }
+      if (!admiteRedondo(km)) {
+        return NextResponse.json(
+          { error: "El viaje redondo sólo aplica a destinos foráneos" },
+          { status: 400 },
+        );
+      }
+      if (
+        !Number.isInteger(horasEspera) ||
+        horasEspera < REDONDO_HORAS_CORTESIA ||
+        horasEspera > REDONDO_HORAS_MAX
+      ) {
+        return NextResponse.json(
+          { error: `La espera debe ser de entre ${REDONDO_HORAS_CORTESIA} y ${REDONDO_HORAS_MAX} horas` },
+          { status: 400 },
+        );
+      }
+    }
+
     const zone = detectZone(km);
-    const price = calculatePrice(km, minutes, category, serviceType, rentalHours, airportPickup);
+    const price = quiereRedondo
+      ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
+      : calculatePrice(km, minutes, category, serviceType, rentalHours, airportPickup);
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }
@@ -128,7 +172,14 @@ export async function POST(req: Request) {
     // lugar de fallar: nadie debe perder un pago por esto.
     const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
     const vehicle = vehicles[category].name;
-    const serviceLabel = serviceTypeLabelEs(serviceType, rentalHours);
+    // EL NOMBRE DEL SERVICIO LO DICE TODO, y no es cosmético: esta cadena es
+    // la que viaja a Stripe, al correo del cliente, al aviso de Telegram y al
+    // de WhatsApp. Si un redondo llega rotulado "Traslado punto a punto", el
+    // chofer deja al pasajero y se va. Lleva las horas dentro por lo mismo:
+    // saber que espera no basta, hay que saber cuánto.
+    const serviceLabel = quiereRedondo
+      ? `Viaje redondo foráneo · ${horasEspera} h de espera`
+      : serviceTypeLabelEs(serviceType, rentalHours);
 
     const stripe = getStripe();
     /** Todo lo que hace falta para operar el servicio, en un solo sitio. */
@@ -148,6 +199,8 @@ export async function POST(req: Request) {
       minutes: String(minutes),
       airportPickup: String(airportPickup),
       airportDropoff: String(airportDropoff),
+      redondo: String(quiereRedondo),
+      horasEspera: quiereRedondo ? String(horasEspera) : "",
       flightNumber: trimMetadata(flightNumber),
       notes: trimMetadata(notes),
       priceMxn: String(price),

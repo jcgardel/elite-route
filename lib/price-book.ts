@@ -9,7 +9,7 @@
  */
 import "server-only";
 
-import { calculatePrice } from "./booking";
+import { calculatePrice, precioHoraExtraRedondo, precioRedondo } from "./booking";
 import {
   B2B_HORAS,
   B2B_SECTIONS,
@@ -18,6 +18,7 @@ import {
   HORAS_MIN,
   RUTAS_DESDE,
   RUTAS_HACIA,
+  RUTAS_REDONDO,
   type PrecioPorCategoria,
   type TablasB2b,
   type TablasCotizador,
@@ -26,6 +27,7 @@ import {
 } from "./rate-tables";
 import { CATEGORIES, type Category } from "./vehicles";
 import { LEGS, B2B_LEGS, type LegKey } from "./distances";
+import { REDONDO_HORAS_CORTESIA } from "./service-limits";
 
 function porCategoria(fn: (cat: Category) => number): PrecioPorCategoria {
   return Object.fromEntries(CATEGORIES.map((c) => [c, fn(c)])) as PrecioPorCategoria;
@@ -33,6 +35,11 @@ function porCategoria(fn: (cat: Category) => number): PrecioPorCategoria {
 
 const ruta = (km: number, min: number, airport: boolean) =>
   porCategoria((c) => calculatePrice(km, min, c, "route", 0, airport));
+
+// El redondo de la tabla se publica con las horas de cortesía incluidas y sin
+// recargo de aeropuerto: /tarifas lista destinos, no puntos de recogida.
+const redondo = (km: number, min: number) =>
+  porCategoria((c) => precioRedondo(km, min, c, REDONDO_HORAS_CORTESIA, false));
 
 const bloque = (h: number) =>
   porCategoria((c) => calculatePrice(0, 0, c, h === 10 ? "day" : "hour", h));
@@ -45,6 +52,10 @@ export function tablasTarifas(): TablasTarifas {
     desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, true)])),
     hacia: Object.fromEntries(RUTAS_HACIA.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, false)])),
     horas: Object.fromEntries(DURACIONES.map((h) => [h, bloque(h)])),
+    redondo: Object.fromEntries(
+      RUTAS_REDONDO.map((r) => [r.key, redondo(LEGS[r.key].km, LEGS[r.key].min)]),
+    ),
+    redondoHoraExtra: porCategoria(precioHoraExtraRedondo),
   };
 }
 

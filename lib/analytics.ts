@@ -41,6 +41,15 @@ export type EventoEmbudo =
   | "ruta_completada"
   /** Eligió una categoría de vehículo. */
   | "vehiculo_seleccionado"
+  /**
+   * Marcó el viaje redondo en una ruta foránea.
+   *
+   * Es el único evento que mide si la oferta nueva se usa. Sin él, dentro de
+   * un mes la pregunta "¿sirvió el redondo?" sólo se puede contestar
+   * contando reservas a mano en Stripe. Se dispara al marcar la casilla, no
+   * al pagar: así se distingue el interés de la conversión.
+   */
+  | "redondo_marcado"
   /** Llegó al paso 3 y tiene el total con IVA delante. */
   | "precio_mostrado"
   /** Se fue a WhatsApp con la cotización armada en lugar de pagar. */

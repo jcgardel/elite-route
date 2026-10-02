@@ -43,6 +43,20 @@ export const RUTAS_HACIA = [
 export const DURACIONES = [2, 3, 4, 5, 6, 10] as const;
 
 /**
+ * Las cinco rutas foráneas que publican su viaje redondo, de la más corta a
+ * la más larga. Son exactamente las que pasan de 90 km, que es el límite con
+ * el que `admiteRedondo` decide si el cotizador lo ofrece: la tabla no puede
+ * publicar un precio que el cotizador luego no venda.
+ */
+export const RUTAS_REDONDO = [
+  { key: "cuernavaca" },
+  { key: "puebla" },
+  { key: "vallebravo" },
+  { key: "queretaro" },
+  { key: "sanmiguel" },
+] as const;
+
+/**
  * Las secciones de la página corporativa: qué aeropuertos se publican y qué
  * zonas tiene cada uno. Las distancias están en lib/distances.ts.
  */
@@ -82,6 +96,10 @@ export type TablasTarifas = {
   desde: Record<string, PrecioPorCategoria>;
   hacia: Record<string, PrecioPorCategoria>;
   horas: Record<number, PrecioPorCategoria>;
+  /** El viaje redondo foráneo con las horas de cortesía incluidas. */
+  redondo: Record<string, PrecioPorCategoria>;
+  /** Lo que suma cada hora de espera por encima de las de cortesía. */
+  redondoHoraExtra: PrecioPorCategoria;
 };
 
 /** Las tablas que necesita la página corporativa. */

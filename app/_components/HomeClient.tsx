@@ -224,6 +224,14 @@ const TX = {
     rtDecrease: "Less waiting time",
     rtIncrease: "More waiting time",
     rtSummary: (h: number) => `Round trip · ${h} h waiting`,
+    routesOutRt: (
+      <>
+        <strong>Going and coming back the same day?</strong> On these routes you can
+        book a round trip with the chauffeur waiting for you. It costs less than two
+        separate transfers — pick your destination in the quote form above and tick it
+        in step 2.
+      </>
+    ),
     notes: "Anything we should know? (optional)",
     notesPlaceholder: "Child seat, extra luggage, a stop on the way, a name sign at arrivals, a preferred language…",
     notesHelp: "We read every request and confirm it over WhatsApp. Some — an extra stop, a longer wait — may change the price; we tell you before charging anything.",
@@ -346,6 +354,13 @@ const TX = {
     rtDecrease: "Menos horas de espera",
     rtIncrease: "Más horas de espera",
     rtSummary: (h: number) => `Viaje redondo · ${h} h de espera`,
+    routesOutRt: (
+      <>
+        <strong>¿Ir y volver el mismo día?</strong> En estas rutas puedes reservar el
+        viaje redondo con el chofer esperándote. Cuesta menos que dos traslados por
+        separado: elige tu destino en el cotizador de arriba y márcalo en el paso 2.
+      </>
+    ),
     notes: "¿Algo que debamos saber? (opcional)",
     notesPlaceholder: "Silla para bebé, equipaje voluminoso, una parada en el camino, letrero con tu nombre en la llegada, idioma del chofer…",
     notesHelp: "Leemos cada solicitud y te la confirmamos por WhatsApp. Algunas —una parada extra, más tiempo de espera— pueden cambiar el precio; te avisamos antes de cobrar nada.",
@@ -655,6 +670,8 @@ const styles = `
   .er-routes-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 24px; }
   .er-routes-list a { color:#BFC3C8; text-decoration:none; font-size:14px; line-height:1.5; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
   .er-routes-list a:hover { color:#fff; border-bottom-color:rgba(200,164,107,0.6); }
+  .er-routes-rt { margin:14px 0 0; font-size:13px; line-height:1.65; color:#8B8B87; }
+  .er-routes-rt strong { color:#C8A46B; font-weight:600; }
 
   .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
   .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
@@ -1922,10 +1939,15 @@ export default function HomeClient({
               <section className="er-routes" aria-label={t.routesTitle}>
                 <h2 className="er-routes-title">{t.routesTitle}</h2>
                 <p className="er-routes-help">{t.routesHelp}</p>
+                {/* La nota del redondo cuelga SÓLO del grupo foráneo. Es el
+                    único sitio de la portada donde alguien está mirando
+                    justamente los destinos que lo admiten; ponerla arriba, en
+                    el encabezado general, se la enseñaría también a quien
+                    busca un traslado de aeropuerto, donde no se ofrece. */}
                 {([
-                  [t.routesAirport, rutas.filter((r) => !r.foranea)],
-                  [t.routesOut, rutas.filter((r) => r.foranea)],
-                ] as const).map(([titulo, lista]) => (
+                  [t.routesAirport, rutas.filter((r) => !r.foranea), null],
+                  [t.routesOut, rutas.filter((r) => r.foranea), t.routesOutRt],
+                ] as const).map(([titulo, lista, nota]) => (
                   <div key={titulo} className="er-routes-group">
                     <h3 className="er-routes-sub">{titulo}</h3>
                     <ul className="er-routes-list">
@@ -1935,6 +1957,7 @@ export default function HomeClient({
                         </li>
                       ))}
                     </ul>
+                    {nota && <p className="er-routes-rt">{nota}</p>}
                   </div>
                 ))}
               </section>

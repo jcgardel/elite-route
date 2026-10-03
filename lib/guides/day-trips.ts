@@ -306,63 +306,88 @@ export const GUIA_EXCURSIONES: Guia = {
       description:
         "Nueve lugares al alcance de la CDMX —Teotihuacán, Xochimilco, la Basílica de Guadalupe, Tepoztlán, Puebla, Cuernavaca y más— con tiempos de camino reales, cuánto tiempo pide cada uno y a qué hora conviene salir.",
       intro:
-        "La Ciudad de México está rodeada de sitios que valen un día del viaje —pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña— y dos de los mejores están dentro de la propia ciudad. La pregunta nunca es si vale la pena ir; es cuánto del día se lleva el camino. Esto es lo que pide cada uno.",
+        "La Ciudad de México es también un excelente punto de partida para descubrir algunos de los destinos más interesantes del centro del país. A poco más de una hora aparecen las pirámides de Teotihuacán; unas horas después, ciudades coloniales, Pueblos Mágicos, lagos entre montañas y algunas de las mejores mesas de México. Algunas escapadas funcionan perfectamente en medio día; otras merecen salir temprano y regresar después de cenar. En esta guía comparamos las mejores excursiones de un día desde CDMX, cuánto tiempo requieren realmente y cuáles funcionan mejor cuando viajas con chofer privado.",
       revisado: "Datos revisados: octubre de 2026",
       indiceTitulo: "En esta página",
       datos: [
         { valor: "9", etiqueta: "destinos comparados" },
         { valor: "1–4 h", etiqueta: "de carretera por sentido" },
-        { valor: "2", etiqueta: "formas de reservarlo" },
+        { valor: "3", etiqueta: "formas de reservarlo" },
       ],
       secciones: [
         {
           id: "the-table",
-          h2: "Salir de la ciudad: qué cabe de verdad en un día",
+          h2: "Las mejores excursiones de un día desde CDMX: tiempo y distancia",
           bloques: [
             {
+              tipo: "p",
+              texto:
+                "En el mapa, muchos de estos destinos parecen relativamente cercanos. En la práctica, el tráfico de salida de la Ciudad de México puede transformar por completo el día.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Teotihuacán permite una escapada tranquila de medio día; Puebla merece una jornada completa; y llegar hasta San Miguel de Allende implica aceptar que buena parte de la experiencia estará también en la carretera.",
+            },
+            {
               tipo: "tabla",
-              encabezados: ["Destino", "Carretera por sentido", "En carretera, ida y vuelta", "Veredicto"],
+              encabezados: ["Destino", "Carretera por sentido", "En carretera, ida y vuelta", "Recomendación"],
               filas: [
-                ["Teotihuacán", "Como 1 h", "Como 2 h", "El fácil. Media jornada si quieres."],
-                fila("tepoztlan", "Tepoztlán", "Fácil. Un pueblo que se camina en una tarde."),
-                fila("cuernavaca", "Cuernavaca", "Cómodo. Comida y una tarde."),
-                fila("puebla", "Puebla", "Funciona, pero dedícale el día entero."),
-                fila("vallebravo", "Valle de Bravo", "Día largo. Hay que salir temprano."),
-                fila("queretaro", "Querétaro", "Día comprometido. Mejor con una noche."),
-                fila("sanmiguel", "San Miguel de Allende", "El largo. Hay que salir de madrugada."),
+                ["Teotihuacán", "Cerca de 1 h", "Cerca de 2 h", "Ideal para medio día o día completo"],
+                fila("tepoztlan", "Tepoztlán", "Escapada cómoda de medio día"),
+                fila("cuernavaca", "Cuernavaca", "Escapada cómoda de un día"),
+                fila("puebla", "Puebla", "Mejor como día completo"),
+                fila("vallebravo", "Valle de Bravo", "Día completo con salida temprana"),
+                fila("queretaro", "Querétaro", "Posible en un día; mejor con tiempo"),
+                fila("sanmiguel", "San Miguel de Allende", "Jornada larga; conviene salir muy temprano"),
               ],
             },
             {
               tipo: "nota",
               texto:
-                "Son tiempos de manejo en condiciones razonables, no promesas. Salir de la CDMX después de las 07:00 o regresar entre las 18:00 y las 20:00 puede sumarle una hora a cualquiera. Pesa más la dirección del tráfico que la distancia. Xochimilco y la Basílica de Guadalupe no están en esta tabla porque están dentro de la ciudad: tienen su propia sección más abajo.",
+                "Estos son tiempos aproximados en condiciones normales. Para aprovechar mejor el día, especialmente entre semana, suele valer la pena salir temprano. Xochimilco y la Basílica de Guadalupe no aparecen en esta tabla porque están dentro de la ciudad: tienen su propia sección más abajo.",
             },
           ],
         },
         {
           id: "teotihuacan",
-          h2: "Teotihuacán, el que debería hacer todo el mundo",
+          h2: "Teotihuacán: la excursión imprescindible desde CDMX",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Las pirámides están a cosa de una hora, y eso lo convierte en el único destino de la lista que no te cuesta el día completo. Saliendo a las 07:00 caminas la Calzada de los Muertos antes del calor y de los autobuses de turistas, y puedes volver a comer tarde.",
+                "A poco más de una hora de la Ciudad de México, Teotihuacán es probablemente la excursión más fácil de recomendar a quien visita la capital por primera vez.",
             },
             {
               tipo: "p",
               texto:
-                "Como el viaje redondo son apenas unos 100 km, se reserva distinto a todo lo demás de esta página: como día por horas y no como traslado, así que el coche se queda contigo y el ritmo lo pones tú. Suelen ser nueve o diez horas y es la forma más barata de hacerlo.",
+                "Llegar temprano cambia la experiencia. La mañana permite recorrer la Calzada de los Muertos, observar las pirámides con menos gente y caminar por la zona arqueológica antes de que aumenten el calor y los grupos turísticos.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Al estar relativamente cerca de CDMX, Teotihuacán también permite viajar sin prisas. Puedes dedicar varias horas a la zona arqueológica, parar a comer en los alrededores o combinar la visita con la Basílica de Guadalupe en el camino de regreso.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Con un chofer privado, el vehículo permanece disponible durante el recorrido, por lo que puedes adaptar los horarios y las paradas al ritmo de tu grupo.",
             },
           ],
         },
         {
           id: "in-the-city",
-          h2: "Dos más, sin salir de la ciudad",
+          h2: "Xochimilco y la Basílica de Guadalupe: dos clásicos dentro de CDMX",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Xochimilco y la Basílica de Guadalupe son los dos destinos que casi todo visitante da por foráneos. No lo son: los dos están dentro de la Ciudad de México, lo que los convierte en medias jornadas y no en excursiones, y en lo más fácil de esta página para encajar en un día que ya tiene algo más.",
+                "No todas las excursiones requieren tomar carretera. Xochimilco y la Basílica de Guadalupe están dentro de la Ciudad de México y pueden convertirse fácilmente en planes de medio día.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "La Basílica se encuentra al norte de la ciudad y combina especialmente bien con Teotihuacán, ya que ambos destinos quedan en la misma dirección. Xochimilco, al sur, funciona mejor junto con Coyoacán o San Ángel.",
             },
             {
               tipo: "tabla",
@@ -375,117 +400,138 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "p",
               texto:
-                "La Basílica es el santuario católico más visitado de América y la entrada es libre: sin boleto y sin donativo obligatorio. La basílica nueva abre todos los días de 06:00 a 21:00, con misa cada hora. Al lado está la antigua, visiblemente inclinada: se hundió de forma despareja en el suelo de lo que fue el lago, y en lugar de demolerla la estabilizaron y ahí sigue. Veinte minutos bastan para ver las dos; una hora si quieres sentarte.",
+                "La Basílica de Guadalupe es uno de los grandes centros de peregrinación de México. El complejo reúne el santuario moderno y la antigua basílica, fácilmente reconocible por la inclinación que provocó el hundimiento del suelo. Para una visita tranquila suele bastar entre una y dos horas.",
             },
             {
               tipo: "nota",
               texto:
-                "Evita el 12 de diciembre salvo que la peregrinación sea justamente a lo que vas. Ese día llegan alrededor de nueve millones de personas. La basílica abre 24 horas, las calles de alrededor se cierran y la visita no se parece en nada a la de cualquier otro día del año.",
+                "La gran excepción es el 12 de diciembre, cuando la afluencia de peregrinos transforma por completo la movilidad de la zona. Ese día el santuario abre las veinticuatro horas y las calles de alrededor se cierran.",
             },
             {
               tipo: "p",
               texto:
-                "Xochimilco es el otro: canales que quedaron de la ciudad lacustre que había aquí antes de que llegaran los españoles, y trajineras empujadas con pértiga por ellos. Se lleva más tiempo del que la gente calcula —el paseo solo suele ser de dos horas, y es una hora por sentido desde el centro con tráfico—.",
+                "Xochimilco conserva una parte del paisaje lacustre que definió al Valle de México durante siglos. Sus canales se recorren a bordo de trajineras y el ambiente cambia considerablemente según el embarcadero elegido: Nativitas es el punto más animado, con música, comida y una mayor concentración de visitantes, mientras que Cuemanco ofrece una experiencia más tranquila y cercana a la zona ecológica.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Conviene considerar al menos tres o cuatro horas para la experiencia completa, incluyendo los traslados desde las zonas centrales de CDMX.",
             },
             {
               tipo: "nota",
               texto:
-                "La trajinera se renta POR LANCHA Y POR HORA —la tarifa oficial ronda los $750 MXN la hora— y cuesta lo mismo si suben dos personas que si suben dieciocho. Que te coticen por persona es la forma más común en que le cobran de más a un visitante aquí. Acuerda la tarifa por hora y cuántas horas antes de subir, porque el reloj empieza a correr al abordar.",
-            },
-            {
-              tipo: "p",
-              texto:
-                "El embarcadero que elijas cambia el día por completo. Nativitas es el más concurrido y el más fiestero, con comida, música y lanchas llenas de grupos. Cuemanco es más tranquilo, más cerca de la zona ecológica, y es el que hay que elegir si lo que quieres son los canales y no la fiesta.",
+                "La trajinera se renta por lancha y por hora —la tarifa oficial ronda los $750 MXN la hora— y cuesta lo mismo si suben dos personas que si suben dieciocho. Que te coticen por persona es la confusión más común en Xochimilco: conviene acordar la tarifa y el número de horas antes de abordar, porque el tiempo empieza a correr al subir.",
             },
           ],
         },
         {
           id: "near",
-          h2: "Cuernavaca y Puebla, los cómodos",
+          h2: "Cuernavaca y Puebla: dos escapadas clásicas desde Ciudad de México",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Cuernavaca está hora y media al sur y hace notablemente más calor que en la capital, que es exactamente la razón por la que los capitalinos van los fines de semana. Tres horas de carretera por una tarde completa es un trato justo.",
+                "Hacia el sur, Cuernavaca ofrece un cambio de clima casi inmediato. La llamada Ciudad de la Eterna Primavera es una escapada sencilla para quienes buscan una comida larga, jardines y una tarde lejos del ritmo de la capital.",
             },
             {
               tipo: "p",
               texto:
-                "Puebla está a dos horas al este y es el mejor argumento gastronómico que existe para salir de la ciudad. Cuatro horas de camino significan tratarlo como día completo y no como paseo: salir a las 08:00, volver después de cenar, y funciona muy bien.",
+                "Puebla exige un poco más de carretera, pero recompensa el recorrido con uno de los centros históricos más atractivos de México y una escena gastronómica que justifica por sí sola la visita.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Desde CDMX, lo ideal es dedicarle el día completo: salir por la mañana, recorrer el centro histórico sin prisas, reservar tiempo para comer y regresar por la tarde o después de cenar.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Si el horario lo permite, Puebla puede combinarse con Cholula, situada a pocos kilómetros. Es una de las combinaciones más populares para una excursión de un día desde Ciudad de México, especialmente para quienes quieren reunir arquitectura, historia y gastronomía en una sola salida.",
             },
           ],
         },
         {
           id: "far",
-          h2: "Valle de Bravo y Querétaro, largos pero posibles",
+          h2: "Valle de Bravo y Querétaro: escapadas para dedicarles el día",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Valle de Bravo es un pueblo junto a un lago en la montaña, a unas dos horas y cuarenta minutos por carreteras que se ponen lentas al final. Es un día largo de verdad: cinco horas y media de manejo te dejan unas seis horas allá si sales a las siete y vuelves a las nueve.",
+                "Hay destinos que empiezan a sentirse como un pequeño viaje dentro del viaje. Valle de Bravo es uno de ellos.",
             },
             {
               tipo: "p",
               texto:
-                "Querétaro está un poco más lejos y las cuentas se aprietan: hay quien lo hace en el día con frecuencia, y funciona si sales temprano y tomas la carretera como parte del viaje y no como un costo. Con una noche allá ves bastante más, así que si tu agenda tiene algo de flexibilidad, ésa es la versión que conviene.",
+                "Rodeado de bosque y construido alrededor del lago, el pueblo ofrece un ritmo completamente distinto al de la capital. El trayecto desde CDMX ronda las dos horas y media en condiciones favorables, por lo que conviene salir temprano y reservar prácticamente todo el día. Entre una caminata por el centro, una comida junto al lago y alguna actividad al aire libre, seis horas en Valle de Bravo pasan rápido.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Santiago de Querétaro requiere un poco más de carretera, pero sigue siendo posible como excursión de un día. Su centro histórico, plazas y arquitectura colonial permiten armar una jornada completa, aunque el viaje resulta más cómodo cuando el itinerario tiene cierta flexibilidad.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Si tienes tiempo para pasar una noche, Querétaro se disfruta con más calma. Si no, una salida temprana desde Ciudad de México permite conocer lo esencial y regresar el mismo día.",
             },
           ],
         },
         {
           id: "san-miguel",
-          h2: "San Miguel de Allende: el largo, y cómo hacerlo bien",
+          h2: "San Miguel de Allende desde CDMX: ¿vale la pena ir y volver el mismo día?",
           bloques: [
             {
               tipo: "p",
               texto:
-                `Éste es el que hay que planear en lugar de improvisar. San Miguel está a ${LEGS.sanmiguel.km} km: casi cuatro horas por sentido, casi ocho horas de coche a lo largo del día. Saliendo a las seis de la mañana tienes una tarde completa allá y vuelves tarde, que es un día de verdad, siempre que sepas de antemano a lo que te apuntaste.`,
-            },
-            {
-              tipo: "nota",
-              texto:
-                "Si tu viaje lo permite, San Miguel compensa quedarse una o dos noches más que cualquier otro destino de esta lista. Si no lo permite, la versión de un día funciona: sólo tiene que empezar de madrugada y quedar acordada de antemano, no decidirse en el desayuno.",
+                "Sí es posible visitar San Miguel de Allende desde Ciudad de México y regresar el mismo día, pero hay que asumir que será una jornada larga.",
             },
             {
               tipo: "p",
               texto:
-                "Si te quedas a dormir —por una boda, o sencillamente porque San Miguel lo merece—, resérvalo como dos traslados sencillos en días distintos y no como viaje redondo. No tiene sentido pagar por un coche que espera mientras duermes.",
+                `La distancia ronda los ${LEGS.sanmiguel.km} kilómetros y el trayecto puede acercarse a cuatro horas por sentido. Para disfrutar realmente del destino, lo razonable es salir alrededor de las seis de la mañana y dejar el regreso para después de la tarde.`,
+            },
+            {
+              tipo: "p",
+              texto:
+                "Una vez allí, el centro histórico se presta para caminar: calles empedradas, fachadas coloniales, galerías, restaurantes y la Parroquia de San Miguel Arcángel concentran buena parte de la experiencia.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "Si tu itinerario permite pasar una o dos noches, San Miguel recompensa la estancia. En ese caso suele ser más conveniente contratar un traslado de ida y otro de regreso en fechas distintas que mantener un vehículo esperando durante toda la estancia.",
             },
           ],
         },
         {
           id: "how-to-book",
-          h2: "Cómo se suele armar",
+          h2: "Cómo organizar una excursión desde CDMX con chofer privado",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Hay dos formas sensatas de hacer estos viajes, y cuál te conviene depende de si necesitas el coche mientras estás allá.",
+                "La mejor modalidad depende del destino y de cuánto quieras moverte una vez que llegues.",
             },
             {
               tipo: "lista",
               items: [
-                "Viaje redondo: el chofer te lleva, te espera y te regresa el mismo día. Incluye horas de espera y puedes añadir más al reservar. Así funcionan los cinco destinos foráneos.",
-                "Día por horas: el coche y el chofer se quedan contigo un bloque de horas y vas decidiendo la ruta sobre la marcha. Así funcionan Teotihuacán, Xochimilco y la Basílica, y es mejor opción siempre que quieras parar en algún sitio del camino, o combinar dos lugares, como la Basílica camino al norte hacia las pirámides.",
+                "Viaje redondo. El chofer te recoge en Ciudad de México, te lleva al destino, permanece disponible durante el tiempo acordado y te regresa el mismo día. Es la opción más práctica para Puebla, Cuernavaca, Tepoztlán, Valle de Bravo, Querétaro y San Miguel de Allende.",
+                "Servicio por horas. El vehículo y el chofer permanecen a tu disposición durante un bloque de tiempo. Funciona especialmente bien para Teotihuacán, Xochimilco o itinerarios con varias paradas.",
+                "Traslados separados. Si vas a pasar una o más noches en el destino, normalmente resulta más conveniente reservar la ida y el regreso por separado.",
               ],
-            },
-            {
-              tipo: "p",
-              texto:
-                "Dos traslados sencillos por separado son la tercera opción, y es la que quieres cuando te quedas a dormir: no tiene sentido pagar por un coche que espera catorce horas.",
             },
           ],
         },
         {
           id: "practical",
-          h2: "Cuatro cosas que mejoran estos días",
+          h2: "Consejos para una excursión de un día desde CDMX",
           bloques: [
             {
               tipo: "lista",
               items: [
-                "Sal temprano. No por el destino, sino por el tráfico para salir de la CDMX. Entre las 07:00 y las 09:00 suele haber una hora de diferencia.",
-                "Lleva efectivo en pesos. Las casetas de estas carreteras son dinero de verdad y no en todas aceptan tarjeta.",
-                "La Ciudad de México está a 2,240 m y varios de estos destinos están bastante más abajo. Si acabas de llegar y te pesa la altura, un día en Cuernavaca es un remedio sorprendentemente eficaz.",
-                "Acuerda la hora de regreso antes de salir, no al final de la comida. Es lo único que decide si el día se siente tranquilo o apurado.",
+                "Sal temprano. Una hora puede marcar una diferencia considerable al salir de Ciudad de México, especialmente entre semana.",
+                "Planea el regreso. Definir desde el inicio aproximadamente a qué hora quieres volver permite disfrutar el destino sin estar mirando constantemente el reloj.",
+                "Considera el clima. La altitud y la temperatura pueden cambiar bastante entre CDMX, Cuernavaca, Valle de Bravo, Puebla o San Miguel de Allende.",
+                "Deja algo de margen. En carretera los tiempos son estimaciones, y un itinerario ligeramente holgado suele convertirse en un mejor día que uno lleno de paradas.",
               ],
             },
           ],
@@ -493,42 +539,47 @@ export const GUIA_EXCURSIONES: Guia = {
       ],
       faqs: [
         [
-          "¿Cuál es la mejor excursión de un día desde la CDMX?",
-          "Teotihuacán, para casi todo el mundo. Está a una hora por sentido, así que es la que menos día te cuesta, y el sitio es extraordinario. Puebla es la mejor alternativa si ya conoces las pirámides o si te importa más la comida.",
+          "¿Qué excursiones desde Ciudad de México se pueden hacer en un día?",
+          "Teotihuacán, Cuernavaca, Tepoztlán, Puebla, Valle de Bravo y Querétaro funcionan bien como excursiones de un día. San Miguel de Allende también es posible, aunque requiere salir muy temprano. Dentro de CDMX, Xochimilco y la Basílica de Guadalupe pueden hacerse cómodamente en medio día.",
         ],
         [
-          "¿Se puede ir a San Miguel de Allende en un día desde la CDMX?",
-          "Sí, saliendo temprano. Son unas cuatro horas por sentido, así que una salida a las seis te da una tarde completa allá y un regreso tarde. Si tu viaje tiene espacio para una noche, San Miguel es el destino de esta lista que más lo compensa.",
+          "¿Cuál es la mejor excursión de un día desde la CDMX?",
+          "Teotihuacán, para casi todo el mundo. Está a una hora por sentido, así que es la que menos día te cuesta, y el sitio es extraordinario. Puebla es la mejor alternativa si ya conoces las pirámides o si te importa más la gastronomía.",
         ],
         [
           "¿Cuánto se hace de la CDMX a Teotihuacán?",
           "Alrededor de una hora con tráfico razonable. Salir de la ciudad después de las 07:00 puede sumarle bastante, y por eso vale la pena madrugar.",
         ],
         [
-          "¿Conviene más un chofer o un tour en autobús?",
-          "El autobús es más barato y el chofer es tuyo. Con chofer sales cuando quieres, paras donde quieres y vuelves cuando estás listo, que en un día largo fuera de la ciudad es casi todo el valor. Para Teotihuacán en concreto la diferencia es menor, porque el viaje es corto.",
+          "¿Se puede ir a San Miguel de Allende en un día desde la CDMX?",
+          "Sí, saliendo temprano. Son unas cuatro horas por sentido, así que una salida a las seis te da una tarde completa allá y un regreso tarde. Si tu viaje tiene espacio para una noche, San Miguel es el destino de esta lista que más lo compensa.",
         ],
         [
-          "¿Cuánto cuesta una trajinera en Xochimilco?",
-          "La tarifa oficial ronda los $750 MXN por hora y se cobra por lancha, no por persona: cuesta lo mismo si suben dos que si suben dieciocho. Si alguien te cotiza por persona, ésa es la forma más común en que le cobran de más a un visitante. Acuerda la tarifa y cuántas horas antes de subir.",
-        ],
-        [
-          "¿Vale la pena la Basílica de Guadalupe y cuánto cuesta entrar?",
-          "La entrada es libre, sin boleto ni donativo obligatorio, y la basílica nueva abre todos los días de 06:00 a 21:00. Está a unos 20 o 30 minutos al norte del centro y con una o dos horas basta, que es justo por lo que combina tan bien con Teotihuacán: queda de camino al norte.",
+          "¿Qué ventaja tiene hacer una excursión desde CDMX con chofer privado?",
+          "La principal diferencia es la flexibilidad. Con un chofer privado puedes elegir la hora de salida, modificar el ritmo del día, hacer paradas adicionales y regresar cuando tu grupo esté listo. Un tour compartido suele ser más económico, pero trabaja con horarios e itinerarios predeterminados.",
         ],
         [
           "¿El chofer espera mientras estamos allá?",
           "Sí, eso es un viaje redondo: el chofer se queda y te regresa el mismo día. Incluye un par de horas de espera y puedes añadir más al reservar.",
         ],
+        [
+          "¿Cuánto cuesta una trajinera en Xochimilco?",
+          "La tarifa oficial ronda los $750 MXN por hora y se cobra por lancha, no por persona: cuesta lo mismo si suben dos que si suben dieciocho. Conviene acordar la tarifa y cuántas horas antes de subir.",
+        ],
+        [
+          "¿Vale la pena la Basílica de Guadalupe y cuánto cuesta entrar?",
+          "La entrada es libre, sin boleto ni donativo obligatorio, y la basílica nueva abre todos los días de 06:00 a 21:00. Está a unos 20 o 30 minutos al norte del centro y con una o dos horas basta, que es justo por lo que combina tan bien con Teotihuacán: queda de camino al norte.",
+        ],
       ],
       cta: {
-        titulo: "Arma el día alrededor de lo que quieres ver",
-        copy: "Elige tu destino en el cotizador, marca viaje redondo y define cuántas horas quieres que el chofer espere. Precio fijo con IVA, casetas y combustible incluidos; sin sorpresas al final del día.",
-        boton: "Cotizar",
+        titulo: "Tu día, a tu ritmo",
+        copy: "Elige el destino y nosotros nos encargamos del camino. Reserva un chofer privado desde Ciudad de México, define el tiempo que quieres pasar en cada lugar y viaja con una tarifa acordada desde el principio. Vehículo privado, chofer profesional, IVA, combustible y casetas incluidos.",
+        boton: "Cotizar excursión",
       },
       relacionadas: [
         { page: "teotihuacan", label: "Teotihuacán: horarios, precios y qué esperar" },
-        { page: "rates", label: "Precios del viaje redondo a los cinco destinos" },
+        { page: "hourly", label: "Servicio por horas: cómo funciona y qué incluye" },
+        { page: "rates", label: "Precios del viaje redondo a los destinos foráneos" },
         { page: "guideAirport", label: "Cómo llegar del aeropuerto de la CDMX a la ciudad" },
       ],
     },

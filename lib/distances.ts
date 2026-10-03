@@ -18,6 +18,34 @@ import "server-only";
 
 export type Leg = { km: number; min: number };
 
+/**
+ * AUDITORÍA DE LAS DISTANCIAS FORÁNEAS (3 oct 2026) Y LA DECISIÓN DEL DUEÑO.
+ *
+ * Se midieron las seis contra la API de Google en producción, desde el AICM, y
+ * comparadas con lo declarado aquí:
+ *
+ *     Valle de Bravo  155 km declarados · 155.1 medidos ·   0 %
+ *     Querétaro       220 · 215.8 · +1.9 %
+ *     Puebla          135 · 127.5 · +5.9 %
+ *     San Miguel      290 · 269.3 · +7.7 %
+ *     Tepoztlán        97 ·  87.6 · +10.7 %
+ *     Cuernavaca      105 ·  91.7 · +14.5 %
+ *
+ * El margen no es parejo, y eso se señaló: va de 0 a 14.5 %, que es el patrón
+ * de números puestos en momentos distintos y no el de una política. Valle de
+ * Bravo, el único que cuadra exacto, es justamente el que el dueño validó a
+ * mano el 24 sep 2026 antes de escribir su página.
+ *
+ * EL DUEÑO DECIDIÓ EL 3 DE OCTUBRE DE 2026 DEJARLAS COMO ESTÁN. No es un
+ * descuido pendiente de arreglar: es una decisión tomada con los números
+ * delante. Corregirlas a lo que mide Google habría bajado los precios entre
+ * 1.5 % y 8 % según la ruta —hasta $554 en un San Miguel en Executive— y vez y
+ * media eso en el viaje redondo.
+ *
+ * NO LAS "CORRIJAS" SIN PREGUNTARLE. De estos números salen todos los precios
+ * foráneos del sitio, publicados en seis fichas, en /tarifas y en el cotizador.
+ */
+
 /** Trayectos entre el AICM y cada zona, más las rutas foráneas. */
 export const LEGS = {
   centro: { km: 15, min: 25 },

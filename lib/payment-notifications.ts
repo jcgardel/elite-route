@@ -1,4 +1,5 @@
 import type Stripe from "stripe";
+import { DEFAULT_LANG, isLang, type Lang } from "./i18n";
 import { LEGAL } from "./legal";
 import { buildGoogleCalendarUrl, buildIcs, tituloParaOperador, type EventoReserva } from "./calendar";
 
@@ -370,12 +371,89 @@ async function sendToTelegram(session: Stripe.Checkout.Session, message: string)
   return true;
 }
 
+/**
+ * LOS TEXTOS DEL CORREO DEL CLIENTE, en los dos idiomas.
+ *
+ * POR QUÉ EXISTE ESTE DICCIONARIO. Hasta el 3 de octubre de 2026 este correo
+ * estaba en español entero, con `<html lang="es">` y el asunto en español,
+ * para todos. Y el comentario de `total`, unas líneas más abajo, ya decía por
+ * qué eso era un problema serio: los clientes extranjeros "son todos los que
+ * han pagado". Cada persona que le ha dado dinero a este negocio recibió su
+ * confirmación en un idioma que puede no leer.
+ *
+ * El idioma viaja ahora en la metadata de Stripe (`lang`), guardado en
+ * /api/checkout. Antes se usaba sólo para la URL de retorno y se perdía ahí.
+ *
+ * CUANDO NO HAY IDIOMA se cae en `DEFAULT_LANG`, que es inglés. Es el caso de
+ * las reservas anteriores a este cambio si alguna se reprocesa, y el inglés es
+ * la apuesta correcta para este negocio por lo dicho arriba.
+ */
+const CORREO = {
+  en: {
+    htmlLang: "en",
+    kicker: "Elite Route · Mexico City",
+    titulo: "Your transfer is confirmed",
+    saludo: (nombre: string) =>
+      `Hi <strong style="color:#fff">${nombre}</strong>, your payment went through. An Elite Route agent will confirm availability and send you your chauffeur's details on WhatsApp.`,
+    detallesTitulo: "Service details",
+    fechaHora: "Date and time",
+    tipo: "Type",
+    origen: "Pickup",
+    destino: "Destination",
+    vuelo: "Flight",
+    vehiculo: "Vehicle",
+    solicitudes: "Your requests",
+    solicitudesNota: "We will confirm on WhatsApp if anything changes the price.",
+    total: "Total paid",
+    moneda:
+      "The amount is in Mexican pesos. If you paid with a card from outside Mexico, your statement shows the charge in your own currency at Stripe's exchange rate.",
+    referencia: "Payment reference:",
+    factura: "Need a Mexican tax invoice (CFDI)? Write to",
+    asunto: (cuando: string) =>
+      `Your transfer is confirmed · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+    /** El valor que escribe /api/checkout cuando el servicio es libre. */
+    disposicionLibre: "Disposición libre",
+    tipoPorDefecto: "Executive transfer",
+    vehiculoPorDefecto: "Executive vehicle",
+    nombrePorDefecto: "there",
+  },
+  es: {
+    htmlLang: "es",
+    kicker: "Elite Route · Ciudad de México",
+    titulo: "Tu traslado está confirmado",
+    saludo: (nombre: string) =>
+      `Hola <strong style="color:#fff">${nombre}</strong>, tu pago fue procesado exitosamente. Un agente de Elite Route confirmará disponibilidad y te enviará los detalles del chofer por WhatsApp.`,
+    detallesTitulo: "Detalles del servicio",
+    fechaHora: "Fecha y hora",
+    tipo: "Tipo",
+    origen: "Origen",
+    destino: "Destino",
+    vuelo: "Vuelo",
+    vehiculo: "Vehículo",
+    solicitudes: "Tus solicitudes",
+    solicitudesNota: "Te confirmamos por WhatsApp si algo cambia el precio.",
+    total: "Total pagado",
+    moneda:
+      "El importe está en pesos mexicanos. Si pagaste con una tarjeta extranjera, el cargo aparece en tu moneda al tipo de cambio de Stripe.",
+    referencia: "Referencia de pago:",
+    factura: "¿Necesitas factura CFDI? Escríbenos a",
+    asunto: (cuando: string) =>
+      `Tu traslado está confirmado · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+    disposicionLibre: "Disposición libre",
+    tipoPorDefecto: "Traslado ejecutivo",
+    vehiculoPorDefecto: "Vehículo ejecutivo",
+    nombrePorDefecto: "cliente",
+  },
+} as const;
+
 export async function sendClientConfirmationEmail(session: Stripe.Checkout.Session) {
   const apiKey = process.env.RESEND_API_KEY;
   const clientEmail = session.customer_details?.email;
   if (!apiKey || !clientEmail) return false;
 
   const meta = session.metadata || {};
+  const lang = isLang(String(meta.lang)) ? (meta.lang as Lang) : DEFAULT_LANG;
+  const t = CORREO[lang];
   /**
    * El total LLEVA "MXN" PEGADO, y no es un adorno.
    *
@@ -393,10 +471,15 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
   const total = `${formatMoney(session.amount_total, session.currency)} MXN`;
   // Todo lo que se interpola en el HTML de abajo pasa por escapeHtml: son
   // datos que escribió el cliente en el formulario.
-  const vehicle = escapeHtml(meta.vehicle || meta.category || "Vehículo ejecutivo");
-  const serviceLabel = escapeHtml(meta.serviceLabel || "Traslado ejecutivo");
+  const vehicle = escapeHtml(meta.vehicle || meta.category || t.vehiculoPorDefecto);
+  // `serviceLabelEn` lo escribe /api/checkout junto al español. Si falta —una
+  // reserva anterior a este cambio— se cae al español, que es información
+  // correcta aunque no esté traducida: mejor eso que un renglón vacío.
+  const serviceLabel = escapeHtml(
+    (lang === "en" ? meta.serviceLabelEn || meta.serviceLabel : meta.serviceLabel) || t.tipoPorDefecto,
+  );
   const dateTime = escapeHtml([meta.serviceDate, meta.serviceTime].filter(Boolean).join(" · "));
-  const clientName = escapeHtml(meta.fullName || "cliente");
+  const clientName = escapeHtml(meta.fullName || t.nombrePorDefecto);
   const originText = escapeHtml(meta.origin || "—");
   const destinationText = escapeHtml(meta.destination || "");
   const notesText = escapeHtml(meta.notes || "");
@@ -404,7 +487,7 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
 
   const html = `
     <!DOCTYPE html>
-    <html lang="es">
+    <html lang="${t.htmlLang}">
     <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="margin:0;padding:0;background:#080808;font-family:Arial,sans-serif">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:#080808;padding:40px 20px">
@@ -412,69 +495,68 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
           <table width="520" cellpadding="0" cellspacing="0" style="background:#0f0f0f;border:1px solid #2e2e2e;max-width:520px;width:100%">
             <!-- Header -->
             <tr><td style="padding:32px 40px 24px;border-bottom:1px solid #1e1e1e">
-              <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#C8A46B">Elite Route · Ciudad de México</p>
-              <h1 style="margin:0;font-size:26px;font-weight:300;color:#ffffff;line-height:1.2">Tu traslado está confirmado</h1>
+              <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#C8A46B">${t.kicker}</p>
+              <h1 style="margin:0;font-size:26px;font-weight:300;color:#ffffff;line-height:1.2">${t.titulo}</h1>
             </td></tr>
             <!-- Body -->
             <tr><td style="padding:28px 40px">
               <p style="margin:0 0 20px;font-size:14px;color:#BFC3C8;line-height:1.7">
-                Hola <strong style="color:#fff">${clientName}</strong>, tu pago fue procesado exitosamente.
-                Un agente de Elite Route confirmará disponibilidad y te enviará los detalles del chofer por WhatsApp.
+                ${t.saludo(clientName)}
               </p>
 
               <!-- Detalles del servicio -->
               <table width="100%" cellpadding="0" cellspacing="0" style="background:#111;border:1px solid #2e2e2e;margin-bottom:20px">
                 <tr><td style="padding:14px 18px;border-bottom:1px solid #1e1e1e">
-                  <p style="margin:0;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#555">Detalles del servicio</p>
+                  <p style="margin:0;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:#555">${t.detallesTitulo}</p>
                 </td></tr>
                 ${dateTime ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616;display:flex;justify-content:space-between">
-                  <span style="font-size:13px;color:#777">Fecha y hora</span>
+                  <span style="font-size:13px;color:#777">${t.fechaHora}</span>
                   <span style="font-size:13px;color:#fff;float:right">${dateTime}</span>
                 </td></tr>` : ""}
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
-                  <span style="font-size:13px;color:#777">Tipo</span>
+                  <span style="font-size:13px;color:#777">${t.tipo}</span>
                   <span style="font-size:13px;color:#fff;float:right">${serviceLabel}</span>
                 </td></tr>
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
-                  <span style="font-size:13px;color:#777">Origen</span>
+                  <span style="font-size:13px;color:#777">${t.origen}</span>
                   <span style="font-size:13px;color:#fff;float:right">${originText}</span>
                 </td></tr>
-                ${destinationText && destinationText !== "Disposición libre" ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
-                  <span style="font-size:13px;color:#777">Destino</span>
+                ${destinationText && destinationText !== t.disposicionLibre ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
+                  <span style="font-size:13px;color:#777">${t.destino}</span>
                   <span style="font-size:13px;color:#fff;float:right">${destinationText}</span>
                 </td></tr>` : ""}
                 ${flightText ? `<tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
-                  <span style="font-size:13px;color:#777">Vuelo</span>
+                  <span style="font-size:13px;color:#777">${t.vuelo}</span>
                   <span style="font-size:13px;color:#fff;float:right">${flightText}</span>
                 </td></tr>` : ""}
                 <tr><td style="padding:10px 18px;border-bottom:1px solid #161616">
-                  <span style="font-size:13px;color:#777">Vehículo</span>
+                  <span style="font-size:13px;color:#777">${t.vehiculo}</span>
                   <span style="font-size:13px;color:#fff;float:right">${vehicle}</span>
                 </td></tr>
                 ${notesText ? `<tr><td style="padding:12px 18px;border-bottom:1px solid #161616">
-                  <p style="margin:0 0 4px;font-size:13px;color:#777">Tus solicitudes</p>
+                  <p style="margin:0 0 4px;font-size:13px;color:#777">${t.solicitudes}</p>
                   <p style="margin:0;font-size:13px;color:#fff;line-height:1.6">${notesText}</p>
-                  <p style="margin:6px 0 0;font-size:11px;color:#555;line-height:1.5">Te confirmamos por WhatsApp si algo cambia el precio.</p>
+                  <p style="margin:6px 0 0;font-size:11px;color:#555;line-height:1.5">${t.solicitudesNota}</p>
                 </td></tr>` : ""}
                 <tr><td style="padding:14px 18px;background:#0a0a0a">
-                  <span style="font-size:13px;color:#fff;font-weight:700">Total pagado</span>
+                  <span style="font-size:13px;color:#fff;font-weight:700">${t.total}</span>
                   <span style="font-size:16px;color:#C8A46B;font-weight:700;float:right">${total}</span>
                 </td></tr>
               </table>
 
-              <!-- Bilingüe a propósito y en una sola línea: el correo está en
-                   español, pero quien más necesita leer esto es justo quien no
-                   lo habla. Si pagó en dólares, libras o euros, el importe que
-                   ve en su estado de cuenta NO es el de arriba. -->
+              <!-- El aviso de moneda DEJA DE SER BILINGÜE DE GOLPE, y es una
+                   mejora, no una pérdida: estaba en los dos idiomas porque el
+                   correo entero iba en español y había que alcanzar como fuera
+                   a quien no lo habla. Ahora el correo ya está en su idioma,
+                   así que decirlo dos veces sólo lo hace más largo. El aviso
+                   sigue siendo imprescindible: si pagó en dólares, libras o
+                   euros, el importe de su estado de cuenta NO es el de arriba. -->
+              <p style="margin:0 0 8px;font-size:12px;color:#555;line-height:1.6">${t.moneda}</p>
               <p style="margin:0 0 8px;font-size:12px;color:#555;line-height:1.6">
-                El importe está en pesos mexicanos. Si pagaste con una tarjeta extranjera, el cargo aparece en tu moneda al tipo de cambio de Stripe.<br>
-                <span style="color:#777">Amount in Mexican pesos. If you paid with a card from outside Mexico, your statement shows the charge in your own currency.</span>
-              </p>
-              <p style="margin:0 0 8px;font-size:12px;color:#555;line-height:1.6">
-                Referencia de pago: <span style="color:#888;font-family:monospace">${session.id}</span>
+                ${t.referencia} <span style="color:#888;font-family:monospace">${session.id}</span>
               </p>
               <p style="margin:0;font-size:12px;color:#555;line-height:1.6">
-                ¿Necesitas factura CFDI? Escríbenos a
+                ${t.factura}
                 <a href="mailto:contabilidad@eliteroute.mx" style="color:#C8A46B;text-decoration:none">contabilidad@eliteroute.mx</a>
               </p>
             </td></tr>
@@ -498,7 +580,7 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
     body: JSON.stringify({
       from: "Elite Route <notificaciones@eliteroute.mx>",
       to: [clientEmail],
-      subject: `Tu traslado está confirmado · Elite Route · ${dateTime}`,
+      subject: t.asunto(dateTime),
       html,
     }),
   });

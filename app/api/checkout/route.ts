@@ -6,6 +6,7 @@ import {
   precioRedondo,
   detectZone,
   isAirportAddress,
+  serviceTypeLabel,
   serviceTypeLabelEs,
   vehicles,
   CATEGORIES,
@@ -181,6 +182,19 @@ export async function POST(req: Request) {
       ? `Viaje redondo foráneo · ${horasEspera} h de espera`
       : serviceTypeLabelEs(serviceType, rentalHours);
 
+    /**
+     * EL MISMO RÓTULO EN INGLÉS, para el correo del cliente.
+     *
+     * Son dos cadenas y no una traducida al vuelo porque sirven a dos públicos
+     * con necesidades opuestas: `serviceLabel` va al equipo —Telegram,
+     * WhatsApp, el aviso corto— y ahí el español no se negocia. Ésta va al
+     * correo de confirmación del cliente, que desde el 3 de octubre de 2026 se
+     * manda en el idioma en el que reservó.
+     */
+    const serviceLabelEn = quiereRedondo
+      ? `Out-of-town round trip · ${horasEspera} h waiting`
+      : serviceTypeLabel(serviceType, rentalHours);
+
     const stripe = getStripe();
     /** Todo lo que hace falta para operar el servicio, en un solo sitio. */
     const reserva = {
@@ -188,6 +202,7 @@ export async function POST(req: Request) {
       phone: trimMetadata(phone),
       serviceType,
       serviceLabel: trimMetadata(serviceLabel),
+      serviceLabelEn: trimMetadata(serviceLabelEn),
       serviceDate,
       serviceTime,
       origin: trimMetadata(origin),
@@ -199,6 +214,19 @@ export async function POST(req: Request) {
       minutes: String(minutes),
       airportPickup: String(airportPickup),
       airportDropoff: String(airportDropoff),
+      /**
+       * EL IDIOMA EN EL QUE RESERVÓ, guardado aquí y no sólo usado para las
+       * URLs de retorno.
+       *
+       * Hasta el 3 de octubre de 2026 `lang` servía para mandar al cliente a
+       * /es/success o /en/success y ahí se perdía. El correo de confirmación
+       * lo manda el webhook a partir de esta metadata, así que sin este campo
+       * no tenía forma de saber en qué idioma escribirle —y salía en español
+       * para todos—. Lo que lo volvió urgente está escrito en
+       * lib/payment-notifications.ts: todos los clientes que han pagado hasta
+       * hoy son extranjeros.
+       */
+      lang,
       redondo: String(quiereRedondo),
       horasEspera: quiereRedondo ? String(horasEspera) : "",
       flightNumber: trimMetadata(flightNumber),

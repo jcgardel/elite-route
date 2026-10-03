@@ -1182,7 +1182,7 @@ export default function HomeClient({
       const res = await fetch("/api/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin, destination: dest, airportPickup }),
+        body: JSON.stringify({ origin, destination: dest, airportPickup, airportDropoff }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {

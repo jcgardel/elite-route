@@ -68,10 +68,9 @@ const TX = {
 
       QUÉ CAMBIÓ EL 2 DE OCTUBRE DE 2026. Hasta esa fecha este bloque mandaba
       a cotizar por WhatsApp, porque no había forma de reservarlo. Ahora el
-      cotizador lo vende: en una ruta de más de 90 km aparece la casilla de
-      viaje redondo. El texto cambió con el producto —seguir diciendo "te lo
-      cotizamos" cuando ya se puede pagar en línea mandaría a la gente al
-      canal lento por nada—.
+      cotizador lo vende: en estas rutas aparece la casilla de viaje redondo.
+      El texto cambió con el producto —seguir diciendo "te lo cotizamos" cuando
+      ya se puede pagar en línea mandaría a la gente al canal lento por nada—.
     */
     diaTitle: "¿Ir y volver el mismo día?",
     diaCopy:

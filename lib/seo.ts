@@ -221,10 +221,20 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
  * El canonical y los hreflang los pone `alternates()` a partir de la ruta
  * real, así que no hay forma de que una página declare una URL que no existe.
  */
-export function pageMetadata(lang: Lang, page: Page): Metadata {
-  const copy = COPY[page]?.[lang];
-  if (!copy) throw new Error(`Sin copy de SEO para ${page}/${lang}`);
-
+/**
+ * La forma de los metadatos de una página, con el título y la descripción que
+ * se le den.
+ *
+ * Está separada de `pageMetadata` porque no todas las páginas sacan su copy de
+ * `COPY`: las guías lo llevan dentro de su propio contenido, donde se escribe
+ * y se lee junto al texto que describe. Copiarlo aquí habría creado dos sitios
+ * donde dice lo mismo, que es como empiezan a decir cosas distintas.
+ */
+export function metadataFrom(
+  lang: Lang,
+  page: Page,
+  copy: { title: string; description: string; keywords?: string },
+): Metadata {
   return {
     title: copy.title,
     description: copy.description,
@@ -245,4 +255,10 @@ export function pageMetadata(lang: Lang, page: Page): Metadata {
       description: copy.description,
     },
   };
+}
+
+export function pageMetadata(lang: Lang, page: Page): Metadata {
+  const copy = COPY[page]?.[lang];
+  if (!copy) throw new Error(`Sin copy de SEO para ${page}/${lang}`);
+  return metadataFrom(lang, page, copy);
 }

@@ -35,6 +35,15 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
   // Más baja que las de servicio: la flota se consulta ANTES de reservar,
   // pero nadie busca "flota" con la tarjeta en la mano.
   { page: "fleet", priority: 0.7, changeFrequency: "monthly" },
+  // LAS GUÍAS. Prioridad 0.8: por debajo de las páginas de servicio, que son
+  // las que convierten, y por encima de la flota. No persiguen intención de
+  // compra sino la búsqueda anterior —cómo salir del aeropuerto, qué cabe en
+  // un día—, y ése es el tráfico que hoy no llega: las 56 URLs que había eran
+  // todas comerciales. `weekly` porque llevan datos que caducan y que hay que
+  // volver a revisar, no porque cambien solas.
+  { page: "guideAirport", priority: 0.8, changeFrequency: "weekly" },
+  { page: "guideDayTrips", priority: 0.8, changeFrequency: "weekly" },
+  { page: "guideTerminals", priority: 0.8, changeFrequency: "weekly" },
   { page: "corporate", priority: 0.7, changeFrequency: "monthly" },
   { page: "quote", priority: 0.6, changeFrequency: "monthly" },
   { page: "terms", priority: 0.3, changeFrequency: "yearly" },

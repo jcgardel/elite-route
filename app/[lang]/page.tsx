@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import HomeClient from "../_components/HomeClient";
 import { pageMetadata } from "@/lib/seo";
 import { tablasCotizador } from "@/lib/price-book";
-import { isLang, LANGS, SITE, type Lang } from "@/lib/i18n";
+import { isLang, LANGS, path, SITE, type Lang } from "@/lib/i18n";
 import { ROUTES, ROUTE_KEYS, routePath } from "@/lib/routes";
 
 export const dynamicParams = false;
@@ -99,6 +99,33 @@ function enlacesDeRuta(lang: Lang) {
   }));
 }
 
+/**
+ * Los enlaces a las tres guías, resueltos en el servidor por el mismo motivo
+ * que los de ruta: su contenido vive en `lib/guides`, que es `server-only`
+ * porque la tabla de excursiones saca sus tiempos de `lib/distances.ts`.
+ *
+ * La portada enseña el título corto, no el H1 completo de cada guía: en una
+ * lista de tres, un titular de doce palabras deja de leerse.
+ */
+function enlacesDeGuia(lang: Lang) {
+  const corto = {
+    en: {
+      guideAirport: "Getting from the airport into the city",
+      guideDayTrips: "Day trips with a driver — what fits in a day",
+      guideTerminals: "Terminal 1 or Terminal 2?",
+    },
+    es: {
+      guideAirport: "Cómo salir del aeropuerto hacia la ciudad",
+      guideDayTrips: "Excursiones de un día — qué cabe de verdad",
+      guideTerminals: "¿Terminal 1 o Terminal 2?",
+    },
+  } as const;
+  return (["guideAirport", "guideDayTrips", "guideTerminals"] as const).map((page) => ({
+    href: path(lang, page),
+    label: corto[lang][page],
+  }));
+}
+
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
@@ -117,7 +144,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {/* Los precios por horas y de día completo se resuelven aquí, en el
           servidor, y bajan ya calculados. El cotizador no puede calcularlos
           por su cuenta sin arrastrar el tarifario al navegador. */}
-      <HomeClient lang={lang} tablas={tablasCotizador()} rutas={enlacesDeRuta(lang)} />
+      <HomeClient
+        lang={lang}
+        tablas={tablasCotizador()}
+        rutas={enlacesDeRuta(lang)}
+        guias={enlacesDeGuia(lang)}
+      />
     </>
   );
 }

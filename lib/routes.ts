@@ -34,7 +34,8 @@ export type RouteKey =
   | "queretaro"
   | "cuernavaca"
   | "sanmiguel"
-  | "vallebravo";
+  | "vallebravo"
+  | "tepoztlan";
 
 export const ROUTE_KEYS: readonly RouteKey[] = [
   "polanco",
@@ -53,6 +54,7 @@ export const ROUTE_KEYS: readonly RouteKey[] = [
   "cuernavaca",
   "sanmiguel",
   "vallebravo",
+  "tepoztlan",
 ];
 
 /**
@@ -924,7 +926,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "¿Hacen el viaje redondo el mismo día?",
-          "Sí. Para ida y vuelta en el día suele salir mejor el servicio por horas, porque el chofer se queda disponible en vez de cobrarse dos traslados.",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
         ],
         ANTICIPACION_ES,
       ],
@@ -950,7 +952,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "Do you do the round trip in one day?",
-          "Yes. For a same-day return the hourly service usually works out better, since the chauffeur stays available instead of charging two separate transfers.",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
         ],
         ANTICIPACION_EN,
       ],
@@ -1044,7 +1046,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "¿Hacen el viaje redondo el mismo día?",
-          "Sí. Para ida y vuelta en el día suele convenir el servicio por horas o el día completo, porque el chofer se queda disponible en vez de cobrarse dos traslados.",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
         ],
         ANTICIPACION_ES,
       ],
@@ -1078,7 +1080,88 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "Do you do the round trip in one day?",
-          "Yes. For a same-day return the hourly service or a full day usually works out better, since the chauffeur stays available instead of charging two separate transfers.",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
+        ],
+        ANTICIPACION_EN,
+      ],
+    },
+  },
+
+  /**
+   * TEPOZTLÁN, añadida el 3 de octubre de 2026.
+   *
+   * POR QUÉ EXISTE. Ese mismo día el umbral del viaje redondo bajó a 70 km, y
+   * eso volvió reservable un destino que el sitio no mencionaba en ninguna
+   * parte: el cotizador ya lo cobra por distancia, pero sin ficha no compite
+   * en el buscador. Las otras cinco foráneas tienen página; ésta no la tenía.
+   *
+   * La distancia —97 km— la validó el dueño ANTES de escribir esto, igual que
+   * se hizo con Valle de Bravo. Google mide 87.6 desde el AICM; la buena es la
+   * del dueño, que conoce la ruta que de verdad toman los choferes. Ver la
+   * nota en lib/distances.ts.
+   *
+   * `precioUnico` como las demás foráneas: no sale de una terminal, así que no
+   * lleva el recargo de estacionamiento y espera, y la tabla enseña una sola
+   * columna en vez de dos.
+   */
+  tepoztlan: {
+    precioUnico: true,
+    es: {
+      slug: "cdmx-tepoztlan",
+      airport: "Ciudad de México",
+      zone: "Tepoztlán",
+      title: "Traslado de Ciudad de México a Tepoztlán",
+      metaTitle: "Traslado privado CDMX a Tepoztlán | Precio Fijo con IVA | Elite Route",
+      metaDescription:
+        "Traslado privado de Ciudad de México a Tepoztlán con chofer. Hora y media por la autopista del sol. Precio fijo con IVA y casetas incluidas, y viaje redondo el mismo día.",
+      keywords:
+        "traslado CDMX Tepoztlán, chofer privado Tepoztlán, transporte privado Tepoztlán, viaje redondo Tepoztlán, pueblo mágico Morelos chofer",
+      intro:
+        "Hora y media por la autopista del sol, con precio cerrado, IVA y casetas incluidas. También como viaje redondo el mismo día, con el chofer esperándote.",
+      about:
+        "Tepoztlán es escapada de fin de semana y destino de retiros, y el viaje tiene una particularidad que decide cómo conviene reservarlo: el pueblo es pequeño y se camina entero, así que casi nadie necesita el auto mientras está ahí. Lo que sí se agradece es no manejar de regreso por la carretera de curvas al caer la tarde.",
+      faqs: [
+        [
+          "¿Cuánto tarda el viaje de CDMX a Tepoztlán?",
+          "Alrededor de hora y media por la autopista del sol. Los domingos por la tarde el regreso se alarga bastante: es la hora a la que todo el mundo vuelve a la ciudad.",
+        ],
+        [
+          "¿Hacen el viaje redondo el mismo día?",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
+        ],
+        [
+          "¿Cuántas horas de espera conviene contratar?",
+          "Para comer y caminar el centro, de tres a cuatro horas suelen bastar. Si piensas subir al Tepozteco, calcula más: la subida y la bajada se llevan buena parte de la mañana.",
+        ],
+        ANTICIPACION_ES,
+      ],
+    },
+    en: {
+      slug: "mexico-city-tepoztlan",
+      airport: "Mexico City",
+      zone: "Tepoztlán",
+      title: "Private transfer from Mexico City to Tepoztlán",
+      metaTitle: "Mexico City to Tepoztlan Private Transfer | Fixed Price | Elite Route",
+      metaDescription:
+        "Private chauffeured transfer from Mexico City to Tepoztlán. About ninety minutes. Fixed price including VAT and tolls, and available as a same-day round trip.",
+      keywords:
+        "Mexico City to Tepoztlan transfer, private driver Tepoztlan, Tepoztlan day trip from Mexico City, round trip Tepoztlan, Morelos private chauffeur",
+      intro:
+        "About ninety minutes down the Autopista del Sol, at a closed price with VAT and tolls included. Also available as a same-day round trip, with the chauffeur waiting for you.",
+      about:
+        "Tepoztl\u00e1n is a weekend escape and a retreat destination, and one detail decides how to book it: the town is small and you walk all of it, so almost nobody needs the car while they are there. What you do want is not to drive back along a winding road as the light goes.",
+      faqs: [
+        [
+          "How long is the drive from Mexico City to Tepoztl\u00e1n?",
+          "About ninety minutes down the Autopista del Sol. Sunday afternoons the return takes considerably longer \u2014 that is when everyone drives back to the city.",
+        ],
+        [
+          "Do you do the round trip in one day?",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
+        ],
+        [
+          "How many waiting hours should I book?",
+          "Three to four is usually enough for lunch and the town centre. If you plan to climb the Tepozteco, allow more \u2014 the hike up and back takes most of a morning.",
         ],
         ANTICIPACION_EN,
       ],

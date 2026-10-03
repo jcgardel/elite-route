@@ -70,13 +70,13 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Day Trips from Mexico City with a Driver",
       h1: "Day trips from Mexico City with a private driver",
       description:
-        "Eight places within reach of Mexico City — Teotihuacán, Xochimilco, the Basilica of Guadalupe, Puebla, Cuernavaca and more — with real drive times, how long each one needs and what time to leave.",
+        "Nine places within reach of Mexico City — Teotihuacán, Xochimilco, the Basilica of Guadalupe, Tepoztlán, Puebla, Cuernavaca and more — with real drive times, how long each one needs and what time to leave.",
       intro:
         "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains — and two of the best are inside the city itself. The question is never whether they are worth seeing; it is how much of the day the road takes. Here is what each one really asks of you.",
       revisado: "Last checked: October 2026",
       indiceTitulo: "On this page",
       datos: [
-        { valor: "8", etiqueta: "destinations compared" },
+        { valor: "9", etiqueta: "destinations compared" },
         { valor: "1–4 h", etiqueta: "drive out, each way" },
         { valor: "2", etiqueta: "ways to book it" },
       ],
@@ -90,6 +90,7 @@ export const GUIA_EXCURSIONES: Guia = {
               encabezados: ["Destination", "Drive each way", "On the road, round trip", "Verdict"],
               filas: [
                 ["Teotihuacán", "About 1 h", "About 2 h", "The easy one. Half a day if you want."],
+                fila("tepoztlan", "Tepoztlán", "Easy. A town you walk in an afternoon."),
                 fila("cuernavaca", "Cuernavaca", "Comfortable. Lunch and an afternoon."),
                 fila("puebla", "Puebla", "Works, but commit to the full day."),
                 fila("vallebravo", "Valle de Bravo", "Long day. Leave early."),
@@ -303,13 +304,13 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Excursiones de un día desde la CDMX con chofer",
       h1: "Excursiones de un día desde la Ciudad de México con chofer privado",
       description:
-        "Ocho lugares al alcance de la CDMX —Teotihuacán, Xochimilco, la Basílica de Guadalupe, Puebla, Cuernavaca y más— con tiempos de camino reales, cuánto tiempo pide cada uno y a qué hora conviene salir.",
+        "Nueve lugares al alcance de la CDMX —Teotihuacán, Xochimilco, la Basílica de Guadalupe, Tepoztlán, Puebla, Cuernavaca y más— con tiempos de camino reales, cuánto tiempo pide cada uno y a qué hora conviene salir.",
       intro:
         "La Ciudad de México está rodeada de sitios que valen un día del viaje —pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña— y dos de los mejores están dentro de la propia ciudad. La pregunta nunca es si vale la pena ir; es cuánto del día se lleva el camino. Esto es lo que pide cada uno.",
       revisado: "Datos revisados: octubre de 2026",
       indiceTitulo: "En esta página",
       datos: [
-        { valor: "8", etiqueta: "destinos comparados" },
+        { valor: "9", etiqueta: "destinos comparados" },
         { valor: "1–4 h", etiqueta: "de carretera por sentido" },
         { valor: "2", etiqueta: "formas de reservarlo" },
       ],
@@ -323,6 +324,7 @@ export const GUIA_EXCURSIONES: Guia = {
               encabezados: ["Destino", "Carretera por sentido", "En carretera, ida y vuelta", "Veredicto"],
               filas: [
                 ["Teotihuacán", "Como 1 h", "Como 2 h", "El fácil. Media jornada si quieres."],
+                fila("tepoztlan", "Tepoztlán", "Fácil. Un pueblo que se camina en una tarde."),
                 fila("cuernavaca", "Cuernavaca", "Cómodo. Comida y una tarde."),
                 fila("puebla", "Puebla", "Funciona, pero dedícale el día entero."),
                 fila("vallebravo", "Valle de Bravo", "Día largo. Hay que salir temprano."),

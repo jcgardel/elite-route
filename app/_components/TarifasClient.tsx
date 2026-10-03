@@ -90,6 +90,7 @@ const TX = {
     rtExtraNote: "Hora de espera adicional:",
     rtBook: "Reservar un viaje redondo",
     routesRedondo: {
+      tepoztlan: "CDMX ⇄ Tepoztlán",
       cuernavaca: "CDMX ⇄ Cuernavaca",
       puebla: "CDMX ⇄ Puebla",
       vallebravo: "CDMX ⇄ Valle de Bravo",
@@ -183,6 +184,7 @@ const TX = {
     rtExtraNote: "Each additional waiting hour:",
     rtBook: "Book a round trip",
     routesRedondo: {
+      tepoztlan: "Mexico City ⇄ Tepoztlán",
       cuernavaca: "Mexico City ⇄ Cuernavaca",
       puebla: "Mexico City ⇄ Puebla",
       vallebravo: "Mexico City ⇄ Valle de Bravo",

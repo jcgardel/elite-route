@@ -224,6 +224,8 @@ const TX = {
     rtDecrease: "Less waiting time",
     rtIncrease: "More waiting time",
     rtSummary: (h: number) => `Round trip · ${h} h waiting`,
+    swap: "Swap",
+    swapAria: "Swap pickup and destination",
     routesGuides: "Before you book — traveller guides",
     routesOutRt: (
       <>
@@ -355,6 +357,8 @@ const TX = {
     rtDecrease: "Menos horas de espera",
     rtIncrease: "Más horas de espera",
     rtSummary: (h: number) => `Viaje redondo · ${h} h de espera`,
+    swap: "Invertir",
+    swapAria: "Invertir origen y destino",
     routesGuides: "Antes de reservar — guías para el viajero",
     routesOutRt: (
       <>
@@ -571,6 +575,13 @@ const styles = `
   /* 17px y no el tamaño por defecto: en iOS la casilla nativa se encoge tanto
      que cuesta atinarle con el pulgar, y esto se contesta desde el teléfono. */
   .er-check input { width:17px; height:17px; margin:1px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
+
+  /* El botón de invertir. Alto de 44 px por lo mismo que las casillas: se
+     toca con el pulgar. Ver la nota del objetivo táctil más arriba. */
+  .er-swap-row { display:flex; justify-content:flex-end; margin:-10px 0 10px; }
+  .er-swap { display:inline-flex; align-items:center; gap:7px; min-height:44px; padding:0 12px; background:none; border:none; cursor:pointer; color:#BFC3C8; font-family:inherit; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; border-radius:2px; transition:color 0.15s; }
+  .er-swap:hover { color:#C8A46B; }
+  .er-swap svg { flex:none; }
 
   .er-input-wrap { position:relative; }
   .er-input-wrap .er-input--clearable { padding-right:40px; }
@@ -1104,6 +1115,34 @@ export default function HomeClient({
   }
   // El precio se borra junto con la ruta: si se quedara, el visitante podría
   // ver el importe del recorrido anterior mientras edita el nuevo.
+  /**
+   * INVIERTE ORIGEN Y DESTINO.
+   *
+   * Lo pidió el dueño el 3 de octubre de 2026: quien acaba de cotizar la ida
+   * casi siempre quiere la vuelta, y hasta hoy tenía que volver a escribir las
+   * dos direcciones a mano, con el autocompletado de Google de por medio.
+   *
+   * NO INTERCAMBIA SÓLO EL TEXTO, y aquí está lo que importa. Cada extremo
+   * arrastra su estado de aeropuerto: el lugar que Google confirmó como
+   * terminal y la casilla que el cliente marcó a mano. Si sólo se cambiaran
+   * las cadenas, un AICM → Polanco invertido seguiría creyendo que el ORIGEN
+   * es el aeropuerto, y le cobraría al cliente el recargo de estacionamiento y
+   * espera —hasta $600 con IVA— por un viaje que va HACIA la terminal y no
+   * sale de ella. El recargo cubre esperar al pasajero que aterriza; en el
+   * sentido contrario no existe.
+   *
+   * También se intercambian las casillas manuales por el mismo motivo: son las
+   * que el cliente marca cuando escribió la ciudad en lugar de la terminal.
+   */
+  function invertirDirecciones() {
+    setOrigin(destination);
+    setDestination(origin);
+    setAirportPlace(destAirportPlace);
+    setDestAirportPlace(airportPlace);
+    setManualAirportPickup(manualAirportDropoff);
+    setManualAirportDropoff(manualAirportPickup);
+  }
+
   function goBackToStep1() {
     setKm(0); setMinutes(0); setZone("cdmx"); setRoutePrices(null);
     setRedondoTabla(null); setRedondo(false); setHorasEspera(REDONDO_HORAS_CORTESIA);
@@ -1473,6 +1512,24 @@ export default function HomeClient({
                 )}
               </div>
             </div>
+
+            {/* Va ENTRE los dos campos, que es donde se entiende sin leerlo:
+                una flecha doble entre "de dónde" y "a dónde" sólo puede
+                significar una cosa. Sale de la rejilla hacia la derecha para
+                no empujar las etiquetas. */}
+            {serviceType === "route" && (origin || destination) && (
+              <div className="er-swap-row">
+                <button type="button" className="er-swap" onClick={invertirDirecciones}
+                  aria-label={t.swapAria} title={t.swapAria}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                    <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                  </svg>
+                  <span>{t.swap}</span>
+                </button>
+              </div>
+            )}
 
             {serviceType === "route" && (
               <div className="er-field">

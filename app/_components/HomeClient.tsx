@@ -554,7 +554,20 @@ const styles = `
   .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
   .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
   .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#8B8B87; }
-  .er-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:5px 0; font-size:13.5px; line-height:1.45; color:#E8E8E6; }
+  /* ALTURA MÍNIMA DE 44 px, que es el objetivo táctil que recomiendan Apple y
+     Google. La casilla en sí mide 17 px y eso no se toca con el pulgar; lo que
+     se toca es la FILA, porque el <label> envuelve al input. Antes la fila
+     medía 30 px de alto y había que apuntar. Medido en producción a 375 px el
+     3 de octubre de 2026.
+
+     Nada de comillas invertidas en estos comentarios: esto vive dentro de una
+     plantilla de texto y una comilla invertida la cierra a media hoja de
+     estilos.
+
+     La alineación arriba (align-items) se queda como estaba: estas etiquetas
+     pueden ocupar dos renglones en pantallas estrechas, y ahí la casilla tiene
+     que alinearse con el primero, no flotar a media altura. */
+  .er-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px 0; min-height:44px; box-sizing:border-box; font-size:13.5px; line-height:1.45; color:#E8E8E6; }
   /* 17px y no el tamaño por defecto: en iOS la casilla nativa se encoge tanto
      que cuesta atinarle con el pulgar, y esto se contesta desde el teléfono. */
   .er-check input { width:17px; height:17px; margin:1px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
@@ -576,6 +589,13 @@ const styles = `
   .er-hours-selector { display:flex; align-items:center; gap:0; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:10px 16px; }
   .er-hr-btn { width:32px; height:32px; border-radius:50%; border:1px solid #bdb4a5; background:transparent; color:#111; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
   .er-hr-btn:hover { border-color:#111; background:#f0ece3; }
+  /* En móvil y tableta crecen a 44 px: son los − y + con los que se eligen las
+     horas de disposición y, desde ayer, las de espera del viaje redondo. A 32
+     px son pequeños para un pulgar. En escritorio se quedan en 32 porque ahí
+     se apunta con un ratón y agrandarlos sólo engorda el control. */
+  @media (max-width:900px) {
+    .er-hr-btn { width:44px; height:44px; font-size:20px; }
+  }
   .er-hr-count { font-family:var(--font-cormorant),serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; font-variant-numeric:tabular-nums; }
   .er-hr-unit { font-size:13px; color:#0A0A0A; letter-spacing:0.08em; }
 

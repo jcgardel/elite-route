@@ -47,6 +47,12 @@ export const LEGS = {
   // escribir la página: el precio se publica en firme.
   vallebravo: { km: 155, min: 160 },
   sanmiguel: { km: 290, min: 230 },
+  // Distancia validada por el dueño el 3 oct 2026, antes de escribir la
+  // página: 97 km. Google mide 87.6 desde el AICM; la buena es la del dueño,
+  // que es quien conoce la ruta que de verdad toman los choferes. Los minutos
+  // son informativos y no mueven el precio —a esta distancia manda el
+  // kilometraje, comprobado de 85 a 100 min—.
+  tepoztlan: { km: 97, min: 90 },
 } as const satisfies Record<string, Leg>;
 
 export type LegKey = keyof typeof LEGS;

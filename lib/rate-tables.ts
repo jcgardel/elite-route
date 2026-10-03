@@ -51,6 +51,7 @@ export const DURACIONES = [2, 3, 4, 5, 6, 10] as const;
  * cumplen la regla—, porque no todo el mundo va a uno de estos cinco.
  */
 export const RUTAS_REDONDO = [
+  { key: "tepoztlan" },
   { key: "cuernavaca" },
   { key: "puebla" },
   { key: "vallebravo" },

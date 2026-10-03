@@ -16,9 +16,14 @@
  *
  * LO QUE NO HACE ESTA PÁGINA: dar miedo. El taxi autorizado es una opción
  * perfectamente buena y así se dice; el metro también, para quien viaja
- * ligero. La guía dice además que el chofer privado es la opción más cara de
- * las cuatro, porque lo es. Quien lea esto y acabe tomando un taxi autorizado
- * habrá recibido lo que vino a buscar, y eso es el trato.
+ * ligero. Y se dice sin rodeos que el chofer reservado cuesta más que las
+ * otras tres, porque es verdad y porque esconderlo se nota.
+ *
+ * Lo que la página NO hace, desde el ajuste del 3 de octubre de 2026, es
+ * rematar recomendando el taxi autorizado. Las cuatro opciones están con sus
+ * costos y sus inconvenientes para que el lector elija; la sección del chofer
+ * explica qué compra esa diferencia y en qué casos la vale. Ver la nota sobre
+ * dónde está la línea en ./types.ts.
  */
 import type { Guia } from "./types";
 
@@ -69,16 +74,16 @@ export const GUIA_AEROPUERTO: Guia = {
                 ],
                 [
                   "Pre-booked driver",
-                  "Highest of the four",
+                  "Fixed, quoted before you fly",
                   "Meets you inside arrivals",
-                  "Fixed price, night arrivals, groups, luggage",
+                  "Night arrivals, groups, luggage, tight schedules",
                 ],
               ],
             },
             {
               tipo: "p",
               texto:
-                "If you want one sentence: take an authorized taxi from the counter inside the terminal. It is the option that works with no preparation, no app and no walking, and it is the one airport staff will point you to.",
+                "Which one is right depends on one question: how much does a smooth arrival matter on this particular trip? If you are travelling light in daylight and nothing is scheduled, the authorized taxi counter inside the terminal works with no preparation at all. If you are landing at night, with luggage, with family, or with somewhere to be, arranging the car before you fly removes every variable at once.",
             },
           ],
         },
@@ -162,12 +167,12 @@ export const GUIA_AEROPUERTO: Guia = {
             {
               tipo: "p",
               texto:
-                "Be clear about the trade-off: this is the most expensive of the four. You are paying for the plane to be tracked, for someone to absorb the wait when you clear immigration an hour late, for a fixed price that a long queue cannot change, and for not having to negotiate anything in a language you may not speak after eleven hours in the air.",
+                "It costs more than the other three, and what the difference buys is specific: the plane is tracked, so a delay moves the pickup instead of losing it; the wait is absorbed when immigration takes an hour longer than it should; the price is agreed in advance and a queue cannot change it; and there is nothing to negotiate in a language you may not speak after eleven hours in the air.",
             },
             {
               tipo: "p",
               texto:
-                "It earns its price in specific situations: arriving at night, travelling with children or a lot of luggage, a group of four or more where the per-person cost stops being the point, or a trip where being late is expensive. For a solo traveller landing at noon with a backpack, the authorized taxi is the better buy and we would rather tell you that.",
+                "It earns its price in specific situations, and they are more common than people expect: arriving after dark, travelling with children or a lot of luggage, a group of four or more where the cost per person stops being the point, a first visit where you would rather not improvise, or any trip where being late is expensive. If none of those apply to you, the options above will do the job.",
             },
           ],
         },
@@ -205,7 +210,7 @@ export const GUIA_AEROPUERTO: Guia = {
         ],
         [
           "Do I need to book a driver in advance?",
-          "No — the authorized taxis exist precisely so you do not have to. Booking ahead buys you a fixed price, someone waiting for you in arrivals and no queue, which matters most on night arrivals, with children or luggage, or in a group.",
+          "Not for a simple daytime arrival — the authorized taxi counter handles that. Book ahead when the arrival is not simple: a night landing, a group, a lot of luggage, a first visit, or anything scheduled soon after you land. What you are buying is a fixed price, someone waiting in arrivals and no queue.",
         ],
       ],
       cta: {
@@ -254,16 +259,16 @@ export const GUIA_AEROPUERTO: Guia = {
                 ["Metro", "$5 MXN", "Estación Terminal Aérea, Línea 5", "Casi sin equipaje y de día"],
                 [
                   "Chofer reservado",
-                  "La más cara de las cuatro",
+                  "Cerrado, cotizado antes de volar",
                   "Te recibe dentro, en llegadas",
-                  "Precio cerrado, vuelos de noche, grupos, equipaje",
+                  "Vuelos de noche, grupos, equipaje, agendas apretadas",
                 ],
               ],
             },
             {
               tipo: "p",
               texto:
-                "Si quieres una sola frase: toma un taxi autorizado en el mostrador de dentro de la terminal. Es la opción que funciona sin preparar nada, sin aplicación y sin caminar, y es la que te va a señalar el personal del aeropuerto.",
+                "Cuál te conviene depende de una pregunta: cuánto importa una llegada sin fricción en este viaje concreto. Si viajas ligero, de día y no tienes nada agendado, el mostrador de taxi autorizado dentro de la terminal funciona sin preparar nada. Si aterrizas de noche, con equipaje, con familia o con algo a lo que llegar, dejar el coche arreglado antes de volar te quita todas las variables de golpe.",
             },
           ],
         },
@@ -347,12 +352,12 @@ export const GUIA_AEROPUERTO: Guia = {
             {
               tipo: "p",
               texto:
-                "Dicho claro: es la más cara de las cuatro. Lo que pagas es que alguien monitoree el vuelo, que absorba la espera cuando sales de migración una hora tarde, un precio fijo que ninguna fila puede mover, y no tener que negociar nada en un idioma que quizá no hablas después de once horas de vuelo.",
+                "Cuesta más que las otras tres, y lo que compra esa diferencia es concreto: se monitorea el vuelo, así que un retraso mueve la recogida en lugar de perderla; se absorbe la espera cuando migración tarda una hora de más; el precio queda cerrado de antemano y ninguna fila lo mueve; y no hay nada que negociar en un idioma que quizá no hablas después de once horas de vuelo.",
             },
             {
               tipo: "p",
               texto:
-                "Se gana su precio en casos concretos: llegadas de noche, viajar con niños o con mucho equipaje, un grupo de cuatro o más donde el costo por persona deja de ser el punto, o un viaje en el que llegar tarde sale caro. Para quien aterriza al mediodía con una mochila, el taxi autorizado es mejor compra, y preferimos decírtelo.",
+                "Se gana su precio en casos concretos, y son más comunes de lo que la gente cree: llegar de noche, viajar con niños o con mucho equipaje, un grupo de cuatro o más donde el costo por persona deja de ser el punto, una primera visita en la que prefieres no improvisar, o cualquier viaje en el que llegar tarde sale caro. Si no estás en ninguno de esos casos, con las opciones de arriba resuelves.",
             },
           ],
         },
@@ -390,7 +395,7 @@ export const GUIA_AEROPUERTO: Guia = {
         ],
         [
           "¿Hace falta reservar un chofer con anticipación?",
-          "No: los taxis autorizados existen justamente para que no haga falta. Reservar antes te compra precio cerrado, alguien esperándote en llegadas y no hacer fila, que es lo que más pesa en vuelos de noche, con niños o equipaje, o en grupo.",
+          "Para una llegada sencilla de día, no: el mostrador de taxi autorizado lo resuelve. Reserva antes cuando la llegada no sea sencilla: vuelo de noche, grupo, mucho equipaje, primera visita, o algo agendado poco después de aterrizar. Lo que compras es precio cerrado, alguien esperándote en llegadas y no hacer fila.",
         ],
       ],
       cta: {

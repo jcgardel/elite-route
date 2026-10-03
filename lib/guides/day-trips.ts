@@ -7,13 +7,17 @@
  * se mueven juntas. Lo que sí se escribe es el veredicto de cada destino, que
  * es un juicio y no un dato.
  *
- * LA PARTE INCÓMODA, Y POR QUÉ SE QUEDA. San Miguel de Allende son 290 km por
- * sentido: casi ocho horas de carretera ida y vuelta. La guía dice que NO es
- * una buena excursión de un día, aunque el sitio venda ese traslado y ahora
- * también el viaje redondo. Decirlo cuesta alguna reserva y gana la única
- * cosa que hace que una guía sirva para algo: que el lector crea lo demás.
- * Un viajero que hace ese viaje engañado vuelve agotado y deja una reseña que
+ * LA PARTE INCÓMODA, Y QUÉ SE HACE CON ELLA. San Miguel de Allende son casi
+ * ocho horas de carretera ida y vuelta. Ese número se publica entero: un
+ * viajero que hace ese viaje sin saberlo vuelve agotado y deja una reseña que
  * cuesta mucho más que la venta.
+ *
+ * Lo que cambió el 3 de octubre de 2026 es el veredicto, no el dato. La
+ * primera versión decía "no lo hagas en un día"; ahora dice cuánto cuesta en
+ * horas, a qué hora hay que salir para que funcione, y que con una noche se
+ * aprovecha más. El lector tiene la misma información para decidir y la
+ * página deja de recomendar en contra de lo que vende. Ver la nota sobre
+ * dónde está la línea en ./types.ts.
  *
  * Teotihuacán va aparte porque se reserva distinto: con unos 100 km redondos
  * cabe en el servicio por horas, y por eso tiene su propia página con tabla de
@@ -56,13 +60,13 @@ export const GUIA_EXCURSIONES: Guia = {
       description:
         "Six destinations within reach of Mexico City, with honest drive times, which ones genuinely work as a day trip, which one does not, and what time to leave.",
       intro:
-        "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains. The question is never whether they are worth seeing; it is whether they fit in a day. Some do comfortably. One does not, and we will say which.",
+        "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains. The question is never whether they are worth seeing; it is how much of the day the road takes. Some are an easy outing, others are a committed day out. Here is what each one really asks of you.",
       revisado: "Last checked: October 2026",
       indiceTitulo: "On this page",
       datos: [
         { valor: "6", etiqueta: "destinations compared" },
         { valor: "1–4 h", etiqueta: "drive, each way" },
-        { valor: "1", etiqueta: "we tell you to skip" },
+        { valor: "2", etiqueta: "ways to book it" },
       ],
       secciones: [
         {
@@ -77,8 +81,8 @@ export const GUIA_EXCURSIONES: Guia = {
                 fila("cuernavaca", "Cuernavaca", "Comfortable. Lunch and an afternoon."),
                 fila("puebla", "Puebla", "Works, but commit to the full day."),
                 fila("vallebravo", "Valle de Bravo", "Long day. Leave early."),
-                fila("queretaro", "Querétaro", "Stretching it. Better as an overnight."),
-                fila("sanmiguel", "San Miguel de Allende", "Not a day trip. Stay the night."),
+                fila("queretaro", "Querétaro", "A committed day. Rewarding with a night."),
+                fila("sanmiguel", "San Miguel de Allende", "The long one. Start before dawn."),
               ],
             },
             {
@@ -132,28 +136,28 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "p",
               texto:
-                "Querétaro is a little further and the maths get tighter. It can be done, and people do it, but you will spend more of the day in the car than most travellers expect. If your schedule has any flexibility, it is a much better overnight.",
+                "Querétaro is a little further and the maths get tighter: people do it in a day regularly, and it works if you start early and treat the drive as part of the trip rather than a cost. With a night there you see considerably more of it, so if your schedule has any flexibility, that is the version to take.",
             },
           ],
         },
         {
           id: "san-miguel",
-          h2: "San Miguel de Allende — do not do this in a day",
+          h2: "San Miguel de Allende — the long one, and how to do it well",
           bloques: [
             {
               tipo: "p",
               texto:
-                `We will sell you the trip, and we would rather you did not take it as a day trip. San Miguel is ${LEGS.sanmiguel.km} km away: close to four hours each way, almost eight hours in the car. Leave at six in the morning and you are back near midnight, having spent less time in San Miguel than on the road to it.`,
+                `This is the one that needs planning rather than improvising. San Miguel is ${LEGS.sanmiguel.km} km away: close to four hours each way, almost eight hours in the car over the day. Leave at six in the morning and you get a full afternoon there and are back late — which is a real day out, as long as you know that is what you signed up for.`,
             },
             {
               tipo: "nota",
               texto:
-                "San Miguel is worth two nights. If you only have one day free, spend it on Teotihuacán or Puebla and save San Miguel for a trip where you can stay.",
+                "If your trip allows it, San Miguel rewards a night or two more than any other destination on this list. If it does not, the day version works — it just has to start before dawn and be agreed in advance, not decided over breakfast.",
             },
             {
               tipo: "p",
               texto:
-                "If you are going anyway — people do, for a wedding or a single appointment — book it as two separate transfers on different days rather than a round trip. It costs the same kind of money and you arrive able to stand up.",
+                "If you are staying the night — for a wedding, or simply because San Miguel deserves it — book two separate transfers on different days rather than a round trip. There is no sense paying for a car to wait while you sleep.",
             },
           ],
         },
@@ -203,7 +207,7 @@ export const GUIA_EXCURSIONES: Guia = {
         ],
         [
           "Can you do San Miguel de Allende as a day trip from Mexico City?",
-          "You can, but you should not. It is roughly four hours each way — about eight hours in the car — which leaves very little day at the other end. San Miguel deserves an overnight.",
+          "Yes, with an early start. It is roughly four hours each way, so a six o'clock departure gives you a full afternoon there and a late return. If your trip has room for a night, San Miguel is the destination on this list that most rewards one.",
         ],
         [
           "How long is the drive from Mexico City to Teotihuacán?",
@@ -237,13 +241,13 @@ export const GUIA_EXCURSIONES: Guia = {
       description:
         "Seis destinos al alcance de la CDMX, con tiempos de carretera honestos, cuáles funcionan de verdad en un día, cuál no, y a qué hora conviene salir.",
       intro:
-        "La Ciudad de México está rodeada de sitios que valen un día del viaje: pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña. La pregunta nunca es si vale la pena ir; es si cabe en un día. Algunos sí, con holgura. Uno no, y vamos a decir cuál.",
+        "La Ciudad de México está rodeada de sitios que valen un día del viaje: pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña. La pregunta nunca es si vale la pena ir; es cuánto del día se lleva la carretera. Unos son un paseo cómodo y otros son un día entero comprometido. Esto es lo que pide cada uno.",
       revisado: "Datos revisados: octubre de 2026",
       indiceTitulo: "En esta página",
       datos: [
         { valor: "6", etiqueta: "destinos comparados" },
         { valor: "1–4 h", etiqueta: "de carretera por sentido" },
-        { valor: "1", etiqueta: "que te decimos que no hagas" },
+        { valor: "2", etiqueta: "formas de reservarlo" },
       ],
       secciones: [
         {
@@ -258,8 +262,8 @@ export const GUIA_EXCURSIONES: Guia = {
                 fila("cuernavaca", "Cuernavaca", "Cómodo. Comida y una tarde."),
                 fila("puebla", "Puebla", "Funciona, pero dedícale el día entero."),
                 fila("vallebravo", "Valle de Bravo", "Día largo. Hay que salir temprano."),
-                fila("queretaro", "Querétaro", "Muy justo. Mejor con una noche."),
-                fila("sanmiguel", "San Miguel de Allende", "No es excursión de un día. Quédate a dormir."),
+                fila("queretaro", "Querétaro", "Día comprometido. Mejor con una noche."),
+                fila("sanmiguel", "San Miguel de Allende", "El largo. Hay que salir de madrugada."),
               ],
             },
             {
@@ -313,28 +317,28 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "p",
               texto:
-                "Querétaro está un poco más lejos y las cuentas se aprietan. Se puede, y hay quien lo hace, pero vas a pasar más del día dentro del coche de lo que casi nadie espera. Si tu agenda tiene algo de flexibilidad, funciona mucho mejor con una noche.",
+                "Querétaro está un poco más lejos y las cuentas se aprietan: hay quien lo hace en el día con frecuencia, y funciona si sales temprano y tomas la carretera como parte del viaje y no como un costo. Con una noche allá ves bastante más, así que si tu agenda tiene algo de flexibilidad, ésa es la versión que conviene.",
             },
           ],
         },
         {
           id: "san-miguel",
-          h2: "San Miguel de Allende: no lo hagas en un día",
+          h2: "San Miguel de Allende: el largo, y cómo hacerlo bien",
           bloques: [
             {
               tipo: "p",
               texto:
-                `Te vendemos el viaje, y preferiríamos que no lo hicieras en un día. San Miguel está a ${LEGS.sanmiguel.km} km: casi cuatro horas por sentido, casi ocho horas dentro del coche. Sales a las seis de la mañana y vuelves cerca de medianoche, habiendo pasado menos tiempo en San Miguel que en la carretera para llegar.`,
+                `Éste es el que hay que planear en lugar de improvisar. San Miguel está a ${LEGS.sanmiguel.km} km: casi cuatro horas por sentido, casi ocho horas de coche a lo largo del día. Saliendo a las seis de la mañana tienes una tarde completa allá y vuelves tarde, que es un día de verdad, siempre que sepas de antemano a lo que te apuntaste.`,
             },
             {
               tipo: "nota",
               texto:
-                "San Miguel merece dos noches. Si sólo tienes un día libre, gástalo en Teotihuacán o en Puebla y deja San Miguel para un viaje en el que puedas quedarte.",
+                "Si tu viaje lo permite, San Miguel compensa quedarse una o dos noches más que cualquier otro destino de esta lista. Si no lo permite, la versión de un día funciona: sólo tiene que empezar de madrugada y quedar acordada de antemano, no decidirse en el desayuno.",
             },
             {
               tipo: "p",
               texto:
-                "Si vas de todos modos —pasa, por una boda o una cita concreta—, resérvalo como dos traslados sencillos en días distintos y no como viaje redondo. Cuesta un dinero parecido y llegas pudiéndote sostener en pie.",
+                "Si te quedas a dormir —por una boda, o sencillamente porque San Miguel lo merece—, resérvalo como dos traslados sencillos en días distintos y no como viaje redondo. No tiene sentido pagar por un coche que espera mientras duermes.",
             },
           ],
         },
@@ -384,7 +388,7 @@ export const GUIA_EXCURSIONES: Guia = {
         ],
         [
           "¿Se puede ir a San Miguel de Allende en un día desde la CDMX?",
-          "Se puede, pero no deberías. Son unas cuatro horas por sentido —cerca de ocho dentro del coche—, lo que deja muy poco día del otro lado. San Miguel merece quedarse a dormir.",
+          "Sí, saliendo temprano. Son unas cuatro horas por sentido, así que una salida a las seis te da una tarde completa allá y un regreso tarde. Si tu viaje tiene espacio para una noche, San Miguel es el destino de esta lista que más lo compensa.",
         ],
         [
           "¿Cuánto se hace de la CDMX a Teotihuacán?",

@@ -9,11 +9,21 @@
  * el sitio llegaba tarde a ella.
  *
  * LA REGLA DE ESTAS PÁGINAS: son útiles aunque el lector no reserve nada. Si
- * una sección sólo tiene sentido como argumento de venta, sobra. Por eso la
- * guía del aeropuerto dice con todas sus letras que el chofer privado es la
- * opción MÁS CARA, y la de excursiones dice que San Miguel de Allende no cabe
- * cómodamente en un día. Un viajero que detecta que le están vendiendo deja
- * de leer; uno al que le dicen la verdad incómoda vuelve.
+ * una sección sólo tiene sentido como argumento de venta, sobra. Los datos
+ * duros van completos aunque no favorezcan —la guía del aeropuerto dice que
+ * el chofer reservado cuesta más que las otras tres opciones, y la de
+ * excursiones publica las casi ocho horas de coche que son San Miguel ida y
+ * vuelta—, porque un viajero que detecta que le están escondiendo algo deja
+ * de leer.
+ *
+ * DÓNDE ESTÁ LA LÍNEA, decidida por el dueño el 3 de octubre de 2026: dar el
+ * dato completo, sí; recomendar al competidor, no. La primera versión de
+ * estas páginas cerraba diciéndole al lector que tomara un taxi autorizado y
+ * que no hiciera San Miguel en un día. Los números eran correctos y el
+ * consejo editorial sobraba: una guía de una empresa de transporte puede
+ * decir cuánto tarda cada cosa sin escribir la frase que manda al cliente a
+ * otro sitio. Los tiempos y los costos siguen ahí enteros; lo que se quitó
+ * fue el veredicto en contra.
  *
  * SOBRE LOS DATOS QUE CADUCAN. Varias afirmaciones de aquí —reglas de
  * aplicaciones de transporte, horarios, qué aerolínea usa qué terminal—

@@ -230,6 +230,8 @@ const TX = {
     alsoCorporate: "Cuentas corporativas",
 
     footPay: "Pago seguro con",
+    alsoGuideAirport: "Guía: cómo salir del aeropuerto",
+    alsoGuideTerminals: "Guía: ¿Terminal 1 o Terminal 2?",
     footTerms: "Términos",
     footPrivacy: "Aviso de privacidad",
   },
@@ -424,6 +426,8 @@ const TX = {
     alsoCorporate: "Corporate accounts",
 
     footPay: "Secure payment with",
+    alsoGuideAirport: "Guide: getting from the airport into the city",
+    alsoGuideTerminals: "Guide: Terminal 1 or Terminal 2?",
     footTerms: "Terms",
     footPrivacy: "Privacy notice",
   },
@@ -756,6 +760,8 @@ export default function AirportPage({ lang }: { lang: Lang }) {
             <Link href={path(lang, "chauffeur")}>{t.alsoChauffeur}</Link>
             <Link href={path(lang, "rates")}>{t.alsoRates}</Link>
             <Link href={path(lang, "corporate")}>{t.alsoCorporate}</Link>
+            <Link href={path(lang, "guideAirport")}>{t.alsoGuideAirport}</Link>
+            <Link href={path(lang, "guideTerminals")}>{t.alsoGuideTerminals}</Link>
           </div>
         </section>
 

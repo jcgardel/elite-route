@@ -224,6 +224,7 @@ const TX = {
     rtDecrease: "Less waiting time",
     rtIncrease: "More waiting time",
     rtSummary: (h: number) => `Round trip · ${h} h waiting`,
+    routesGuides: "Before you book — traveller guides",
     routesOutRt: (
       <>
         <strong>Going and coming back the same day?</strong> On these routes you can
@@ -354,6 +355,7 @@ const TX = {
     rtDecrease: "Menos horas de espera",
     rtIncrease: "Más horas de espera",
     rtSummary: (h: number) => `Viaje redondo · ${h} h de espera`,
+    routesGuides: "Antes de reservar — guías para el viajero",
     routesOutRt: (
       <>
         <strong>¿Ir y volver el mismo día?</strong> En estas rutas puedes reservar el
@@ -848,10 +850,14 @@ const styles = `
 /** Un enlace de ruta ya resuelto en el servidor. Ver `app/[lang]/page.tsx`. */
 export type EnlaceDeRuta = { href: string; label: string; foranea: boolean };
 
+/** Un enlace a una guía, resuelto igual y por el mismo motivo. */
+export type EnlaceDeGuia = { href: string; label: string };
+
 export default function HomeClient({
   lang,
   tablas,
   rutas,
+  guias,
 }: {
   lang: Lang;
   /**
@@ -868,6 +874,8 @@ export default function HomeClient({
    * ellas en los dos idiomas y no tiene por qué viajar al navegador.
    */
   rutas: EnlaceDeRuta[];
+  /** Las tres guías, resueltas en el servidor por el mismo motivo. */
+  guias: EnlaceDeGuia[];
 }) {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -1960,6 +1968,22 @@ export default function HomeClient({
                     {nota && <p className="er-routes-rt">{nota}</p>}
                   </div>
                 ))}
+
+                {/* LAS GUÍAS, al final del bloque de rutas y no arriba.
+                    Quien llegó hasta aquí ya vio los destinos; estas páginas
+                    son para el que todavía no sabe cómo se va a mover, y es
+                    tráfico que hoy no llega al sitio porque las 56 URLs que
+                    había eran todas comerciales. */}
+                <div className="er-routes-group">
+                  <h3 className="er-routes-sub">{t.routesGuides}</h3>
+                  <ul className="er-routes-list">
+                    {guias.map((g) => (
+                      <li key={g.href}>
+                        <a href={g.href}>{g.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </section>
 
               <section id="contacto" className="er-contact-grid" aria-label="Elite Route contact emails">

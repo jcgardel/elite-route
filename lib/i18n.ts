@@ -36,6 +36,9 @@ export type Page =
   | "executive"
   | "airport"
   | "fleet"
+  | "guideAirport"
+  | "guideDayTrips"
+  | "guideTerminals"
   | "corporate"
   | "quote"
   | "privacy"
@@ -76,6 +79,24 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   // categoría, las mismas de /b2b— sino para contestar la pregunta que el
   // sitio no contestaba en ningún sitio: CUÁL ELEGIR, y cuándo no elegirla.
   fleet: { en: "fleet", es: "flota" },
+  // LAS TRES GUÍAS. No persiguen "traslado ejecutivo" —eso ya lo cubren las
+  // páginas de servicio— sino la búsqueda que ocurre ANTES, cuando el viajero
+  // todavía no sabe cómo se va a mover: "how to get from Mexico City airport",
+  // "day trips from Mexico City", "terminal 1 or 2". Los slugs persiguen esas
+  // frases en cada idioma y no se traducen literalmente entre sí: quien busca
+  // en español escribe "cómo llegar del aeropuerto", no "transport guide".
+  guideAirport: {
+    en: "how-to-get-from-mexico-city-airport",
+    es: "como-llegar-del-aeropuerto-cdmx",
+  },
+  guideDayTrips: {
+    en: "day-trips-from-mexico-city",
+    es: "excursiones-de-un-dia-desde-cdmx",
+  },
+  guideTerminals: {
+    en: "mexico-city-airport-terminal-1-or-2",
+    es: "aicm-terminal-1-o-terminal-2",
+  },
   corporate: { en: "corporate", es: "b2b" },
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },

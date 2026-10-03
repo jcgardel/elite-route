@@ -23,6 +23,18 @@
  * cabe en el servicio por horas, y por eso tiene su propia página con tabla de
  * precios. Los cinco destinos foráneos pasan de 90 km por sentido y se
  * reservan como viaje redondo. Ver `admiteRedondo` en lib/service-limits.ts.
+ *
+ * XOCHIMILCO Y LA BASÍLICA, añadidos el 3 de octubre de 2026 a petición del
+ * dueño, NO son excursiones foráneas: están dentro de la Ciudad de México. Por
+ * eso no entran en la tabla de arriba —que compara horas de carretera para
+ * salir de la ciudad— sino en una sección propia, y por eso se reservan por
+ * horas y no como viaje redondo: la regla de zona del servicio por horas es
+ * CDMX más los aeropuertos de AIFA y Toluca, y los dos caen de lleno dentro.
+ *
+ * Meterlos en la tabla de foráneas habría sido más fácil y habría mentido: un
+ * lector que ve "Xochimilco" junto a "San Miguel de Allende" entiende que hay
+ * que salir de la ciudad para llegar, y entonces la guía deja de servir para
+ * lo único que sirve, que es decirle cuánto del día se le va en el camino.
  */
 import "server-only";
 
@@ -58,20 +70,20 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Day Trips from Mexico City with a Driver",
       h1: "Day trips from Mexico City with a private driver",
       description:
-        "Six destinations within reach of Mexico City, with honest drive times, which ones genuinely work as a day trip, which one does not, and what time to leave.",
+        "Eight places within reach of Mexico City — Teotihuacán, Xochimilco, the Basilica of Guadalupe, Puebla, Cuernavaca and more — with real drive times, how long each one needs and what time to leave.",
       intro:
-        "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains. The question is never whether they are worth seeing; it is how much of the day the road takes. Some are an easy outing, others are a committed day out. Here is what each one really asks of you.",
+        "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains — and two of the best are inside the city itself. The question is never whether they are worth seeing; it is how much of the day the road takes. Here is what each one really asks of you.",
       revisado: "Last checked: October 2026",
       indiceTitulo: "On this page",
       datos: [
-        { valor: "6", etiqueta: "destinations compared" },
-        { valor: "1–4 h", etiqueta: "drive, each way" },
+        { valor: "8", etiqueta: "destinations compared" },
+        { valor: "1–4 h", etiqueta: "drive out, each way" },
         { valor: "2", etiqueta: "ways to book it" },
       ],
       secciones: [
         {
           id: "the-table",
-          h2: "What actually fits in a day",
+          h2: "Leaving the city: what actually fits in a day",
           bloques: [
             {
               tipo: "tabla",
@@ -88,7 +100,7 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "nota",
               texto:
-                "Those are driving times in reasonable conditions, not promises. Leaving Mexico City after 07:00 or coming back into it between 18:00 and 20:00 can add an hour to any of them. The direction of the traffic matters more than the distance.",
+                "Those are driving times in reasonable conditions, not promises. Leaving Mexico City after 07:00 or coming back into it between 18:00 and 20:00 can add an hour to any of them. The direction of the traffic matters more than the distance. Xochimilco and the Basilica of Guadalupe are not in this table because they are inside the city — they have their own section below.",
             },
           ],
         },
@@ -105,6 +117,50 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "p",
               texto:
                 "Because the round trip is only about 100 km, it books differently from everything else here: as a day by the hour rather than a transfer, which means the car stays with you and you set the pace. That is usually nine or ten hours and it is the cheapest way to do it.",
+            },
+          ],
+        },
+        {
+          id: "in-the-city",
+          h2: "Two more, without leaving the city",
+          bloques: [
+            {
+              tipo: "p",
+              texto:
+                "Xochimilco and the Basilica of Guadalupe are the two destinations most visitors assume are out-of-town trips. They are not — both are inside Mexico City, which makes them half-days rather than day trips, and the easiest things on this page to fit into a schedule that already has something else in it.",
+            },
+            {
+              tipo: "tabla",
+              encabezados: ["Place", "From the centre", "How long to allow", "Pairs well with"],
+              filas: [
+                ["Basilica of Guadalupe", "20–30 min north", "1–2 hours", "Teotihuacán — it is on the way"],
+                ["Xochimilco", "45–60 min south", "3–4 hours", "Coyoacán and San Ángel"],
+              ],
+            },
+            {
+              tipo: "p",
+              texto:
+                "The Basilica is the most visited Catholic shrine in the Americas and entry is free — no ticket, no required donation. The new basilica opens daily from 06:00 to 21:00 with Mass every hour. Next to it stands the old one, visibly leaning: it sank unevenly into the lakebed clay the city is built on, and rather than demolish it, engineers stabilised it and left it standing. Twenty minutes is enough to see both; an hour if you want to sit.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "Avoid 12 December unless the pilgrimage is the reason you are going. Around nine million people come that day. The basilica stays open 24 hours, the surrounding streets close, and nothing about the visit resembles any other day of the year.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Xochimilco is the other one: canals left over from the lake city that stood here before the Spanish arrived, and flat-bottomed boats called trajineras poled along them. It takes longer than people plan for — the ride alone is usually two hours, and it is an hour each way from the centre in traffic.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "The trajinera is rented BY THE BOAT, BY THE HOUR — the official regulated rate is around $750 MXN per hour — and the price is the same whether two people board or eighteen. Being quoted a price per person is the single most common way visitors are overcharged here. Agree the hourly rate and the number of hours before you step on, because the clock starts when you board.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Which pier you choose changes the day completely. Nativitas is the busiest and the most festive, with food and music and boats full of parties. Cuemanco is quieter, closer to the ecological zone, and the one to pick if you want the canals rather than the party.",
             },
           ],
         },
@@ -174,7 +230,7 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "lista",
               items: [
                 "A round trip: the chauffeur drives you out, waits, and brings you back the same day. Waiting hours are included, and you can add more when you book. This is how the five out-of-town destinations work.",
-                "A day by the hour: the car and chauffeur stay with you for a block of hours and you decide the route as you go. This is how Teotihuacán works, and it is the better option whenever you want to stop somewhere on the way.",
+                "A day by the hour: the car and chauffeur stay with you for a block of hours and you decide the route as you go. This is how Teotihuacán, Xochimilco and the Basilica work, and it is the better option whenever you want to stop somewhere on the way — or combine two places, like the Basilica on the way north to the pyramids.",
               ],
             },
             {
@@ -218,6 +274,14 @@ export const GUIA_EXCURSIONES: Guia = {
           "A tour bus is cheaper and a driver is yours. With a driver you leave when you want, stop where you want and come back when you are ready, which on a long day out of the city is most of the value. For Teotihuacán specifically, the gap is smaller because the trip is short.",
         ],
         [
+          "How much does a trajinera cost in Xochimilco?",
+          "The official regulated rate is around $750 MXN per hour, and it is charged per boat, not per person — the same whether two of you board or eighteen. If someone quotes you a price per person, that is the most common way visitors are overcharged there. Agree the rate and the number of hours before boarding.",
+        ],
+        [
+          "Is the Basilica of Guadalupe worth visiting, and does it cost anything?",
+          "Entry is free, with no ticket and no required donation, and the new basilica is open daily from 06:00 to 21:00. It is about 20 to 30 minutes north of the centre and needs only an hour or two, which is why it pairs so well with Teotihuacán — it is on the way north.",
+        ],
+        [
           "Does the driver wait while we are there?",
           "Yes, that is what a round trip means — the chauffeur stays and brings you back the same day. A couple of hours of waiting are included and you can add more when you book.",
         ],
@@ -239,20 +303,20 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Excursiones de un día desde la CDMX con chofer",
       h1: "Excursiones de un día desde la Ciudad de México con chofer privado",
       description:
-        "Seis destinos al alcance de la CDMX, con tiempos de carretera honestos, cuáles funcionan de verdad en un día, cuál no, y a qué hora conviene salir.",
+        "Ocho lugares al alcance de la CDMX —Teotihuacán, Xochimilco, la Basílica de Guadalupe, Puebla, Cuernavaca y más— con tiempos de camino reales, cuánto tiempo pide cada uno y a qué hora conviene salir.",
       intro:
-        "La Ciudad de México está rodeada de sitios que valen un día del viaje: pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña. La pregunta nunca es si vale la pena ir; es cuánto del día se lleva la carretera. Unos son un paseo cómodo y otros son un día entero comprometido. Esto es lo que pide cada uno.",
+        "La Ciudad de México está rodeada de sitios que valen un día del viaje —pirámides a una hora, ciudades coloniales, un pueblo junto a un lago en la montaña— y dos de los mejores están dentro de la propia ciudad. La pregunta nunca es si vale la pena ir; es cuánto del día se lleva el camino. Esto es lo que pide cada uno.",
       revisado: "Datos revisados: octubre de 2026",
       indiceTitulo: "En esta página",
       datos: [
-        { valor: "6", etiqueta: "destinos comparados" },
+        { valor: "8", etiqueta: "destinos comparados" },
         { valor: "1–4 h", etiqueta: "de carretera por sentido" },
         { valor: "2", etiqueta: "formas de reservarlo" },
       ],
       secciones: [
         {
           id: "the-table",
-          h2: "Qué cabe de verdad en un día",
+          h2: "Salir de la ciudad: qué cabe de verdad en un día",
           bloques: [
             {
               tipo: "tabla",
@@ -269,7 +333,7 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "nota",
               texto:
-                "Son tiempos de manejo en condiciones razonables, no promesas. Salir de la CDMX después de las 07:00 o regresar entre las 18:00 y las 20:00 puede sumarle una hora a cualquiera. Pesa más la dirección del tráfico que la distancia.",
+                "Son tiempos de manejo en condiciones razonables, no promesas. Salir de la CDMX después de las 07:00 o regresar entre las 18:00 y las 20:00 puede sumarle una hora a cualquiera. Pesa más la dirección del tráfico que la distancia. Xochimilco y la Basílica de Guadalupe no están en esta tabla porque están dentro de la ciudad: tienen su propia sección más abajo.",
             },
           ],
         },
@@ -286,6 +350,50 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "p",
               texto:
                 "Como el viaje redondo son apenas unos 100 km, se reserva distinto a todo lo demás de esta página: como día por horas y no como traslado, así que el coche se queda contigo y el ritmo lo pones tú. Suelen ser nueve o diez horas y es la forma más barata de hacerlo.",
+            },
+          ],
+        },
+        {
+          id: "in-the-city",
+          h2: "Dos más, sin salir de la ciudad",
+          bloques: [
+            {
+              tipo: "p",
+              texto:
+                "Xochimilco y la Basílica de Guadalupe son los dos destinos que casi todo visitante da por foráneos. No lo son: los dos están dentro de la Ciudad de México, lo que los convierte en medias jornadas y no en excursiones, y en lo más fácil de esta página para encajar en un día que ya tiene algo más.",
+            },
+            {
+              tipo: "tabla",
+              encabezados: ["Lugar", "Desde el centro", "Cuánto tiempo dejar", "Combina bien con"],
+              filas: [
+                ["Basílica de Guadalupe", "20–30 min al norte", "1–2 horas", "Teotihuacán, que queda de camino"],
+                ["Xochimilco", "45–60 min al sur", "3–4 horas", "Coyoacán y San Ángel"],
+              ],
+            },
+            {
+              tipo: "p",
+              texto:
+                "La Basílica es el santuario católico más visitado de América y la entrada es libre: sin boleto y sin donativo obligatorio. La basílica nueva abre todos los días de 06:00 a 21:00, con misa cada hora. Al lado está la antigua, visiblemente inclinada: se hundió de forma despareja en el suelo de lo que fue el lago, y en lugar de demolerla la estabilizaron y ahí sigue. Veinte minutos bastan para ver las dos; una hora si quieres sentarte.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "Evita el 12 de diciembre salvo que la peregrinación sea justamente a lo que vas. Ese día llegan alrededor de nueve millones de personas. La basílica abre 24 horas, las calles de alrededor se cierran y la visita no se parece en nada a la de cualquier otro día del año.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Xochimilco es el otro: canales que quedaron de la ciudad lacustre que había aquí antes de que llegaran los españoles, y trajineras empujadas con pértiga por ellos. Se lleva más tiempo del que la gente calcula —el paseo solo suele ser de dos horas, y es una hora por sentido desde el centro con tráfico—.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "La trajinera se renta POR LANCHA Y POR HORA —la tarifa oficial ronda los $750 MXN la hora— y cuesta lo mismo si suben dos personas que si suben dieciocho. Que te coticen por persona es la forma más común en que le cobran de más a un visitante aquí. Acuerda la tarifa por hora y cuántas horas antes de subir, porque el reloj empieza a correr al abordar.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "El embarcadero que elijas cambia el día por completo. Nativitas es el más concurrido y el más fiestero, con comida, música y lanchas llenas de grupos. Cuemanco es más tranquilo, más cerca de la zona ecológica, y es el que hay que elegir si lo que quieres son los canales y no la fiesta.",
             },
           ],
         },
@@ -355,7 +463,7 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "lista",
               items: [
                 "Viaje redondo: el chofer te lleva, te espera y te regresa el mismo día. Incluye horas de espera y puedes añadir más al reservar. Así funcionan los cinco destinos foráneos.",
-                "Día por horas: el coche y el chofer se quedan contigo un bloque de horas y vas decidiendo la ruta sobre la marcha. Así funciona Teotihuacán, y es mejor opción siempre que quieras parar en algún sitio del camino.",
+                "Día por horas: el coche y el chofer se quedan contigo un bloque de horas y vas decidiendo la ruta sobre la marcha. Así funcionan Teotihuacán, Xochimilco y la Basílica, y es mejor opción siempre que quieras parar en algún sitio del camino, o combinar dos lugares, como la Basílica camino al norte hacia las pirámides.",
               ],
             },
             {
@@ -397,6 +505,14 @@ export const GUIA_EXCURSIONES: Guia = {
         [
           "¿Conviene más un chofer o un tour en autobús?",
           "El autobús es más barato y el chofer es tuyo. Con chofer sales cuando quieres, paras donde quieres y vuelves cuando estás listo, que en un día largo fuera de la ciudad es casi todo el valor. Para Teotihuacán en concreto la diferencia es menor, porque el viaje es corto.",
+        ],
+        [
+          "¿Cuánto cuesta una trajinera en Xochimilco?",
+          "La tarifa oficial ronda los $750 MXN por hora y se cobra por lancha, no por persona: cuesta lo mismo si suben dos que si suben dieciocho. Si alguien te cotiza por persona, ésa es la forma más común en que le cobran de más a un visitante. Acuerda la tarifa y cuántas horas antes de subir.",
+        ],
+        [
+          "¿Vale la pena la Basílica de Guadalupe y cuánto cuesta entrar?",
+          "La entrada es libre, sin boleto ni donativo obligatorio, y la basílica nueva abre todos los días de 06:00 a 21:00. Está a unos 20 o 30 minutos al norte del centro y con una o dos horas basta, que es justo por lo que combina tan bien con Teotihuacán: queda de camino al norte.",
         ],
         [
           "¿El chofer espera mientras estamos allá?",

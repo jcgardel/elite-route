@@ -141,9 +141,12 @@ export async function POST(req: Request) {
           { status: 400 },
         );
       }
-      if (!admiteRedondo(km)) {
+      // `airportDropoff` ya combina el texto del destino con lo que el cliente
+      // confirmó en el autocompletado, unas líneas más arriba. Reusarlo evita
+      // que esta regla y la del vuelo obligatorio se contesten distinto.
+      if (!admiteRedondo(km, airportDropoff)) {
         return NextResponse.json(
-          { error: "El viaje redondo sólo aplica a destinos foráneos" },
+          { error: "El viaje redondo no aplica a este destino" },
           { status: 400 },
         );
       }

@@ -21,8 +21,8 @@
  *
  * Teotihuacán va aparte porque se reserva distinto: con unos 100 km redondos
  * cabe en el servicio por horas, y por eso tiene su propia página con tabla de
- * precios. Los cinco destinos foráneos pasan de 90 km por sentido y se
- * reservan como viaje redondo. Ver `admiteRedondo` en lib/service-limits.ts.
+ * precios. Los cinco destinos foráneos se reservan como viaje redondo. Ver
+ * `admiteRedondo` en lib/service-limits.ts para la regla exacta.
  *
  * XOCHIMILCO Y LA BASÍLICA, añadidos el 3 de octubre de 2026 a petición del
  * dueño, NO son excursiones foráneas: están dentro de la Ciudad de México. Por

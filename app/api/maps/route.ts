@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { origin, destination, airportPickup } = await req.json();
+    const { origin, destination, airportPickup, airportDropoff } = await req.json();
 
     if (!origin || !destination) {
       return NextResponse.json(
@@ -59,7 +59,13 @@ export async function POST(req: Request) {
     // es para pintar, no para cobrar.
     const porCat = (fn: (c: (typeof CATEGORIES)[number]) => number) =>
       Object.fromEntries(CATEGORIES.map((c) => [c, fn(c)])) as PrecioPorCategoria;
-    const redondo: TablasRedondo | null = admiteRedondo(km)
+    // El destino decide tanto como la distancia. Se mira el texto —igual que
+    // el recargo— y se suma lo que el cliente haya confirmado como terminal en
+    // el autocompletado de Google, que el servidor no ve. Sólo puede QUITAR el
+    // redondo, así que la bandera del cliente no abarata nada.
+    const destinoEsAeropuerto =
+      isAirportAddress(String(destination)) || Boolean(airportDropoff);
+    const redondo: TablasRedondo | null = admiteRedondo(km, destinoEsAeropuerto)
       ? {
           base: porCat((c) => precioRedondo(km, minutes, c, REDONDO_HORAS_CORTESIA, airport)),
           horaExtra: porCat(precioHoraExtraRedondo),

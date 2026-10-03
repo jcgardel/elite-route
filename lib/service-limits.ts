@@ -1,5 +1,3 @@
-import { detectZone } from "./vehicles";
-
 /**
  * Los límites del servicio por horas, en un solo sitio.
  *
@@ -66,11 +64,9 @@ export const ZONA_POR_HORAS = {
  * todas sus letras en el cotizador, no coeficientes que haya que proteger.
  *
  * Qué es: ir, pasar el día y volver con el mismo chofer, que espera. Se
- * ofrece SÓLO en las rutas foráneas —las que pasan de 90 km, que es la misma
- * línea con la que `detectZone` separa "foraneo"—. No es una elección de
- * estilo: por debajo de esos 90 km están el AIFA (68) y Toluca (80), donde lo
- * que corresponde es el servicio por horas. Cuernavaca, la foránea más corta,
- * son 105. La frontera no parte ninguna ruta por la mitad.
+ * ofrece en rutas de más de 70 km cuyo destino no sea un aeropuerto. Las dos
+ * condiciones hacen falta y ninguna sobra: ver `admiteRedondo` más abajo, que
+ * explica con números medidos por qué el kilometraje solo no alcanza.
  *
  * Las dos cifras las fijó el dueño el 2 de octubre de 2026, y la segunda no
  * es decorativa. La hora extra se cobra a la mitad de la tarifa por hora, y
@@ -85,14 +81,43 @@ export const REDONDO_HORAS_CORTESIA = 2;
 export const REDONDO_HORAS_MAX = 8;
 
 /**
- * Si una ruta de ida admite viaje redondo, por su distancia.
+ * DESDE CUÁNTOS KILÓMETROS SE OFRECE EL VIAJE REDONDO.
  *
- * Se pregunta a `detectZone` en vez de comparar contra un 90 escrito aquí.
- * Tener el número dos veces es tener dos números: el día que alguien mueva la
- * frontera de zona, esto la seguiría en silencio o —peor— dejaría de seguirla
- * sin que nada falle. Que es justo lo que le pasó al kilometraje por hora
- * hasta que se consolidó en este archivo.
+ * Bajó de 90 a 70 el 3 de octubre de 2026, y el 90 desapareció por una razón
+ * medida, no por gusto. La primera versión preguntaba a `detectZone`, que
+ * separa "foraneo" a partir de 90 km. Pero esa frontera mira los kilómetros
+ * ENTRE EL PUNTO DE RECOGIDA Y EL DESTINO, y eso hace que el mismo destino se
+ * comporte distinto según dónde se hospede el cliente. Medido en producción
+ * contra la API real:
+ *
+ *     Tepoztlán   75.7 km desde el sur · 83.0 centro · 90.6 Polanco
+ *     Cuernavaca  79.7 km desde el sur · 87.1 centro · 94.7 Polanco
+ *
+ * Con 90, un cliente en Coyoacán no podía reservar un redondo a Cuernavaca.
+ *
+ * Y NO SE PUEDE ARREGLAR SÓLO BAJANDO EL NÚMERO. El foráneo legítimo más corto
+ * son 75.7 km (Tepoztlán desde el sur) y el aeropuerto más lejano que NO debe
+ * venderse como redondo son los 80 km del AICM a Toluca. Se solapan: ningún
+ * umbral separa esos dos casos. Por eso la condición lleva ahora una segunda
+ * parte, que es la que de verdad excluye Toluca y el AIFA —que sean
+ * aeropuertos— y deja al número sólo el trabajo de descartar un traslado corto.
+ *
+ * Lo que se acepta a cambio: un traslado larguísimo dentro de la ciudad podría
+ * ofrecer redondo. No hace daño —es 1.5× con dos horas de espera, mejor trato
+ * que dos traslados sueltos— y es mucho más raro que el caso que esto arregla.
  */
-export function admiteRedondo(km: number) {
-  return detectZone(km) === "foraneo";
+export const REDONDO_KM_MINIMO = 70;
+
+/**
+ * Si una ruta admite viaje redondo.
+ *
+ * `destinoEsAeropuerto` lo calcula quien llama, porque cada sitio tiene una
+ * señal distinta: el servidor mira el texto de la dirección con
+ * `isAirportAddress`, y la interfaz sabe además lo que Google confirmó como
+ * terminal. Las dos se suman con OR y nunca se restan, igual que el recargo de
+ * aeropuerto: marcar de más sólo QUITA el redondo, así que mentir aquí no
+ * abarata nada.
+ */
+export function admiteRedondo(km: number, destinoEsAeropuerto: boolean) {
+  return km > REDONDO_KM_MINIMO && !destinoEsAeropuerto;
 }

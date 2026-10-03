@@ -44,9 +44,11 @@ export const DURACIONES = [2, 3, 4, 5, 6, 10] as const;
 
 /**
  * Las cinco rutas foráneas que publican su viaje redondo, de la más corta a
- * la más larga. Son exactamente las que pasan de 90 km, que es el límite con
- * el que `admiteRedondo` decide si el cotizador lo ofrece: la tabla no puede
- * publicar un precio que el cotizador luego no venda.
+ * la más larga. Son los cinco destinos con tarifa publicada, y los cinco
+ * pasan de sobra el mínimo con el que `admiteRedondo` decide si el cotizador
+ * ofrece el redondo: la tabla no puede publicar un precio que el cotizador
+ * luego no venda. El cotizador acepta además destinos que no están aquí —si
+ * cumplen la regla—, porque no todo el mundo va a uno de estos cinco.
  */
 export const RUTAS_REDONDO = [
   { key: "cuernavaca" },

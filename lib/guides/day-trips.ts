@@ -72,63 +72,88 @@ export const GUIA_EXCURSIONES: Guia = {
       description:
         "Nine places within reach of Mexico City — Teotihuacán, Xochimilco, the Basilica of Guadalupe, Tepoztlán, Puebla, Cuernavaca and more — with real drive times, how long each one needs and what time to leave.",
       intro:
-        "Mexico City is surrounded by places worth a day of your trip — pyramids an hour away, colonial cities, a lake town in the mountains — and two of the best are inside the city itself. The question is never whether they are worth seeing; it is how much of the day the road takes. Here is what each one really asks of you.",
+        "Mexico City is also an unusually good base for the centre of the country. Just over an hour away stand the pyramids of Teotihuacán; a few hours further out, colonial cities, mountain lakes, Pueblos Mágicos and some of the best tables in Mexico. Some of these work comfortably in half a day. Others deserve an early start and a return after dinner. This guide compares the best day trips from Mexico City, how much time each one really takes, and which ones work best when you travel with a private driver.",
       revisado: "Last checked: October 2026",
       indiceTitulo: "On this page",
       datos: [
         { valor: "9", etiqueta: "destinations compared" },
         { valor: "1–4 h", etiqueta: "drive out, each way" },
-        { valor: "2", etiqueta: "ways to book it" },
+        { valor: "3", etiqueta: "ways to book it" },
       ],
       secciones: [
         {
           id: "the-table",
-          h2: "Leaving the city: what actually fits in a day",
+          h2: "The best day trips from Mexico City: time and distance",
           bloques: [
             {
+              tipo: "p",
+              texto:
+                "On a map, most of these destinations look close. In practice, the traffic getting out of Mexico City can reshape the whole day.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Teotihuacán allows an unhurried half-day. Puebla deserves a full one. And reaching San Miguel de Allende means accepting that a good part of the experience will happen on the road.",
+            },
+            {
               tipo: "tabla",
-              encabezados: ["Destination", "Drive each way", "On the road, round trip", "Verdict"],
+              encabezados: ["Destination", "Drive each way", "On the road, round trip", "Recommendation"],
               filas: [
-                ["Teotihuacán", "About 1 h", "About 2 h", "The easy one. Half a day if you want."],
-                fila("tepoztlan", "Tepoztlán", "Easy. A town you walk in an afternoon."),
-                fila("cuernavaca", "Cuernavaca", "Comfortable. Lunch and an afternoon."),
-                fila("puebla", "Puebla", "Works, but commit to the full day."),
-                fila("vallebravo", "Valle de Bravo", "Long day. Leave early."),
-                fila("queretaro", "Querétaro", "A committed day. Rewarding with a night."),
-                fila("sanmiguel", "San Miguel de Allende", "The long one. Start before dawn."),
+                ["Teotihuacán", "About 1 h", "About 2 h", "Ideal for half a day or a full day"],
+                fila("tepoztlan", "Tepoztlán", "A comfortable half-day escape"),
+                fila("cuernavaca", "Cuernavaca", "A comfortable day out"),
+                fila("puebla", "Puebla", "Better as a full day"),
+                fila("vallebravo", "Valle de Bravo", "A full day, with an early start"),
+                fila("queretaro", "Querétaro", "Possible in a day; better with time"),
+                fila("sanmiguel", "San Miguel de Allende", "A long day; leave very early"),
               ],
             },
             {
               tipo: "nota",
               texto:
-                "Those are driving times in reasonable conditions, not promises. Leaving Mexico City after 07:00 or coming back into it between 18:00 and 20:00 can add an hour to any of them. The direction of the traffic matters more than the distance. Xochimilco and the Basilica of Guadalupe are not in this table because they are inside the city — they have their own section below.",
+                "These are approximate times in normal conditions. To get the most out of the day, particularly midweek, it is worth leaving early. Xochimilco and the Basilica of Guadalupe are not in this table because they are inside the city — they have their own section below.",
             },
           ],
         },
         {
           id: "teotihuacan",
-          h2: "Teotihuacán — the one everybody should do",
+          h2: "Teotihuacán: the essential day trip from Mexico City",
           bloques: [
             {
               tipo: "p",
               texto:
-                "The pyramids are about an hour from the city, which makes this the only destination on the list that does not cost you a whole day. Leave at 07:00 and you are walking the Avenue of the Dead before the heat and the tour buses arrive; you can be back for a late lunch.",
+                "Just over an hour from Mexico City, Teotihuacán is probably the easiest trip to recommend to anyone visiting the capital for the first time.",
             },
             {
               tipo: "p",
               texto:
-                "Because the round trip is only about 100 km, it books differently from everything else here: as a day by the hour rather than a transfer, which means the car stays with you and you set the pace. That is usually nine or ten hours and it is the cheapest way to do it.",
+                "Arriving early changes the experience. The morning lets you walk the Avenue of the Dead, see the pyramids with fewer people around, and cross the site before the heat and the tour groups arrive.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Being relatively close to the city also means you can take it slowly: several hours on the site, lunch nearby, or the Basilica of Guadalupe on the way back, since it sits in the same direction.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "With a private driver the car stays with you throughout, so the timings and the stops follow your group rather than a schedule.",
             },
           ],
         },
         {
           id: "in-the-city",
-          h2: "Two more, without leaving the city",
+          h2: "Xochimilco and the Basilica of Guadalupe: two classics inside the city",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Xochimilco and the Basilica of Guadalupe are the two destinations most visitors assume are out-of-town trips. They are not — both are inside Mexico City, which makes them half-days rather than day trips, and the easiest things on this page to fit into a schedule that already has something else in it.",
+                "Not every trip needs a motorway. Xochimilco and the Basilica of Guadalupe are both inside Mexico City, which makes them half-days rather than day trips, and the easiest things here to fit into a schedule that already has something else in it.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "The Basilica sits in the north of the city and pairs especially well with Teotihuacán, since both lie in the same direction. Xochimilco, in the south, works better alongside Coyoacán or San Ángel.",
             },
             {
               tipo: "tabla",
@@ -141,117 +166,138 @@ export const GUIA_EXCURSIONES: Guia = {
             {
               tipo: "p",
               texto:
-                "The Basilica is the most visited Catholic shrine in the Americas and entry is free — no ticket, no required donation. The new basilica opens daily from 06:00 to 21:00 with Mass every hour. Next to it stands the old one, visibly leaning: it sank unevenly into the lakebed clay the city is built on, and rather than demolish it, engineers stabilised it and left it standing. Twenty minutes is enough to see both; an hour if you want to sit.",
+                "The Basilica of Guadalupe is one of the great pilgrimage sites of Mexico. The complex holds the modern shrine and the old basilica beside it, easily recognised by the lean it took on as the ground beneath settled. One to two hours is usually enough for an unhurried visit, and entry is free.",
             },
             {
               tipo: "nota",
               texto:
-                "Avoid 12 December unless the pilgrimage is the reason you are going. Around nine million people come that day. The basilica stays open 24 hours, the surrounding streets close, and nothing about the visit resembles any other day of the year.",
+                "The great exception is 12 December, when the scale of the pilgrimage reshapes movement across the whole area. The shrine stays open twenty-four hours that day and the surrounding streets close.",
             },
             {
               tipo: "p",
               texto:
-                "Xochimilco is the other one: canals left over from the lake city that stood here before the Spanish arrived, and flat-bottomed boats called trajineras poled along them. It takes longer than people plan for — the ride alone is usually two hours, and it is an hour each way from the centre in traffic.",
+                "Xochimilco preserves part of the lake landscape that defined the Valley of Mexico for centuries. Its canals are travelled aboard flat-bottomed boats called trajineras, and the atmosphere changes considerably with the pier you choose: Nativitas is the liveliest, with music, food and far more visitors, while Cuemanco offers a quieter experience closer to the ecological zone.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Allow at least three to four hours for the full experience, including the drive from the central neighbourhoods.",
             },
             {
               tipo: "nota",
               texto:
-                "The trajinera is rented BY THE BOAT, BY THE HOUR — the official regulated rate is around $750 MXN per hour — and the price is the same whether two people board or eighteen. Being quoted a price per person is the single most common way visitors are overcharged here. Agree the hourly rate and the number of hours before you step on, because the clock starts when you board.",
-            },
-            {
-              tipo: "p",
-              texto:
-                "Which pier you choose changes the day completely. Nativitas is the busiest and the most festive, with food and music and boats full of parties. Cuemanco is quieter, closer to the ecological zone, and the one to pick if you want the canals rather than the party.",
+                "A trajinera is hired by the boat and by the hour — the official rate is around $750 MXN per hour — and costs the same whether two people board or eighteen. Being quoted per person is the most common confusion in Xochimilco: agree the hourly rate and the number of hours before stepping on, because the clock starts when you board.",
             },
           ],
         },
         {
           id: "near",
-          h2: "Cuernavaca and Puebla — the comfortable ones",
+          h2: "Cuernavaca and Puebla: two classic escapes from Mexico City",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Cuernavaca is an hour and a half south and noticeably warmer than the capital, which is the entire reason people from Mexico City go there on weekends. Three hours of driving for a full afternoon is a fair trade.",
+                "To the south, Cuernavaca offers an almost immediate change of climate. The so-called City of Eternal Spring is a straightforward escape for anyone after a long lunch, gardens and an afternoon away from the pace of the capital.",
             },
             {
               tipo: "p",
               texto:
-                "Puebla is two hours east and the single best food argument for leaving the city. Four hours on the road means you should treat it as a whole day rather than an outing — leave by 08:00, come back after dinner, and it works well.",
+                "Puebla asks for a little more road, but repays it with one of the most appealing historic centres in Mexico and a food scene that justifies the trip on its own.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "From Mexico City the ideal is to give it the whole day: leave in the morning, walk the historic centre without rushing, keep time for a proper lunch, and head back in the afternoon or after dinner.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "If the schedule allows, Puebla can be combined with Cholula, a few kilometres away. It is one of the most popular pairings for a day trip from Mexico City, particularly for travellers who want architecture, history and food in a single outing.",
             },
           ],
         },
         {
           id: "far",
-          h2: "Valle de Bravo and Querétaro — long but possible",
+          h2: "Valle de Bravo and Querétaro: trips that deserve a full day",
           bloques: [
             {
               tipo: "p",
               texto:
-                "Valle de Bravo is a lake town in the mountains, about two hours and forty minutes away on roads that get slow near the end. It is a genuinely long day: five and a half hours of driving leaves you roughly six hours there if you leave at seven and are back by nine.",
+                "Some destinations start to feel like a small journey within the journey. Valle de Bravo is one of them.",
             },
             {
               tipo: "p",
               texto:
-                "Querétaro is a little further and the maths get tighter: people do it in a day regularly, and it works if you start early and treat the drive as part of the trip rather than a cost. With a night there you see considerably more of it, so if your schedule has any flexibility, that is the version to take.",
+                "Surrounded by forest and built around the lake, the town moves at a completely different pace from the capital. The drive from Mexico City runs to about two and a half hours in good conditions, so it is worth leaving early and setting aside practically the whole day. Between a walk through the centre, lunch by the water and something outdoors, six hours in Valle de Bravo go quickly.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "Santiago de Querétaro asks for a little more road, but it remains possible as a day trip. Its historic centre, squares and colonial architecture are enough to build a full day around, though the journey is more comfortable when the itinerary has some give in it.",
+            },
+            {
+              tipo: "p",
+              texto:
+                "If you have time for a night, Querétaro is better enjoyed slowly. If not, an early start from Mexico City lets you see the essentials and return the same day.",
             },
           ],
         },
         {
           id: "san-miguel",
-          h2: "San Miguel de Allende — the long one, and how to do it well",
+          h2: "San Miguel de Allende from Mexico City: is it worth going and back in a day?",
           bloques: [
             {
               tipo: "p",
               texto:
-                `This is the one that needs planning rather than improvising. San Miguel is ${LEGS.sanmiguel.km} km away: close to four hours each way, almost eight hours in the car over the day. Leave at six in the morning and you get a full afternoon there and are back late — which is a real day out, as long as you know that is what you signed up for.`,
-            },
-            {
-              tipo: "nota",
-              texto:
-                "If your trip allows it, San Miguel rewards a night or two more than any other destination on this list. If it does not, the day version works — it just has to start before dawn and be agreed in advance, not decided over breakfast.",
+                "It is possible to visit San Miguel de Allende from Mexico City and return the same day, but it has to be taken on as a long one.",
             },
             {
               tipo: "p",
               texto:
-                "If you are staying the night — for a wedding, or simply because San Miguel deserves it — book two separate transfers on different days rather than a round trip. There is no sense paying for a car to wait while you sleep.",
+                `The distance runs to around ${LEGS.sanmiguel.km} kilometres and the drive can approach four hours each way. To genuinely enjoy the destination, the sensible shape is to leave around six in the morning and keep the return for late in the day.`,
+            },
+            {
+              tipo: "p",
+              texto:
+                "Once there, the historic centre is made for walking: cobbled streets, colonial façades, galleries, restaurants and the Parroquia de San Miguel Arcángel hold most of the experience.",
+            },
+            {
+              tipo: "nota",
+              texto:
+                "If your itinerary allows a night or two, San Miguel rewards the stay. In that case it is usually better to book one transfer out and another back on different dates than to keep a car waiting for the duration.",
             },
           ],
         },
         {
           id: "how-to-book",
-          h2: "How this is usually arranged",
+          h2: "How to arrange a day trip from Mexico City with a private driver",
           bloques: [
             {
               tipo: "p",
               texto:
-                "There are two sensible shapes for these trips, and which one you want depends on whether you need the car while you are there.",
+                "Which arrangement suits you depends on the destination and on how much you want to move once you arrive.",
             },
             {
               tipo: "lista",
               items: [
-                "A round trip: the chauffeur drives you out, waits, and brings you back the same day. Waiting hours are included, and you can add more when you book. This is how the five out-of-town destinations work.",
-                "A day by the hour: the car and chauffeur stay with you for a block of hours and you decide the route as you go. This is how Teotihuacán, Xochimilco and the Basilica work, and it is the better option whenever you want to stop somewhere on the way — or combine two places, like the Basilica on the way north to the pyramids.",
+                "Round trip. The chauffeur collects you in Mexico City, drives you to the destination, stays available for the agreed time and brings you back the same day. It is the most practical option for Puebla, Cuernavaca, Tepoztlán, Valle de Bravo, Querétaro and San Miguel de Allende.",
+                "By the hour. The car and chauffeur stay at your disposal for a block of time. This works particularly well for Teotihuacán, Xochimilco or any itinerary with several stops.",
+                "Separate transfers. If you are staying a night or more at the destination, it is normally better to book the outbound and the return separately.",
               ],
-            },
-            {
-              tipo: "p",
-              texto:
-                "Two separate one-way transfers are the third option, and they are what you want when you are staying the night — there is no sense paying for a car to wait fourteen hours.",
             },
           ],
         },
         {
           id: "practical",
-          h2: "Four things that make these days better",
+          h2: "Tips for a day trip from Mexico City",
           bloques: [
             {
               tipo: "lista",
               items: [
-                "Leave early. Not for the destination — for the traffic getting out of Mexico City. The difference between 07:00 and 09:00 is often an hour.",
-                "Carry cash in pesos. Tolls on these highways are real money and not everywhere takes cards.",
-                "Mexico City sits at 2,240 m and some of these destinations are a lot lower. If you have just arrived and are feeling the altitude, a day in Cuernavaca is a surprisingly effective cure.",
-                "Agree the return time before you set off, not at the end of lunch. It is the single thing that decides whether the day feels relaxed or rushed.",
+                "Leave early. An hour can make a considerable difference getting out of Mexico City, especially midweek.",
+                "Plan the return. Deciding roughly when you want to be back lets you enjoy the destination without watching the clock.",
+                "Consider the climate. Altitude and temperature change noticeably between Mexico City, Cuernavaca, Valle de Bravo, Puebla and San Miguel de Allende.",
+                "Leave some slack. Road times are estimates, and a slightly loose itinerary usually makes for a better day than one packed with stops.",
               ],
             },
           ],
@@ -259,42 +305,47 @@ export const GUIA_EXCURSIONES: Guia = {
       ],
       faqs: [
         [
-          "What is the best day trip from Mexico City?",
-          "Teotihuacán, for most people. It is about an hour each way, so it costs you the least of your trip, and the site itself is extraordinary. Puebla is the best alternative if you have seen the pyramids or care more about food.",
+          "What day trips from Mexico City can you do in one day?",
+          "Teotihuacán, Cuernavaca, Tepoztlán, Puebla, Valle de Bravo and Querétaro all work well as day trips. San Miguel de Allende is possible too, though it needs a very early start. Inside the city, Xochimilco and the Basilica of Guadalupe fit comfortably into half a day.",
         ],
         [
-          "Can you do San Miguel de Allende as a day trip from Mexico City?",
-          "Yes, with an early start. It is roughly four hours each way, so a six o'clock departure gives you a full afternoon there and a late return. If your trip has room for a night, San Miguel is the destination on this list that most rewards one.",
+          "What is the best day trip from Mexico City?",
+          "Teotihuacán, for most people. It is about an hour each way, so it costs you the least of your trip, and the site itself is extraordinary. Puebla is the best alternative if you have seen the pyramids or care more about food.",
         ],
         [
           "How long is the drive from Mexico City to Teotihuacán?",
           "About an hour in reasonable traffic. Leaving the city after 07:00 can add significantly to that, which is why early starts are worth it.",
         ],
         [
-          "Is it better to hire a driver or take a tour bus?",
-          "A tour bus is cheaper and a driver is yours. With a driver you leave when you want, stop where you want and come back when you are ready, which on a long day out of the city is most of the value. For Teotihuacán specifically, the gap is smaller because the trip is short.",
+          "Can you do San Miguel de Allende as a day trip from Mexico City?",
+          "Yes, with an early start. It is roughly four hours each way, so a six o'clock departure gives you a full afternoon there and a late return. If your trip has room for a night, San Miguel is the destination on this list that most rewards one.",
         ],
         [
-          "How much does a trajinera cost in Xochimilco?",
-          "The official regulated rate is around $750 MXN per hour, and it is charged per boat, not per person — the same whether two of you board or eighteen. If someone quotes you a price per person, that is the most common way visitors are overcharged there. Agree the rate and the number of hours before boarding.",
-        ],
-        [
-          "Is the Basilica of Guadalupe worth visiting, and does it cost anything?",
-          "Entry is free, with no ticket and no required donation, and the new basilica is open daily from 06:00 to 21:00. It is about 20 to 30 minutes north of the centre and needs only an hour or two, which is why it pairs so well with Teotihuacán — it is on the way north.",
+          "What is the advantage of a day trip from Mexico City with a private driver?",
+          "Flexibility, mainly. With a private driver you choose the departure time, change the pace of the day, add stops and head back when your group is ready. A shared tour is usually cheaper, but it runs to a fixed schedule and a fixed itinerary.",
         ],
         [
           "Does the driver wait while we are there?",
           "Yes, that is what a round trip means — the chauffeur stays and brings you back the same day. A couple of hours of waiting are included and you can add more when you book.",
         ],
+        [
+          "How much does a trajinera cost in Xochimilco?",
+          "The official rate is around $750 MXN per hour, charged per boat rather than per person — the same whether two of you board or eighteen. Agree the rate and the number of hours before boarding.",
+        ],
+        [
+          "Is the Basilica of Guadalupe worth visiting, and does it cost anything?",
+          "Entry is free, with no ticket and no required donation, and the new basilica is open daily from 06:00 to 21:00. It is about 20 to 30 minutes north of the centre and needs only an hour or two, which is why it pairs so well with Teotihuacán — it is on the way north.",
+        ],
       ],
       cta: {
-        titulo: "Plan the day around what you want to see",
-        copy: "Pick your destination in the quote form, choose round trip, and set how long you want the chauffeur to wait. Fixed price, VAT, tolls and fuel included — no surprises at the end of the day.",
+        titulo: "Your day, at your pace",
+        copy: "Choose the destination and we will handle the road. Book a private chauffeur from Mexico City, decide how long you want at each stop, and travel on a price agreed from the start. Private vehicle, professional chauffeur, VAT, fuel and tolls included.",
         boton: "Get a quote",
       },
       relacionadas: [
         { page: "teotihuacan", label: "Teotihuacán day trip: hours, prices and what to expect" },
-        { page: "rates", label: "Round trip prices to all five destinations" },
+        { page: "hourly", label: "Hourly chauffeur service: how it works and what it covers" },
+        { page: "rates", label: "Round trip prices to the out-of-town destinations" },
         { page: "guideAirport", label: "How to get from Mexico City airport into the city" },
       ],
     },

@@ -33,6 +33,28 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
  *
  * Va una sola vez, en la portada en español: es una ficha de un negocio, no
  * de una página, y declararla dos veces con el mismo @id no aporta nada.
+ *
+ * Y SIGUE SIN `address`, que es lo que alguien va a querer añadir al mirar
+ * esto. Se propuso el 4 de octubre de 2026 —falta la A de las tres señales
+ * NAP que Google cruza entre el sitio y la ficha— y el dueño decidió DEJARLO
+ * FUERA con el argumento delante.
+ *
+ * El motivo no es técnico: `LEGAL.domicilio` es la casa del dueño. Ver la
+ * nota del pie en HomeClient.tsx, que ya lo había decidido para el texto
+ * visible. Aquí pesa más todavía, porque unos datos estructurados no son una
+ * línea en un pie: son un bloque legible por máquina, presente en todas las
+ * páginas, que Google y cualquier rastreador copian. Además, Google Business
+ * permite registrar el domicilio para verificarse y mantenerlo OCULTO en la
+ * ficha pública —que es lo normal en un negocio sin local—, así que
+ * publicarlo aquí anularía esa protección desde el propio sitio.
+ *
+ * Qué se pierde: poco. La dirección pesa como señal de posicionamiento en un
+ * negocio CON local. En uno de área de servicio pesan más la zona, la
+ * categoría y las reseñas, que es donde está el trabajo pendiente.
+ *
+ * NO LO AÑADAS SIN PREGUNTARLE. Si algún día el dueño decide enseñar el
+ * domicilio en su ficha de Google, deja de haber nada que proteger y entonces
+ * sí conviene que el sitio diga lo mismo.
  */
 const jsonLd = {
   "@context": "https://schema.org",

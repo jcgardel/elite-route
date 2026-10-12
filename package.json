@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "revisar-distancias": "NODE_OPTIONS=--conditions=react-server npx -y tsx scripts/revisar-distancias.ts"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",

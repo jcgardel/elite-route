@@ -48,8 +48,16 @@ export async function POST(req: Request) {
     // aeropuerto. Se suma con OR y nunca se resta: la bandera del cliente
     // sólo puede AÑADIR el recargo, así que mentir encarece, no abarata.
     const airport = isAirportAddress(String(origin)) || Boolean(airportPickup);
+
+    // LA LLEGADA A UNA TERMINAL YA MUEVE EL PRECIO desde el 12 oct 2026, así
+    // que esta bandera dejó de ser sólo informativa. Se detecta igual que la
+    // de salida: el texto del destino más lo que el cliente confirmó en el
+    // autocompletado de Google, sumado con OR. Si el viaje sale de una
+    // terminal, manda el recargo de salida y la ida no entra.
+    const hacia = !airport && (isAirportAddress(String(destination)) || Boolean(airportDropoff));
+
     const prices = Object.fromEntries(
-      CATEGORIES.map((c) => [c, calculatePrice(km, minutes, c, "route", 0, airport)]),
+      CATEGORIES.map((c) => [c, calculatePrice(km, minutes, c, "route", 0, airport, hacia)]),
     );
 
     // El viaje redondo sólo existe en las foráneas, y quien lo decide es la

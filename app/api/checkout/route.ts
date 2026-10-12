@@ -85,9 +85,11 @@ export async function POST(req: Request) {
     // servidor no ve), pero no puede quitarlo mandando false.
     const airportPickup = isAirportAddress(origin) || Boolean(body.airportPickup);
 
-    // La LLEGADA a una terminal se mira aparte y NO toca el precio: el
-    // recargo cubre estacionamiento y espera al salir del aeropuerto, y un
-    // traslado hacia allá no los necesita. Sirve sólo para exigir el vuelo.
+    // La LLEGADA a una terminal SÍ toca el precio desde el 12 oct 2026: lleva
+    // un alza propia —12 % en Sedan y Minivan, 18 % en Executive y High SUV—
+    // topada para que recoger en el aeropuerto siga costando al menos un 5 %
+    // más. Ver `ALZA_HACIA_AEROPUERTO` en lib/booking.ts. Hasta esa fecha
+    // servía sólo para exigir el número de vuelo.
     const airportDropoff =
       serviceType === "route" && (isAirportAddress(destination) || Boolean(body.airportDropoff));
 
@@ -163,9 +165,15 @@ export async function POST(req: Request) {
     }
 
     const zone = detectZone(km);
+    // Si el viaje SALE de una terminal manda el recargo de salida y la ida no
+    // entra: un AICM -> AIFA no puede cobrar las dos cosas.
+    const haciaAeropuerto = !airportPickup && airportDropoff;
+
     const price = quiereRedondo
       ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
-      : calculatePrice(km, minutes, category, serviceType, rentalHours, airportPickup);
+      : calculatePrice(
+          km, minutes, category, serviceType, rentalHours, airportPickup, haciaAeropuerto,
+        );
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }

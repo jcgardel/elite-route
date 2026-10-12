@@ -71,7 +71,10 @@ export default async function Page({ params }: Props) {
     route.precioUnico === true
       ? [calculatePrice(leg.km, leg.min, cat, "route", 0, false)]
       : [
-          calculatePrice(leg.km, leg.min, cat, "route", 0, false),
+          // El séptimo argumento es la ida HACIA la terminal, que lleva alza
+          // propia desde el 12 oct 2026. Una foránea no la lleva: su única
+          // columna no toca aeropuerto por ningún extremo.
+          calculatePrice(leg.km, leg.min, cat, "route", 0, false, true),
           calculatePrice(leg.km, leg.min, cat, "route", 0, true),
         ],
   );

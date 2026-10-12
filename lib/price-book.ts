@@ -68,10 +68,13 @@ export function tablasTarifas(): TablasTarifas {
 /** Las tablas de la página corporativa. */
 export function tablasB2b(): TablasB2b {
   const rutas: Record<string, PrecioPorCategoria> = {};
+  const rutasHacia: Record<string, PrecioPorCategoria> = {};
   for (const s of B2B_SECTIONS) {
     for (const destino of s.zones) {
       const leg = B2B_LEGS[s.code]?.[destino];
-      if (leg) rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true);
+      if (!leg) continue;
+      rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true);
+      rutasHacia[`${s.code}:${destino}`] = haciaAeropuerto(leg.km, leg.min);
     }
   }
   // La tarifa por hora se deriva del bloque de dos horas, no del de una.
@@ -82,6 +85,7 @@ export function tablasB2b(): TablasB2b {
   const dosHoras = bloque(2);
   return {
     rutas,
+    rutasHacia,
     horas: Object.fromEntries(B2B_HORAS.map((h) => [h, bloque(h)])),
     tarifaHora: porCategoria((c) => Math.round(dosHoras[c] / 2)),
   };

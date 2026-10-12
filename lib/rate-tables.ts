@@ -107,8 +107,12 @@ export type TablasTarifas = {
 
 /** Las tablas que necesita la página corporativa. */
 export type TablasB2b = {
-  /** Indexado por `${code}:${destino}`, p. ej. "MEX:polanco". */
+  /** Salida DESDE el aeropuerto. Indexado por `${code}:${destino}`, p. ej.
+   *  "MEX:polanco". Lleva el recargo de terminal. */
   rutas: Record<string, PrecioPorCategoria>;
+  /** El mismo trayecto HACIA el aeropuerto, con la misma indexación. Lleva el
+   *  alza de ida y no el recargo. Ver `ALZA_HACIA_AEROPUERTO`. */
+  rutasHacia: Record<string, PrecioPorCategoria>;
   /** Lo que cuesta cada bloque completo: 2, 4 y 8 horas. */
   horas: Record<number, PrecioPorCategoria>;
   /** Lo que cuesta una hora dentro de un bloque, con IVA. */

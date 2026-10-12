@@ -42,6 +42,35 @@ function routePrice(tablas: TablasB2b, code: string, destino: string, cat: Categ
   return fila ? mxn(fila[cat]) : "";
 }
 
+/**
+ * La celda con los DOS SENTIDOS, desde el 12 de octubre de 2026.
+ *
+ * Hasta entonces esta página sólo publicaba la salida desde el aeropuerto, y
+ * el encabezado de cada columna decía "→ Polanco". Al añadir el trayecto de
+ * ida esa flecha pasó a mentir en la mitad de cada celda, así que los
+ * encabezados se quedaron con el nombre de la zona y el sentido se explica
+ * una sola vez en la leyenda de arriba.
+ *
+ * El segundo precio es SIEMPRE el menor: lo garantiza la brecha mínima del
+ * 5 % que aplica `calculatePrice`. Por eso se pinta en gris y más pequeño,
+ * sin necesidad de rotularlo en cada celda.
+ */
+function celdaRuta(tablas: TablasB2b, code: string, destino: string, cat: Category) {
+  const desde = tablas.rutas[`${code}:${destino}`];
+  const hacia = tablas.rutasHacia[`${code}:${destino}`];
+  if (!desde) return null;
+  return (
+    <>
+      <span style={{ display: "block" }}>{mxn(desde[cat])}</span>
+      {hacia && (
+        <span style={{ display: "block", color: "#8B8B87", fontWeight: 400, fontSize: "12px", marginTop: "2px" }}>
+          {mxn(hacia[cat])}
+        </span>
+      )}
+    </>
+  );
+}
+
 const TX = {
   es: {
     home: "Inicio", rates: "Tarifas", corporate: "Corporativo",
@@ -68,7 +97,7 @@ const TX = {
     paySub: "Pagos procesados mediante plataformas de pago seguras. Pago empresarial con referencia para conciliación contable.",
     ratesKicker: "Tarifas corporativas · Aeropuertos",
     ratesTitle: "Precios fijos en los 3 aeropuertos",
-    ratesCopy: "IVA incluido. Sin cargos ocultos. Recargo aeropuerto incluye ingreso a zona de llegadas, espera y estacionamiento.",
+    ratesCopy: "IVA incluido. Sin cargos ocultos. Cada celda trae dos precios: arriba la salida DESDE el aeropuerto —incluye ingreso a zona de llegadas, espera y estacionamiento— y debajo, en gris, el trayecto HACIA el aeropuerto, que no lleva ese recargo.",
     colCategory: "Categoría", quoteIt: "Cotizar",
     airportNotes: [
       "El aeropuerto más cercano al centro de CDMX.",
@@ -76,9 +105,9 @@ const TX = {
       "Al poniente, con conexión directa a Santa Fe.",
     ],
     cols: [
-      ["→ Polanco", "→ Santa Fe", "→ Centro", "→ Pedregal / Sur"],
-      ["→ Polanco", "→ Santa Fe", "→ Centro CDMX", "→ Consultar"],
-      ["→ Polanco", "→ Santa Fe", "→ Centro CDMX", "→ Consultar"],
+      ["Polanco", "Santa Fe", "Centro", "Pedregal / Sur"],
+      ["Polanco", "Santa Fe", "Centro CDMX", "Consultar"],
+      ["Polanco", "Santa Fe", "Centro CDMX", "Consultar"],
     ],
     hourTitle: "Servicio por hora · CDMX",
     hourNote: "Mínimo 2 horas. Chofer a disposición durante las horas contratadas. IVA incluido.",
@@ -157,7 +186,7 @@ const TX = {
     paySub: "Payments processed through secure payment platforms. Corporate payment with a reference for accounting reconciliation.",
     ratesKicker: "Corporate rates · Airports",
     ratesTitle: "Fixed prices at all three airports",
-    ratesCopy: "VAT included. No hidden charges. The airport surcharge covers arrivals-hall pickup, waiting time and parking.",
+    ratesCopy: "VAT included. No hidden charges. Each cell shows two prices: on top, the pickup FROM the airport — covering arrivals-hall pickup, waiting time and parking — and below it, in grey, the trip TO the airport, which carries no such surcharge.",
     colCategory: "Category", quoteIt: "On request",
     airportNotes: [
       "The airport closest to central Mexico City.",
@@ -165,9 +194,9 @@ const TX = {
       "West of the city, with a direct connection to Santa Fe.",
     ],
     cols: [
-      ["→ Polanco", "→ Santa Fe", "→ Downtown", "→ Pedregal / South"],
-      ["→ Polanco", "→ Santa Fe", "→ Downtown", "→ On request"],
-      ["→ Polanco", "→ Santa Fe", "→ Downtown", "→ On request"],
+      ["Polanco", "Santa Fe", "Downtown", "Pedregal / South"],
+      ["Polanco", "Santa Fe", "Downtown", "On request"],
+      ["Polanco", "Santa Fe", "Downtown", "On request"],
     ],
     hourTitle: "Hourly service · Mexico City",
     hourNote: "Two-hour minimum. The chauffeur stays at your disposal for the hours booked. VAT included.",
@@ -525,10 +554,10 @@ export default function B2bClient({
                           <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
                           <div style={{color:"#8B8B87",fontSize:"11px"}}>{c.sub}</div>
                         </td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "polanco", c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "santafe", c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{routePrice(tablas, section.code, "centro", c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#8B8B87",fontSize:"12px"}}>{routePrice(tablas, section.code, "sur", c.key) || t.quoteIt}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "polanco", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "santafe", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "centro", c.key)}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#8B8B87",fontSize:"12px"}}>{celdaRuta(tablas, section.code, "sur", c.key) ?? t.quoteIt}</td>
                       </tr>
                     ))}
                   </tbody>

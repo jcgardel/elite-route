@@ -300,14 +300,24 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
   // llega al navegador ni se pinta.
   const leg = LEGS[routeKey];
 
-  const precio = (cat: Category, airport: boolean) =>
-    mxn(calculatePrice(leg.km, leg.min, cat, "route", 3, airport));
-
-  const desde = Math.min(...cats.map((cat) => calculatePrice(leg.km, leg.min, cat, "route", 3, false)));
-
   // Las foráneas no salen de una terminal: ni recargo de aeropuerto ni dos
   // direcciones que comparar. Una sola columna de precio.
   const unico = route.precioUnico === true;
+
+  /**
+   * Las dos direcciones, explícitas. El `false` de antes significaba dos
+   * cosas a la vez —"hacia el aeropuerto" en una ruta de terminal y "sin
+   * aeropuerto por ningún lado" en una foránea— y desde el 12 oct 2026 ya no
+   * cuestan lo mismo: la ida a la terminal lleva su propia alza.
+   */
+  const bruto = (cat: Category, airport: boolean) =>
+    calculatePrice(leg.km, leg.min, cat, "route", 3, airport, !airport && !unico);
+  const precio = (cat: Category, airport: boolean) => mxn(bruto(cat, airport));
+
+  // El precio más bajo que de verdad se ve en la tabla, que es el de la
+  // columna de ida. Se calcula con la misma función que la pinta para que no
+  // pueda anunciar un número que la tabla no tiene.
+  const desde = Math.min(...cats.map((cat) => bruto(cat, false)));
 
   const otras = ROUTE_KEYS.filter((k) => k !== routeKey);
 

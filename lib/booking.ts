@@ -120,6 +120,46 @@ function kmCost(km: number, ratePerKm: number, category: Category): number {
   return corta * ratePerKm + media * ratePerKm * mid + larga * ratePerKm * far;
 }
 
+/**
+ * ALZA DEL TRASLADO HACIA EL AEROPUERTO, decidida por el dueño el 12 de
+ * octubre de 2026: 12 % en Sedan y Minivan, 18 % en Executive y High SUV.
+ *
+ * Hasta esa fecha llegar a una terminal NO movía el precio: el recargo cubre
+ * estacionamiento y espera AL SALIR, y se consideraba que el viaje de ida no
+ * los necesita. El dueño decidió que sí tiene un costo propio.
+ */
+export const ALZA_HACIA_AEROPUERTO: Record<Category, number> = {
+  sedan: 1.12,
+  minivan: 1.12,
+  executive: 1.18,
+  suv: 1.18,
+};
+
+/**
+ * RECOGER EN EL AEROPUERTO SIEMPRE CUESTA AL MENOS UN 5 % MÁS QUE LLEVAR.
+ *
+ * POR QUÉ HACE FALTA ESTE TECHO. El recargo de salida está topado en pesos
+ * —$400, $600 en High SUV— pero el alza de ida es un porcentaje. En cuanto la
+ * tarifa crece lo suficiente, el porcentaje sigue subiendo y el tope se queda
+ * quieto, así que el viaje HACIA el aeropuerto acaba costando más que el de
+ * vuelta. Medido el 12 oct 2026: pasaba en 8 de 44 combinaciones, todas en
+ * AIFA y Toluca.
+ *
+ * El punto exacto en que se invierte sale de `CAP / (1.05 × alza − 1)`:
+ * $2,273 en Sedan y Minivan, $1,674 en Executive —la más frágil, mismo tope
+ * que Sedan pero 18 %— y $2,510 en High SUV.
+ *
+ * Eso es contraintuitivo para el cliente: la salida incluye monitoreo de
+ * vuelo, estacionamiento y espera por retrasos, servicios que la ida no
+ * lleva. Pagar más por menos se nota al comparar las dos columnas de
+ * /tarifas.
+ *
+ * El alza se aplica entera donde cabe —30 de 44 combinaciones— y sólo se
+ * recorta donde rompería esta regla. Se autoajusta: si cambia el tope del
+ * recargo o una distancia, la brecha se mantiene sola.
+ */
+export const BRECHA_MINIMA_AEROPUERTO = 1.05;
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -127,6 +167,7 @@ export function calculatePrice(
   serviceType: "route" | "hour" | "day",
   rentalHours: number,
   airport = false,
+  haciaAeropuerto = false,
 ) {
   const tariff = tariffs[category];
   let base = 0;
@@ -143,10 +184,25 @@ export function calculatePrice(
   // El 25% de siempre, pero con techo. Se divide entre 1.16 porque
   // `RECARGO_AEROPUERTO_MAX` está expresado con IVA —que es como lo ve el
   // cliente— y aquí todavía estamos trabajando sobre la base sin impuesto.
-  if (airport) {
-    base += Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16);
+  const conRecargo = () =>
+    Math.round((base + Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16)) * 1.16);
+
+  if (airport) return conRecargo();
+
+  const sinRecargo = Math.round(base * 1.16);
+
+  // El viaje HACIA la terminal. `serviceType` se mira porque por horas y por
+  // día no hay un destino que sea un aeropuerto: el recorrido es libre.
+  if (haciaAeropuerto && serviceType === "route") {
+    const pedido = Math.round(sinRecargo * ALZA_HACIA_AEROPUERTO[category]);
+    // El techo se calcula contra el precio de salida REAL de esta misma ruta,
+    // no contra una tabla aparte: así la brecha se mantiene aunque cambien el
+    // tope del recargo, la tarifa por kilómetro o la distancia.
+    const techo = Math.floor(conRecargo() / BRECHA_MINIMA_AEROPUERTO);
+    return Math.min(pedido, techo);
   }
-  return Math.round(base * 1.16);
+
+  return sinRecargo;
 }
 
 /**

@@ -68,7 +68,11 @@ const GRUPOS: ReadonlyArray<{ key: string; rutas: RouteKey[] }> = ROUTE_KEYS.fil
 function menor(rutas: readonly RouteKey[], salidaDeAeropuerto: boolean) {
   return Math.min(
     ...rutas.flatMap((k) =>
-      cats.map((c) => calculatePrice(LEGS[k].km, LEGS[k].min, c, "route", 0, salidaDeAeropuerto)),
+      cats.map((c) =>
+        // Si no es salida, es la ida hacia la terminal: esta página sólo
+        // habla de rutas de aeropuerto, así que no hay tercer caso.
+        calculatePrice(LEGS[k].km, LEGS[k].min, c, "route", 0, salidaDeAeropuerto, !salidaDeAeropuerto),
+      ),
     ),
   );
 }

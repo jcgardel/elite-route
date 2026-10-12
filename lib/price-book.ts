@@ -36,6 +36,10 @@ function porCategoria(fn: (cat: Category) => number): PrecioPorCategoria {
 const ruta = (km: number, min: number, airport: boolean) =>
   porCategoria((c) => calculatePrice(km, min, c, "route", 0, airport));
 
+/** El trayecto HACIA la terminal, que desde el 12 oct 2026 lleva su alza. */
+const haciaAeropuerto = (km: number, min: number) =>
+  porCategoria((c) => calculatePrice(km, min, c, "route", 0, false, true));
+
 // El redondo de la tabla se publica con las horas de cortesía incluidas y sin
 // recargo de aeropuerto: /tarifas lista destinos, no puntos de recogida.
 const redondo = (km: number, min: number) =>
@@ -50,7 +54,9 @@ export function tablasTarifas(): TablasTarifas {
     // La salida desde aeropuerto lleva el recargo de estacionamiento y
     // espera; el trayecto hacia el aeropuerto no.
     desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, true)])),
-    hacia: Object.fromEntries(RUTAS_HACIA.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, false)])),
+    hacia: Object.fromEntries(
+      RUTAS_HACIA.map((r) => [r.key, haciaAeropuerto(LEGS[r.key].km, LEGS[r.key].min)]),
+    ),
     horas: Object.fromEntries(DURACIONES.map((h) => [h, bloque(h)])),
     redondo: Object.fromEntries(
       RUTAS_REDONDO.map((r) => [r.key, redondo(LEGS[r.key].km, LEGS[r.key].min)]),

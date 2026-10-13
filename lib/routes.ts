@@ -96,9 +96,9 @@ type Copy = {
    *   71 a 60, 59 y 57. Quedaban 26 páginas largas.
    * - Lote 2, 12 oct 2026: Interlomas, Cuernavaca y Tepoztlán, que eran las
    *   seis siguientes. De 70 y 69 a 56 y 55. Quedaban 20 páginas largas.
-   * - Lote 3, 13 oct 2026: Querétaro, Santa Fe (AICM) y Coyoacán. De 69 y 68
-   *   a 55, 46 y 50. Quedan 14 páginas largas y 16 títulos de ruta con la
-   *   marca.
+   * - Lote 3, 13 oct 2026: Querétaro (69 y 69 a 55 y 55), Santa Fe desde el
+   *   AICM (60 y 68 a 46 y 54) y Coyoacán (64 y 68 a 50 y 54). Quedan 15
+   *   páginas largas y 16 títulos de ruta con la marca.
    *
    * LAS QUE QUEDAN YA NO SON TODAS DE RUTA. La portada en inglés y la guía de
    * Teotihuacán miden 68, y su título vive en `COPY` de lib/seo.ts, no aquí.

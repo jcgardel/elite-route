@@ -71,6 +71,31 @@ type Copy = {
   zone: string;
   /** H1 de la página. */
   title: string;
+  /**
+   * El título del resultado de búsqueda. Hasta 60 caracteres: de ahí para
+   * arriba Google lo corta.
+   *
+   * SIN "| Elite Route" AL FINAL, y es un cambio en marcha desde el 12 de
+   * octubre de 2026. Los treinta y cuatro títulos de ruta acababan con la
+   * marca y treinta y dos de las sesenta y cuatro páginas del sitio pasaban
+   * de sesenta caracteres: Valle de Bravo y San Miguel llegaban a setenta y
+   * cuatro, o sea catorce caracteres invisibles. La marca sobra ahí porque
+   * Google ya enseña el nombre del sitio en su propio renglón del resultado,
+   * y `siteName` lo declara aparte en lib/seo.ts.
+   *
+   * Quitarla recorta los catorce caracteres SIN tocar ninguna palabra por la
+   * que la página aparece, que es la única forma segura de acortar un título:
+   * recortar el término de búsqueda cuesta posiciones.
+   *
+   * VA DE POCOS EN POCOS, A PROPÓSITO. Primero las tres rutas de los cinco
+   * títulos más largos —Valle de Bravo, San Miguel de Allende y Del Valle—,
+   * en los dos idiomas. Quedan veintiocho títulos de ruta con la marca y el
+   * resto de las páginas largas. El título es una señal de posicionamiento:
+   * se mide en Search Console antes de seguir con el siguiente lote, no se
+   * cambian los sesenta y cuatro de una vez para descubrir después qué pasó.
+   *
+   * Los pares es/en se mueven juntos, como todo lo demás del sitio.
+   */
   metaTitle: string;
   metaDescription: string;
   keywords: string;
@@ -740,7 +765,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Del Valle e Insurgentes Sur",
       title: "Traslado del AICM a Del Valle e Insurgentes Sur",
-      metaTitle: "Traslado AICM a Del Valle e Insurgentes Sur | Precio Fijo | Elite Route",
+      metaTitle: "Traslado AICM a Del Valle e Insurgentes Sur | Precio Fijo",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Del Valle, Insurgentes Sur y Nápoles. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -767,7 +792,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Del Valle and Insurgentes Sur",
       title: "Airport transfer to Del Valle and Insurgentes Sur",
-      metaTitle: "Mexico City Airport to Del Valle Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City Airport to Del Valle Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Del Valle, Insurgentes Sur and Nápoles. Fixed price, VAT included.",
       keywords:
@@ -966,7 +991,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "San Miguel de Allende",
       title: "Traslado de Ciudad de México a San Miguel de Allende",
-      metaTitle: "Traslado privado CDMX a San Miguel de Allende | Precio Fijo | Elite Route",
+      metaTitle: "Traslado privado CDMX a San Miguel de Allende | Precio Fijo",
       metaDescription:
         "Traslado privado de Ciudad de México a San Miguel de Allende con chofer. Unas cuatro horas. Precio fijo con IVA y casetas incluidas.",
       keywords:
@@ -992,7 +1017,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "San Miguel de Allende",
       title: "Private transfer from Mexico City to San Miguel de Allende",
-      metaTitle: "Mexico City to San Miguel de Allende Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to San Miguel de Allende Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to San Miguel de Allende. About four hours. Fixed price including VAT and tolls.",
       keywords:
@@ -1022,7 +1047,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "Valle de Bravo",
       title: "Traslado de Ciudad de México a Valle de Bravo",
-      metaTitle: "Traslado privado CDMX a Valle de Bravo | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado privado CDMX a Valle de Bravo | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado de Ciudad de México a Valle de Bravo con chofer. Cerca de dos horas y media. Precio fijo con IVA y casetas incluidas.",
       keywords:
@@ -1056,7 +1081,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "Valle de Bravo",
       title: "Private transfer from Mexico City to Valle de Bravo",
-      metaTitle: "Mexico City to Valle de Bravo Private Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to Valle de Bravo Private Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to Valle de Bravo. Close to two and a half hours. Fixed price including VAT and tolls.",
       keywords:

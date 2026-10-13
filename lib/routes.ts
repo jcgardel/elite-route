@@ -95,8 +95,16 @@ type Copy = {
    *   las tres rutas de los cinco títulos más largos del sitio. De 74, 73 y
    *   71 a 60, 59 y 57. Quedaban 26 páginas largas.
    * - Lote 2, 12 oct 2026: Interlomas, Cuernavaca y Tepoztlán, que eran las
-   *   seis siguientes. De 70 y 69 a 56 y 55. Quedan 20 páginas largas, de las
-   *   cuales 22 títulos de ruta siguen con la marca.
+   *   seis siguientes. De 70 y 69 a 56 y 55. Quedaban 20 páginas largas.
+   * - Lote 3, 13 oct 2026: Querétaro, Santa Fe (AICM) y Coyoacán. De 69 y 68
+   *   a 55, 46 y 50. Quedan 14 páginas largas y 16 títulos de ruta con la
+   *   marca.
+   *
+   * LAS QUE QUEDAN YA NO SON TODAS DE RUTA. La portada en inglés y la guía de
+   * Teotihuacán miden 68, y su título vive en `COPY` de lib/seo.ts, no aquí.
+   * La portada además es el único sitio donde la marca sí pinta algo en el
+   * título: es la página del negocio. Ésa se decide aparte, no con la regla
+   * de este archivo.
    *
    * Los pares es/en se mueven juntos, como todo lo demás del sitio.
    */
@@ -206,7 +214,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Santa Fe",
       title: "Traslado del AICM a Santa Fe",
-      metaTitle: "Traslado AICM a Santa Fe | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado AICM a Santa Fe | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Santa Fe e Interlomas. Unos 50 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -233,7 +241,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Santa Fe",
       title: "Airport transfer to Santa Fe",
-      metaTitle: "Mexico City Airport to Santa Fe Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City Airport to Santa Fe Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Santa Fe and Interlomas. About 50 minutes. Fixed price, VAT included, flight tracked.",
       keywords:
@@ -712,7 +720,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Coyoacán y San Ángel",
       title: "Traslado del AICM a Coyoacán y San Ángel",
-      metaTitle: "Traslado AICM a Coyoacán y San Ángel | Precio Fijo | Elite Route",
+      metaTitle: "Traslado AICM a Coyoacán y San Ángel | Precio Fijo",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Coyoacán, San Ángel y Ciudad Universitaria. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -739,7 +747,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Coyoacán and San Ángel",
       title: "Airport transfer to Coyoacán and San Ángel",
-      metaTitle: "Mexico City Airport to Coyoacán Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City Airport to Coyoacán Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Coyoacán, San Ángel and Ciudad Universitaria. Fixed price, VAT included.",
       keywords:
@@ -883,7 +891,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "Querétaro",
       title: "Traslado de Ciudad de México a Querétaro",
-      metaTitle: "Traslado privado CDMX a Querétaro | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado privado CDMX a Querétaro | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado de Ciudad de México a Querétaro con chofer. Unas tres horas. Precio fijo con IVA, casetas incluidas.",
       keywords:
@@ -909,7 +917,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "Querétaro",
       title: "Private transfer from Mexico City to Querétaro",
-      metaTitle: "Mexico City to Queretaro Private Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to Queretaro Private Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to Querétaro. About three hours. Fixed price including VAT and tolls.",
       keywords:

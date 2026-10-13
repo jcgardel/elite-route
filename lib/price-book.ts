@@ -65,6 +65,28 @@ export function tablasTarifas(): TablasTarifas {
   };
 }
 
+/**
+ * El precio más bajo y el más alto que /tarifas y /rates llegan a enseñar.
+ *
+ * Sale de `tablasTarifas()`, que es el mismo objeto que pinta las tablas, y
+ * no de una lista escrita a mano: un `AggregateOffer` que no coincide con lo
+ * que se ve en la página es motivo de acción manual de Google, y la única
+ * forma de que no se desalineen nunca es que los dos salgan de aquí.
+ *
+ * `redondoHoraExtra` queda fuera a propósito: es el precio de una hora de
+ * espera añadida, no el de un servicio que alguien pueda comprar.
+ */
+export function rangoTarifas(): { low: number; high: number } {
+  const t = tablasTarifas();
+  const todos = [
+    ...Object.values(t.desde),
+    ...Object.values(t.hacia),
+    ...Object.values(t.horas),
+    ...Object.values(t.redondo),
+  ].flatMap((porCat) => Object.values(porCat));
+  return { low: Math.min(...todos), high: Math.max(...todos) };
+}
+
 /** Las tablas de la página corporativa. */
 export function tablasB2b(): TablasB2b {
   const rutas: Record<string, PrecioPorCategoria> = {};

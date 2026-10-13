@@ -87,12 +87,16 @@ type Copy = {
    * que la página aparece, que es la única forma segura de acortar un título:
    * recortar el término de búsqueda cuesta posiciones.
    *
-   * VA DE POCOS EN POCOS, A PROPÓSITO. Primero las tres rutas de los cinco
-   * títulos más largos —Valle de Bravo, San Miguel de Allende y Del Valle—,
-   * en los dos idiomas. Quedan veintiocho títulos de ruta con la marca y el
-   * resto de las páginas largas. El título es una señal de posicionamiento:
-   * se mide en Search Console antes de seguir con el siguiente lote, no se
-   * cambian los sesenta y cuatro de una vez para descubrir después qué pasó.
+   * VA DE POCOS EN POCOS, A PROPÓSITO. El título es una señal de
+   * posicionamiento: se cambian por lotes y se mide en Search Console, no se
+   * tocan los sesenta y cuatro de una vez para descubrir después qué pasó.
+   *
+   * - Lote 1, 12 oct 2026: Valle de Bravo, San Miguel de Allende y Del Valle,
+   *   las tres rutas de los cinco títulos más largos del sitio. De 74, 73 y
+   *   71 a 60, 59 y 57. Quedaban 26 páginas largas.
+   * - Lote 2, 12 oct 2026: Interlomas, Cuernavaca y Tepoztlán, que eran las
+   *   seis siguientes. De 70 y 69 a 56 y 55. Quedan 20 páginas largas, de las
+   *   cuales 22 títulos de ruta siguen con la marca.
    *
    * Los pares es/en se mueven juntos, como todo lo demás del sitio.
    */
@@ -651,7 +655,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Interlomas",
       title: "Traslado del AICM a Interlomas",
-      metaTitle: "Traslado AICM a Interlomas y Huixquilucan | Precio Fijo | Elite Route",
+      metaTitle: "Traslado AICM a Interlomas y Huixquilucan | Precio Fijo",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Interlomas, Huixquilucan y Bosques de las Lomas. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -678,7 +682,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Interlomas",
       title: "Airport transfer to Interlomas",
-      metaTitle: "Mexico City Airport to Interlomas Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City Airport to Interlomas Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Interlomas, Huixquilucan and Bosques de las Lomas. Fixed price, VAT included.",
       keywords:
@@ -935,7 +939,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "Cuernavaca",
       title: "Traslado de Ciudad de México a Cuernavaca",
-      metaTitle: "Traslado privado CDMX a Cuernavaca | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado privado CDMX a Cuernavaca | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado de Ciudad de México a Cuernavaca con chofer. Alrededor de hora y media. Precio fijo con IVA y casetas incluidas.",
       keywords:
@@ -961,7 +965,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "Cuernavaca",
       title: "Private transfer from Mexico City to Cuernavaca",
-      metaTitle: "Mexico City to Cuernavaca Private Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to Cuernavaca Private Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to Cuernavaca. Around an hour and a half. Fixed price including VAT and tolls.",
       keywords:
@@ -1136,7 +1140,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "Tepoztlán",
       title: "Traslado de Ciudad de México a Tepoztlán",
-      metaTitle: "Traslado privado CDMX a Tepoztlán | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado privado CDMX a Tepoztlán | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado de Ciudad de México a Tepoztlán con chofer. Hora y media por la autopista del sol. Precio fijo con IVA y casetas incluidas, y viaje redondo el mismo día.",
       keywords:
@@ -1166,7 +1170,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "Tepoztlán",
       title: "Private transfer from Mexico City to Tepoztlán",
-      metaTitle: "Mexico City to Tepoztlan Private Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to Tepoztlan Private Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to Tepoztlán. About ninety minutes. Fixed price including VAT and tolls, and available as a same-day round trip.",
       keywords:

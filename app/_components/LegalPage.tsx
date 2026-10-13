@@ -2,6 +2,7 @@ import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { path, type Lang, type Page } from "@/lib/i18n";
+import { breadcrumbLd } from "@/lib/seo";
 import { LEGAL } from "@/lib/legal";
 
 const TX = {
@@ -90,6 +91,15 @@ export default function LegalPage({
         .lg-root a:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; }
         @media (max-width:600px) { .lg-table td:first-child { width:42%; } }
       `}</style>
+
+      {/* Las migas van aquí y no en cada página porque las cuatro legales
+          —términos y privacidad, en los dos idiomas— pasan por este
+          componente y ya le dicen cuál son. Añadido el 12 de octubre de 2026:
+          eran cuatro de las once URLs del sitio sin ningún dato estructurado. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd(lang, ["home", page])) }}
+      />
 
       <div className="lg-root">
         <nav className="lg-nav">

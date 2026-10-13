@@ -257,6 +257,40 @@ export function metadataFrom(
   };
 }
 
+/**
+ * Las migas de pan en JSON-LD.
+ *
+ * Nueve páginas las necesitaban de golpe —las dos de precios, las dos
+ * corporativas, las dos del cotizador y las cuatro legales— y escribir nueve
+ * veces la misma lista a mano es pedir que se desalineen. El nombre de cada
+ * escalón sale de aquí y la URL de `url()`, así que una miga no puede
+ * apuntar a una ruta que no existe.
+ *
+ * Las veinte páginas que ya traían migas propias se quedan como están: su
+ * último escalón es el nombre de la ruta o de la guía, que vive en su propio
+ * contenido y no en una tabla de etiquetas.
+ */
+const MIGA: Partial<Record<Page, Record<Lang, string>>> = {
+  home: { en: "Home", es: "Inicio" },
+  rates: { en: "Rates", es: "Tarifas" },
+  corporate: { en: "Corporate", es: "Corporativo" },
+  quote: { en: "Corporate quote", es: "Cotizador corporativo" },
+  terms: { en: "Terms of service", es: "Términos y condiciones" },
+  privacy: { en: "Privacy notice", es: "Aviso de privacidad" },
+};
+
+export function breadcrumbLd(lang: Lang, trail: Page[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((page, i) => {
+      const name = MIGA[page]?.[lang];
+      if (!name) throw new Error(`Sin etiqueta de miga para ${page}/${lang}`);
+      return { "@type": "ListItem", position: i + 1, name, item: url(lang, page) };
+    }),
+  };
+}
+
 export function pageMetadata(lang: Lang, page: Page): Metadata {
   const copy = COPY[page]?.[lang];
   if (!copy) throw new Error(`Sin copy de SEO para ${page}/${lang}`);

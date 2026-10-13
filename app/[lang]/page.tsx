@@ -21,18 +21,27 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
  * opera y cómo se le contacta. Sólo datos que el sitio ya sostiene en otras
  * páginas.
  *
- * Sigue sin `aggregateRating`, y ahora por un motivo distinto del de antes:
- * ya hay reseñas verificables —5.0 sobre 20 en la ficha de Google—, pero
- * Google no acepta que un negocio publique su propia calificación en su
- * propio sitio. Sus normas de fragmentos de reseña lo llaman "autoservicio"
- * y dejan la página fuera del formato de estrellas, tanto si el dato va en
- * los datos estructurados como si viene de un widget de reseñas incrustado.
- * Las estrellas del buscador salen de la ficha, no de aquí. Lo que sí suma
- * es `sameAs`: le dice a Google que este sitio y esa ficha son el mismo
- * negocio, que es justo lo que hace que la ficha y el dominio se refuercen.
+ * Sigue sin `aggregateRating`. Ya hay reseñas verificables —5.0 sobre 20 en
+ * la ficha de Google—, pero Google no acepta que un negocio publique su
+ * propia calificación en su propio sitio. Sus normas de fragmentos de reseña
+ * lo llaman "autoservicio" y dejan la página fuera del formato de estrellas,
+ * tanto si el dato va en los datos estructurados como si viene de un widget
+ * de reseñas incrustado. Las estrellas del buscador salen de la ficha, no de
+ * aquí. Lo que sí suma es `sameAs`: le dice a Google que este sitio y esa
+ * ficha son el mismo negocio.
  *
- * Va una sola vez, en la portada en español: es una ficha de un negocio, no
- * de una página, y declararla dos veces con el mismo @id no aporta nada.
+ * VA EN LAS DOS PORTADAS desde el 12 de octubre de 2026. Antes iba sólo en la
+ * española, con el argumento de que es la ficha de un negocio y no de una
+ * página, y que declararla dos veces con el mismo `@id` no aportaba nada. La
+ * auditoría de ese día encontró el efecto real: /en no declaraba ningún dato
+ * estructurado, y era la única página comercial del sitio en ese estado. Dos
+ * URLs alternas emparejadas por hreflang que declaran la misma entidad con el
+ * mismo `@id` es el patrón normal, no contenido duplicado: Google las trata
+ * como versiones de lo mismo, que es lo que son. El dueño lo aprobó.
+ *
+ * `logo` llegó el mismo día, por la misma auditoría. Apunta a `/icon.svg`,
+ * que es la marca del sitio. Es una marca mínima, no un logotipo trabajado:
+ * rellena la propiedad y no hace milagros.
  *
  * Y SIGUE SIN `address`, que es lo que alguien va a querer añadir al mirar
  * esto. Se propuso el 4 de octubre de 2026 —falta la A de las tres señales
@@ -41,51 +50,77 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
  *
  * El motivo no es técnico: `LEGAL.domicilio` es la casa del dueño. Ver la
  * nota del pie en HomeClient.tsx, que ya lo había decidido para el texto
- * visible. Aquí pesa más todavía, porque unos datos estructurados no son una
- * línea en un pie: son un bloque legible por máquina, presente en todas las
- * páginas, que Google y cualquier rastreador copian. Además, Google Business
- * permite registrar el domicilio para verificarse y mantenerlo OCULTO en la
- * ficha pública —que es lo normal en un negocio sin local—, así que
- * publicarlo aquí anularía esa protección desde el propio sitio.
+ * visible. El aviso de privacidad sí lo publica, porque la ley se lo exige,
+ * pero un párrafo legal y un bloque de datos estructurados no pesan igual:
+ * esto es legible por máquina y lo copian los rastreadores y los agregadores
+ * como el domicilio del negocio. Google Business además permite registrar el
+ * domicilio para verificarse y mantenerlo oculto en la ficha pública, que es
+ * lo normal en un negocio sin local.
  *
  * Qué se pierde: poco. La dirección pesa como señal de posicionamiento en un
  * negocio CON local. En uno de área de servicio pesan más la zona, la
  * categoría y las reseñas, que es donde está el trabajo pendiente.
  *
- * NO LO AÑADAS SIN PREGUNTARLE. Si algún día el dueño decide enseñar el
- * domicilio en su ficha de Google, deja de haber nada que proteger y entonces
- * sí conviene que el sitio diga lo mismo.
+ * NO LO AÑADAS SIN PREGUNTARLE.
  */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": `${SITE}/#business`,
-  name: "Elite Route",
-  description:
-    "Transporte ejecutivo privado en Ciudad de México: traslados al aeropuerto AICM, AIFA y Toluca, servicio por horas y cuentas corporativas.",
-  url: SITE,
-  telephone: "+52-55-4358-2919",
-  email: "business@eliteroute.mx",
-  image: `${SITE}/executive.webp`,
-  priceRange: "$$$",
-  currenciesAccepted: "MXN",
-  paymentAccepted: "Tarjeta de crédito, tarjeta de débito",
-  sameAs: [
-    "https://www.google.com/maps/place/?q=place_id:ChIJwYyKBzB3-SYRmnY1eNB8Vf0",
-  ],
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    opens: "00:00",
-    closes: "23:59",
+const NEGOCIO = {
+  es: {
+    description:
+      "Transporte ejecutivo privado en Ciudad de México: traslados al aeropuerto AICM, AIFA y Toluca, servicio por horas y cuentas corporativas.",
+    paymentAccepted: "Tarjeta de crédito, tarjeta de débito",
+    city: "Ciudad de México",
+    airports: [
+      "Aeropuerto Internacional Benito Juárez (AICM)",
+      "Aeropuerto Internacional Felipe Ángeles (AIFA)",
+      "Aeropuerto Internacional de Toluca",
+    ],
   },
-  areaServed: [
-    { "@type": "City", name: "Ciudad de México" },
-    { "@type": "Airport", name: "Aeropuerto Internacional Benito Juárez (AICM)", iataCode: "MEX" },
-    { "@type": "Airport", name: "Aeropuerto Internacional Felipe Ángeles (AIFA)", iataCode: "NLU" },
-    { "@type": "Airport", name: "Aeropuerto Internacional de Toluca", iataCode: "TLC" },
-  ],
-};
+  en: {
+    description:
+      "Private executive transportation in Mexico City: airport transfers to AICM, AIFA and Toluca, hourly chauffeur service and corporate accounts.",
+    paymentAccepted: "Credit card, debit card",
+    city: "Mexico City",
+    airports: [
+      "Mexico City International Airport (AICM)",
+      "Felipe Ángeles International Airport (AIFA)",
+      "Toluca International Airport",
+    ],
+  },
+} as const;
+
+const IATA = ["MEX", "NLU", "TLC"] as const;
+
+function fichaDeNegocio(lang: Lang) {
+  const n = NEGOCIO[lang];
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${SITE}/#business`,
+    name: "Elite Route",
+    description: n.description,
+    url: SITE,
+    telephone: "+52-55-4358-2919",
+    email: "business@eliteroute.mx",
+    image: `${SITE}/executive.webp`,
+    logo: `${SITE}/icon.svg`,
+    priceRange: "$$$",
+    currenciesAccepted: "MXN",
+    paymentAccepted: n.paymentAccepted,
+    sameAs: [
+      "https://www.google.com/maps/place/?q=place_id:ChIJwYyKBzB3-SYRmnY1eNB8Vf0",
+    ],
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
+    areaServed: [
+      { "@type": "City", name: n.city },
+      ...n.airports.map((name, i) => ({ "@type": "Airport", name, iataCode: IATA[i] })),
+    ],
+  };
+}
 
 /**
  * Las 16 rutas, reducidas a lo único que la portada necesita: un enlace y una
@@ -154,12 +189,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      {lang === "es" && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(fichaDeNegocio(lang)) }}
+      />
       {/* El fondo del hero vive dentro del CSS, así que el navegador lo
           descubre tarde: es la imagen más grande de la primera pantalla. */}
       <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />

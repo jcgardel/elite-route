@@ -12,6 +12,28 @@ import { ROUTE_KEYS, routePath } from "@/lib/routes";
  *
  * Las páginas de resultado de pago no entran: no son contenido, y robots.txt
  * ya las excluye.
+ *
+ * SIN `lastmod`, y a propósito desde el 12 de octubre de 2026.
+ *
+ * Hasta ese día cada una de las 64 URLs declaraba `lastModified: new Date()`,
+ * es decir la hora de compilación: las 64 cambiaban de fecha en cada
+ * despliegue aunque el despliegue no tocara su contenido. Un `lastmod` así no
+ * es un dato, es ruido, y Google deja de hacerle caso cuando comprueba que no
+ * se corresponde con cambios reales. Más vale no declararlo: no declararlo no
+ * penaliza, y declararlo en falso gasta la única señal que sirve para pedir
+ * que vuelvan a rastrear una página cuyo precio cambió.
+ *
+ * NO LO DEVUELVAS CON UNA TABLA DE FECHAS A MANO. Dieciséis fechas que hay
+ * que acordarse de mover cada vez que se edita una página se desalinean en
+ * semanas; es el mismo accidente que ya pasó con las distancias de
+ * `lib/distances.ts`. Si algún día hace falta la señal de verdad, el sitio ya
+ * tiene un sitio donde la fecha tiene dueño: el `revisado` de cada guía, que
+ * el dueño mantiene porque se enseña en la página. Eso pide un campo con
+ * fecha legible por máquina en `lib/guides/types.ts` y `lastmod` sólo en esas
+ * tres páginas, que son las que de verdad se revisan.
+ *
+ * `changefreq` y `priority` se quedan. Google dice que los ignora, pero no
+ * estorban y otros rastreadores sí los leen.
  */
 const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "monthly" | "yearly" }> = [
   { page: "home", priority: 1, changeFrequency: "weekly" },
@@ -51,12 +73,9 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
-
   const paginas = PAGES.flatMap(({ page, priority, changeFrequency }) =>
     LANGS.map((lang) => ({
       url: url(lang, page),
-      lastModified: now,
       changeFrequency,
       priority,
       alternates: {
@@ -74,7 +93,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const rutas = ROUTE_KEYS.flatMap((key) =>
     LANGS.map((lang) => ({
       url: SITE + routePath(lang, key),
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.9,
       alternates: {

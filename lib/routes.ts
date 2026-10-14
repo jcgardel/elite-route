@@ -97,14 +97,24 @@ type Copy = {
    * - Lote 2, 12 oct 2026: Interlomas, Cuernavaca y Tepoztlán, que eran las
    *   seis siguientes. De 70 y 69 a 56 y 55. Quedaban 20 páginas largas.
    * - Lote 3, 13 oct 2026: Querétaro (69 y 69 a 55 y 55), Santa Fe desde el
-   *   AICM (60 y 68 a 46 y 54) y Coyoacán (64 y 68 a 50 y 54). Quedan 15
+   *   AICM (60 y 68 a 46 y 54) y Coyoacán (64 y 68 a 50 y 54). Quedaban 15
    *   páginas largas y 16 títulos de ruta con la marca.
+   * - Lote 4, 14 oct 2026: los dieciséis que quedaban, que resultaron ser
+   *   ocho pares completos —Polanco, Centro, Satélite, AIFA, AIFA-Polanco,
+   *   AIFA-Santa Fe, Toluca y Puebla—. Ninguno pasa ya de 53. Con esto NO
+   *   QUEDA NINGÚN TÍTULO DE RUTA CON LA MARCA, que es el estado al que
+   *   apuntaba este archivo: media convención es peor que ninguna, porque
+   *   invita a "arreglarla" en la dirección equivocada.
    *
-   * LAS QUE QUEDAN YA NO SON TODAS DE RUTA. La portada en inglés y la guía de
-   * Teotihuacán miden 68, y su título vive en `COPY` de lib/seo.ts, no aquí.
-   * La portada además es el único sitio donde la marca sí pinta algo en el
-   * título: es la página del negocio. Ésa se decide aparte, no con la regla
-   * de este archivo.
+   * Se hizo entero y no por mitades porque ocho de los dieciséis ya estaban
+   * por debajo de 60 y sólo quedaban por su par: partirlo habría dejado
+   * gemelas diciendo cosas distintas, que es lo que este sitio no hace.
+   *
+   * LO QUE QUEDA LARGO YA NO ESTÁ AQUÍ. La portada en inglés y la guía de
+   * Teotihuacán miden 68 y su título vive en `COPY` de lib/seo.ts. La portada
+   * además es el único sitio donde la marca sí pinta algo en el título: es la
+   * página del negocio. Ésas se deciden aparte, no con la regla de este
+   * archivo.
    *
    * Los pares es/en se mueven juntos, como todo lo demás del sitio.
    */
@@ -157,7 +167,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Polanco",
       title: "Traslado del AICM a Polanco",
-      metaTitle: "Traslado AICM a Polanco | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado AICM a Polanco | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Polanco y Lomas de Chapultepec. Unos 30 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -184,7 +194,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Polanco",
       title: "Airport transfer to Polanco",
-      metaTitle: "Mexico City Airport to Polanco Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City Airport to Polanco Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Polanco and Lomas de Chapultepec. About 30 minutes. Fixed price, VAT included, flight tracked, waiting covered.",
       keywords:
@@ -271,7 +281,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Centro Histórico, Roma y Condesa",
       title: "Traslado del AICM al Centro, Roma y Condesa",
-      metaTitle: "Traslado AICM a Centro, Roma y Condesa | Precio Fijo | Elite Route",
+      metaTitle: "Traslado AICM a Centro, Roma y Condesa | Precio Fijo",
       metaDescription:
         "Traslado privado del aeropuerto AICM al Centro Histórico, la Roma y la Condesa. Unos 25 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
@@ -298,7 +308,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Centro Histórico, Roma and Condesa",
       title: "Airport transfer to Downtown, Roma and Condesa",
-      metaTitle: "Mexico City Airport to Downtown, Roma & Condesa | Elite Route",
+      metaTitle: "Mexico City Airport to Downtown, Roma & Condesa",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Centro Histórico, Roma and Condesa. About 25 minutes. Fixed price, VAT included.",
       keywords:
@@ -328,7 +338,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AICM",
       zone: "Satélite y Naucalpan",
       title: "Traslado del AICM a Satélite y Naucalpan",
-      metaTitle: "Traslado AICM a Satélite y Naucalpan | Precio Fijo | Elite Route",
+      metaTitle: "Traslado AICM a Satélite y Naucalpan | Precio Fijo",
       metaDescription:
         "Traslado privado del aeropuerto AICM a Ciudad Satélite y Naucalpan. Unos 40 minutos. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -355,7 +365,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City International Airport (AICM)",
       zone: "Satélite and Naucalpan",
       title: "Airport transfer to Satélite and Naucalpan",
-      metaTitle: "Mexico City Airport to Satélite & Naucalpan | Elite Route",
+      metaTitle: "Mexico City Airport to Satélite & Naucalpan",
       metaDescription:
         "Private transfer from Mexico City International Airport (MEX/AICM) to Ciudad Satélite and Naucalpan. About 40 minutes. Fixed price, VAT included.",
       keywords:
@@ -385,7 +395,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AIFA",
       zone: "Ciudad de México",
       title: "Traslado del AIFA a la Ciudad de México",
-      metaTitle: "Traslado AIFA a CDMX | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado AIFA a CDMX | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a cualquier zona de la Ciudad de México. Unos 75 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
@@ -415,7 +425,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       // en los 28 días a septiembre de 2026. Ver la nota larga en `toluca.en`
       // para el porqué de "shuttle" y por qué nunca va sin "private".
       title: "Private airport shuttle from AIFA to Mexico City",
-      metaTitle: "Private AIFA Airport Shuttle to Mexico City | Elite Route",
+      metaTitle: "Private AIFA Airport Shuttle to Mexico City",
       metaDescription:
         "Private door-to-door shuttle from Felipe Ángeles airport (NLU/AIFA) to any part of Mexico City. Your own vehicle, never shared. Fixed price, VAT included.",
       keywords:
@@ -449,7 +459,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AIFA",
       zone: "Polanco",
       title: "Traslado del AIFA a Polanco",
-      metaTitle: "Traslado AIFA a Polanco | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado AIFA a Polanco | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Polanco y Lomas de Chapultepec. Poco más de una hora. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -480,7 +490,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Felipe Ángeles Airport (AIFA)",
       zone: "Polanco",
       title: "AIFA airport transfer to Polanco",
-      metaTitle: "AIFA Airport to Polanco Transfer | Fixed Price | Elite Route",
+      metaTitle: "AIFA Airport to Polanco Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to Polanco and Lomas de Chapultepec. Just over an hour. Fixed price, VAT included, flight tracked.",
       keywords:
@@ -514,7 +524,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "AIFA",
       zone: "Santa Fe",
       title: "Traslado del AIFA a Santa Fe",
-      metaTitle: "Traslado AIFA a Santa Fe | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado AIFA a Santa Fe | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Santa Fe. Alrededor de hora y cuarto. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
       keywords:
@@ -545,7 +555,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Felipe Ángeles Airport (AIFA)",
       zone: "Santa Fe",
       title: "AIFA airport transfer to Santa Fe",
-      metaTitle: "AIFA Airport to Santa Fe Transfer | Fixed Price | Elite Route",
+      metaTitle: "AIFA Airport to Santa Fe Transfer | Fixed Price",
       metaDescription:
         "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to Santa Fe. Around an hour and a quarter. Fixed price, VAT included, flight tracked.",
       keywords:
@@ -579,7 +589,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Aeropuerto de Toluca",
       zone: "Ciudad de México",
       title: "Traslado del Aeropuerto de Toluca a la CDMX",
-      metaTitle: "Traslado Aeropuerto de Toluca a CDMX | Precio Fijo | Elite Route",
+      metaTitle: "Traslado Aeropuerto de Toluca a CDMX | Precio Fijo",
       metaDescription:
         "Traslado privado del Aeropuerto Internacional de Toluca (TLC) a la Ciudad de México. Unos 85 minutos. Precio fijo con IVA y espera incluida.",
       keywords:
@@ -624,7 +634,7 @@ export const ROUTES: Record<RouteKey, Route> = {
        * encuentre, y se le dice de inmediato en qué nos diferenciamos.
        */
       title: "Private airport shuttle from Toluca (TLC) to Mexico City",
-      metaTitle: "Private Toluca Airport Shuttle to Mexico City | Elite Route",
+      metaTitle: "Private Toluca Airport Shuttle to Mexico City",
       metaDescription:
         "Private door-to-door shuttle from Toluca airport (TLC) to Mexico City. Your own vehicle, never shared. Round trips available. Fixed price, VAT included.",
       keywords:
@@ -835,7 +845,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Ciudad de México",
       zone: "Puebla",
       title: "Traslado de Ciudad de México a Puebla",
-      metaTitle: "Traslado privado CDMX a Puebla | Precio Fijo con IVA | Elite Route",
+      metaTitle: "Traslado privado CDMX a Puebla | Precio Fijo con IVA",
       metaDescription:
         "Traslado privado de Ciudad de México a Puebla con chofer. Unas dos horas por la autopista. Precio fijo con IVA incluido, sin cargo por esperas razonables.",
       keywords:
@@ -861,7 +871,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       airport: "Mexico City",
       zone: "Puebla",
       title: "Private transfer from Mexico City to Puebla",
-      metaTitle: "Mexico City to Puebla Private Transfer | Fixed Price | Elite Route",
+      metaTitle: "Mexico City to Puebla Private Transfer | Fixed Price",
       metaDescription:
         "Private chauffeured transfer from Mexico City to Puebla. About two hours by motorway. Fixed price including VAT and tolls.",
       keywords:

@@ -196,7 +196,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Airport transfer to Polanco",
       metaTitle: "Mexico City Airport to Polanco Transfer | Fixed Price",
       metaDescription:
-        "Private transfer from Mexico City International Airport (MEX/AICM) to Polanco and Lomas de Chapultepec. About 30 minutes. Fixed price, VAT included, flight tracked, waiting covered.",
+        "Private transfer from Mexico City Airport (MEX/AICM) to Polanco and Lomas de Chapultepec. About 30 minutes. Fixed price, VAT included, flight tracked.",
       keywords:
         "Mexico City airport to Polanco, MEX airport transfer Polanco, private driver Polanco, airport transfer Lomas de Chapultepec",
       intro:
@@ -461,7 +461,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado del AIFA a Polanco",
       metaTitle: "Traslado AIFA a Polanco | Precio Fijo con IVA",
       metaDescription:
-        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Polanco y Lomas de Chapultepec. Poco más de una hora. Precio fijo con IVA, monitoreo de vuelo y espera incluida.",
+        "Traslado privado del Aeropuerto Felipe Ángeles (AIFA) a Polanco y Lomas de Chapultepec. Poco más de una hora. Precio fijo con IVA, monitoreo de vuelo y espera.",
       keywords:
         "traslado AIFA Polanco, transporte AIFA a Polanco, chofer privado AIFA Polanco, taxi AIFA Polanco precio, traslado Felipe Ángeles Polanco",
       intro:
@@ -492,7 +492,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "AIFA airport transfer to Polanco",
       metaTitle: "AIFA Airport to Polanco Transfer | Fixed Price",
       metaDescription:
-        "Private transfer from Felipe Ángeles International Airport (NLU/AIFA) to Polanco and Lomas de Chapultepec. Just over an hour. Fixed price, VAT included, flight tracked.",
+        "Private transfer from Felipe Ángeles Airport (NLU/AIFA) to Polanco and Lomas de Chapultepec. Just over an hour. Fixed price, VAT included, flight tracked.",
       keywords:
         "AIFA to Polanco, Felipe Angeles airport to Polanco, NLU to Polanco transfer, AIFA private driver Polanco, airport transfer Polanco",
       intro:
@@ -1160,7 +1160,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a Tepoztlán",
       metaTitle: "Traslado privado CDMX a Tepoztlán | Precio Fijo con IVA",
       metaDescription:
-        "Traslado privado de Ciudad de México a Tepoztlán con chofer. Hora y media por la autopista del sol. Precio fijo con IVA y casetas incluidas, y viaje redondo el mismo día.",
+        "Traslado privado de Ciudad de México a Tepoztlán con chofer. Hora y media por la autopista del sol. Precio fijo con IVA y casetas, y viaje redondo el mismo día.",
       keywords:
         "traslado CDMX Tepoztlán, chofer privado Tepoztlán, transporte privado Tepoztlán, viaje redondo Tepoztlán, pueblo mágico Morelos chofer",
       intro:

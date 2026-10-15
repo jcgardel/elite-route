@@ -70,7 +70,7 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Day Trips from Mexico City with a Driver",
       h1: "Day trips from Mexico City with a private driver",
       description:
-        "Nine places within reach of Mexico City — Teotihuacán, Xochimilco, the Basilica of Guadalupe, Tepoztlán, Puebla, Cuernavaca and more — with real drive times, how long each one needs and what time to leave.",
+        "Nine places within reach of Mexico City: Teotihuacán, Xochimilco, Tepoztlán, Puebla, Cuernavaca and more. Real drive times and what time to leave.",
       intro:
         "Mexico City is also an unusually good base for the centre of the country. Just over an hour away stand the pyramids of Teotihuacán; a few hours further out, colonial cities, mountain lakes, Pueblos Mágicos and some of the best tables in Mexico. Some of these work comfortably in half a day. Others deserve an early start and a return after dinner. This guide compares the best day trips from Mexico City, how much time each one really takes, and which ones work best when you travel with a private driver.",
       revisado: "Last checked: October 2026",
@@ -355,7 +355,7 @@ export const GUIA_EXCURSIONES: Guia = {
       title: "Excursiones de un día desde la CDMX con chofer",
       h1: "Excursiones de un día desde la Ciudad de México con chofer privado",
       description:
-        "Nueve lugares al alcance de la CDMX —Teotihuacán, Xochimilco, la Basílica de Guadalupe, Tepoztlán, Puebla, Cuernavaca y más— con tiempos de camino reales, cuánto tiempo pide cada uno y a qué hora conviene salir.",
+        "Nueve lugares al alcance de la CDMX: Teotihuacán, Xochimilco, Tepoztlán, Puebla, Cuernavaca y más. Tiempos de camino reales y a qué hora conviene salir.",
       intro:
         "La Ciudad de México es también un excelente punto de partida para descubrir algunos de los destinos más interesantes del centro del país. A poco más de una hora aparecen las pirámides de Teotihuacán; unas horas después, ciudades coloniales, Pueblos Mágicos, lagos entre montañas y algunas de las mejores mesas de México. Algunas escapadas funcionan perfectamente en medio día; otras merecen salir temprano y regresar después de cenar. En esta guía comparamos las mejores excursiones de un día desde CDMX, cuánto tiempo requieren realmente y cuáles funcionan mejor cuando viajas con chofer privado.",
       revisado: "Datos revisados: octubre de 2026",

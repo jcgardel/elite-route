@@ -16,8 +16,41 @@ type Copy = { title: string; description: string; keywords?: string };
 
 const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
   home: {
+    /**
+     * LA PORTADA ES EL ÚNICO TÍTULO DEL SITIO QUE CONSERVA LA MARCA.
+     *
+     * En todas las demás se quitó el "| Elite Route" entre el 12 y el 15 de
+     * octubre de 2026: Google ya enseña el nombre del sitio en su propio
+     * renglón del resultado, y catorce caracteres de marca repetida sólo
+     * servían para que se cortara el título. Aquí no, porque ésta es la
+     * página del negocio y la primera que ve quien busca "Elite Route" por
+     * su nombre.
+     *
+     * EN INGLÉS HUBO QUE ELEGIR, y el primer intento estaba mal. Medía 68 y
+     * el presupuesto son 60: con la marca quedan 46 caracteres y "Private
+     * Chauffeur & Executive Transfers in Mexico City" son 53. La primera
+     * propuesta fue "Private Chauffeur in Mexico City | Elite Route", y al
+     * construirla se vio que es un PREFIJO EXACTO del título de
+     * `/en/private-chauffeur-mexico-city`, que dice "Private Chauffeur in
+     * Mexico City | Fixed Price | Elite Route". Dos URLs peleando por la
+     * misma frase con las mismas palabras, que era justo lo que esa opción
+     * decía evitar.
+     *
+     * Lo que quedó separa los papeles: la portada lidera con "chauffeur" y
+     * suma "airport transfers", el servicio que paga las facturas; la página
+     * dedicada se queda "private chauffeur" para ella sola, y
+     * `/en/mexico-city-airport-transfer` conserva los tres aeropuertos por
+     * nombre. Ninguna es prefijo de otra.
+     *
+     * Se suelta "Executive Transfers", que lo tiene
+     * `/en/executive-transportation-mexico-city`. Una portada no debería
+     * competir contra sus propias páginas.
+     *
+     * De paso, el inglés pasa a tener la misma forma que el español: la
+     * marca al final tras una barra, en vez de abrir con una raya.
+     */
     en: {
-      title: "Elite Route — Private Chauffeur & Executive Transfers in Mexico City",
+      title: "Mexico City Chauffeur & Airport Transfers | Elite Route",
       description:
         "Book a private chauffeur in Mexico City. Airport transfers to AICM, AIFA and Toluca, hourly service and corporate accounts. Fixed price, VAT included.",
       keywords:

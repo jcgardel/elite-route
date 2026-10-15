@@ -218,12 +218,20 @@ button and the `.ics` attachment.
 
 ```bash
 RESEND_API_KEY=
-RESEND_NOTIFY_TO=business@eliteroute.mx
+RESEND_NOTIFY_TO=contabilidad@eliteroute.mx
 ```
 
-`RESEND_NOTIFY_TO` **overrides** the `business@eliteroute.mx` default that
-lives in the code. If it is set to anything else, that is where the bookings
-go — check it before assuming the address in `lib/legal.ts` is being used.
+`RESEND_NOTIFY_TO` **overrides** the `contabilidad@eliteroute.mx` default that
+lives in `lib/payment-notifications.ts`. If it is set to anything else, that is
+where the paid-booking alerts go — check the deployment's env vars before
+assuming the code default applies.
+
+Paid-booking alerts moved from `business@` to `contabilidad@` on 14 Oct 2026.
+The address is now a literal in `payment-notifications.ts` and no longer reads
+`LEGAL.correoComercial`: the public commercial inbox and the inbox that gets
+told about a charge are different things, and tying them together meant
+neither could move on its own. `lib/legal.ts` still holds the public contact
+addresses shown on the site, and those did not change.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

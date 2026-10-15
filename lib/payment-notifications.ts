@@ -31,8 +31,19 @@ function escapeHtml(value: string) {
  * se calla. Con esto, lo peor que puede pasar es que el aviso llegue al sitio
  * correcto. Las variables siguen mandando si existen, para poder cambiar el
  * destino sin desplegar.
+ *
+ * EL CORREO VA SUELTO, NO SALE DE `LEGAL`. Hasta el 14 de octubre de 2026
+ * esto era `LEGAL.correoComercial`, y por eso los avisos de pago caían en
+ * business@. Pero el buzón que atiende a un cliente que escribe desde la
+ * web y el buzón que recibe el aviso de un cobro son dos cosas distintas:
+ * la primera es comercial y pública, la segunda es contabilidad. Atarlas a
+ * la misma constante hacía imposible mover una sin mover la otra.
+ *
+ * No se usa `LEGAL.correoPrivacidad` aunque hoy valga lo mismo: ése es el
+ * correo que el aviso de privacidad promete para ejercer derechos ARCO, y
+ * colgar de él los avisos de cobro repetiría el mismo error con otro nombre.
  */
-const AVISO_CORREO = LEGAL.correoComercial;
+const AVISO_CORREO = "contabilidad@eliteroute.mx";
 const AVISO_WHATSAPP = LEGAL.whatsapp.replace(/[^0-9]/g, "");
 
 /**

@@ -35,7 +35,7 @@ export const GUIA_AEROPUERTO: Guia = {
       title: "Getting from Mexico City Airport (AICM) into the City",
       h1: "How to get from Mexico City airport into the city",
       description:
-        "Four ways out of AICM compared: authorized taxis, Uber and DiDi, the Metro and a pre-booked driver. What each really costs, how long it takes, and the 2026 rule change most guides still get wrong.",
+        "Four ways out of AICM compared: authorized taxis, Uber and DiDi, the Metro and a pre-booked driver. What each costs, and the 2026 rule change.",
       intro:
         "You have four realistic ways out of Mexico City International Airport. One of them changed in 2026 and most travel guides have not caught up, which is why people land expecting to order a car at the door and find out they cannot. Here is what each option actually costs, where you catch it, and which one fits the way you are travelling.",
       revisado: "Last checked: October 2026",
@@ -230,7 +230,7 @@ export const GUIA_AEROPUERTO: Guia = {
       title: "Cómo salir del aeropuerto de la CDMX hacia la ciudad",
       h1: "Cómo llegar del aeropuerto de la CDMX a la ciudad",
       description:
-        "Las cuatro formas de salir del AICM comparadas: taxi autorizado, Uber y DiDi, metro y chofer reservado. Lo que cuesta cada una, cuánto tarda y el cambio de 2026 que casi ninguna guía ha actualizado.",
+        "Las cuatro formas de salir del AICM comparadas: taxi autorizado, Uber y DiDi, metro y chofer reservado. Lo que cuesta cada una y el cambio de 2026.",
       intro:
         "Hay cuatro formas realistas de salir del Aeropuerto Internacional de la Ciudad de México. Una de ellas cambió en 2026 y la mayoría de las guías no se ha enterado, así que mucha gente aterriza esperando pedir un coche en la puerta y se encuentra con que no puede. Esto es lo que cuesta cada opción, dónde se toma y cuál le conviene a quién.",
       revisado: "Datos revisados: octubre de 2026",

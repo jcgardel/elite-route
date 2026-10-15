@@ -180,7 +180,7 @@ export const GUIA_TERMINALES: Guia = {
       title: "AICM: ¿Terminal 1 o Terminal 2?",
       h1: "AICM Terminal 1 o Terminal 2: cómo saber cuál es la tuya y cómo cambiar",
       description:
-        "Qué aerolíneas usa cada terminal del AICM, por qué no se puede caminar de una a otra, cómo funciona el Aerotrén gratuito y qué hacer si todavía no tienes pase de abordar.",
+        "Qué aerolíneas usa cada terminal del AICM, por qué no se puede caminar de una a otra, cómo funciona el Aerotrén gratuito y qué hacer sin pase de abordar.",
       intro:
         "El aeropuerto de la Ciudad de México tiene dos terminales en dos edificios separados, y la gente se entera en el peor momento posible. No se puede caminar de una a otra. Esto es cómo saber cuál te toca, cómo cruzar si estás en la equivocada y cuánto tiempo dejar.",
       revisado: "Datos revisados: octubre de 2026",

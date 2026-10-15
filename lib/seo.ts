@@ -79,14 +79,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Mexico City Airport Shuttle Prices | Private Car",
       description:
-        "How much a private airport shuttle costs in Mexico City. Fixed, VAT-included prices for AICM, AIFA and Toluca, charged per vehicle and not per seat. No quote request needed.",
+        "How much a private airport shuttle costs in Mexico City. Fixed, VAT-included prices for AICM, AIFA and Toluca, charged per vehicle, not per seat.",
       keywords:
         "how much is a shuttle from Mexico City airport, Mexico City airport transfer price, private airport shuttle cost Mexico City, AICM to Polanco rate, private driver cost Mexico City",
     },
     es: {
       title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
       description:
-        "Consulta las tarifas fijas de traslado ejecutivo en Ciudad de México. Precios con IVA incluido para aeropuerto AICM, AIFA, Toluca y rutas corporativas. Sedan, Executive, Minivan y High SUV.",
+        "Tarifas fijas de traslado ejecutivo en CDMX. Precios con IVA incluido para AICM, AIFA, Toluca y rutas corporativas. Sedan, Executive, Minivan y High SUV.",
       keywords:
         "tarifa traslado aeropuerto CDMX, precio chofer ejecutivo Ciudad de México, tarifa AICM Polanco, costo traslado AIFA CDMX, transporte ejecutivo precio, tarifa chofer privado CDMX",
     },
@@ -101,7 +101,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Teotihuacan Day Trip from Mexico City | Private Driver",
       description:
-        "Private car and chauffeur for a day at Teotihuacan. No group, no guide, no fixed schedule: the driver waits while you walk the pyramids. Fixed price, VAT included.",
+        "Private car and chauffeur for a day at Teotihuacan. No group, no guide, no schedule: the driver waits while you walk the pyramids. Fixed price, VAT included.",
       keywords:
         "Teotihuacan day trip from Mexico City, private driver to Teotihuacan, Teotihuacan without a tour, Teotihuacan private transport, how to get to Teotihuacan from Mexico City",
     },
@@ -124,7 +124,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     es: {
       title: "Chofer por Horas en CDMX | Precio Fijo con IVA | Elite Route",
       description:
-        `Contrata un chofer privado por horas en Ciudad de México. Desde dos horas, ${KM_POR_HORA} km incluidos por hora y precio fijo con IVA. El auto y el chofer se quedan contigo entre parada y parada.`,
+        `Chofer privado por horas en Ciudad de México. Desde dos horas, ${KM_POR_HORA} km incluidos por hora y precio fijo con IVA. El auto y el chofer se quedan contigo.`,
       keywords:
         "chofer por horas CDMX, chofer privado por horas Ciudad de México, auto con chofer por horas, renta de chofer por día CDMX, chofer ejecutivo por horas, disposición de vehículo con chofer",
     },
@@ -133,14 +133,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Private Chauffeur in Mexico City | Fixed Price | Elite Route",
       description:
-        "Hire a private chauffeur in Mexico City: the same driver for the whole service, an insured and GPS-monitored vehicle, and a fixed price with VAT. By the trip, by the hour or by the day.",
+        "Hire a private chauffeur in Mexico City: the same driver throughout, an insured and GPS-monitored vehicle, and a fixed price with VAT. By the trip, hour or day.",
       keywords:
         "private chauffeur Mexico City, private driver Mexico City, hire a chauffeur CDMX, personal driver Mexico City, chauffeur service Mexico City, car with driver Mexico City",
     },
     es: {
       title: "Chofer Privado en CDMX | Precio Fijo con IVA | Elite Route",
       description:
-        "Contrata un chofer privado en Ciudad de México: el mismo conductor durante todo el servicio, unidad asegurada con monitoreo GPS y precio fijo con IVA. Por traslado, por horas o por día.",
+        "Chofer privado en Ciudad de México: el mismo conductor todo el servicio, unidad asegurada con GPS y precio fijo con IVA. Por traslado, por horas o por día.",
       keywords:
         "chofer privado CDMX, chofer privado Ciudad de México, contratar chofer privado, chofer particular CDMX, auto con chofer Ciudad de México, servicio de chofer privado",
     },
@@ -149,14 +149,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Executive Transportation in Mexico City | Elite Route",
       description:
-        "Executive ground transportation in Mexico City: airport transfers, hourly service, full days and out-of-town routes. Own fleet, fixed price with VAT and CFDI invoicing.",
+        "Executive ground transportation in Mexico City: airport transfers, hourly service, full days and out-of-town routes. Own fleet, fixed price with VAT.",
       keywords:
         "executive transportation Mexico City, executive car service CDMX, executive transfers Mexico City, executive ground transportation Mexico, chauffeured transport CDMX",
     },
     es: {
       title: "Transporte Ejecutivo en CDMX | Los 4 Servicios | Elite Route",
       description:
-        "Transporte ejecutivo en Ciudad de México: traslados al aeropuerto, servicio por horas, día completo y rutas foráneas. Flota propia, precio fijo con IVA y factura CFDI.",
+        "Transporte ejecutivo en Ciudad de México: traslados al aeropuerto, servicio por horas, día completo y rutas foráneas. Flota propia y precio fijo con IVA.",
       keywords:
         "transporte ejecutivo CDMX, transporte ejecutivo Ciudad de México, servicio de transporte ejecutivo, traslados ejecutivos CDMX, transporte privado ejecutivo México",
     },
@@ -181,14 +181,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Our Fleet: Which Vehicle to Choose | Elite Route",
       description:
-        "The four vehicle categories at Elite Route in Mexico City: how many passengers and suitcases each one really takes, what each is for and when not to choose it. Own fleet, insured and GPS-monitored.",
+        "The four vehicle categories at Elite Route in Mexico City: how many passengers and suitcases each really takes, and when not to choose it. Own insured fleet.",
       keywords:
         "executive car with driver Mexico City, SUV with chauffeur Mexico City, van with driver Mexico City, vehicle for 6 passengers with driver, Suburban with chauffeur CDMX, fleet executive transport Mexico City",
     },
     es: {
       title: "Nuestra Flota: Qué Vehículo Elegir | Elite Route",
       description:
-        "Las cuatro categorías de vehículo de Elite Route en CDMX: cuántos pasajeros y cuántas maletas entran de verdad en cada una, para qué sirve y cuándo no elegirla. Flota propia, asegurada y con GPS.",
+        "Las cuatro categorías de vehículo de Elite Route en CDMX: cuántos pasajeros y cuántas maletas entran de verdad, y cuándo no elegirla. Flota propia y asegurada.",
       keywords:
         "auto con chofer CDMX, camioneta con chofer Ciudad de México, van para 6 personas con chofer, Suburban con chofer CDMX, suv ejecutiva con chofer, flota transporte ejecutivo CDMX",
     },
@@ -197,14 +197,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Corporate Executive Transportation in Mexico City",
       description:
-        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI electronic invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
+        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
       keywords:
         "corporate transportation Mexico City, executive car service for companies, corporate ground transportation CDMX, business travel Mexico City",
     },
     es: {
       title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
       description:
-        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con monitoreo GPS y pago con tarjeta o transferencia bancaria.",
+        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con GPS y pago con tarjeta o transferencia bancaria.",
       keywords:
         "transporte ejecutivo corporativo CDMX, cuenta corporativa traslados, factura CFDI transporte, choferes para empresas Ciudad de México",
     },
@@ -218,7 +218,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     es: {
       title: "Cotizador Corporativo Multi-Servicio | Elite Route",
       description:
-        "Cotiza hasta 20 traslados de una vez con precio en tiempo real según la ruta. El desglose con IVA se envía directo a contabilidad, con términos de crédito disponibles.",
+        "Cotiza hasta 20 traslados de una vez con precio en tiempo real según la ruta. El desglose con IVA se envía directo a contabilidad, con términos de crédito.",
     },
   },
   privacy: {

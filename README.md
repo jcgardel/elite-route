@@ -218,20 +218,37 @@ button and the `.ics` attachment.
 
 ```bash
 RESEND_API_KEY=
-RESEND_NOTIFY_TO=contabilidad@eliteroute.mx
 ```
 
-`RESEND_NOTIFY_TO` **overrides** the `contabilidad@eliteroute.mx` default that
-lives in `lib/payment-notifications.ts`. If it is set to anything else, that is
-where the paid-booking alerts go — check the deployment's env vars before
-assuming the code default applies.
+Paid-booking alerts go to `contabilidad@eliteroute.mx`. That address is a
+literal in `lib/payment-notifications.ts` and it is the ONLY place that
+decides it.
+
+**`RESEND_NOTIFY_TO` is deliberately not set on any deployment.** The variable
+still works — set it and it overrides the code — but on 15 Oct 2026 it was
+removed from Production and Preview on purpose, and the reason is worth
+keeping:
+
+It had been set for 124 days, as a **Secret**. Vercel never returns the value
+of a Secret variable — not to the dashboard, not to the CLI, not to anyone. So
+it silently overrode the code for four months and there was no way to find out
+where the alerts were actually landing. The owner asked to move them to
+`contabilidad@`, the code was changed, and the change did nothing, because an
+unreadable value outranked it.
+
+A routing address is not a credential. Deleting the variable trades "change the
+destination without deploying" for something worth more here: the destination
+is now one line in git that anyone can read, identical in every environment.
+
+If you ever do set it again, make it a plain **Config** variable, not a Secret,
+so the next person can read what it says.
 
 Paid-booking alerts moved from `business@` to `contabilidad@` on 14 Oct 2026.
-The address is now a literal in `payment-notifications.ts` and no longer reads
-`LEGAL.correoComercial`: the public commercial inbox and the inbox that gets
-told about a charge are different things, and tying them together meant
-neither could move on its own. `lib/legal.ts` still holds the public contact
-addresses shown on the site, and those did not change.
+The address no longer reads `LEGAL.correoComercial`: the public commercial
+inbox and the inbox that gets told about a charge are different things, and
+tying them together meant neither could move on its own. `lib/legal.ts` still
+holds the public contact addresses shown on the site, and those did not
+change.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

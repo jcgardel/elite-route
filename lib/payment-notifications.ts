@@ -32,6 +32,12 @@ function escapeHtml(value: string) {
  * correcto. Las variables siguen mandando si existen, para poder cambiar el
  * destino sin desplegar.
  *
+ * PERO `RESEND_NOTIFY_TO` YA NO ESTÁ PUESTA EN NINGÚN DESPLIEGUE, y es a
+ * propósito: estuvo 124 días como Secret, que Vercel no deja leer a nadie,
+ * pisando al código sin que se pudiera averiguar hacia dónde. Se borró el 15
+ * de octubre de 2026. El porqué largo está en el README; lo corto es que la
+ * línea de abajo es ahora el único sitio que decide esto.
+ *
  * EL CORREO VA SUELTO, NO SALE DE `LEGAL`. Hasta el 14 de octubre de 2026
  * esto era `LEGAL.correoComercial`, y por eso los avisos de pago caían en
  * business@. Pero el buzón que atiende a un cliente que escribe desde la

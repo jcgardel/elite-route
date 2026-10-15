@@ -44,7 +44,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
      * `toluca.en` de `lib/routes.ts` para el porqué de "shuttle".
      */
     en: {
-      title: "Mexico City Airport Shuttle Prices | Private Car | Elite Route",
+      title: "Mexico City Airport Shuttle Prices | Private Car",
       description:
         "How much a private airport shuttle costs in Mexico City. Fixed, VAT-included prices for AICM, AIFA and Toluca, charged per vehicle and not per seat. No quote request needed.",
       keywords:
@@ -66,14 +66,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
    */
   teotihuacan: {
     en: {
-      title: "Teotihuacan Day Trip from Mexico City | Private Driver | Elite Route",
+      title: "Teotihuacan Day Trip from Mexico City | Private Driver",
       description:
         "Private car and chauffeur for a day at Teotihuacan. No group, no guide, no fixed schedule: the driver waits while you walk the pyramids. Fixed price, VAT included.",
       keywords:
         "Teotihuacan day trip from Mexico City, private driver to Teotihuacan, Teotihuacan without a tour, Teotihuacan private transport, how to get to Teotihuacan from Mexico City",
     },
     es: {
-      title: "Viaje a Teotihuacán desde CDMX con Chofer Privado | Elite Route",
+      title: "Viaje a Teotihuacán desde CDMX con Chofer Privado",
       description:
         "Auto y chofer privado para un día en Teotihuacán. Sin grupo, sin guía y sin horarios: el chofer espera mientras recorres las pirámides. Precio fijo con IVA.",
       keywords:
@@ -130,14 +130,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
   },
   airport: {
     en: {
-      title: "Mexico City Airport Transfers | AICM, AIFA and Toluca | Elite Route",
+      title: "Mexico City Airport Transfers | AICM, AIFA and Toluca",
       description:
         "Private airport transfers in Mexico City from AICM, AIFA and Toluca. We track your flight, one hour of waiting is included and the price is fixed with VAT.",
       keywords:
         "Mexico City airport transfer, AICM airport transfer, AIFA airport transfer, Toluca airport transfer, airport pickup Mexico City, airport taxi Mexico City, private transfer Mexico City airport",
     },
     es: {
-      title: "Traslados de Aeropuerto en CDMX | AICM, AIFA y Toluca | Elite Route",
+      title: "Traslados de Aeropuerto en CDMX | AICM, AIFA y Toluca",
       description:
         "Traslados privados desde y hacia los aeropuertos AICM, AIFA y Toluca. Monitoreamos tu vuelo, la primera hora de espera va incluida y el precio es fijo con IVA.",
       keywords:
@@ -162,7 +162,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
   },
   corporate: {
     en: {
-      title: "Corporate Executive Transportation in Mexico City | Elite Route",
+      title: "Corporate Executive Transportation in Mexico City",
       description:
         "Corporate accounts for companies in Mexico City. Recurring routes, CFDI electronic invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
       keywords:

@@ -42,10 +42,9 @@ export function kmIncluidos(horas: number) {
 }
 
 /**
- * DÓNDE APLICA EL SERVICIO POR HORAS, decidido por el dueño el 1 de octubre
- * de 2026: Ciudad de México y los aeropuertos de AIFA y Toluca. **No aplica a
- * zonas foráneas** —Puebla, Querétaro, Cuernavaca, Valle de Bravo, San
- * Miguel—, que se cotizan como traslado o como viaje redondo.
+ * DÓNDE APLICA EL SERVICIO POR HORAS: sólo Ciudad de México (desde el 17 oct
+ * 2026; antes incluía AIFA y Toluca). **No aplica fuera de la ciudad**: AIFA,
+ * Toluca y foráneos son cotización especial. Ver `RADIO_POR_HORAS_KM`.
  *
  * Es una regla de negocio, no una validación técnica: nadie puede impedir que
  * un pasajero le pida al chofer que salga a carretera. Lo que la sostiene en
@@ -54,8 +53,34 @@ export function kmIncluidos(horas: number) {
  * sin leer esto, abre la puerta que esta regla quiere cerrar.
  */
 export const ZONA_POR_HORAS = {
-  es: "Ciudad de México, Aeropuerto de Toluca y AIFA",
-  en: "Mexico City, Toluca Airport and AIFA",
+  es: "la Ciudad de México",
+  en: "Mexico City",
+} as const;
+
+/**
+ * DESDE EL 17 OCT 2026 EL SERVICIO POR HORAS ES SÓLO CDMX, decisión del
+ * dueño. AIFA, Toluca y cualquier salida de la ciudad son cotización
+ * especial.
+ *
+ * POR QUÉ SE VALIDA POR DISTANCIA. Hasta esa fecha el checkout medía la
+ * distancia del origen al mismo origen —0 km— y el tope de `KM_POR_HORA`
+ * nunca se aplicaba: cuatro horas de Executive ($2,784) alcanzaban para ir a
+ * Cuernavaca, cuyo sencillo cuesta $4,126. Ahora la recogida se mide contra
+ * un punto fijo de la ciudad, el Ángel —el mismo que usa `LEGS.aifa`—, y no
+ * puede pasar de 40 km, el umbral que `detectZone` usa para "cdmx". AIFA
+ * (~54 km) y Toluca (~56 km) quedan fuera solos.
+ */
+export const CENTRO_CDMX = "Ángel de la Independencia, Paseo de la Reforma, Ciudad de México";
+export const RADIO_POR_HORAS_KM = 40;
+
+export function dentroDeZonaPorHoras(kmAlCentro: number) {
+  return kmAlCentro <= RADIO_POR_HORAS_KM;
+}
+
+/** La leyenda que la página tiene que hacer notar. */
+export const LEYENDA_POR_HORAS = {
+  es: "El servicio por horas aplica sólo dentro de la Ciudad de México. Si necesitas salir de la CDMX (AIFA, Toluca o foráneos), solicita una cotización especial.",
+  en: "Hourly service applies only within Mexico City. If you need to leave the city (AIFA, Toluca or out of town), ask us for a special quote.",
 } as const;
 
 /**

@@ -34,9 +34,12 @@ import type { PrecioPorCategoria, TablasCotizador, TablasRedondo } from "@/lib/r
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
 import {
+  CENTRO_CDMX,
+  dentroDeZonaPorHoras,
   HORAS_DIA_COMPLETO,
   KM_POR_HORA,
   kmIncluidos,
+  LEYENDA_POR_HORAS,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
 } from "@/lib/service-limits";
@@ -273,7 +276,7 @@ const TX = {
     alertAdvance: "At least 12 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
     alertRouteErr: "We could not calculate the route. Please verify the addresses.",
-    alertKmExceeded: (a: number, r: number) => `This service includes up to ${a} km. The calculated route is ${r} km.`,
+    alertFueraCdmx: "Hourly service applies only within Mexico City. For AIFA, Toluca or out-of-town trips, message us on WhatsApp for a special quote.",
     alertConnErr: "Connection error. Please try again.",
     alertName: "Full name is required.",
     alertPhone: "Phone number is required.",
@@ -402,7 +405,7 @@ const TX = {
     alertAdvance: "Se requieren al menos 12 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
     alertRouteErr: "No pudimos calcular la ruta. Por favor verifica las direcciones.",
-    alertKmExceeded: (a: number, r: number) => `Este servicio incluye hasta ${a} km. La ruta calculada es de ${r} km.`,
+    alertFueraCdmx: "El servicio por horas aplica sólo dentro de la Ciudad de México. Para AIFA, Toluca o foráneos, escríbenos por WhatsApp y te hacemos una cotización especial.",
     alertConnErr: "Error de conexión. Por favor intenta de nuevo.",
     alertName: "El nombre completo es requerido.",
     alertPhone: "El número de teléfono es requerido.",
@@ -610,6 +613,7 @@ const styles = `
   .er-hr-count { font-family:var(--font-cormorant),serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; font-variant-numeric:tabular-nums; }
   .er-hr-unit { font-size:13px; color:#0A0A0A; letter-spacing:0.08em; }
 
+  .er-zone-legend { font-size:13px; font-weight:600; color:#0B1220; line-height:1.5; background:#F6EFE2; border:1px solid #C7A46A; border-left:4px solid #C7A46A; border-radius:2px; padding:10px 14px; margin:-6px 0 12px; }
   .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
 
   .er-section-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:42px; font-weight:300; margin:42px 0 20px; text-wrap:balance; }
@@ -1178,7 +1182,8 @@ export default function HomeClient({
     setAlert1("");
     setLoading(true);
     try {
-      const dest = serviceType === "route" ? destination : origin;
+      // Por horas se mide la recogida contra el centro: sólo aplica en CDMX.
+      const dest = serviceType === "route" ? destination : CENTRO_CDMX;
       const res = await fetch("/api/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1191,9 +1196,8 @@ export default function HomeClient({
       }
 
       const routeKm = Number(data.km.toFixed(1));
-      const allowedKm = kmIncluidos(serviceType === "day" ? HORAS_DIA_COMPLETO : rentalHours);
-      if (serviceType !== "route" && routeKm > allowedKm) {
-        setAlert1(t.alertKmExceeded(allowedKm, routeKm));
+      if (serviceType !== "route" && !dentroDeZonaPorHoras(routeKm)) {
+        setAlert1(t.alertFueraCdmx);
         return;
       }
 
@@ -1474,6 +1478,10 @@ export default function HomeClient({
                 </button>
               ))}
             </div>
+
+            {serviceType !== "route" && (
+              <p className="er-zone-legend" role="note">{LEYENDA_POR_HORAS[lang]}</p>
+            )}
 
             {serviceType !== "route" && (
               <div className="er-service-note">

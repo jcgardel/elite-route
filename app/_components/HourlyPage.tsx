@@ -13,7 +13,7 @@ import {
   TRANSFERS_PER_YEAR,
   YEARS_OPERATING,
 } from "@/lib/social-proof";
-import { KM_POR_HORA, ZONA_POR_HORAS } from "@/lib/service-limits";
+import { KM_POR_HORA, LEYENDA_POR_HORAS, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * El chofer por horas, con su propia dirección.
@@ -286,6 +286,7 @@ const styles = `
   .hp-table td { border-bottom:1px solid #1a1a1a; padding:14px 0; color:#BFC3C8; font-variant-numeric:tabular-nums; }
   .hp-table td:first-child { color:#fff; }
   .hp-veh-cap { display:block; color:#8B8B87; font-size:12px; margin-top:2px; }
+  .hp-zone-legend { border:1px solid #C7A46A; border-left:4px solid #C7A46A; background:rgba(199,164,106,0.12); color:#FFFFFF; font-weight:600; font-size:14px; line-height:1.55; padding:12px 16px; border-radius:2px; margin:18px 0 0; max-width:70ch; }
   .hp-note { color:#8B8B87; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
 
   .hp-steps { list-style:none; counter-reset:hp; margin:0; padding:0; display:grid; gap:18px; max-width:66ch; }
@@ -452,6 +453,7 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
               </tbody>
             </table>
           </div>
+          <p className="hp-zone-legend" role="note">{LEYENDA_POR_HORAS[lang]}</p>
           <p className="hp-note">{t.tableNote}</p>
         </section>
 

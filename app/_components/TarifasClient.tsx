@@ -17,6 +17,7 @@ import { routePath, type RouteKey } from "@/lib/routes";
 import {
   KM_POR_HORA,
   ZONA_POR_HORAS,
+  LEYENDA_POR_HORAS,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
 } from "@/lib/service-limits";
@@ -245,6 +246,7 @@ const styles = `
   .tf-table .tf-price { font-family: var(--font-cormorant), serif; font-size: 22px; font-weight: 400; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .tf-table .tf-price-note { font-size: 10px; color: #9a9a9a; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-top: 2px; }
 
+  .tf-zone-legend { border:1px solid #C7A46A; border-left:4px solid #C7A46A; background:rgba(199,164,106,0.12); color:#FFFFFF; font-weight:600; font-size:14px; line-height:1.55; padding:12px 16px; border-radius:2px; margin:0 0 16px; max-width:70ch; }
   .tf-note { background: rgba(200,164,107,0.08); border: 1px solid rgba(200,164,107,0.25); border-radius: 2px; padding: 14px 18px; font-size: 13px; color: #BFC3C8; line-height: 1.6; margin-top: 16px; }
   .tf-note strong { color: #C8A46B; }
 
@@ -484,6 +486,7 @@ export default function TarifasClient({
           <p className="tf-section-label">{t.hourLabel}</p>
           <h2 className="tf-section-title" id="por-hora">{t.hourTitle}</h2>
           <p className="tf-section-copy">{t.hourCopy}</p>
+          <p className="tf-zone-legend" role="note">{LEYENDA_POR_HORAS[lang]}</p>
           <div className="tf-table-wrap">
             <table className="tf-table">
               <thead>

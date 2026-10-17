@@ -18,8 +18,9 @@ import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 import {
-  HORAS_DIA_COMPLETO,
-  kmIncluidos,
+  CENTRO_CDMX,
+  dentroDeZonaPorHoras,
+  RADIO_POR_HORAS_KM,
   admiteRedondo,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
@@ -112,22 +113,21 @@ export async function POST(req: Request) {
 
     // La distancia se vuelve a consultar aquí: el precio depende de los km, así
     // que aceptarlos del cliente permitiría cobrarse la tarifa mínima.
-    // Para servicios por hora y por día el recorrido es de disposición libre
-    // desde el origen, igual que en el paso de cotización.
+    // Por horas y por día no hay destino: se mide la recogida contra el
+    // centro de la ciudad, porque el servicio sólo aplica dentro de la CDMX.
+    // Antes se medía del origen al mismo origen (0 km) y nada se validaba.
     const { km, minutes } = await lookupRouteDistance(
       origin,
-      serviceType === "route" ? destination : origin,
+      serviceType === "route" ? destination : CENTRO_CDMX,
     );
 
-    // Tope de kilómetros incluidos, también validado en el servidor.
-    if (serviceType !== "route") {
-      const allowedKm = kmIncluidos(serviceType === "day" ? HORAS_DIA_COMPLETO : rentalHours);
-      if (km > allowedKm) {
-        return NextResponse.json(
-          { error: `Este servicio incluye hasta ${allowedKm} km. La ruta calculada es de ${km} km.` },
-          { status: 400 },
-        );
-      }
+    if (serviceType !== "route" && !dentroDeZonaPorHoras(km)) {
+      return NextResponse.json(
+        {
+          error: `El servicio por horas aplica sólo dentro de la Ciudad de México (hasta ${RADIO_POR_HORAS_KM} km del centro; tu recogida está a ${km} km). Para salir de la CDMX solicita una cotización especial.`,
+        },
+        { status: 400 },
+      );
     }
 
     // EL VIAJE REDONDO, validado contra los kilómetros del servidor.

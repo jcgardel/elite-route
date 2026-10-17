@@ -160,6 +160,14 @@ export const ALZA_HACIA_AEROPUERTO: Record<Category, number> = {
  */
 export const BRECHA_MINIMA_AEROPUERTO = 1.05;
 
+/**
+ * MÍNIMOS DE TRASLADO CON AEROPUERTO, en pesos CON IVA —el precio final que
+ * ve el cliente—. Decisión del dueño, 17 oct 2026, sólo para High SUV.
+ * Una categoría sin valor aquí se queda con el mínimo de la fórmula.
+ */
+export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = { suv: 1950 };
+export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 1800 };
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -187,7 +195,13 @@ export function calculatePrice(
   const conRecargo = () =>
     Math.round((base + Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16)) * 1.16);
 
-  if (airport) return conRecargo();
+  // Salida de terminal en traslado, con el mínimo de la categoría si lo tiene.
+  const desde = () =>
+    serviceType === "route"
+      ? Math.max(conRecargo(), MINIMO_DESDE_AEROPUERTO[category] ?? 0)
+      : conRecargo();
+
+  if (airport) return desde();
 
   const sinRecargo = Math.round(base * 1.16);
 
@@ -198,8 +212,8 @@ export function calculatePrice(
     // El techo se calcula contra el precio de salida REAL de esta misma ruta,
     // no contra una tabla aparte: así la brecha se mantiene aunque cambien el
     // tope del recargo, la tarifa por kilómetro o la distancia.
-    const techo = Math.floor(conRecargo() / BRECHA_MINIMA_AEROPUERTO);
-    return Math.min(pedido, techo);
+    const techo = Math.floor(desde() / BRECHA_MINIMA_AEROPUERTO);
+    return Math.max(Math.min(pedido, techo), MINIMO_HACIA_AEROPUERTO[category] ?? 0);
   }
 
   return sinRecargo;

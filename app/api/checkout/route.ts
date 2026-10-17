@@ -17,6 +17,7 @@ import { getStripe } from "@/lib/stripe";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
+import { HORAS_MAX, HORAS_MIN } from "@/lib/rate-tables";
 import {
   CENTRO_CDMX,
   dentroDeZonaPorHoras,
@@ -77,7 +78,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Faltan datos del servicio" }, { status: 400 });
     }
 
-    if (!Number.isFinite(rentalHours) || rentalHours < 2 || rentalHours > 24) {
+    if (!Number.isFinite(rentalHours) || rentalHours < HORAS_MIN || rentalHours > HORAS_MAX) {
       return NextResponse.json({ error: "Duración inválida" }, { status: 400 });
     }
 

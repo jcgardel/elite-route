@@ -33,7 +33,7 @@ import { KM_POR_HORA, LEYENDA_POR_HORAS, ZONA_POR_HORAS } from "@/lib/service-li
 const cats: Category[] = ["sedan", "executive", "minivan", "suv"];
 
 /** Los bloques que la gente pide de verdad: media mañana, media jornada. */
-const BLOCKS = [2, 4] as const;
+const BLOCKS = [3, 4] as const;
 
 /** El día completo son diez horas; lo fija `calculatePrice`, no esta página. */
 const FULL_DAY_HOURS = 10;
@@ -54,7 +54,7 @@ const TX = {
     title: "Chofer por horas en Ciudad de México",
     intro:
       "Contratas al chofer y al vehículo por un bloque de horas, no por un trayecto. Durante ese tiempo se quedan contigo: esperan afuera de cada reunión, te llevan al siguiente punto y no hay que pedir un servicio nuevo en cada parada. El precio es fijo, con IVA, y no lo mueve el tráfico.",
-    factMinValue: "Desde 2 horas",
+    factMinValue: "Desde 3 horas",
     factMinLabel: "el mínimo por servicio",
     factKmValue: `${KM_PER_HOUR} km por hora`,
     factKmLabel: "incluidos dentro de la Ciudad de México",
@@ -96,7 +96,7 @@ const TX = {
     faqs: [
       [
         "¿Cuál es el mínimo de horas?",
-        "Dos horas. A partir de ahí puedes contratar las que necesites; el día completo son diez.",
+        "Tres horas. A partir de ahí puedes contratar las que necesites; el día completo son diez.",
       ],
       [
         "¿El chofer se queda conmigo entre parada y parada?",
@@ -155,7 +155,7 @@ const TX = {
     title: "Hourly chauffeur service in Mexico City",
     intro:
       "You book the chauffeur and the car for a block of hours, not for a single ride. They stay with you the whole time: waiting outside each meeting, taking you to the next stop, with no need to order another car every time. The price is fixed, VAT included, and traffic does not move it.",
-    factMinValue: "From 2 hours",
+    factMinValue: "From 3 hours",
     factMinLabel: "minimum booking",
     factKmValue: `${KM_PER_HOUR} km per hour`,
     factKmLabel: "included within Mexico City",
@@ -197,7 +197,7 @@ const TX = {
     faqs: [
       [
         "What is the minimum booking?",
-        "Two hours. Beyond that you book as many as you need; a full day is ten.",
+        "Three hours. Beyond that you book as many as you need; a full day is ten.",
       ],
       [
         "Does the chauffeur wait between stops?",

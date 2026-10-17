@@ -117,14 +117,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Hourly Chauffeur Service in Mexico City | Elite Route",
       description:
-        `Hire a private chauffeur by the hour in Mexico City. From two hours, ${KM_POR_HORA} km included per hour, fixed price with VAT. Car and driver stay with you between stops.`,
+        `Hire a private chauffeur by the hour in Mexico City. From three hours, ${KM_POR_HORA} km included per hour, fixed price with VAT. Car and driver stay with you between stops.`,
       keywords:
         "hourly chauffeur Mexico City, hourly car service Mexico City, private driver by the hour CDMX, chauffeur for a day Mexico City, car and driver hire Mexico City",
     },
     es: {
       title: "Chofer por Horas en CDMX | Precio Fijo con IVA | Elite Route",
       description:
-        `Chofer privado por horas en Ciudad de México. Desde dos horas, ${KM_POR_HORA} km incluidos por hora y precio fijo con IVA. El auto y el chofer se quedan contigo.`,
+        `Chofer privado por horas en Ciudad de México. Desde tres horas, ${KM_POR_HORA} km incluidos por hora y precio fijo con IVA. El auto y el chofer se quedan contigo.`,
       keywords:
         "chofer por horas CDMX, chofer privado por horas Ciudad de México, auto con chofer por horas, renta de chofer por día CDMX, chofer ejecutivo por horas, disposición de vehículo con chofer",
     },

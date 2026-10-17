@@ -40,7 +40,7 @@ export const RUTAS_HACIA = [
 ] as const;
 
 /** Los bloques por hora de /tarifas. El 10 es el día completo. */
-export const DURACIONES = [2, 3, 4, 5, 6, 10] as const;
+export const DURACIONES = [3, 4, 5, 6, 10] as const;
 
 /**
  * Las cinco rutas foráneas que publican su viaje redondo, de la más corta a
@@ -81,14 +81,15 @@ export const B2B_SECTIONS: ReadonlyArray<{
  * cada categoría es mayor que su tarifa horaria, así que "una hora" costaba
  * el mínimo—. La tarifa por hora va aparte, en `tarifaHora`.
  */
-export const B2B_HORAS = [2, 4, 8] as const;
+export const B2B_HORAS = [3, 4, 8] as const;
 
 /**
  * El rango de horas que deja elegir el cotizador de la portada. El precio de
  * cada combinación se calcula en el servidor y baja ya resuelto, así que el
  * rango tiene que ser finito y conocido de antemano.
  */
-export const HORAS_MIN = 2;
+/** Mínimo del servicio por horas: subió de 2 a 3 el 17 oct 2026 (decisión del dueño). */
+export const HORAS_MIN = 3;
 export const HORAS_MAX = 24;
 
 /** Precios ya calculados que el servidor entrega a la interfaz. */

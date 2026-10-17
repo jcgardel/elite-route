@@ -46,7 +46,7 @@ import {
 const cats: readonly Category[] = CATEGORIES;
 
 /** El bloque más chico que se puede comprar. De ahí sale la tarifa por hora. */
-const MIN_BLOCK = 2;
+const MIN_BLOCK = 3;
 
 /** El día completo. Lo define `calculatePrice`, no esta página. */
 const FULL_DAY_HOURS = 10;
@@ -110,7 +110,7 @@ const TX = {
     colHour: "Por hora",
     colDay: `Día completo · ${FULL_DAY_HOURS} h`,
     tableNote:
-      "Precios finales en pesos con IVA incluido. El traslado se cobra por ruta, así que el número de la primera columna es el piso: el cotizador da el precio exacto de tu dirección. El servicio por horas se contrata desde dos horas y la tarifa por hora es la del bloque. Las salidas desde aeropuerto llevan incluido el estacionamiento y la espera por retraso del vuelo.",
+      "Precios finales en pesos con IVA incluido. El traslado se cobra por ruta, así que el número de la primera columna es el piso: el cotizador da el precio exacto de tu dirección. El servicio por horas se contrata desde tres horas y la tarifa por hora es la del bloque. Las salidas desde aeropuerto llevan incluido el estacionamiento y la espera por retraso del vuelo.",
 
     howTitle: "Cómo se contrata",
     how: [
@@ -142,7 +142,7 @@ const TX = {
     faqs: [
       [
         "¿Cuánto cuesta contratar un chofer privado en CDMX?",
-        `Un traslado dentro de la ciudad arranca en ${mxn(desde("sedan"))} con IVA en Sedan; el servicio por horas, en ${mxn(porHora("sedan"))} la hora con un mínimo de dos, y el día completo de diez horas, en ${mxn(porDia("sedan"))}. El precio exacto depende de la categoría y de la ruta, y el cotizador lo da en pantalla antes de pedirte datos de pago.`,
+        `Un traslado dentro de la ciudad arranca en ${mxn(desde("sedan"))} con IVA en Sedan; el servicio por horas, en ${mxn(porHora("sedan"))} la hora con un mínimo de tres, y el día completo de diez horas, en ${mxn(porDia("sedan"))}. El precio exacto depende de la categoría y de la ruta, y el cotizador lo da en pantalla antes de pedirte datos de pago.`,
       ],
       [
         "¿Es el mismo chofer todo el servicio?",
@@ -232,7 +232,7 @@ const TX = {
     colHour: "Per hour",
     colDay: `Full day · ${FULL_DAY_HOURS} h`,
     tableNote:
-      "Final prices in Mexican pesos, VAT included. A transfer is charged by route, so the first column is the floor: the quote form gives the exact price for your address. Hourly service starts at two hours and the per-hour rate is the block rate. Airport pickups already include parking and waiting for flight delays.",
+      "Final prices in Mexican pesos, VAT included. A transfer is charged by route, so the first column is the floor: the quote form gives the exact price for your address. Hourly service starts at three hours and the per-hour rate is the block rate. Airport pickups already include parking and waiting for flight delays.",
 
     howTitle: "How to book",
     how: [

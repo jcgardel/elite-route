@@ -104,12 +104,12 @@ export function tablasB2b(): TablasB2b {
   // bloque de una hora cuesta el mínimo y no la hora: enseñarlo como
   // "tarifa / hora" daba el número de otra categoría. Dividir las dos horas
   // entre dos garantiza además que la columna cuadre con las de la derecha.
-  const dosHoras = bloque(2);
+  const minimo = bloque(HORAS_MIN);
   return {
     rutas,
     rutasHacia,
     horas: Object.fromEntries(B2B_HORAS.map((h) => [h, bloque(h)])),
-    tarifaHora: porCategoria((c) => Math.round(dosHoras[c] / 2)),
+    tarifaHora: porCategoria((c) => Math.round(minimo[c] / HORAS_MIN)),
   };
 }
 

@@ -30,7 +30,7 @@ import {
   type ServiceType,
   type Zone,
 } from "@/lib/vehicles";
-import type { PrecioPorCategoria, TablasCotizador, TablasRedondo } from "@/lib/rate-tables";
+import { HORAS_MIN, type PrecioPorCategoria, type TablasCotizador, type TablasRedondo } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
 import {
@@ -271,7 +271,7 @@ const TX = {
     alertOrigin: "Enter the pickup location.",
     alertDest: "Enter the destination.",
     alertDateTime: "Select the service date and time.",
-    alertMinHours: "Minimum hourly service is 2 hours.",
+    alertMinHours: `Minimum hourly service is ${HORAS_MIN} hours.`,
     alertPast: "Select a future date and time.",
     alertAdvance: "At least 12 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
@@ -400,7 +400,7 @@ const TX = {
     alertOrigin: "Ingresa el lugar de recogida.",
     alertDest: "Ingresa el destino.",
     alertDateTime: "Selecciona la fecha y hora del servicio.",
-    alertMinHours: "El servicio mínimo por hora es de 2 horas.",
+    alertMinHours: `El servicio mínimo por hora es de ${HORAS_MIN} horas.`,
     alertPast: "Selecciona una fecha y hora futura.",
     alertAdvance: "Se requieren al menos 12 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
@@ -962,7 +962,7 @@ export default function HomeClient({
     track("cotizacion_iniciada", { tipo_servicio: serviceType });
   }
   const [serviceType, setServiceType] = useState<ServiceType>("route");
-  const [rentalHours, setRentalHours] = useState(3);
+  const [rentalHours, setRentalHours] = useState<number>(HORAS_MIN);
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [serviceDate, setServiceDate] = useState("");
@@ -1172,7 +1172,7 @@ export default function HomeClient({
     if (!origin) { setAlert1(t.alertOrigin); return; }
     if (serviceType === "route" && !destination) { setAlert1(t.alertDest); return; }
     if (!serviceDate || !serviceTime) { setAlert1(t.alertDateTime); return; }
-    if (serviceType === "hour" && rentalHours < 2) { setAlert1(t.alertMinHours); return; }
+    if (serviceType === "hour" && rentalHours < HORAS_MIN) { setAlert1(t.alertMinHours); return; }
 
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
@@ -1470,7 +1470,7 @@ export default function HomeClient({
               ] as const).map(([val, label, d]) => (
                 <button key={val} type="button"
                   className={`er-svc-tab${serviceType===val?" active":""}`}
-                  onClick={() => { setServiceType(val as ServiceType); if(val==="hour") setRentalHours(3); }}>
+                  onClick={() => { setServiceType(val as ServiceType); if(val==="hour") setRentalHours(HORAS_MIN); }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d={d}/>
                   </svg>
@@ -1498,7 +1498,7 @@ export default function HomeClient({
                 <label className="er-label" id="rental-hours-label">{t.duration}</label>
                 <div className="er-hours-selector" role="group" aria-labelledby="rental-hours-label">
                   <button type="button" className="er-hr-btn" aria-label={t.decreaseHours}
-                    onClick={() => setRentalHours(h => Math.max(2, h-1))}>−</button>
+                    onClick={() => setRentalHours(h => Math.max(HORAS_MIN, h-1))}>−</button>
                   <div className="er-hr-count" role="status" aria-atomic="true">{rentalHours}</div>
                   <div className="er-hr-unit">{t.hours}</div>
                   <button type="button" className="er-hr-btn" aria-label={t.increaseHours}

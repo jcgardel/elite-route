@@ -167,8 +167,41 @@ export const BRECHA_MINIMA_AEROPUERTO = 1.05;
  * ve el cliente—. Decisión del dueño, 17 oct 2026, sólo para High SUV.
  * Una categoría sin valor aquí se queda con el mínimo de la fórmula.
  */
-export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2750 };
+export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = {
+  suv: 2750,
+  // Executive, decisión del dueño del 18 oct 2026. Sólo muerde en los
+  // trayectos cortos desde terminal —AICM a Centro/Roma/Condesa y cualquier
+  // destino a menos de unos 13 km—, que es donde la fórmula caía a $1,160
+  // por el mínimo de la categoría. El resto de rutas ya está por encima.
+  executive: 1300,
+};
 export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2450 };
+
+/**
+ * PRIMA POR RECOGER EN LA TERMINAL, sobre el precio de LLEVAR a esa misma
+ * terminal. Decisión del dueño, 18 oct 2026, con tope doble: el menor entre
+ * el 20 % y $300.
+ *
+ * POR QUÉ EXISTE. Desde el 10 de marzo de 2026 Uber y DiDi no pueden recoger
+ * pasajeros dentro del AICM —sólo dejarlos—, con multas de hasta $60,000 a la
+ * unidad. Recoger en terminal es, por tanto, el único servicio del catálogo
+ * que la competencia más barata no puede prestar, y el que concentra el 88 %
+ * de las reservas de aeropuerto del sitio. Hasta ahora se cobraba por él
+ * entre un 5 % y un 12 % más que por llevar; un competidor local comparable
+ * cobra un 38 %.
+ *
+ * LLEVAR AL AEROPUERTO NO SE TOCA, a propósito: ahí sí compiten Uber, los
+ * hoteles y cualquier operador local, y el precio ya está a la par del
+ * mercado. Por eso la prima se calcula SOBRE la entrega en lugar de subir
+ * las dos patas.
+ *
+ * Es un suelo, no un multiplicador: manda el mayor entre esto y la fórmula,
+ * así que nunca puede abaratar una ruta.
+ */
+const PRIMA_RECOGIDA: Partial<Record<Category, (llevar: number) => number>> = {
+  sedan: (llevar) => Math.min(Math.round(llevar * 0.2), 300),
+  minivan: (llevar) => Math.min(Math.round(llevar * 0.2), 300),
+};
 
 /**
  * TARIFA POR ZONA DE SUV LUX EN TRASLADOS DE AEROPUERTO, en pesos CON IVA.
@@ -291,25 +324,41 @@ export function calculatePrice(
   const zona = (hacia: boolean) =>
     category === "suv" && serviceType === "route" ? tarifaZonaSuvLux(km, aeropuerto, hacia) : 0;
 
-  const desde = () =>
+  // La salida de terminal SIN la prima de recogida. Es la que manda el techo
+  // de la brecha, y por eso se calcula aparte: ver `hacia()`.
+  const desdeFormula = () =>
     serviceType === "route"
       ? Math.max(conRecargo(), MINIMO_DESDE_AEROPUERTO[category] ?? 0, zona(false))
       : conRecargo();
-
-  if (airport) return desde();
 
   const sinRecargo = Math.round(base * 1.16);
 
   // El viaje HACIA la terminal. `serviceType` se mira porque por horas y por
   // día no hay un destino que sea un aeropuerto: el recorrido es libre.
-  if (haciaAeropuerto && serviceType === "route") {
+  //
+  // EL TECHO SE MIDE CONTRA `desdeFormula()`, NO CONTRA EL PRECIO FINAL DE
+  // RECOGIDA. Si se midiera contra el final, la prima de recogida arrastraría
+  // la entrega hacia arriba: medido el 18 oct 2026, subía 4 combinaciones de
+  // SUV Urban en AIFA y Toluca, entre $9 y $94. Y la entrega es justo la pata
+  // donde Uber, los hoteles y los operadores locales SÍ compiten, que es la
+  // que esta decisión quiere dejar quieta.
+  const hacia = () => {
     const pedido = Math.round(sinRecargo * ALZA_HACIA_AEROPUERTO[category]);
-    // El techo se calcula contra el precio de salida REAL de esta misma ruta,
-    // no contra una tabla aparte: así la brecha se mantiene aunque cambien el
-    // tope del recargo, la tarifa por kilómetro o la distancia.
-    const techo = Math.floor(desde() / BRECHA_MINIMA_AEROPUERTO);
+    const techo = Math.floor(desdeFormula() / BRECHA_MINIMA_AEROPUERTO);
     return Math.max(Math.min(pedido, techo), MINIMO_HACIA_AEROPUERTO[category] ?? 0, zona(true));
-  }
+  };
+
+  const desde = () => {
+    if (serviceType !== "route") return conRecargo();
+    const prima = PRIMA_RECOGIDA[category];
+    if (!prima) return desdeFormula();
+    const llevar = hacia();
+    return Math.max(desdeFormula(), llevar + prima(llevar));
+  };
+
+  if (airport) return desde();
+
+  if (haciaAeropuerto && serviceType === "route") return hacia();
 
   return sinRecargo;
 }

@@ -227,6 +227,30 @@ function tarifaZonaSuvLux(km: number, aeropuerto: AirportCode, hacia: boolean): 
  */
 const PRECIO_HORA_CON_IVA: Partial<Record<Category, number>> = { suv: 1050 };
 
+/**
+ * AJUSTE DE FORÁNEOS, decidido por el dueño el 18 oct 2026 tras compararlos
+ * contra la competencia. Aplica a traslados de más de `FORANEO_KM` (el mismo
+ * corte que `detectZone`) y se hace sobre la BASE, así que el recargo de
+ * aeropuerto, el alza de ida y el viaje redondo lo heredan solos.
+ *
+ * - Sedan Lite: +12 %. Estaba ~30 % abajo de los traslados en plataforma.
+ * - SUV Lux: piso de $6,800 + $12 por km (con IVA, redondeado a $50). Sube
+ *   los foráneos cortos —Tepoztlán, Cuernavaca, Puebla, Valle— que estaban
+ *   30-45 % abajo del mercado, y no toca Querétaro ni San Miguel, donde la
+ *   fórmula ya queda por encima del piso.
+ *
+ * Entra en rampa desde `FORANEO_RAMPA_DESDE`: sin ella, SUV Lux saltaba de
+ * $5,346 a $7,900 al cruzar los 90 km.
+ */
+const FORANEO_KM = 90;
+/** Donde empieza a entrar el ajuste: entre aquí y `FORANEO_KM` sube en rampa,
+ *  para que dos direcciones a 89 y 91 km no cambien de precio de golpe. */
+const FORANEO_RAMPA_DESDE = 70;
+const AJUSTE_FORANEO: Partial<Record<Category, number>> = { sedan: 1.12 };
+const PISO_FORANEO: Partial<Record<Category, (km: number) => number>> = {
+  suv: (km) => Math.round((6800 + 12 * km) / 50) * 50,
+};
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -248,6 +272,12 @@ export function calculatePrice(
   } else {
     const hours = Math.ceil((minutes / 60) * 2) / 2;
     base = Math.max(kmCost(km, tariff.km, category), hours * tariff.hour, tariff.min);
+    if (km > FORANEO_RAMPA_DESDE) {
+      const t = Math.min(1, (km - FORANEO_RAMPA_DESDE) / (FORANEO_KM - FORANEO_RAMPA_DESDE));
+      base *= 1 + ((AJUSTE_FORANEO[category] ?? 1) - 1) * t;
+      const piso = PISO_FORANEO[category]?.(km);
+      if (piso) base = Math.max(base, base + (piso / 1.16 - base) * t);
+    }
   }
 
   // El 25% de siempre, pero con techo. Se divide entre 1.16 porque

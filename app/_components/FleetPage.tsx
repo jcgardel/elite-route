@@ -39,7 +39,7 @@ import {
 
 const cats: readonly Category[] = CATEGORIES;
 
-/** El orden de presentación: Executive y High SUV primero (17 oct 2026). */
+/** El orden de presentación: Executive y SUV Lux primero (17 oct 2026). */
 const ORDEN: readonly Category[] = DISPLAY_ORDER;
 
 const FULL_DAY_HOURS = 10;
@@ -84,9 +84,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan but one more suitcase, and in a different class of car. It travels with a bilingual chauffeur, which is why it is the usual choice for a guest arriving from abroad.",
     notEs:
-      "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la SUV Comfort o la High SUV.",
+      "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la SUV Comfort o la SUV Lux.",
     notEn:
-      "It is not a step up in capacity: if there are four of you, this is not the answer even though it costs more. That is where the SUV Comfort or the High SUV come in.",
+      "It is not a step up in capacity: if there are four of you, this is not the answer even though it costs more. That is where the SUV Comfort or the SUV Lux come in.",
   },
   minivan: {
     forEs:
@@ -94,9 +94,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the group one: six people seated without squeezing, easy access and a good height for getting in and out. It costs less than the Executive because it is more space, not more class.",
     notEs:
-      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, hay que ir a la High SUV o a dos unidades. Tampoco lleva chofer bilingüe: para eso es la Executive o la High SUV.",
+      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, hay que ir a la SUV Lux o a dos unidades. Tampoco lleva chofer bilingüe: para eso es la Executive o la SUV Lux.",
     notEn:
-      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, it has to be the High SUV or two vehicles. It does not travel with a bilingual chauffeur either — for that it is the Executive or the High SUV.",
+      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, it has to be the SUV Lux or two vehicles. It does not travel with a bilingual chauffeur either — for that it is the Executive or the SUV Lux.",
   },
   sedan: {
     forEs:
@@ -121,7 +121,7 @@ const TX = {
       "Cuatro categorías, todas con unidades propias de Elite Route. La reserva se hace por categoría, no por modelo, y la diferencia entre una y otra no es sólo cuánta gente cabe: también cuántas maletas entran a la vez, que es lo que de verdad decide. Esta página dice para qué sirve cada una y cuándo conviene no elegirla.",
 
     factCatsValue: "4 categorías",
-    factCatsLabel: "de Sedan a High SUV, todas propias",
+    factCatsLabel: "de Sedan a SUV Lux, todas propias",
     factSafeValue: "Seguro y GPS",
     factSafeLabel: "en todas las unidades, monitoreo las 24 horas",
     factBookValue: "Se reserva por categoría",
@@ -168,7 +168,7 @@ const TX = {
       ],
       [
         "¿Cuántas maletas entran de verdad?",
-        "Dos en Sedan, tres en Executive, cuatro en SUV Comfort y seis en High SUV. En SUV Comfort y High SUV el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
+        "Dos en Sedan, tres en Executive, cuatro en SUV Comfort y seis en SUV Lux. En SUV Comfort y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
       ],
       [
         "¿Los autos son propios o subcontratados?",
@@ -180,7 +180,7 @@ const TX = {
       ],
       [
         "¿Cuál me conviene para el aeropuerto?",
-        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan; tres con equipaje documentado, en Executive; cuatro o más, en SUV Comfort o High SUV según cuánto lleven.",
+        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan; tres con equipaje documentado, en Executive; cuatro o más, en SUV Comfort o SUV Lux según cuánto lleven.",
       ],
       [
         "¿El precio depende de la categoría?",
@@ -224,7 +224,7 @@ const TX = {
       "Four categories, every vehicle owned by Elite Route. You book a category, not a model, and the difference between them is not only how many people fit: it is how many suitcases fit at the same time, which is what actually decides. This page says what each one is for and when you are better off not choosing it.",
 
     factCatsValue: "4 categories",
-    factCatsLabel: "from Sedan to High SUV, all our own",
+    factCatsLabel: "from Sedan to SUV Lux, all our own",
     factSafeValue: "Insured and GPS",
     factSafeLabel: "on every vehicle, monitored around the clock",
     factBookValue: "Booked by category",
@@ -271,7 +271,7 @@ const TX = {
       ],
       [
         "How many suitcases really fit?",
-        "Two in the Sedan, three in the Executive, four in the SUV Comfort and six in the High SUV. On the SUV Comfort and the High SUV the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
+        "Two in the Sedan, three in the Executive, four in the SUV Comfort and six in the SUV Lux. On the SUV Comfort and the SUV Lux the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
       ],
       [
         "Are the cars your own or subcontracted?",
@@ -283,7 +283,7 @@ const TX = {
       ],
       [
         "Which one suits the airport?",
-        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan; three with checked bags, in an Executive; four or more, in a SUV Comfort or a High SUV depending on how much they are carrying.",
+        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan; three with checked bags, in an Executive; four or more, in a SUV Comfort or a SUV Lux depending on how much they are carrying.",
       ],
       [
         "Does the price depend on the category?",

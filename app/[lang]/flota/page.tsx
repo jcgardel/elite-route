@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Flota de Elite Route en Ciudad de México",
     description:
-      "Cuatro categorías de vehículo con chofer en Ciudad de México —Sedan, Executive, SUV Comfort y High SUV—, todas con unidades propias, seguro vigente y monitoreo GPS.",
+      "Cuatro categorías de vehículo con chofer en Ciudad de México —Sedan, Executive, SUV Comfort y SUV Lux—, todas con unidades propias, seguro vigente y monitoreo GPS.",
     serviceType: "Transporte ejecutivo",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Ciudad de México" },

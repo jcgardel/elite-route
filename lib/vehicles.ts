@@ -86,7 +86,7 @@ export const vehicles: Record<
     tag: "Captiva",
   },
   suv: {
-    name: "High SUV",
+    name: "SUV Lux",
     cap: "1-6 passengers · 6 bags",
     capEs: "1-6 pasajeros · 6 maletas",
     note: "recommended 4 passengers with full luggage",

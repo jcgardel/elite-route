@@ -179,7 +179,7 @@ const TX = {
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
     fleetKicker: "The fleet",
-    fleetTitle: "Executive and High SUV, with a bilingual chauffeur",
+    fleetTitle: "Executive and SUV Lux, with a bilingual chauffeur",
     fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan and SUV Comfort remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
     fleetAltKicker: "Also available",
     fleetBilingual: "Bilingual chauffeur",
@@ -332,7 +332,7 @@ const TX = {
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
     fleetKicker: "La flota",
-    fleetTitle: "Executive y High SUV, con chofer bilingüe",
+    fleetTitle: "Executive y SUV Lux, con chofer bilingüe",
     fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan y SUV Comfort siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
     fleetAltKicker: "También disponibles",
     fleetBilingual: "Chofer bilingüe",
@@ -1001,7 +1001,7 @@ export default function HomeClient({
   // La capacidad venía sólo en inglés y se mostraba así con la UI en español.
   const capFor = (cat: Category) =>
     lang === "es" ? vehicles[cat].capEs : vehicles[cat].cap;
-  // Sólo la High SUV la lleva: su máximo de pasajeros y el de maletas no
+  // Sólo la SUV Lux la lleva: su máximo de pasajeros y el de maletas no
   // caben a la vez, y enterarse de eso en la banqueta es tarde.
   const noteFor = (cat: Category) =>
     lang === "es" ? vehicles[cat].noteEs : vehicles[cat].note;
@@ -2127,7 +2127,7 @@ export default function HomeClient({
               <p className="er-fleet-kicker">{t.fleetKicker}</p>
               <h2 className="er-fleet-title">{t.fleetTitle}</h2>
               <p className="er-fleet-copy">{t.fleetCopy}</p>
-              {/* Executive y High SUV primero y en grande; Sedan y SUV Comfort
+              {/* Executive y SUV Lux primero y en grande; Sedan y SUV Comfort
                   debajo, como alternativas. Sólo presentación: el orden sale
                   de DISPLAY_ORDER en lib/vehicles.ts. */}
               <div className="er-fleet-grid">

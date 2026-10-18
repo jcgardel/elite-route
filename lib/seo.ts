@@ -86,7 +86,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     es: {
       title: "Tarifas de Transporte Ejecutivo en CDMX | Elite Route",
       description:
-        "Tarifas fijas de traslado ejecutivo en CDMX. Precios con IVA incluido para AICM, AIFA, Toluca y rutas corporativas. Sedan, Executive, SUV Comfort y High SUV.",
+        "Tarifas fijas de traslado ejecutivo en CDMX. Precios con IVA incluido para AICM, AIFA, Toluca y rutas corporativas. Sedan, Executive, SUV Comfort y SUV Lux.",
       keywords:
         "tarifa traslado aeropuerto CDMX, precio chofer ejecutivo Ciudad de México, tarifa AICM Polanco, costo traslado AIFA CDMX, transporte ejecutivo precio, tarifa chofer privado CDMX",
     },

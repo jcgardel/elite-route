@@ -103,7 +103,7 @@ function filas(lang: Lang) {
  * La regla del sitio es no declarar en el esquema un precio que no esté en
  * la página. Esta tabla publica el punto de partida de cada aeropuerto en la
  * categoría más económica, así que el tope del rango es el mayor de esos
- * seis números, no la High SUV desde Toluca —que sí existe, pero se publica
+ * seis números, no la SUV Lux desde Toluca —que sí existe, pero se publica
  * en la página de esa ruta, no aquí—.
  */
 export function airportPriceRange() {
@@ -207,7 +207,7 @@ const TX = {
       ],
       [
         "¿Cabe todo mi equipaje?",
-        "Revisa la tabla de capacidades de arriba. En SUV Comfort y High SUV el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros. Si dudas, escríbenos y te decimos qué categoría pedir.",
+        "Revisa la tabla de capacidades de arriba. En SUV Comfort y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros. Si dudas, escríbenos y te decimos qué categoría pedir.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 
@@ -331,7 +331,7 @@ const TX = {
       ],
       [
         "Will all my luggage fit?",
-        "Check the capacity table above. On the SUV Comfort and the High SUV the maximum passengers and the maximum suitcases do not fit at the same time: with full luggage we recommend four passengers. If you are unsure, write to us and we will tell you which category to ask for.",
+        "Check the capacity table above. On the SUV Comfort and the SUV Lux the maximum passengers and the maximum suitcases do not fit at the same time: with full luggage we recommend four passengers. If you are unsure, write to us and we will tell you which category to ask for.",
       ],
       /*
         LAS CUATRO DE ABAJO SON PARA EL VIAJERO EXTRANJERO, y van sólo en
@@ -388,7 +388,7 @@ const TX = {
         "English-speaking" no aparecía en ninguna parte.
 
         EL DATO DEL IDIOMA ES UNA RESTRICCIÓN, NO UN ESLOGAN. Lo confirmó el
-        dueño el 1 de octubre de 2026: **sólo Executive y High SUV llevan
+        dueño el 1 de octubre de 2026: **sólo Executive y SUV Lux llevan
         chofer bilingüe**. Sedan y SUV Comfort no. Prometerlo de todas las
         categorías sería mentir justo en lo que este cliente más valora, y se
         descubre el día del viaje.
@@ -399,7 +399,7 @@ const TX = {
       ],
       [
         "Do your chauffeurs speak English?",
-        "In the Executive and High SUV categories, yes — those two travel with a bilingual chauffeur. The Sedan and SUV Comfort do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
+        "In the Executive and SUV Lux categories, yes — those two travel with a bilingual chauffeur. The Sedan and SUV Comfort do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
       ],
       [
         "Do you have child seats?",

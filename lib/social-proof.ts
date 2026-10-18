@@ -29,13 +29,13 @@ export const GOOGLE_PLACE_URL =
 export const GOOGLE_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${GOOGLE_PLACE_ID}`;
 
 /**
- * Lo que dice la ficha hoy. Verificado en Google Maps el 7 de septiembre de
- * 2026: eran 20 el 27 de agosto y ya son 27, así que este número envejece
- * solo. Conviene revisarlo cada cierto tiempo — decir menos reseñas de las
+ * Lo que dice la ficha hoy. Verificado en Google Maps el 17 de octubre de
+ * 2026 (captura del dueño): 5.0 con 32 reseñas. Eran 20 el 27 de agosto y 27
+ * el 7 de septiembre, así que este número envejece solo. Conviene revisarlo cada cierto tiempo — decir menos reseñas de las
  * que hay es regalar prueba social que ya se ganó.
  */
 export const GOOGLE_RATING = "5.0";
-export const GOOGLE_REVIEW_COUNT = 27;
+export const GOOGLE_REVIEW_COUNT = 32;
 
 export type Review = {
   /** Transcrita literalmente de la ficha. */

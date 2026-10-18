@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
+import WelcomeEn from "./WelcomeEn";
 import { calculatePrice } from "@/lib/booking";
 import { CATEGORIES, vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
@@ -621,6 +622,8 @@ export default function AirportPage({ lang }: { lang: Lang }) {
           </div>
           <p className="ap-note">{t.tableNote}</p>
         </section>
+
+        {lang === "en" && <WelcomeEn origen="bienvenida_aeropuerto" />}
 
         <section className="ap-section">
           <h2 className="ap-h2">{t.arriveTitle}</h2>

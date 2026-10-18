@@ -14,6 +14,7 @@ import {
   YEARS_OPERATING,
 } from "@/lib/social-proof";
 import InstallHint from "./InstallHint";
+import WelcomeEn from "./WelcomeEn";
 import LangToggle from "./LangToggle";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -733,15 +734,6 @@ const styles = `
   .er-summary-val { color:#fff; text-align:right; max-width:65%; line-height:1.4; }
   .er-summary-total { font-family:var(--font-cormorant),serif; font-size:22px; font-weight:400; font-variant-numeric:tabular-nums; }
 
-  .er-welcome { margin-top:58px; padding:44px 40px; background:#0B1220; border:1px solid rgba(199,164,106,0.35); text-align:center; }
-  .er-welcome-kicker { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#C7A46A; margin:0 0 14px; }
-  .er-welcome-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:38px; line-height:1.15; color:#fff; margin:0 auto 16px; max-width:620px; text-wrap:balance; }
-  .er-welcome-copy { color:#BFC3C8; font-size:15px; line-height:1.8; max-width:600px; margin:0 auto 14px; }
-  .er-welcome-sign { color:#fff; font-size:15px; font-style:italic; margin:0 0 26px; }
-  .er-welcome-btn { display:inline-block; padding:14px 30px; background:#C7A46A; color:#0A0A0A; font-size:12px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; text-decoration:none; transition:background 0.2s; }
-  .er-welcome-btn:hover { background:#b8924f; }
-  .er-welcome-btn:focus-visible { outline:2px solid #fff; outline-offset:3px; }
-  @media (max-width:700px) { .er-welcome { padding:34px 22px; margin-top:40px; } .er-welcome-title { font-size:29px; } }
   .er-fleet { margin-top:58px; }
   .er-fleet-kicker { font-size:11px; letter-spacing:0.18em; color:#C8A46B; text-transform:uppercase; margin-bottom:10px; }
   .er-fleet-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:34px; color:#fff; margin:0 0 10px; }
@@ -2120,35 +2112,8 @@ export default function HomeClient({
           </section>
 
           <main className="er-main">
-            {/* BIENVENIDA, SÓLO EN INGLÉS (dueño, 17 oct 2026). Le habla a quien
-                visita la ciudad por primera vez —el cliente extranjero— y va
-                justo después del cotizador: quien no se animó a pagar todavía
-                tiene a quién escribirle. El botón abre WhatsApp (sólo
-                mensajes) con el texto ya escrito y se mide como clic_whatsapp
-                con origen "bienvenida". */}
-            {lang === "en" && (
-              <section className="er-welcome" aria-labelledby="er-welcome-title">
-                <p className="er-welcome-kicker">First time in Mexico City?</p>
-                <h2 id="er-welcome-title" className="er-welcome-title">
-                  A new city. A familiar feeling of care.
-                </h2>
-                <p className="er-welcome-copy">
-                  Visiting Mexico City for the first time? We’re here to help you feel welcome and
-                  looked after. From coordinating your airport pickup to getting you comfortably to
-                  your destination, our team stays in touch so you know what to expect along the way.
-                </p>
-                <p className="er-welcome-sign">Travel with confidence. We’ll take care of the ride.</p>
-                <a
-                  className="er-welcome-btn"
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hi, I'm visiting Mexico City and would like help with my airport pickup.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => track("clic_whatsapp", { origen: "bienvenida" })}
-                >
-                  Talk to our team
-                </a>
-              </section>
-            )}
+            {/* Bienvenida para quien visita CDMX por primera vez: sólo en inglés. */}
+            {lang === "en" && <WelcomeEn origen="bienvenida_portada" />}
 
             {/* Las cuatro categorías también viven en el paso 2 del
                 cotizador, pero ahí sólo se ven después de escribir origen y

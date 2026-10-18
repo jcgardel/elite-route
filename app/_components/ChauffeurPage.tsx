@@ -115,7 +115,7 @@ const TX = {
     howTitle: "Cómo se contrata",
     how: [
       "Dinos el punto de recogida, el destino o las horas que necesitas, y elige la categoría de vehículo. El precio aparece en pantalla antes de pedirte cualquier dato de pago.",
-      "Pagas con tarjeta, transferencia o Mercado Pago, o lo confirmas por WhatsApp. Doce horas de anticipación como mínimo.",
+      "Pagas con tarjeta vía Stripe o reservas por WhatsApp y te enviamos el enlace de pago. Doce horas de anticipación como mínimo.",
       "Un día antes te enviamos los datos del chofer, la unidad y el punto de encuentro. El chofer llega a la hora acordada y se queda contigo hasta terminar.",
     ],
 
@@ -166,7 +166,7 @@ const TX = {
       ],
       [
         "¿Cómo se paga y se factura?",
-        "Con tarjeta de crédito o débito, nacional o internacional, a través de Stripe o Mercado Pago, o por transferencia bancaria. Se emite factura CFDI a solicitud.",
+        "Con tarjeta de crédito o débito, nacional o internacional, a través de Stripe y sin comisión. Se emite factura CFDI a solicitud.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 
@@ -237,7 +237,7 @@ const TX = {
     howTitle: "How to book",
     how: [
       "Tell us the pickup point and the destination, or the hours you need, and pick a vehicle category. The price appears on screen before you hand over any payment details.",
-      "Pay by card, bank transfer or Mercado Pago, or confirm over WhatsApp. Twelve hours' notice minimum.",
+      "Pay by card through Stripe, or book over WhatsApp and we send you the payment link. Twelve hours' notice minimum.",
       "One day before, we send you the chauffeur's and vehicle's details and the meeting point. Your chauffeur arrives at the agreed time and stays with you until the service ends.",
     ],
 
@@ -288,7 +288,7 @@ const TX = {
       ],
       [
         "How do payment and invoicing work?",
-        "By credit or debit card, Mexican or international, through Stripe or Mercado Pago, or by bank transfer. A CFDI invoice is issued on request.",
+        "By credit or debit card, Mexican or international, through Stripe and with no fee. A CFDI invoice is issued on request.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 

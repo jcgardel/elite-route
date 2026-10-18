@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Corporate executive transportation account in Mexico City",
     description:
-      "Executive ground transportation for companies in Mexico City: recurring routes, CFDI electronic invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
+      "Executive ground transportation for companies in Mexico City: recurring routes, CFDI electronic invoicing, insured GPS-monitored vehicles and card payment through Stripe.",
     serviceType: "Corporate executive transportation",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Mexico City" },

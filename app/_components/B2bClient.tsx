@@ -93,9 +93,9 @@ const TX = {
       ["Recepción personalizada en aeropuerto", "Tu conductor te espera en la zona de llegadas con un letrero o tablet con tu nombre."],
       ["Datos del conductor un día antes", "Un día antes del servicio compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
     ],
-    payLabel: "Métodos de pago aceptados",
-    payCard: "· Tarjeta", payWallet: "· Tarjeta / wallet", payTransfer: "Transferencia", paySpei: "· SPEI / CoDi",
-    paySub: "Pagos procesados mediante plataformas de pago seguras. Pago empresarial con referencia para conciliación contable.",
+    payLabel: "Forma de pago",
+    payCard: "· Tarjeta de crédito o débito, nacional o internacional",
+    paySub: "Todos los pagos se procesan por Stripe, sin comisión para tu empresa. Cada pago lleva el folio del servicio para la conciliación contable.",
     ratesKicker: "Tarifas corporativas · Aeropuertos",
     ratesTitle: "Precios fijos en los 3 aeropuertos",
     ratesCopy: "IVA incluido. Sin cargos ocultos. Cada celda trae dos precios: arriba la salida DESDE el aeropuerto —incluye ingreso a zona de llegadas, espera y estacionamiento— y debajo, en gris, el trayecto HACIA el aeropuerto, que no lleva ese recargo.",
@@ -182,9 +182,9 @@ const TX = {
       ["Meet and greet in arrivals", "Your chauffeur waits in the arrivals hall with a sign or tablet showing your name."],
       ["Chauffeur details one day before", "One day before the service we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
     ],
-    payLabel: "Accepted payment methods",
-    payCard: "· Card", payWallet: "· Card / wallet", payTransfer: "Bank transfer", paySpei: "· SPEI / CoDi",
-    paySub: "Payments processed through secure payment platforms. Corporate payment with a reference for accounting reconciliation.",
+    payLabel: "How you pay",
+    payCard: "· Credit or debit card, Mexican or international",
+    paySub: "Every payment is processed through Stripe, with no fee for your company. Each payment carries the booking reference for accounting reconciliation.",
     ratesKicker: "Corporate rates · Airports",
     ratesTitle: "Fixed prices at all three airports",
     ratesCopy: "VAT included. No hidden charges. Each cell shows two prices: on top, the pickup FROM the airport — covering arrivals-hall pickup, waiting time and parking — and below it, in grey, the trip TO the airport, which carries no such surcharge.",
@@ -487,16 +487,6 @@ export default function B2bClient({
                     <div className="b-payment-dot" style={{ background: "#635BFF" }} />
                     <span className="b-payment-name" style={{ color: "#635BFF" }}>Stripe</span>
                     <span style={{ color: "#8B8B87", fontSize: "11px" }}>{t.payCard}</span>
-                  </div>
-                  <div className="b-payment-badge">
-                    <div className="b-payment-dot" style={{ background: "#009EE3" }} />
-                    <span className="b-payment-name" style={{ color: "#009EE3" }}>Mercado Pago</span>
-                    <span style={{ color: "#8B8B87", fontSize: "11px" }}>{t.payWallet}</span>
-                  </div>
-                  <div className="b-payment-badge">
-                    <div className="b-payment-dot" style={{ background: "#C8A46B" }} />
-                    <span className="b-payment-name" style={{ color: "#C8A46B" }}>{t.payTransfer}</span>
-                    <span style={{ color: "#8B8B87", fontSize: "11px" }}>{t.paySpei}</span>
                   </div>
                 </div>
               </div>

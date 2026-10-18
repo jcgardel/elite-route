@@ -29,22 +29,11 @@ const VEHICLES: { key: Category; label: string; sub: string }[] = (
   CATEGORIES
 ).map((key) => ({ key, label: vehicles[key].name, sub: vehicles[key].tag }));
 
-type PaymentTerm = "immediate" | "7" | "15" | "30";
-
 /**
- * Recargo por financiamiento: cubre el costo de tener el dinero parado
- * mientras se paga a crédito, más el riesgo de cobranza (ya hemos tenido
- * clientes que se atrasan). El de 30 días queda marcado como "requiere
- * historial" porque no hay base de clientes en esta página para validarlo
- * automáticamente — la aprobación real la hace el equipo al revisar la
- * solicitud que llega por correo.
+ * SIN TÉRMINOS DE CRÉDITO desde el 17 de octubre de 2026. El formulario
+ * ofrecía crédito a 7, 15 y 30 días con recargo; el dueño decidió que todo se
+ * paga por Stripe y que el crédito, si se da, se negocia aparte caso por caso.
  */
-const PAYMENT_TERMS: { key: PaymentTerm; surcharge: number }[] = [
-  { key: "immediate", surcharge: 0 },
-  { key: "7",  surcharge: 0.02 },
-  { key: "15", surcharge: 0.04 },
-  { key: "30", surcharge: 0.07 },
-];
 
 /**
  * Textos de la pantalla en los dos idiomas del sitio. Arranca en español —el
@@ -69,18 +58,7 @@ const TX = {
     email: "Correo *", emailPh: "coordinador@empresa.com",
     owner: "Responsable", ownerPh: "Coordinador de viajes",
     phone: "Teléfono", phonePh: "55 0000 0000",
-    paymentTerm: "Término de pago",
-    terms: {
-      immediate: "Pago inmediato (tarjeta o transferencia al confirmar)",
-      "7": "Crédito a 7 días",
-      "15": "Crédito a 15 días",
-      "30": "Crédito a 30 días — requiere historial",
-    },
-    termsShort: {
-      immediate: "pago inmediato", "7": "crédito a 7 días",
-      "15": "crédito a 15 días", "30": "crédito a 30 días",
-    },
-    term30Note: "Crédito a 30 días disponible para empresas con historial de pago con Elite Route — sujeto a aprobación. Si es tu primera solicitud, te confirmamos el término al revisar tu cotización.",
+    payNote: "Pago con tarjeta vía Stripe: al confirmar tu solicitud te enviamos el enlace de pago, sin comisión para tu empresa.",
     services: (n: number, max: number) => `Servicios (${n}/${max})`,
     addService: "+ Agregar servicio",
     serviceN: (n: number) => `Servicio ${n}`,
@@ -96,7 +74,6 @@ const TX = {
     summary: "Resumen",
     subtotalNoVat: (n: number) => `Subtotal sin IVA (${n} servicio${n !== 1 ? "s" : ""})`,
     vat16: "IVA 16%",
-    surcharge: (label: string, pct: number) => `Recargo ${label} (${pct}%)`,
     noteEstimates: "* Algunos servicios muestran tarifa mínima. El total se actualiza automáticamente al seleccionar origen y destino.",
     noteReal: "Precio calculado con la ruta real. IVA 16% desglosado por servicio.",
     send: "Enviar solicitud de servicios",
@@ -118,18 +95,7 @@ const TX = {
     email: "Email *", emailPh: "coordinator@company.com",
     owner: "Contact person", ownerPh: "Travel coordinator",
     phone: "Phone", phonePh: "55 0000 0000",
-    paymentTerm: "Payment term",
-    terms: {
-      immediate: "Immediate payment (card or transfer on confirmation)",
-      "7": "7-day credit",
-      "15": "15-day credit",
-      "30": "30-day credit — requires history",
-    },
-    termsShort: {
-      immediate: "immediate payment", "7": "7-day credit",
-      "15": "15-day credit", "30": "30-day credit",
-    },
-    term30Note: "30-day credit is available to companies with a payment history with Elite Route — subject to approval. If this is your first request, we confirm the term when we review your quote.",
+    payNote: "Card payment through Stripe: once we confirm your request we send you the payment link, with no fee for your company.",
     services: (n: number, max: number) => `Services (${n}/${max})`,
     addService: "+ Add service",
     serviceN: (n: number) => `Service ${n}`,
@@ -145,7 +111,6 @@ const TX = {
     summary: "Summary",
     subtotalNoVat: (n: number) => `Subtotal before VAT (${n} service${n !== 1 ? "s" : ""})`,
     vat16: "VAT 16%",
-    surcharge: (label: string, pct: number) => `${label} surcharge (${pct}%)`,
     noteEstimates: "* Some services show the minimum fare. The total updates automatically once pickup and destination are set.",
     noteReal: "Price calculated from the real route. 16% VAT itemised per service.",
     send: "Send service request",
@@ -445,7 +410,6 @@ export default function QuoteClient({
 
   const [empresa, setEmpresa] = useState({ nombre:"", rfc:"", correo:"", telefono:"", responsable:"" });
   const [services, setServices] = useState<Service[]>([{ ...INITIAL_SERVICE }]);
-  const [paymentTerm, setPaymentTerm] = useState<PaymentTerm>("immediate");
   const [sent, setSent] = useState(false);
 
   function updateEmpresa(k: keyof typeof empresa, v: string) {
@@ -466,10 +430,7 @@ export default function QuoteClient({
     return { base: acc.base + r.base, iva: acc.iva + r.iva, total: acc.total + r.total };
   }, { base:0, iva:0, total:0 });
 
-  const selectedTerm = PAYMENT_TERMS.find((t) => t.key === paymentTerm)!;
-  const financingSurcharge = Math.round(totals.total * selectedTerm.surcharge);
-  const grandTotal = totals.total + financingSurcharge;
-  const termLabelShort = t.termsShort[selectedTerm.key];
+  const grandTotal = totals.total;
 
   const hasEstimates = services.some((s) => calcRow(s, tablas).estimate && (s.origen || s.destino));
 
@@ -484,7 +445,7 @@ export default function QuoteClient({
       `Responsable: ${empresa.responsable}`,
       `Telefono:    ${empresa.telefono}`,
       `Correo:      ${empresa.correo}`,
-      `Termino de pago: ${TX.es.terms[selectedTerm.key]}`,
+      "Pago: tarjeta via Stripe (enlace de pago)",
       "", "SERVICIOS SOLICITADOS", "---",
     ];
     services.forEach((s, i) => {
@@ -502,11 +463,7 @@ export default function QuoteClient({
     lines.push("---", "RESUMEN TOTAL");
     lines.push(`Subtotal sin IVA: ${fmt(totals.base)}`);
     lines.push(`IVA (16%):        ${fmt(totals.iva)}`);
-    if (financingSurcharge > 0) {
-      lines.push(`Recargo ${TX.es.termsShort[selectedTerm.key]} (${Math.round(selectedTerm.surcharge * 100)}%): ${fmt(financingSurcharge)}`);
-    }
     lines.push(`TOTAL:            ${fmt(grandTotal)}`);
-    if (paymentTerm === "30") lines.push("", "* Credito a 30 dias sujeto a aprobacion segun historial de pago con Elite Route.");
     if (hasEstimates) lines.push("", "* Servicios marcados como estimado usan tarifa minima. El total se actualiza al ingresar la ruta completa.");
     return lines.join("\n");
   }
@@ -704,7 +661,7 @@ export default function QuoteClient({
                       onChange={(e) => updateEmpresa("correo", e.target.value)} />
                   </div>
                 </div>
-                <div className="cq-g3">
+                <div className="cq-g2">
                   <div className="cq-f">
                     <label>{t.owner}</label>
                     <input type="text" placeholder={t.ownerPh} value={empresa.responsable}
@@ -715,20 +672,10 @@ export default function QuoteClient({
                     <input type="tel" placeholder={t.phonePh} value={empresa.telefono}
                       onChange={(e) => updateEmpresa("telefono", e.target.value)} />
                   </div>
-                  <div className="cq-f">
-                    <label>{t.paymentTerm}</label>
-                    <select value={paymentTerm} onChange={(e) => setPaymentTerm(e.target.value as PaymentTerm)}>
-                      {PAYMENT_TERMS.map((term) => (
-                        <option key={term.key} value={term.key}>{t.terms[term.key]}</option>
-                      ))}
-                    </select>
-                  </div>
                 </div>
-                {paymentTerm === "30" && (
-                  <p className="cq-note" style={{ marginTop: 10, marginBottom: 0, color: "#C8A46B" }}>
-                    {t.term30Note}
-                  </p>
-                )}
+                <p className="cq-note" style={{ marginTop: 10, marginBottom: 0 }}>
+                  {t.payNote}
+                </p>
               </section>
 
               {/* SERVICIOS */}
@@ -766,12 +713,6 @@ export default function QuoteClient({
                     <span>{fmt(totals.base)}</span>
                   </div>
                   <div className="cq-sl"><span>{t.vat16}</span><span>{fmt(totals.iva)}</span></div>
-                  {financingSurcharge > 0 && (
-                    <div className="cq-sl">
-                      <span>{t.surcharge(termLabelShort, Math.round(selectedTerm.surcharge * 100))}</span>
-                      <span>{fmt(financingSurcharge)}</span>
-                    </div>
-                  )}
                   <div className="cq-st"><span>{t.total}</span><span>{fmt(grandTotal)}</span></div>
                 </div>
 

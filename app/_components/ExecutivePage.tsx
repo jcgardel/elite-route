@@ -129,7 +129,7 @@ const TX = {
       "Unidades propias y aseguradas, con monitoreo GPS las 24 horas.",
       "El mismo chofer durante todo el servicio contratado.",
       "Monitoreo del vuelo en las salidas de aeropuerto, con la espera ya incluida en la tarifa.",
-      "Factura CFDI a solicitud y pago con tarjeta, Mercado Pago o transferencia bancaria.",
+      "Factura CFDI a solicitud y pago con tarjeta vía Stripe, sin comisión.",
       "Reserva con doce horas de anticipación como mínimo, confirmada por WhatsApp.",
     ],
 
@@ -153,7 +153,7 @@ const TX = {
       ],
       [
         "¿Se puede facturar y pagar a nombre de una empresa?",
-        "Sí. Se emite factura CFDI y se acepta pago con tarjeta nacional o internacional, Mercado Pago o transferencia bancaria. Para volumen recurrente y términos de crédito, la cuenta corporativa tiene su propia página.",
+        "Sí. Se emite factura CFDI a solicitud y se paga con tarjeta nacional o internacional vía Stripe, sin comisión. Para volumen recurrente y tarifas corporativas, la página corporativa explica cómo trabajar con nosotros.",
       ],
       [
         "¿Con cuánta anticipación hay que reservar?",
@@ -239,7 +239,7 @@ const TX = {
       "Our own insured vehicles, GPS-monitored around the clock.",
       "The same chauffeur for the whole booked service.",
       "Flight tracking on airport pickups, with the waiting time already covered by the fare.",
-      "CFDI invoice on request, and payment by card, Mercado Pago or bank transfer.",
+      "CFDI invoice on request, and payment by card through Stripe, with no fee.",
       "Booked twelve hours ahead at the minimum, confirmed over WhatsApp.",
     ],
 
@@ -263,7 +263,7 @@ const TX = {
       ],
       [
         "Can you invoice and take payment in a company's name?",
-        "Yes. A CFDI invoice is issued, and we take Mexican or international cards, Mercado Pago and bank transfers. For recurring volume and credit terms, the corporate account has a page of its own.",
+        "Yes. A CFDI invoice is issued on request, and you pay by Mexican or international card through Stripe, with no fee. For recurring volume and corporate rates, the corporate page explains how to work with us.",
       ],
       [
         "How far ahead should I book?",

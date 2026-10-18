@@ -197,14 +197,14 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Corporate Executive Transportation in Mexico City",
       description:
-        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI invoicing, insured GPS-monitored vehicles and payment by card or bank transfer.",
+        "Corporate accounts for companies in Mexico City. Recurring routes, CFDI invoicing, insured GPS-monitored vehicles and card payment through Stripe.",
       keywords:
         "corporate transportation Mexico City, executive car service for companies, corporate ground transportation CDMX, business travel Mexico City",
     },
     es: {
       title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
       description:
-        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con GPS y pago con tarjeta o transferencia bancaria.",
+        "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con GPS y pago con tarjeta vía Stripe.",
       keywords:
         "transporte ejecutivo corporativo CDMX, cuenta corporativa traslados, factura CFDI transporte, choferes para empresas Ciudad de México",
     },
@@ -213,12 +213,12 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Multi-Service Corporate Quote | Elite Route",
       description:
-        "Quote up to 20 transfers at once with real-time pricing from the route. VAT breakdown sent straight to accounting, with credit terms available.",
+        "Quote up to 20 transfers at once with real-time pricing from the route. VAT breakdown sent straight to accounting; payment by card through Stripe.",
     },
     es: {
       title: "Cotizador Corporativo Multi-Servicio | Elite Route",
       description:
-        "Cotiza hasta 20 traslados de una vez con precio en tiempo real según la ruta. El desglose con IVA se envía directo a contabilidad, con términos de crédito.",
+        "Cotiza hasta 20 traslados de una vez con precio en tiempo real según la ruta. El desglose con IVA se envía directo a contabilidad; pago con tarjeta vía Stripe.",
     },
   },
   privacy: {

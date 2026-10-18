@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Cuenta corporativa de transporte ejecutivo en CDMX",
     description:
-      "Transporte ejecutivo para empresas en Ciudad de México: rutas recurrentes, factura electrónica CFDI, unidades aseguradas con monitoreo GPS y pago con tarjeta o transferencia.",
+      "Transporte ejecutivo para empresas en Ciudad de México: rutas recurrentes, factura electrónica CFDI, unidades aseguradas con monitoreo GPS y pago con tarjeta vía Stripe.",
     serviceType: "Transporte ejecutivo corporativo",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Ciudad de México" },

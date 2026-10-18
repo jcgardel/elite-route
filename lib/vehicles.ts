@@ -25,8 +25,22 @@ export type Category = "sedan" | "executive" | "minivan" | "suv";
 export type Zone = "cdmx" | "semi_foraneo" | "foraneo";
 export type ServiceType = "route" | "hour" | "day";
 
-/** El orden en el que se ofrecen, de menor a mayor. */
+/**
+ * El orden INTERNO, de menor a mayor. Lo usan el tarifario, las tablas de
+ * precios y la API: no se toca para cambiar cómo se presenta la flota.
+ */
 export const CATEGORIES: readonly Category[] = ["sedan", "executive", "minivan", "suv"];
+
+/**
+ * El orden en que se PRESENTA la flota al cliente: primero las dos
+ * categorías ejecutivas, después las alternativas. Decisión del dueño, 17 oct
+ * 2026. Es sólo presentación —tarjetas, selectores y galerías—; precios,
+ * identificadores y lógica siguen colgando de `CATEGORIES`.
+ */
+export const DISPLAY_ORDER: readonly Category[] = ["executive", "suv", "minivan", "sedan"];
+
+/** Las dos que se destacan en portada y flota. */
+export const FEATURED: readonly Category[] = ["executive", "suv"];
 
 /**
  * Nombre, capacidad y flota de cada categoría. Se escriben una sola vez: la
@@ -60,7 +74,8 @@ export const vehicles: Record<
     name: "Executive",
     cap: "1-3 passengers · 3 bags",
     capEs: "1-3 pasajeros · 3 maletas",
-    tag: "BMW · Mercedes · Tesla",
+    // Ya no hay Mercedes en la flota (el C200 se sustituyó por un Lexus ES).
+    tag: "BMW · Lexus · Tesla",
   },
   minivan: {
     name: "Minivan",

@@ -1,3 +1,4 @@
+import { DESPUES_DE_PAGAR } from "./booking-status";
 import type Stripe from "stripe";
 import { DEFAULT_LANG, isLang, type Lang } from "./i18n";
 import { LEGAL } from "./legal";
@@ -409,9 +410,11 @@ const CORREO = {
   en: {
     htmlLang: "en",
     kicker: "Elite Route · Mexico City",
-    titulo: "Your transfer is confirmed",
+    // "Pago recibido", no "confirmado": el equipo valida después. Ver
+    // lib/booking-status.ts, que es de donde salen estas frases.
+    titulo: DESPUES_DE_PAGAR.en.pagoRecibido,
     saludo: (nombre: string) =>
-      `Hi <strong style="color:#fff">${nombre}</strong>, your payment went through. An Elite Route agent will confirm availability and send you your chauffeur's details on WhatsApp.`,
+      `Hi <strong style="color:#fff">${nombre}</strong>, we received your payment and your booking is now under review. ${DESPUES_DE_PAGAR.en.validacion} ${DESPUES_DE_PAGAR.en.conductor}`,
     detallesTitulo: "Service details",
     fechaHora: "Date and time",
     tipo: "Type",
@@ -427,7 +430,7 @@ const CORREO = {
     referencia: "Payment reference:",
     factura: "Need a Mexican tax invoice (CFDI)? Write to",
     asunto: (cuando: string) =>
-      `Your transfer is confirmed · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+      `Payment received, booking under review · Elite Route${cuando ? ` · ${cuando}` : ""}`,
     /** El valor que escribe /api/checkout cuando el servicio es libre. */
     disposicionLibre: "Disposición libre",
     tipoPorDefecto: "Executive transfer",
@@ -437,9 +440,9 @@ const CORREO = {
   es: {
     htmlLang: "es",
     kicker: "Elite Route · Ciudad de México",
-    titulo: "Tu traslado está confirmado",
+    titulo: DESPUES_DE_PAGAR.es.pagoRecibido,
     saludo: (nombre: string) =>
-      `Hola <strong style="color:#fff">${nombre}</strong>, tu pago fue procesado exitosamente. Un agente de Elite Route confirmará disponibilidad y te enviará los detalles del chofer por WhatsApp.`,
+      `Hola <strong style="color:#fff">${nombre}</strong>, recibimos tu pago y tu reserva quedó en validación. ${DESPUES_DE_PAGAR.es.validacion} ${DESPUES_DE_PAGAR.es.conductor}`,
     detallesTitulo: "Detalles del servicio",
     fechaHora: "Fecha y hora",
     tipo: "Tipo",
@@ -455,7 +458,7 @@ const CORREO = {
     referencia: "Referencia de pago:",
     factura: "¿Necesitas factura CFDI? Escríbenos a",
     asunto: (cuando: string) =>
-      `Tu traslado está confirmado · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+      `Pago recibido, reserva en validación · Elite Route${cuando ? ` · ${cuando}` : ""}`,
     disposicionLibre: "Disposición libre",
     tipoPorDefecto: "Traslado ejecutivo",
     vehiculoPorDefecto: "Vehículo ejecutivo",

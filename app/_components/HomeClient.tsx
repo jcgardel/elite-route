@@ -6,6 +6,7 @@ import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import {
   GOOGLE_PLACE_URL,
+  GOOGLE_RATING,
   GOOGLE_REVIEW_COUNT,
   GOOGLE_WRITE_REVIEW_URL,
   REVIEWS,
@@ -23,7 +24,8 @@ import {
   serviceTypeLabel,
   serviceTypeLabelEs,
   vehicles,
-  CATEGORIES,
+  DISPLAY_ORDER,
+  FEATURED,
   zoneLabel,
   zoneLabelEs,
   type Category,
@@ -33,6 +35,7 @@ import {
 import { HORAS_MIN, type PrecioPorCategoria, type TablasCotizador, type TablasRedondo } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { track } from "@/lib/analytics";
+import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 import {
   CENTRO_CDMX,
   dentroDeZonaPorHoras,
@@ -176,8 +179,12 @@ const TX = {
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
     fleetKicker: "The fleet",
-    fleetTitle: "Four categories for every transfer",
-    fleetCopy: "Our own vehicles, insured and GPS-monitored around the clock.",
+    fleetTitle: "Executive and High SUV, with a bilingual chauffeur",
+    fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan and Minivan remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
+    fleetAltKicker: "Also available",
+    fleetBilingual: "Bilingual chauffeur",
+    byCategory: "You book a category: make and model are assigned according to availability.",
+    heroFleetLabel: "Our executive categories",
     fleetCta: "Quote my transfer →",
     fleetAlt: (c: string) => `Elite Route ${c} category vehicles`,
     water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
@@ -263,10 +270,26 @@ const TX = {
     // el cambio de año los dos no coinciden. No vale una advertencia de
     // hidratación por un dato que no aporta.
     footRights: "Elite Route MX · Mexico City",
-    paymentNote: "Secure card payment powered by Stripe. Your booking details are attached to the payment.",
     payBtn: "Pay and reserve with card", payLoading: "Opening secure payment...",
-    whatsappBtn: "Prefer to confirm over WhatsApp?",
-    legal: "We confirm your booking over WhatsApp the same day.",
+    whatsappBtn: "Prefer to book over WhatsApp?",
+    payStepsTitle: DESPUES_DE_PAGAR.en.pasosTitulo,
+    paySteps: DESPUES_DE_PAGAR.en.pasos,
+    trustTitle: "Book with confidence",
+    trustGoogle: (r: string) => `${r} ★ on Google`,
+    trustGoogleSub: (n: number) => `${n} reviews · see them`,
+    trustStripe: "Secure payment",
+    trustStripeSub: "Processed by Stripe; we never see your card",
+    trustInsured: "Insured vehicles",
+    trustInsuredSub: "GPS-monitored 24/7",
+    trustDirect: "Direct attention",
+    trustDirectSub: "WhatsApp messages and chauffeur details before the service",
+    condTitle: "Before you pay",
+    condWait: "Waiting included: 60 min at the airport from actual landing; 30 min anywhere else.",
+    condRoute: "One-way fare: tolls, fuel and parking included.",
+    condHourly: (h: number) => `Hourly: within Mexico City only · ${KM_POR_HORA} km per hour (${kmIncluidos(h)} km in total) · ${HORAS_MIN}-hour minimum.`,
+    condCancel: "Cancellation: free more than 24 h ahead; 50% between 12 and 24 h; 100% within 12 h or no-show.",
+    condExtras: "Extra stops, route changes, extra hours or extra waiting time requested on the day are agreed and charged separately — we tell you before charging.",
+    condTerms: "Full terms",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Enter the pickup location.",
     alertDest: "Enter the destination.",
@@ -286,7 +309,7 @@ const TX = {
     benefit1Title: "Professional Chauffeurs", benefit1Copy: "Licensed and professionally trained.",
     benefit2Title: "Fixed Pricing", benefit2Copy: "Transparent fares with no surprises.",
     benefit3Title: "24/7 Availability", benefit3Copy: "Airport and executive transportation.",
-    benefit4Title: "Direct Confirmation", benefit4Copy: "Instant WhatsApp assistance.",
+    benefit4Title: "Direct Attention", benefit4Copy: "WhatsApp support; chauffeur details one day before.",
     b2bTitle: "Business to Business",
     b2bCopy: "Corporate accounts, executive transfers, recurring routes and commercial partnerships.",
     accTitle: "Accounting / Invoices",
@@ -309,8 +332,12 @@ const TX = {
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
     fleetKicker: "La flota",
-    fleetTitle: "Cuatro categorías para cada traslado",
-    fleetCopy: "Unidades propias, con seguro vigente y monitoreo GPS las 24 horas.",
+    fleetTitle: "Executive y High SUV, con chofer bilingüe",
+    fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan y Minivan siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
+    fleetAltKicker: "También disponibles",
+    fleetBilingual: "Chofer bilingüe",
+    byCategory: "Reservas una categoría: la marca y el modelo se asignan según disponibilidad.",
+    heroFleetLabel: "Nuestras categorías ejecutivas",
     fleetCta: "Cotizar mi traslado →",
     fleetAlt: (c: string) => `Unidades de la categoría ${c} de Elite Route`,
     water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
@@ -392,10 +419,26 @@ const TX = {
     footAirport: "Traslados de aeropuerto",
     footFleet: "Flota",
     footRights: "Elite Route MX · Ciudad de México",
-    paymentNote: "Pago seguro con tarjeta vía Stripe. Los detalles de tu reserva se adjuntan al pago.",
     payBtn: "Pagar y reservar con tarjeta", payLoading: "Abriendo pago seguro...",
-    whatsappBtn: "¿Prefieres confirmar por WhatsApp?",
-    legal: "Confirmamos tu reserva por WhatsApp el mismo día.",
+    whatsappBtn: "¿Prefieres reservar por WhatsApp?",
+    payStepsTitle: DESPUES_DE_PAGAR.es.pasosTitulo,
+    paySteps: DESPUES_DE_PAGAR.es.pasos,
+    trustTitle: "Reserva con confianza",
+    trustGoogle: (r: string) => `${r} ★ en Google`,
+    trustGoogleSub: (n: number) => `${n} reseñas · verlas`,
+    trustStripe: "Pago seguro",
+    trustStripeSub: "Procesado por Stripe; nunca vemos tu tarjeta",
+    trustInsured: "Unidades aseguradas",
+    trustInsuredSub: "Monitoreo GPS 24/7",
+    trustDirect: "Atención directa",
+    trustDirectSub: "Mensajes por WhatsApp y datos del conductor antes del servicio",
+    condTitle: "Antes de pagar",
+    condWait: "Espera incluida: 60 min en aeropuerto desde el aterrizaje real; 30 min en cualquier otro punto.",
+    condRoute: "Tarifa por trayecto sencillo: casetas, gasolina y estacionamiento incluidos.",
+    condHourly: (h: number) => `Por horas: sólo dentro de la CDMX · ${KM_POR_HORA} km por hora (${kmIncluidos(h)} km en total) · mínimo ${HORAS_MIN} horas.`,
+    condCancel: "Cancelación: sin costo con más de 24 h; 50% entre 12 y 24 h; 100% con menos de 12 h o si no te presentas.",
+    condExtras: "Paradas extra, cambios de ruta, horas extra o esperas adicionales pedidas en el momento se acuerdan y cobran aparte; te avisamos antes de cobrar.",
+    condTerms: "Términos completos",
     legal2: "Elite Route CDMX · eliteroute.mx",
     alertOrigin: "Ingresa el lugar de recogida.",
     alertDest: "Ingresa el destino.",
@@ -415,7 +458,7 @@ const TX = {
     benefit1Title: "Choferes Profesionales", benefit1Copy: "Licenciados y capacitados profesionalmente.",
     benefit2Title: "Tarifas Fijas", benefit2Copy: "Precios transparentes sin sorpresas.",
     benefit3Title: "Disponibilidad 24/7", benefit3Copy: "Transporte aeroportuario y ejecutivo.",
-    benefit4Title: "Confirmación Directa", benefit4Copy: "Asistencia inmediata por WhatsApp.",
+    benefit4Title: "Atención Directa", benefit4Copy: "WhatsApp y datos del conductor un día antes.",
     b2bTitle: "Business to Business",
     b2bCopy: "Cuentas corporativas, traslados ejecutivos, rutas recurrentes y asociaciones comerciales.",
     accTitle: "Contabilidad / Facturas",
@@ -690,6 +733,39 @@ const styles = `
   .er-fleet-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
   .er-fleet-cap { font-size:12px; color:#b4b4b4; margin-top:8px; }
   .er-fleet-note { font-size:11px; color:#8b8b88; line-height:1.6; margin-top:4px; }
+  .er-fleet-card--featured .er-fleet-name { font-size:24px; }
+  .er-fleet-card--featured { border-color:rgba(200,164,107,0.42); }
+  .er-fleet-card--alt { display:grid; grid-template-columns:42% 1fr; align-items:center; }
+  .er-fleet-card--alt img { height:100%; aspect-ratio:auto; min-height:120px; }
+  .er-fleet-card--alt .er-fleet-name { font-size:17px; }
+  .er-fleet-badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; margin-bottom:10px; }
+  .er-fleet-badge--alt { background:transparent; color:#8b8b88; padding:0; margin-bottom:6px; }
+  .er-bycat { font-size:12px; line-height:1.6; color:#8B8B87; text-align:center; margin:-8px 0 18px; }
+  .er-hero-fleet { display:flex; flex-wrap:wrap; gap:10px; margin:0 0 26px; text-decoration:none; }
+  .er-hero-fleet-item { display:flex; align-items:center; gap:10px; padding:6px 14px 6px 6px; border:1px solid rgba(200,164,107,0.4); background:rgba(10,10,10,0.55); color:#fff; transition:border-color 0.2s; }
+  .er-hero-fleet:hover .er-hero-fleet-item { border-color:#C8A46B; }
+  .er-hero-fleet-item img { width:64px; height:36px; object-fit:cover; display:block; }
+  .er-hero-fleet-item strong { display:block; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
+  .er-hero-fleet-item small { display:block; font-size:11px; color:#BFC3C8; letter-spacing:0.06em; }
+  .er-pick { display:flex; gap:14px; align-items:center; padding:12px; border:1px solid #292929; background:#111; margin-bottom:18px; }
+  .er-pick img { width:120px; height:68px; object-fit:cover; flex-shrink:0; display:block; }
+  .er-pick-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
+  .er-pick-tag { font-size:11px; color:#ded8cd; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px; }
+  .er-pick-cap { font-size:12px; color:#b4b4b4; margin-top:4px; line-height:1.45; }
+  .er-cond { border:1px solid #292929; background:#0f0f0f; padding:14px 16px; margin-bottom:14px; }
+  .er-cond ul, .er-paysteps ol { margin:0; padding-left:18px; }
+  .er-cond li, .er-paysteps li { color:#BFC3C8; font-size:12.5px; line-height:1.55; margin-bottom:5px; }
+  .er-cond a { display:inline-block; margin-top:4px; font-size:11.5px; color:#C8A46B; text-decoration:none; letter-spacing:0.04em; }
+  .er-cond a:hover { color:#fff; }
+  .er-cond-title { font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; margin:0 0 8px; }
+  .er-trust { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; margin-bottom:18px; }
+  .er-trust-item { display:flex; flex-direction:column; gap:2px; padding:10px 12px; border:1px solid #242424; background:#0d0d0d; text-decoration:none; }
+  a.er-trust-item:hover { border-color:#C8A46B; }
+  .er-trust-item strong { color:#fff; font-size:12.5px; font-weight:600; }
+  .er-trust-item span { color:#8B8B87; font-size:11.5px; line-height:1.45; }
+  .er-paysteps { margin-top:16px; padding:14px 16px; border-left:2px solid #C8A46B; background:#0f0f0f; }
+  .er-paysteps strong { color:#fff; font-weight:600; }
+  @media (max-width:420px) { .er-pick img { width:92px; height:52px; } }
   .er-fleet-cta { display:inline-block; margin-top:24px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#C8A46B; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.45); padding-bottom:3px; }
   .er-fleet-cta:hover { color:#fff; border-color:#fff; }
   .er-benefits { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:22px; margin-top:58px; }
@@ -1397,6 +1473,21 @@ export default function HomeClient({
                   <span><strong>{t.heroWaitStrong}</strong> {t.heroWaitRest}</span>
                 </p>
 
+                {/* Las dos categorías ejecutivas, a la vista desde el primer
+                    pantallazo (dueño, 17 oct 2026). Llevan a la flota; el
+                    precio lo sigue dando el cotizador. */}
+                <a className="er-hero-fleet" href="#flota" aria-label={t.heroFleetLabel}>
+                  {FEATURED.map((k) => (
+                    <span className="er-hero-fleet-item" key={k}>
+                      <img src={`/flota/${k === "suv" ? "high-suv" : k}.webp`} alt="" width={96} height={54} />
+                      <span>
+                        <strong>{vehicles[k].name}</strong>
+                        <small>{vehicles[k].tag}</small>
+                      </span>
+                    </span>
+                  ))}
+                </a>
+
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>
                   <a className="er-hero-btn er-hero-mail" href="mailto:business@eliteroute.mx">
@@ -1618,7 +1709,7 @@ export default function HomeClient({
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
               >
-                {CATEGORIES.map((cat) => (
+                {DISPLAY_ORDER.map((cat) => (
                   <option key={cat} value={cat}>
                     {vehicles[cat].name} · {capFor(cat)}
                   </option>
@@ -1711,7 +1802,7 @@ export default function HomeClient({
             )}
 
             <div className="er-vehicles">
-              {CATEGORIES.map((cat) => {
+              {DISPLAY_ORDER.map((cat) => {
                 const p = priceFor(cat);
                 return (
                   <button key={cat} type="button"
@@ -1742,6 +1833,8 @@ export default function HomeClient({
                 );
               })}
             </div>
+
+            <p className="er-bycat">{t.byCategory}</p>
 
             {airportPickup && <p className="er-airport-note">{t.airportNote}</p>}
 
@@ -1836,6 +1929,20 @@ export default function HomeClient({
               </div>
             </div>
 
+            {/* La categoría elegida, con foto propia, justo antes del total:
+                quien paga ve qué tipo de unidad compra y que el modelo
+                concreto se asigna según disponibilidad. */}
+            <div className="er-pick">
+              <img src={vehicleImages[category]} alt="" width={120} height={68} />
+              <div>
+                <div className="er-pick-name">{vehicles[category].name}</div>
+                <div className="er-pick-tag">{vehicles[category].tag}</div>
+                <div className="er-pick-cap">{capFor(category)}</div>
+                {noteFor(category) && <div className="er-pick-cap">{noteFor(category)}</div>}
+              </div>
+            </div>
+            <p className="er-bycat" style={{ margin: "-10px 0 16px" }}>{t.byCategory}</p>
+
             <div className="er-summary">
               {summaryRows.map(([k,v]) => (
                 <div className="er-summary-row" key={k}>
@@ -1851,9 +1958,47 @@ export default function HomeClient({
 
             {airportPickup && <p className="er-airport-note">{t.airportNote}</p>}
 
-            {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
+            {/* CONDICIONES, en corto y antes de cobrar. Sólo lo publicado
+                en /terminos y lib/service-limits.ts: si cambia una política,
+                cambia allá y aquí. */}
+            <div className="er-cond">
+              <p className="er-cond-title">{t.condTitle}</p>
+              <ul>
+                <li>{t.condWait}</li>
+                <li>
+                  {serviceType === "route"
+                    ? t.condRoute
+                    : t.condHourly(serviceType === "day" ? HORAS_DIA_COMPLETO : rentalHours)}
+                </li>
+                <li>{t.condCancel}</li>
+                <li>{t.condExtras}</li>
+              </ul>
+              <a href={path(lang, "terms")} target="_blank" rel="noopener noreferrer">{t.condTerms} →</a>
+            </div>
 
-            <p className="er-payment-note">{t.paymentNote}</p>
+            {/* CONFIANZA junto al botón. La calificación y el número salen
+                de lib/social-proof.ts —una sola fuente— y enlazan a la ficha
+                real para que cualquiera lo compruebe. Nada de cifras nuevas. */}
+            <div className="er-trust" aria-label={t.trustTitle}>
+              <a className="er-trust-item" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">
+                <strong>{t.trustGoogle(GOOGLE_RATING)}</strong>
+                <span>{t.trustGoogleSub(GOOGLE_REVIEW_COUNT)}</span>
+              </a>
+              <div className="er-trust-item">
+                <strong>{t.trustStripe}</strong>
+                <span>{t.trustStripeSub}</span>
+              </div>
+              <div className="er-trust-item">
+                <strong>{t.trustInsured}</strong>
+                <span>{t.trustInsuredSub}</span>
+              </div>
+              <div className="er-trust-item">
+                <strong>{t.trustDirect}</strong>
+                <span>{t.trustDirectSub}</span>
+              </div>
+            </div>
+
+            {alert3 && <div className="er-alert er-alert-err">{alert3}</div>}
 
             {/*
               SÓLO EN INGLÉS, y a propósito.
@@ -1902,10 +2047,18 @@ export default function HomeClient({
               {t.whatsappBtn}
             </a>
 
-            <div className="er-legal">
-              {t.legal}<br/>
-              {t.legal2}
+            {/* Qué pasa después de pagar: pago recibido no es servicio
+                confirmado. Ver lib/booking-status.ts. */}
+            <div className="er-paysteps">
+              <p className="er-cond-title">{t.payStepsTitle}</p>
+              <ol>
+                {t.paySteps.map(([titulo, detalle]) => (
+                  <li key={titulo}><strong>{titulo}.</strong> {detalle}</li>
+                ))}
+              </ol>
             </div>
+
+            <div className="er-legal">{t.legal2}</div>
 
             <button className="er-btn-secondary" style={{ marginTop:16 }} onClick={() => goStep(2)} type="button">
               {t.modifyVehicle}
@@ -1970,13 +2123,16 @@ export default function HomeClient({
                 propósito: el precio depende de la ruta y lo da el cotizador,
                 que está justo arriba. Imágenes y datos son los mismos que
                 usa /b2b — /flota/*.webp y lib/vehicles.ts. */}
-            <section className="er-fleet" aria-label={t.fleetTitle}>
+            <section className="er-fleet" id="flota" aria-label={t.fleetTitle}>
               <p className="er-fleet-kicker">{t.fleetKicker}</p>
               <h2 className="er-fleet-title">{t.fleetTitle}</h2>
               <p className="er-fleet-copy">{t.fleetCopy}</p>
+              {/* Executive y High SUV primero y en grande; Sedan y Minivan
+                  debajo, como alternativas. Sólo presentación: el orden sale
+                  de DISPLAY_ORDER en lib/vehicles.ts. */}
               <div className="er-fleet-grid">
-                {(["suv", "executive", "minivan", "sedan"] as const).map((k) => (
-                  <div className="er-fleet-card" key={k}>
+                {DISPLAY_ORDER.map((k) => (
+                  <div className={`er-fleet-card${FEATURED.includes(k) ? " er-fleet-card--featured" : " er-fleet-card--alt"}`} key={k}>
                     <img
                       src={`/flota/${k === "suv" ? "high-suv" : k}.webp`}
                       alt={t.fleetAlt(vehicles[k].name)}
@@ -1985,6 +2141,8 @@ export default function HomeClient({
                       loading="lazy"
                     />
                     <div className="er-fleet-meta">
+                      {FEATURED.includes(k) && <div className="er-fleet-badge">{t.fleetBilingual}</div>}
+                      {!FEATURED.includes(k) && <div className="er-fleet-badge er-fleet-badge--alt">{t.fleetAltKicker}</div>}
                       <div className="er-fleet-name">{vehicles[k].name}</div>
                       <div className="er-fleet-tag">{vehicles[k].tag}</div>
                       <div className="er-fleet-cap">{capFor(k)}</div>
@@ -1993,6 +2151,7 @@ export default function HomeClient({
                   </div>
                 ))}
               </div>
+              <p className="er-bycat" style={{ textAlign: "left", marginTop: 18 }}>{t.byCategory}</p>
               <a className="er-fleet-cta" href="#quote">{t.fleetCta}</a>
             </section>
 
@@ -2118,7 +2277,7 @@ export default function HomeClient({
                 </svg>
                 <span className="er-reviews-badge-text">
                   <span className="er-reviews-badge-top">
-                    <span className="er-reviews-score">5.0</span>
+                    <span className="er-reviews-score">{GOOGLE_RATING}</span>
                     <span className="er-reviews-stars">★★★★★</span>
                   </span>
                   <span className="er-reviews-label">{t.reviewsCount(GOOGLE_REVIEW_COUNT)}</span>

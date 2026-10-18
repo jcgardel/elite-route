@@ -2,7 +2,7 @@ import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { calculatePrice } from "@/lib/booking";
-import { CATEGORIES, vehicles, type Category } from "@/lib/vehicles";
+import { CATEGORIES, DISPLAY_ORDER, vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import {
@@ -39,8 +39,8 @@ import {
 
 const cats: readonly Category[] = CATEGORIES;
 
-/** El orden de presentación va de mayor a menor, como en /b2b. */
-const ORDEN: readonly Category[] = ["suv", "executive", "minivan", "sedan"];
+/** El orden de presentación: Executive y High SUV primero (17 oct 2026). */
+const ORDEN: readonly Category[] = DISPLAY_ORDER;
 
 const FULL_DAY_HOURS = 10;
 
@@ -145,7 +145,7 @@ const TX = {
 
     assignTitle: "Cómo se asigna la unidad",
     assign: [
-      "Reservas una categoría y recibes esa categoría. La marca, el modelo y el color se asignan el día del servicio según la disponibilidad y lo que pida el traslado.",
+      "Reservas una categoría y recibes esa categoría. La marca, el modelo y el color se asignan según la disponibilidad y lo que pida el traslado, y te los enviamos un día antes del servicio.",
       "Por eso en cada categoría verás los modelos seguidos de «o equivalente»: son ejemplos de lo que opera en esa categoría, no una promesa de un auto concreto.",
       "Si tu servicio necesita un modelo o un color determinado —una boda, un evento con protocolo—, escríbenos por WhatsApp antes de reservar y te decimos si es posible.",
       "Si van más personas de las que entran en una unidad, se cotizan dos: el cotizador corporativo permite varios servicios en la misma solicitud.",
@@ -248,7 +248,7 @@ const TX = {
 
     assignTitle: "How the vehicle is assigned",
     assign: [
-      "You book a category and you get that category. Make, model and colour are assigned on the day according to availability and what the service calls for.",
+      "You book a category and you get that category. Make, model and colour are assigned according to availability and what the service calls for, and we send them to you one day before the service.",
       "That is why each category lists models followed by “or equivalent”: they are examples of what runs in that category, not a promise of one particular car.",
       "If your service needs a specific model or colour — a wedding, an event with protocol — message us on WhatsApp before booking and we will tell you whether it is possible.",
       "If there are more of you than fit in one vehicle, two are quoted: the corporate quote form takes several services in a single request.",

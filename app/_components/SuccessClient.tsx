@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { path, type Lang } from "@/lib/i18n";
 import { track } from "@/lib/analytics";
+import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 
 /** Lo que la página de gracias necesita saber de la reserva. Vive aquí y no
  *  en la página porque es el componente que lo pinta. */
@@ -25,21 +26,20 @@ export type Booking = {
 
 const TX = {
   es: {
-    kicker: "Pago confirmado",
+    kicker: DESPUES_DE_PAGAR.es.pagoRecibido,
     folio: (f: string) => `Folio ${f}`,
     thanksNamed: (n: string) => `Gracias, ${n}.`,
     thanks: "Gracias por tu reserva.",
-    copy: (agent: React.ReactNode) => (
-      <>Tu pago quedó procesado y te enviamos la confirmación por correo. Un agente {agent}. Si prefieres resolverlo ahora mismo, escríbenos por WhatsApp.</>
-    ),
-    agent: "confirma la disponibilidad en los próximos minutos",
+    status: DESPUES_DE_PAGAR.es.enValidacion,
+    copy: DESPUES_DE_PAGAR.es.validacion,
+    driver: DESPUES_DE_PAGAR.es.conductor,
     when: "Fecha y hora",
     from: "Recogida",
     to: "Destino",
     vehicle: "Vehículo",
     notes: "Tus solicitudes",
     paid: "Pagado",
-    wa: "Confirmar por WhatsApp",
+    wa: "Escribirnos por WhatsApp",
     waSent: "Abrimos WhatsApp con tu mensaje. Si no se abrió, revisa que la app esté instalada.",
     waHint: "El mensaje ya lleva fecha, origen, destino, vehículo y número de pago.",
     ics: "Calendario (.ics)",
@@ -48,21 +48,20 @@ const TX = {
     home: "← Volver al inicio",
   },
   en: {
-    kicker: "Payment confirmed",
+    kicker: DESPUES_DE_PAGAR.en.pagoRecibido,
     folio: (f: string) => `Ref. ${f}`,
     thanksNamed: (n: string) => `Thank you, ${n}.`,
     thanks: "Thank you for your booking.",
-    copy: (agent: React.ReactNode) => (
-      <>Your payment went through and the confirmation is on its way to your inbox. An agent {agent}. If you would rather settle it right now, message us on WhatsApp.</>
-    ),
-    agent: "confirms availability within the next few minutes",
+    status: DESPUES_DE_PAGAR.en.enValidacion,
+    copy: DESPUES_DE_PAGAR.en.validacion,
+    driver: DESPUES_DE_PAGAR.en.conductor,
     when: "Date and time",
     from: "Pickup",
     to: "Destination",
     vehicle: "Vehicle",
     notes: "Your requests",
     paid: "Paid",
-    wa: "Confirm on WhatsApp",
+    wa: "Message us on WhatsApp",
     waSent: "We opened WhatsApp with your message. If nothing happened, check that the app is installed.",
     waHint: "The message already carries the date, pickup, destination, vehicle and payment reference.",
     ics: "Calendar (.ics)",
@@ -177,6 +176,13 @@ export default function SuccessClient({
           font-size: 14.5px; color: #BFC3C8; line-height: 1.7;
         }
         .sc-copy strong { color: #fff; font-weight: 600; }
+        .sc-status {
+          display: inline-flex; align-items: center; gap: 9px; align-self: flex-start;
+          padding: 7px 12px; border: 1px solid rgba(200,164,107,0.45);
+          font-family: var(--font-barlow), sans-serif;
+          font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #E8D3AE;
+        }
+        .sc-status span { width: 7px; height: 7px; border-radius: 50%; background: #C8A46B; }
 
         .sc-summary { border-top: 1px solid #222; }
         .sc-row {
@@ -252,9 +258,11 @@ export default function SuccessClient({
             {booking?.nombre ? t.thanksNamed(booking.nombre) : t.thanks}
           </h1>
 
-          <p className="sc-copy">
-            {t.copy(<strong>{t.agent}</strong>)}
-          </p>
+          {/* Pago recibido NO es servicio confirmado: el equipo valida la
+              disponibilidad después. Ver lib/booking-status.ts. */}
+          <p className="sc-status"><span aria-hidden="true" />{t.status}</p>
+          <p className="sc-copy">{t.copy}</p>
+          <p className="sc-copy">{t.driver}</p>
 
           {booking && (
             <dl className="sc-summary">

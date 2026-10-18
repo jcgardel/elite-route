@@ -137,14 +137,14 @@ const FALLBACK = {
   es: {
     kicker: "Pago recibido",
     title: "Gracias por tu reserva",
-    wa: "Confirmar por WhatsApp",
-    msg: "Hola, acabo de realizar un pago en eliteroute.mx y quiero confirmar mi traslado.",
+    wa: "Escribirnos por WhatsApp",
+    msg: "Hola, acabo de realizar un pago en eliteroute.mx y quiero dar seguimiento a mi reserva.",
   },
   en: {
     kicker: "Payment received",
     title: "Thank you for your booking",
-    wa: "Confirm on WhatsApp",
-    msg: "Hello, I just paid on eliteroute.mx and I would like to confirm my transfer.",
+    wa: "Message us on WhatsApp",
+    msg: "Hello, I just paid on eliteroute.mx and I would like to follow up on my booking.",
   },
 } as const;
 

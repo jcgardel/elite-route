@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { vehicles, CATEGORIES, type Category } from "@/lib/vehicles";
+import { vehicles, CATEGORIES, DISPLAY_ORDER, type Category } from "@/lib/vehicles";
 import { GOOGLE_PLACE_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "@/lib/social-proof";
 import { LEGAL } from "@/lib/legal";
+import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 import { B2B_HORAS, B2B_SECTIONS, type TablasB2b } from "@/lib/rate-tables";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
@@ -78,19 +79,19 @@ const TX = {
     heroKicker: "Soluciones para empresas",
     heroTitle: "Transporte Ejecutivo Corporativo en Ciudad de México",
     heroTagline: "Tu equipo llega a tiempo.",
-    heroCopy: "Transporte ejecutivo para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI y cuenta corporativa centralizada con atención prioritaria 24/7.",
+    heroCopy: "Transporte ejecutivo para empresas en CDMX: directivos, clientes e invitados, rutas recurrentes y eventos con varios vehículos. Factura CFDI a solicitud y atención directa 24/7.",
     heroBtn1: "Cotizar servicios →", heroBtn2: "Hablar con un asesor",
     trustKicker: "Estándar corporativo",
     trustTitle: "Diseñado para empresas",
     cells: [
-      ["Factura electrónica CFDI", "CFDI disponible por cada servicio. Proceso directo con tu área administrativa sin fricciones."],
+      ["Factura electrónica CFDI", "CFDI por cada servicio, a solicitud: tu área administrativa la pide con el folio a contabilidad@eliteroute.mx."],
       ["Confirmación y seguimiento operativo", "Validamos cada servicio y damos seguimiento antes y durante la operación."],
       ["Monitoreo de vuelo en tiempo real", "Seguimos la hora real de aterrizaje para coordinar la recepción y ajustar el servicio si cambia el itinerario."],
       ["Una hora de espera incluida", "Desde la hora real de aterrizaje, sin costo. Si el pasajero se comunica y sigue dentro del aeropuerto, el chofer espera hasta 30 minutos más."],
       ["Conductores profesionales", "Conductores identificados y seleccionados conforme a nuestros estándares de servicio y operación."],
       ["Unidades aseguradas", "Todas las unidades con seguro vigente y monitoreo GPS las 24 horas."],
       ["Recepción personalizada en aeropuerto", "Tu conductor te espera en la zona de llegadas con un letrero o tablet con tu nombre."],
-      ["Tarjeta digital del conductor", "Antes del servicio compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
+      ["Datos del conductor un día antes", "Un día antes del servicio compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
     ],
     payLabel: "Métodos de pago aceptados",
     payCard: "· Tarjeta", payWallet: "· Tarjeta / wallet", payTransfer: "Transferencia", paySpei: "· SPEI / CoDi",
@@ -148,16 +149,16 @@ const TX = {
     fleetCopy: "Flota propia en operación, monitoreada por GPS las 24 horas. Cada categoría cubre un tipo de traslado distinto.",
     fleetAlt: (c: string) => `Unidades de la categoría ${c} de Elite Route`,
     stepsKicker: "Cómo funciona",
-    stepsTitle: "Tu cuenta activa en 24 hrs",
+    stepsTitle: "Cómo trabaja tu empresa con nosotros",
     steps: [
-      ["Contacto", "Nos escribes por WhatsApp con los datos de tu empresa y necesidades de transporte."],
-      ["Cuenta corporativa", "Configuramos tarifas fijas, datos de facturación y método de pago preferido."],
-      ["Reservas", "Tu equipo reserva directo en eliteroute.mx o por WhatsApp. Confirmación inmediata."],
-      ["Seguimiento 24/7", "Atención directa por WhatsApp. Confirmaciones, cambios de último momento y facturas en minutos."],
+      ["Reserva para directivos, clientes o invitados", "Reserva en eliteroute.mx a nombre del pasajero, o mándanos por WhatsApp o correo su nombre, vuelo y horario. Cada servicio se paga con tarjeta vía Stripe; si reservas por mensaje, te enviamos el enlace de pago."],
+      ["Coordina varios vehículos", "Para eventos, grupos o agendas con varios puntos, envíanos la lista de pasajeros, horarios y direcciones. Te cotizamos la operación completa y la coordinamos con un solo contacto."],
+      ["Datos del conductor y seguimiento", `${DESPUES_DE_PAGAR.es.validacion} ${DESPUES_DE_PAGAR.es.conductor} Durante el servicio monitoreamos el vuelo y tienes atención directa por WhatsApp.`],
+      ["Facturas y tarifas corporativas", "Pide tu factura CFDI a contabilidad@eliteroute.mx con el folio y tus datos fiscales. Si tu empresa reserva con frecuencia, solicítanos una propuesta de tarifas corporativas."],
     ],
     ctaTitle: "¿Listo para empezar",
-    ctaCopy: "Escríbenos y en menos de 24 horas tienes tu cuenta activa.",
-    ctaBtn2: "Solicitar cuenta corporativa",
+    ctaCopy: "Escríbenos con lo que necesita tu empresa y te enviamos una propuesta.",
+    ctaBtn2: "Solicitar tarifas corporativas",
     footerCopy: "Elite Route CDMX · eliteroute.mx",
     footerLink: "← Volver al cotizador",
   },
@@ -167,19 +168,19 @@ const TX = {
     heroKicker: "Solutions for companies",
     heroTitle: "Corporate Executive Transportation in Mexico City",
     heroTagline: "Your team arrives on time.",
-    heroCopy: "Executive transportation for companies in Mexico City. Recurring routes, CFDI electronic invoicing and a central corporate account with priority attention 24/7.",
+    heroCopy: "Executive transportation for companies in Mexico City: executives, clients and guests, recurring routes and multi-vehicle events. CFDI invoices on request and direct attention 24/7.",
     heroBtn1: "Request a quote →", heroBtn2: "Talk to an advisor",
     trustKicker: "Corporate standard",
     trustTitle: "Built for companies",
     cells: [
-      ["CFDI electronic invoice", "A CFDI invoice for every service, handled directly with your finance team without friction."],
+      ["CFDI electronic invoice", "A CFDI invoice for every service, on request: your finance team asks contabilidad@eliteroute.mx for it with the booking reference."],
       ["Confirmation and operational follow-up", "We validate every service and follow it before and during the operation."],
       ["Real-time flight tracking", "We follow the actual landing time to coordinate the pickup and adjust the service if the itinerary changes."],
       ["One hour of waiting included", "From the actual landing time, at no charge. If the passenger gets in touch and is still inside the airport, the chauffeur waits up to 30 minutes more."],
       ["Professional chauffeurs", "Chauffeurs identified and selected according to our own service and operating standards."],
       ["Insured vehicles", "Every vehicle insured and GPS-monitored around the clock."],
       ["Meet and greet in arrivals", "Your chauffeur waits in the arrivals hall with a sign or tablet showing your name."],
-      ["Digital driver card", "Before the service we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
+      ["Chauffeur details one day before", "One day before the service we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
     ],
     payLabel: "Accepted payment methods",
     payCard: "· Card", payWallet: "· Card / wallet", payTransfer: "Bank transfer", paySpei: "· SPEI / CoDi",
@@ -237,16 +238,16 @@ const TX = {
     fleetCopy: "Our own fleet in service, GPS-monitored around the clock. Each category covers a different kind of transfer.",
     fleetAlt: (c: string) => `Elite Route ${c} category vehicles`,
     stepsKicker: "How it works",
-    stepsTitle: "Your account live in 24 hrs",
+    stepsTitle: "How your company works with us",
     steps: [
-      ["Contact", "You write to us on WhatsApp with your company details and transport needs."],
-      ["Corporate account", "We set up fixed rates, billing details and your preferred payment method."],
-      ["Bookings", "Your team books directly at eliteroute.mx or over WhatsApp. Confirmed immediately."],
-      ["24/7 follow-up", "Direct attention over WhatsApp: confirmations, last-minute changes and invoices in minutes."],
+      ["Book for executives, clients or guests", "Book at eliteroute.mx in the passenger's name, or send us their name, flight and time over WhatsApp or email. Each service is paid by card through Stripe; if you book by message, we send you the payment link."],
+      ["Coordinate several vehicles", "For events, groups or multi-stop schedules, send us the passenger list, times and addresses. We quote the whole operation and run it through a single point of contact."],
+      ["Chauffeur details and follow-up", `${DESPUES_DE_PAGAR.en.validacion} ${DESPUES_DE_PAGAR.en.conductor} During the service we track the flight and you have direct attention over WhatsApp.`],
+      ["Invoices and corporate rates", "Ask contabilidad@eliteroute.mx for your CFDI invoice with the booking reference and your tax details. If your company books often, ask us for a corporate rate proposal."],
     ],
     ctaTitle: "Ready to start",
-    ctaCopy: "Write to us and your account is live in under 24 hours.",
-    ctaBtn2: "Request a corporate account",
+    ctaCopy: "Tell us what your company needs and we will send you a proposal.",
+    ctaBtn2: "Request corporate rates",
     footerCopy: "Elite Route CDMX · eliteroute.mx",
     footerLink: "← Back to the quote form",
   },
@@ -387,7 +388,7 @@ export default function B2bClient({
 
         /* PROCESO */
         .b-proceso { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
-        .b-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; margin-top: 36px; }
+        .b-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; margin-top: 36px; }
         .b-step { border-top: 1px solid #2e2e2e; padding-top: 18px; }
         .b-step-num { font-size: 11px; letter-spacing: 0.18em; color: #C8A46B; margin-bottom: 12px; }
         .b-step-title { font-weight: 600; font-size: 15px; margin-bottom: 8px; }
@@ -615,7 +616,7 @@ export default function B2bClient({
           <p className="b-fleet-copy">{t.fleetCopy}</p>
           <p className="b-fleet-copy" style={{ marginTop: "-18px" }}>{t.fleetNote}</p>
           <div className="b-fleet-grid">
-            {(["suv", "executive", "minivan", "sedan"] as const).map((k) => {
+            {DISPLAY_ORDER.map((k) => {
               const v = vehicles[k];
               const note = lang === "es" ? v.noteEs : v.note;
               return (

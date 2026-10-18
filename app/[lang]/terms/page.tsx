@@ -19,9 +19,9 @@ export async function generateMetadata() {
  * contrato se celebra en México y se juzga en tribunales mexicanos. Los dos
  * archivos se cambian juntos o no se cambia ninguno.
  *
- * La tabla de cancelaciones (sin costo con más de 24 h, 50% entre 12 y 24 h,
- * 100% dentro de las 12 h o si no se presenta) la decidió el dueño el 20 de
- * septiembre de 2026. Se aplica a mano desde Stripe.
+ * La política de cancelación (más de 24 h: reembolso de lo pagado menos 7%;
+ * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 17 de
+ * octubre de 2026. Se aplica a mano desde Stripe.
  */
 export default function TermsPage() {
   return (
@@ -98,9 +98,9 @@ export default function TermsPage() {
         quoting your booking reference.
       </p>
       <p>
-        <strong>Cancellations:</strong> free of charge more than 24 hours before
-        pickup; <strong>50%</strong> between 12 and 24 hours; and{" "}
-        <strong>100%</strong> within 12 hours or in case of no-show. Bookings
+        <strong>Cancellations:</strong> more than 24 hours before pickup, we
+        refund what you paid <strong>minus 7%</strong>; within 24 hours, or in
+        case of no-show, <strong>there is no refund</strong>. Bookings
         confirmed less than 24 hours before pickup are subject to these terms
         from the moment of confirmation.
       </p>
@@ -117,7 +117,7 @@ export default function TermsPage() {
       </p>
       <p>
         Refunds are processed through the original payment method via Stripe.
-        Payment-processing fees are non-refundable, and the bank may take
+        The bank may take
         several business days to show the credit.
       </p>
 

@@ -19,9 +19,9 @@ export async function generateMetadata() {
  * aeropuerto y la espera por retraso de vuelo están en la lógica de precio, y
  * la confirmación por WhatsApp es el flujo real después del pago.
  *
- * La tabla de cancelaciones (sin costo con más de 24 h, 50% entre 12 y 24 h,
- * 100% dentro de las 12 h o si no se presenta) la decidió el dueño el 20 de
- * septiembre de 2026. Se aplica a mano: no hay automatismo de reembolso, así
+ * La política de cancelación (más de 24 h: reembolso de lo pagado menos 7%;
+ * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 17 de
+ * octubre de 2026; sustituye la tabla 0/50/100% del 20 de septiembre. Se aplica a mano: no hay automatismo de reembolso, así
  * que el equipo la ejecuta desde Stripe al recibir el aviso.
  *
  * Su gemelo en inglés es app/[lang]/terms/page.tsx. Son el mismo documento:
@@ -94,10 +94,9 @@ export default function TerminosPage() {
         indicando el folio de tu reserva.
       </p>
       <p>
-        <strong>Cancelaciones:</strong> sin costo con más de 24 horas de
-        anticipación; se cobra el <strong>50%</strong> entre 12 y 24 horas, y el{" "}
-        <strong>100%</strong> dentro de las 12 horas previas o si el pasajero no
-        se presenta. Las reservas confirmadas con menos de 24 horas de
+        <strong>Cancelaciones:</strong> con más de 24 horas de anticipación te
+        reembolsamos lo pagado <strong>menos un 7%</strong>; con menos de 24
+        horas, o si el pasajero no se presenta, <strong>no hay reembolso</strong>. Las reservas confirmadas con menos de 24 horas de
         anticipación quedan sujetas a estas condiciones desde el momento de la
         confirmación.
       </p>
@@ -115,7 +114,7 @@ export default function TerminosPage() {
       </p>
       <p>
         Los reembolsos se procesan por el mismo medio de pago, a través de
-        Stripe. Las comisiones de procesamiento no son reembolsables, y el banco
+        Stripe, y el banco
         puede tardar varios días hábiles en reflejar el abono.
       </p>
 

@@ -147,11 +147,13 @@ function attachAutocomplete(
     });
 }
 
+/** Las fotos de categoría (17 oct 2026): las mismas de la flota, para que el
+ *  cotizador y la galería enseñen la misma unidad. */
 const vehicleImages: Record<string, string> = {
-  sedan: "/sedan.webp",
-  executive: "/executive.webp",
-  minivan: "/minivan.webp",
-  suv: "/high-suv.webp",
+  sedan: "/flota/sedan.webp",
+  executive: "/flota/executive.webp",
+  minivan: "/flota/minivan.webp",
+  suv: "/flota/high-suv.webp",
 };
 
 function getMinDate() {
@@ -679,9 +681,12 @@ const styles = `
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
   .er-vehicle.selected { border-color:#fff; box-shadow:0 0 0 1px #fff; }
-  .er-vehicle-bg { position:absolute; inset:0; background-size:cover; background-position:center; transition:transform 0.3s ease; }
+  /* La foto va arriba en 16:9 y se funde con el fondo: las fotos de categoría
+     son horizontales y a pantalla completa la tarjeta (vertical) recortaba
+     el auto hasta dejar sólo un faro. */
+  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:16 / 9; background-size:cover; background-position:center; transition:transform 0.3s ease; -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent); mask-image:linear-gradient(to bottom, #000 62%, transparent); }
   .er-vehicle:hover .er-vehicle-bg { transform:scale(1.04); }
-  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0.06) 100%); }
+  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(9,9,9,0.9) 0%, rgba(9,9,9,0.35) 45%, rgba(9,9,9,0) 70%); }
   .er-vehicle-content { position:relative; z-index:1; padding:18px; display:flex; flex-direction:column; justify-content:flex-end; min-height:360px; }
   .er-vehicle-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:22px; font-weight:700; letter-spacing:0.12em; color:#fff; margin-bottom:2px; text-transform:uppercase; }
   .er-vehicle-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; }

@@ -101,7 +101,7 @@ function fichaDeNegocio(lang: Lang) {
     url: SITE,
     telephone: "+52-55-4358-2919",
     email: "business@eliteroute.mx",
-    image: `${SITE}/executive.webp`,
+    image: `${SITE}/flota/executive.webp`,
     logo: `${SITE}/icon.svg`,
     priceRange: "$$$",
     currenciesAccepted: "MXN",

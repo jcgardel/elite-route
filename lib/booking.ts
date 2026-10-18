@@ -168,14 +168,15 @@ export const BRECHA_MINIMA_AEROPUERTO = 1.05;
  * Una categoría sin valor aquí se queda con el mínimo de la fórmula.
  */
 export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = {
-  suv: 2750,
+  // SUV Lux bajado $300 el 18 oct 2026 (antes 2750 / 2450 hacia).
+  suv: 2450,
   // Executive, decisión del dueño del 18 oct 2026. Sólo muerde en los
   // trayectos cortos desde terminal —AICM a Centro/Roma/Condesa y cualquier
   // destino a menos de unos 13 km—, que es donde la fórmula caía a $1,160
   // por el mínimo de la categoría. El resto de rutas ya está por encima.
   executive: 1300,
 };
-export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2450 };
+export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2150 };
 
 /**
  * PRIMA POR RECOGER EN LA TERMINAL, sobre el precio de LLEVAR a esa misma
@@ -220,11 +221,14 @@ const PRIMA_RECOGIDA: Partial<Record<Category, (llevar: number) => number>> = {
  * lo que ya se cobraba ($4,042) y la unidad regresa vacía.
  */
 const SUV_LUX_AEROPUERTO: Record<AirportCode, ReadonlyArray<readonly [number, number, number]>> = {
+  // AICM bajado $300 en todas las zonas el 18 oct 2026, tras comparar contra
+  // la competencia: $2,950 a Polanco quedaba arriba del mercado. Por horas no
+  // se toca. AIFA y Toluca sin cambio.
   MEX: [
-    [8.5, 2750, 2450], // Centro / Roma / Condesa
-    [17.8, 2950, 2650], // Polanco / Lomas
-    [27.1, 3550, 3250], // Satélite / Naucalpan
-    [28.2, 3650, 3350], // Santa Fe / Interlomas
+    [8.5, 2450, 2150], // Centro / Roma / Condesa
+    [17.8, 2650, 2350], // Polanco / Lomas
+    [27.1, 3250, 2950], // Satélite / Naucalpan
+    [28.2, 3350, 3050], // Santa Fe / Interlomas
   ],
   NLU: [
     [41.8, 4950, 4650], // Centro / Roma / Condesa

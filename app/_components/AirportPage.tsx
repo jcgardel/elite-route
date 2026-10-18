@@ -207,7 +207,7 @@ const TX = {
       ],
       [
         "¿Cabe todo mi equipaje?",
-        "Revisa la tabla de capacidades de arriba. En SUV Comfort y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros. Si dudas, escríbenos y te decimos qué categoría pedir.",
+        "Revisa la tabla de capacidades de arriba. En SUV Urban y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros. Si dudas, escríbenos y te decimos qué categoría pedir.",
       ],
     ] as ReadonlyArray<readonly [string, string]>,
 
@@ -331,7 +331,7 @@ const TX = {
       ],
       [
         "Will all my luggage fit?",
-        "Check the capacity table above. On the SUV Comfort and the SUV Lux the maximum passengers and the maximum suitcases do not fit at the same time: with full luggage we recommend four passengers. If you are unsure, write to us and we will tell you which category to ask for.",
+        "Check the capacity table above. On the SUV Urban and the SUV Lux the maximum passengers and the maximum suitcases do not fit at the same time: with full luggage we recommend four passengers. If you are unsure, write to us and we will tell you which category to ask for.",
       ],
       /*
         LAS CUATRO DE ABAJO SON PARA EL VIAJERO EXTRANJERO, y van sólo en
@@ -389,7 +389,7 @@ const TX = {
 
         EL DATO DEL IDIOMA ES UNA RESTRICCIÓN, NO UN ESLOGAN. Lo confirmó el
         dueño el 1 de octubre de 2026: **sólo Executive y SUV Lux llevan
-        chofer bilingüe**. Sedan Lite y SUV Comfort no. Prometerlo de todas las
+        chofer bilingüe**. Sedan Lite y SUV Urban no. Prometerlo de todas las
         categorías sería mentir justo en lo que este cliente más valora, y se
         descubre el día del viaje.
       */
@@ -399,7 +399,7 @@ const TX = {
       ],
       [
         "Do your chauffeurs speak English?",
-        "In the Executive and SUV Lux categories, yes — those two travel with a bilingual chauffeur. The Sedan Lite and SUV Comfort do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
+        "In the Executive and SUV Lux categories, yes — those two travel with a bilingual chauffeur. The Sedan Lite and SUV Urban do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
       ],
       [
         "Do you have child seats?",

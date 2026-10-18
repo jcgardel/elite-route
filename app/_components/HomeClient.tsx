@@ -147,9 +147,17 @@ function attachAutocomplete(
     });
 }
 
-/** Las fotos de categoría (17 oct 2026): las mismas de la flota, para que el
- *  cotizador y la galería enseñen la misma unidad. */
+/** Fotos verticales (4:5) para las tarjetas del cotizador: la misma unidad
+ *  que la flota, pero encuadrada para una tarjeta alta (17 oct 2026). */
 const vehicleImages: Record<string, string> = {
+  sedan: "/cotizador/sedan.webp",
+  executive: "/cotizador/executive.webp",
+  minivan: "/cotizador/minivan.webp",
+  suv: "/cotizador/high-suv.webp",
+};
+
+/** Las horizontales de la flota, para la miniatura del paso de pago. */
+const vehicleThumbs: Record<string, string> = {
   sedan: "/flota/sedan.webp",
   executive: "/flota/executive.webp",
   minivan: "/flota/minivan.webp",
@@ -681,10 +689,11 @@ const styles = `
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
   .er-vehicle.selected { border-color:#fff; box-shadow:0 0 0 1px #fff; }
-  /* La foto va arriba en 16:9 y se funde con el fondo: las fotos de categoría
-     son horizontales y a pantalla completa la tarjeta (vertical) recortaba
-     el auto hasta dejar sólo un faro. */
-  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:16 / 9; background-size:cover; background-position:center; transition:transform 0.3s ease; -webkit-mask-image:linear-gradient(to bottom, #000 62%, transparent); mask-image:linear-gradient(to bottom, #000 62%, transparent); }
+  /* Foto vertical 4:5 a todo lo ancho y alineada arriba: así el auto se ve
+     completo aunque la tarjeta sea angosta (computadora) o casi cuadrada
+     (celular). Si la tarjeta es más alta que la foto, el borde inferior se
+     funde con el fondo oscuro. */
+  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:4 / 5; background-size:cover; background-position:center top; transition:transform 0.3s ease; -webkit-mask-image:linear-gradient(to bottom, #000 82%, transparent); mask-image:linear-gradient(to bottom, #000 82%, transparent); }
   .er-vehicle:hover .er-vehicle-bg { transform:scale(1.04); }
   .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(9,9,9,0.9) 0%, rgba(9,9,9,0.35) 45%, rgba(9,9,9,0) 70%); }
   .er-vehicle-content { position:relative; z-index:1; padding:18px; display:flex; flex-direction:column; justify-content:flex-end; min-height:360px; }
@@ -901,7 +910,7 @@ const styles = `
     .er-svc-tab { border-right:none; border-bottom:1px solid rgba(200,164,107,0.24); }
     .er-svc-tab:last-child { border-bottom:none; }
     .er-vehicles { grid-template-columns:1fr; }
-    .er-vehicle, .er-vehicle-content { min-height:330px; }
+    .er-vehicle, .er-vehicle-content { min-height:440px; }
     .er-fleet-grid { grid-template-columns:1fr; gap:16px; }
     .er-fleet-title { font-size:27px; }
     .er-benefits { grid-template-columns:1fr; }
@@ -1938,7 +1947,7 @@ export default function HomeClient({
                 quien paga ve qué tipo de unidad compra y que el modelo
                 concreto se asigna según disponibilidad. */}
             <div className="er-pick">
-              <img src={vehicleImages[category]} alt="" width={120} height={68} />
+              <img src={vehicleThumbs[category]} alt="" width={120} height={68} />
               <div>
                 <div className="er-pick-name">{vehicles[category].name}</div>
                 <div className="er-pick-tag">{vehicles[category].tag}</div>

@@ -84,9 +84,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan but one more suitcase, and in a different class of car. It travels with a bilingual chauffeur, which is why it is the usual choice for a guest arriving from abroad.",
     notEs:
-      "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la Minivan o la High SUV.",
+      "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la SUV Comfort o la High SUV.",
     notEn:
-      "It is not a step up in capacity: if there are four of you, this is not the answer even though it costs more. That is where the Minivan or the High SUV come in.",
+      "It is not a step up in capacity: if there are four of you, this is not the answer even though it costs more. That is where the SUV Comfort or the High SUV come in.",
   },
   minivan: {
     forEs:
@@ -168,7 +168,7 @@ const TX = {
       ],
       [
         "¿Cuántas maletas entran de verdad?",
-        "Dos en Sedan, tres en Executive, cuatro en Minivan y seis en High SUV. En Minivan y High SUV el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
+        "Dos en Sedan, tres en Executive, cuatro en SUV Comfort y seis en High SUV. En SUV Comfort y High SUV el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
       ],
       [
         "¿Los autos son propios o subcontratados?",
@@ -180,7 +180,7 @@ const TX = {
       ],
       [
         "¿Cuál me conviene para el aeropuerto?",
-        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan; tres con equipaje documentado, en Executive; cuatro o más, en Minivan o High SUV según cuánto lleven.",
+        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan; tres con equipaje documentado, en Executive; cuatro o más, en SUV Comfort o High SUV según cuánto lleven.",
       ],
       [
         "¿El precio depende de la categoría?",
@@ -271,7 +271,7 @@ const TX = {
       ],
       [
         "How many suitcases really fit?",
-        "Two in the Sedan, three in the Executive, four in the Minivan and six in the High SUV. On the Minivan and the High SUV the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
+        "Two in the Sedan, three in the Executive, four in the SUV Comfort and six in the High SUV. On the SUV Comfort and the High SUV the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
       ],
       [
         "Are the cars your own or subcontracted?",
@@ -283,7 +283,7 @@ const TX = {
       ],
       [
         "Which one suits the airport?",
-        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan; three with checked bags, in an Executive; four or more, in a Minivan or a High SUV depending on how much they are carrying.",
+        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan; three with checked bags, in an Executive; four or more, in a SUV Comfort or a High SUV depending on how much they are carrying.",
       ],
       [
         "Does the price depend on the category?",

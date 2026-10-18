@@ -78,7 +78,7 @@ export const vehicles: Record<
     tag: "BMW · Lexus · Tesla",
   },
   minivan: {
-    name: "Minivan",
+    name: "SUV Comfort",
     cap: "1-6 passengers · 4 bags",
     capEs: "1-6 pasajeros · 4 maletas",
     note: "recommended 4 passengers with full luggage",

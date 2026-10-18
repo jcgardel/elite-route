@@ -142,7 +142,7 @@ const TX = {
     faqs: [
       [
         "¿Cuánto cuesta contratar un chofer privado en CDMX?",
-        `Un traslado dentro de la ciudad arranca en ${mxn(desde("sedan"))} con IVA en Sedan; el servicio por horas, en ${mxn(porHora("sedan"))} la hora con un mínimo de tres, y el día completo de diez horas, en ${mxn(porDia("sedan"))}. El precio exacto depende de la categoría y de la ruta, y el cotizador lo da en pantalla antes de pedirte datos de pago.`,
+        `Un traslado dentro de la ciudad arranca en ${mxn(desde("sedan"))} con IVA en Sedan Lite; el servicio por horas, en ${mxn(porHora("sedan"))} la hora con un mínimo de tres, y el día completo de diez horas, en ${mxn(porDia("sedan"))}. El precio exacto depende de la categoría y de la ruta, y el cotizador lo da en pantalla antes de pedirte datos de pago.`,
       ],
       [
         "¿Es el mismo chofer todo el servicio?",
@@ -264,7 +264,7 @@ const TX = {
     faqs: [
       [
         "How much does a private chauffeur cost in Mexico City?",
-        `A transfer within the city starts at ${mxn(desde("sedan"))} including VAT in a Sedan; hourly service at ${mxn(porHora("sedan"))} an hour with a two-hour minimum, and a ten-hour full day at ${mxn(porDia("sedan"))}. The exact price depends on the category and the route, and the quote form shows it on screen before asking for any payment details.`,
+        `A transfer within the city starts at ${mxn(desde("sedan"))} including VAT in a Sedan Lite; hourly service at ${mxn(porHora("sedan"))} an hour with a two-hour minimum, and a ten-hour full day at ${mxn(porDia("sedan"))}. The exact price depends on the category and the route, and the quote form shows it on screen before asking for any payment details.`,
       ],
       [
         "Is it the same chauffeur for the whole service?",

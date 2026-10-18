@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     "@type": "Service",
     name: "Elite Route fleet in Mexico City",
     description:
-      "Four chauffeured vehicle categories in Mexico City — Sedan, Executive, SUV Comfort and SUV Lux — all our own vehicles, insured and GPS-monitored.",
+      "Four chauffeured vehicle categories in Mexico City — Sedan Lite, Executive, SUV Comfort and SUV Lux — all our own vehicles, insured and GPS-monitored.",
     serviceType: "Executive transportation",
     provider: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     areaServed: { "@type": "City", name: "Ciudad de México" },

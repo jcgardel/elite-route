@@ -180,7 +180,7 @@ const TX = {
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
     fleetKicker: "The fleet",
     fleetTitle: "Executive and SUV Lux, with a bilingual chauffeur",
-    fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan and SUV Comfort remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
+    fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan Lite and SUV Comfort remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
     fleetAltKicker: "Also available",
     fleetBilingual: "Bilingual chauffeur",
     byCategory: "You book a category: make and model are assigned according to availability.",
@@ -333,7 +333,7 @@ const TX = {
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
     fleetKicker: "La flota",
     fleetTitle: "Executive y SUV Lux, con chofer bilingüe",
-    fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan y SUV Comfort siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
+    fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan Lite y SUV Comfort siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
     fleetAltKicker: "También disponibles",
     fleetBilingual: "Chofer bilingüe",
     byCategory: "Reservas una categoría: la marca y el modelo se asignan según disponibilidad.",
@@ -2127,7 +2127,7 @@ export default function HomeClient({
               <p className="er-fleet-kicker">{t.fleetKicker}</p>
               <h2 className="er-fleet-title">{t.fleetTitle}</h2>
               <p className="er-fleet-copy">{t.fleetCopy}</p>
-              {/* Executive y SUV Lux primero y en grande; Sedan y SUV Comfort
+              {/* Executive y SUV Lux primero y en grande; Sedan Lite y SUV Comfort
                   debajo, como alternativas. Sólo presentación: el orden sale
                   de DISPLAY_ORDER en lib/vehicles.ts. */}
               <div className="er-fleet-grid">

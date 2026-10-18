@@ -389,7 +389,7 @@ const TX = {
 
         EL DATO DEL IDIOMA ES UNA RESTRICCIÓN, NO UN ESLOGAN. Lo confirmó el
         dueño el 1 de octubre de 2026: **sólo Executive y SUV Lux llevan
-        chofer bilingüe**. Sedan y SUV Comfort no. Prometerlo de todas las
+        chofer bilingüe**. Sedan Lite y SUV Comfort no. Prometerlo de todas las
         categorías sería mentir justo en lo que este cliente más valora, y se
         descubre el día del viaje.
       */
@@ -399,7 +399,7 @@ const TX = {
       ],
       [
         "Do your chauffeurs speak English?",
-        "In the Executive and SUV Lux categories, yes — those two travel with a bilingual chauffeur. The Sedan and SUV Comfort do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
+        "In the Executive and SUV Lux categories, yes — those two travel with a bilingual chauffeur. The Sedan Lite and SUV Comfort do not, so if speaking English with your driver matters to you, choose one of the two. Booking and confirmation happen over WhatsApp either way.",
       ],
       [
         "Do you have child seats?",

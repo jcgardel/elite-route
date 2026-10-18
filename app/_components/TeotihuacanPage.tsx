@@ -92,7 +92,7 @@ const TX = {
     colHoras: (h: number) => `${h} horas`,
     precioNota: `Precios finales en pesos con IVA incluido, sacados del mismo tarifario que el cotizador. Cada hora contratada incluye ${KM_POR_HORA} km, así que nueve horas son ${9 * KM_POR_HORA} km: el viaje redondo a Teotihuacán cabe con holgura. Si tu día se alarga, se ajusta en el momento.`,
     bilingueNota:
-      "Executive y SUV Lux son las dos categorías que llevan chofer bilingüe. Sedan y SUV Comfort no.",
+      "Executive y SUV Lux son las dos categorías que llevan chofer bilingüe. Sedan Lite y SUV Comfort no.",
 
     reservarTitle: "Cómo se reserva",
     reservar: [
@@ -181,7 +181,7 @@ const TX = {
     colHoras: (h: number) => `${h} hours`,
     precioNota: `Final prices in Mexican pesos, VAT included, taken from the same rate book the quote form uses. Every hour you book includes ${KM_POR_HORA} km, so nine hours is ${9 * KM_POR_HORA} km: the round trip to Teotihuacán fits comfortably. If your day runs long, we settle it on the spot.`,
     bilingueNota:
-      "Executive and SUV Lux are the two categories that travel with a bilingual chauffeur. The Sedan and SUV Comfort do not.",
+      "Executive and SUV Lux are the two categories that travel with a bilingual chauffeur. The Sedan Lite and SUV Comfort do not.",
 
     reservarTitle: "How to book",
     reservar: [

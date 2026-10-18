@@ -795,7 +795,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       intro:
         "La ruta más corta de las que publicamos: media hora sin tráfico entre las terminales y el corredor de Insurgentes Sur, con precio fijo e IVA incluido.",
       about:
-        "Insurgentes Sur concentra oficinas, el World Trade Center y buena parte de las agencias y despachos de la ciudad, así que es una ruta de lunes a viernes y de maleta de mano. Al ser corta, el mínimo de cada categoría pesa más que la distancia: por eso el Sedan cuesta aquí casi lo mismo que en trayectos algo más largos.",
+        "Insurgentes Sur concentra oficinas, el World Trade Center y buena parte de las agencias y despachos de la ciudad, así que es una ruta de lunes a viernes y de maleta de mano. Al ser corta, el mínimo de cada categoría pesa más que la distancia: por eso el Sedan Lite cuesta aquí casi lo mismo que en trayectos algo más largos.",
       faqs: [
         [
           "¿Cuánto tarda el traslado del AICM a Del Valle?",
@@ -822,7 +822,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       intro:
         "The shortest route we publish: half an hour without traffic between the terminals and the Insurgentes Sur corridor, at a fixed price with VAT included.",
       about:
-        "Insurgentes Sur holds offices, the World Trade Center and much of the city's agency and professional-services world, which makes this a Monday-to-Friday, carry-on-only route. Being short, each category's minimum weighs more than the distance — which is why the Sedan costs about the same here as on somewhat longer trips.",
+        "Insurgentes Sur holds offices, the World Trade Center and much of the city's agency and professional-services world, which makes this a Monday-to-Friday, carry-on-only route. Being short, each category's minimum weighs more than the distance — which is why the Sedan Lite costs about the same here as on somewhat longer trips.",
       faqs: [
         [
           "How long does the AICM to Del Valle transfer take?",

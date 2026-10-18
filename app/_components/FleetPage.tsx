@@ -80,9 +80,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
   },
   executive: {
     forEs:
-      "Es la de presentación: recoger a un cliente, un directivo que llega de fuera, una cena. Lleva la misma gente que el Sedan pero una maleta más y un vehículo de otra gama. Va con chofer bilingüe, que es lo que la vuelve la opción habitual para recibir a alguien del extranjero.",
+      "Es la de presentación: recoger a un cliente, un directivo que llega de fuera, una cena. Lleva la misma gente que el Sedan Lite pero una maleta más y un vehículo de otra gama. Va con chofer bilingüe, que es lo que la vuelve la opción habitual para recibir a alguien del extranjero.",
     forEn:
-      "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan but one more suitcase, and in a different class of car. It travels with a bilingual chauffeur, which is why it is the usual choice for a guest arriving from abroad.",
+      "This is the one for making an impression: collecting a client, an executive flying in, a dinner. It carries the same people as the Sedan Lite but one more suitcase, and in a different class of car. It travels with a bilingual chauffeur, which is why it is the usual choice for a guest arriving from abroad.",
     notEs:
       "No sube de categoría por capacidad: si van cuatro personas, esta no es la solución aunque cueste más. Ahí entra la SUV Comfort o la SUV Lux.",
     notEn:
@@ -121,7 +121,7 @@ const TX = {
       "Cuatro categorías, todas con unidades propias de Elite Route. La reserva se hace por categoría, no por modelo, y la diferencia entre una y otra no es sólo cuánta gente cabe: también cuántas maletas entran a la vez, que es lo que de verdad decide. Esta página dice para qué sirve cada una y cuándo conviene no elegirla.",
 
     factCatsValue: "4 categorías",
-    factCatsLabel: "de Sedan a SUV Lux, todas propias",
+    factCatsLabel: "de Sedan Lite a SUV Lux, todas propias",
     factSafeValue: "Seguro y GPS",
     factSafeLabel: "en todas las unidades, monitoreo las 24 horas",
     factBookValue: "Se reserva por categoría",
@@ -168,7 +168,7 @@ const TX = {
       ],
       [
         "¿Cuántas maletas entran de verdad?",
-        "Dos en Sedan, tres en Executive, cuatro en SUV Comfort y seis en SUV Lux. En SUV Comfort y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
+        "Dos en Sedan Lite, tres en Executive, cuatro en SUV Comfort y seis en SUV Lux. En SUV Comfort y SUV Lux el máximo de pasajeros y el de maletas no caben a la vez: con equipaje completo recomendamos cuatro pasajeros.",
       ],
       [
         "¿Los autos son propios o subcontratados?",
@@ -180,7 +180,7 @@ const TX = {
       ],
       [
         "¿Cuál me conviene para el aeropuerto?",
-        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan; tres con equipaje documentado, en Executive; cuatro o más, en SUV Comfort o SUV Lux según cuánto lleven.",
+        "Cuenta las maletas antes que las personas. Una o dos personas con una maleta cada una van bien en Sedan Lite; tres con equipaje documentado, en Executive; cuatro o más, en SUV Comfort o SUV Lux según cuánto lleven.",
       ],
       [
         "¿El precio depende de la categoría?",
@@ -224,7 +224,7 @@ const TX = {
       "Four categories, every vehicle owned by Elite Route. You book a category, not a model, and the difference between them is not only how many people fit: it is how many suitcases fit at the same time, which is what actually decides. This page says what each one is for and when you are better off not choosing it.",
 
     factCatsValue: "4 categories",
-    factCatsLabel: "from Sedan to SUV Lux, all our own",
+    factCatsLabel: "from Sedan Lite to SUV Lux, all our own",
     factSafeValue: "Insured and GPS",
     factSafeLabel: "on every vehicle, monitored around the clock",
     factBookValue: "Booked by category",
@@ -271,7 +271,7 @@ const TX = {
       ],
       [
         "How many suitcases really fit?",
-        "Two in the Sedan, three in the Executive, four in the SUV Comfort and six in the SUV Lux. On the SUV Comfort and the SUV Lux the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
+        "Two in the Sedan Lite, three in the Executive, four in the SUV Comfort and six in the SUV Lux. On the SUV Comfort and the SUV Lux the maximum passengers and the maximum cases do not fit at the same time: with full luggage we recommend four passengers.",
       ],
       [
         "Are the cars your own or subcontracted?",
@@ -283,7 +283,7 @@ const TX = {
       ],
       [
         "Which one suits the airport?",
-        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan; three with checked bags, in an Executive; four or more, in a SUV Comfort or a SUV Lux depending on how much they are carrying.",
+        "Count the suitcases before the people. One or two people with a case each are fine in a Sedan Lite; three with checked bags, in an Executive; four or more, in a SUV Comfort or a SUV Lux depending on how much they are carrying.",
       ],
       [
         "Does the price depend on the category?",

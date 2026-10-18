@@ -65,7 +65,7 @@ export const vehicles: Record<
   }
 > = {
   sedan: {
-    name: "Sedan",
+    name: "Sedan Lite",
     cap: "1-3 passengers · 2 bags",
     capEs: "1-3 pasajeros · 2 maletas",
     tag: "Nissan · VW",

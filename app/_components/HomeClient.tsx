@@ -194,7 +194,6 @@ const TX = {
     fleetAltKicker: "Also available",
     fleetBilingual: "Bilingual chauffeur",
     byCategory: "You book a category: make and model are assigned according to availability.",
-    heroFleetLabel: "Our executive categories",
     fleetCta: "Quote my transfer →",
     fleetAlt: (c: string) => `Elite Route ${c} category vehicles`,
     water: "Complimentary water bottle", chargers: "Phone chargers", music: "Music connection",
@@ -347,7 +346,6 @@ const TX = {
     fleetAltKicker: "También disponibles",
     fleetBilingual: "Chofer bilingüe",
     byCategory: "Reservas una categoría: la marca y el modelo se asignan según disponibilidad.",
-    heroFleetLabel: "Nuestras categorías ejecutivas",
     fleetCta: "Cotizar mi traslado →",
     fleetAlt: (c: string) => `Unidades de la categoría ${c} de Elite Route`,
     water: "Botella de agua de cortesía", chargers: "Cargadores para celular", music: "Conexión para música",
@@ -755,12 +753,6 @@ const styles = `
   .er-fleet-badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; margin-bottom:10px; }
   .er-fleet-badge--alt { background:transparent; color:#8b8b88; padding:0; margin-bottom:6px; }
   .er-bycat { font-size:12px; line-height:1.6; color:#8B8B87; text-align:center; margin:-8px 0 18px; }
-  .er-hero-fleet { display:flex; flex-wrap:wrap; gap:10px; margin:0 0 26px; text-decoration:none; }
-  .er-hero-fleet-item { display:flex; align-items:center; gap:10px; padding:6px 14px 6px 6px; border:1px solid rgba(200,164,107,0.4); background:rgba(10,10,10,0.55); color:#fff; transition:border-color 0.2s; }
-  .er-hero-fleet:hover .er-hero-fleet-item { border-color:#C8A46B; }
-  .er-hero-fleet-item img { width:64px; height:36px; object-fit:cover; display:block; }
-  .er-hero-fleet-item strong { display:block; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
-  .er-hero-fleet-item small { display:block; font-size:11px; color:#BFC3C8; letter-spacing:0.06em; }
   .er-pick { display:flex; gap:14px; align-items:center; padding:12px; border:1px solid #292929; background:#111; margin-bottom:18px; }
   .er-pick img { width:120px; height:68px; object-fit:cover; flex-shrink:0; display:block; }
   .er-pick-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
@@ -1487,20 +1479,6 @@ export default function HomeClient({
                   <span><strong>{t.heroWaitStrong}</strong> {t.heroWaitRest}</span>
                 </p>
 
-                {/* Las dos categorías ejecutivas, a la vista desde el primer
-                    pantallazo (dueño, 17 oct 2026). Llevan a la flota; el
-                    precio lo sigue dando el cotizador. */}
-                <a className="er-hero-fleet" href="#flota" aria-label={t.heroFleetLabel}>
-                  {FEATURED.map((k) => (
-                    <span className="er-hero-fleet-item" key={k}>
-                      <img src={`/flota/${k === "suv" ? "high-suv" : k}.webp`} alt="" width={96} height={54} />
-                      <span>
-                        <strong>{vehicles[k].name}</strong>
-                        <small>{vehicles[k].tag}</small>
-                      </span>
-                    </span>
-                  ))}
-                </a>
 
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>

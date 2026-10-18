@@ -40,7 +40,7 @@ export const RUTAS_HACIA = [
 ] as const;
 
 /** Los bloques por hora de /tarifas. El 10 es el día completo. */
-export const DURACIONES = [3, 4, 5, 6, 10] as const;
+export const DURACIONES = [3, 4, 5, 6, 8, 10] as const;
 
 /**
  * Las cinco rutas foráneas que publican su viaje redondo, de la más corta a

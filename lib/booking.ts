@@ -26,11 +26,13 @@
  */
 import "server-only";
 
-import { type Category } from "./vehicles";
+import { type AirportCode, type Category } from "./vehicles";
 import { REDONDO_HORAS_CORTESIA, REDONDO_HORAS_MAX } from "./service-limits";
 
 export {
+  type AirportCode,
   type Category,
+  airportCodeOf,
   type ServiceType,
   type Zone,
   CATEGORIES,
@@ -165,8 +167,65 @@ export const BRECHA_MINIMA_AEROPUERTO = 1.05;
  * ve el cliente—. Decisión del dueño, 17 oct 2026, sólo para High SUV.
  * Una categoría sin valor aquí se queda con el mínimo de la fórmula.
  */
-export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = { suv: 1950 };
-export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 1800 };
+export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2750 };
+export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2450 };
+
+/**
+ * TARIFA POR ZONA DE SUV LUX EN TRASLADOS DE AEROPUERTO, en pesos CON IVA.
+ * Decisión del dueño, 18 oct 2026, tras comparar contra la competencia: SUV
+ * Lux estaba muy por debajo del mercado.
+ *
+ * Cada punto es [km, desde el aeropuerto, hacia el aeropuerto], con los km
+ * medidos de `LEGS` / `B2B_LEGS` (lib/distances.ts) para la zona que nombra
+ * el comentario. El kilómetro 0 es el mínimo de la categoría. Entre dos
+ * puntos se interpola y se redondea a $50; pasado el último punto el precio
+ * se queda plano. En todos los casos manda el MAYOR entre esto y la fórmula,
+ * así que la tabla sólo puede subir un precio, nunca bajarlo.
+ *
+ * Toluca–Santa Fe va a $4,750 / $4,450 y no a los $4,250 / $3,950 de la
+ * primera propuesta: con estos últimos la ida a Toluca quedaba por debajo de
+ * lo que ya se cobraba ($4,042) y la unidad regresa vacía.
+ */
+const SUV_LUX_AEROPUERTO: Record<AirportCode, ReadonlyArray<readonly [number, number, number]>> = {
+  MEX: [
+    [8.5, 2750, 2450], // Centro / Roma / Condesa
+    [17.8, 2950, 2650], // Polanco / Lomas
+    [27.1, 3550, 3250], // Satélite / Naucalpan
+    [28.2, 3650, 3350], // Santa Fe / Interlomas
+  ],
+  NLU: [
+    [41.8, 4950, 4650], // Centro / Roma / Condesa
+    [51.1, 5150, 4850], // Polanco / Lomas
+    [66.1, 5650, 5350], // Santa Fe / Interlomas
+  ],
+  TLC: [
+    [43.1, 4750, 4450], // Santa Fe
+    [54.1, 4950, 4650], // Polanco / Lomas
+    [63.3, 5250, 4950], // Centro / Roma / Condesa
+  ],
+};
+
+function tarifaZonaSuvLux(km: number, aeropuerto: AirportCode, hacia: boolean): number {
+  const col = hacia ? 2 : 1;
+  const puntos: ReadonlyArray<readonly [number, number, number]> = [
+    [0, MINIMO_DESDE_AEROPUERTO.suv!, MINIMO_HACIA_AEROPUERTO.suv!],
+    ...SUV_LUX_AEROPUERTO[aeropuerto],
+  ];
+  const ultimo = puntos[puntos.length - 1];
+  if (km >= ultimo[0]) return ultimo[col];
+  const i = puntos.findIndex((p) => p[0] > km);
+  const [a, b] = [puntos[i - 1], puntos[i]];
+  const valor = a[col] + ((km - a[0]) / (b[0] - a[0])) * (b[col] - a[col]);
+  return Math.round(valor / 50) * 50;
+}
+
+/**
+ * PRECIO POR HORA CON IVA, para las categorías que lo tienen fijo. Decisión
+ * del dueño, 18 oct 2026: SUV Lux a $1,050 la hora (3 h $3,150 · 10 h
+ * $10,500). Sólo mueve el servicio por horas y por día; la fórmula de los
+ * traslados y la hora de espera del redondo siguen saliendo de `tariffs`.
+ */
+const PRECIO_HORA_CON_IVA: Partial<Record<Category, number>> = { suv: 1050 };
 
 export function calculatePrice(
   km: number,
@@ -176,14 +235,16 @@ export function calculatePrice(
   rentalHours: number,
   airport = false,
   haciaAeropuerto = false,
+  aeropuerto: AirportCode = "MEX",
 ) {
   const tariff = tariffs[category];
+  const horaFija = PRECIO_HORA_CON_IVA[category];
   let base = 0;
 
   if (serviceType === "hour") {
-    base = Math.max(rentalHours * tariff.hour, tariff.min);
+    base = horaFija ? (rentalHours * horaFija) / 1.16 : Math.max(rentalHours * tariff.hour, tariff.min);
   } else if (serviceType === "day") {
-    base = Math.max(10 * tariff.hour, tariff.min);
+    base = horaFija ? (10 * horaFija) / 1.16 : Math.max(10 * tariff.hour, tariff.min);
   } else {
     const hours = Math.ceil((minutes / 60) * 2) / 2;
     base = Math.max(kmCost(km, tariff.km, category), hours * tariff.hour, tariff.min);
@@ -196,9 +257,13 @@ export function calculatePrice(
     Math.round((base + Math.min(base * 0.25, RECARGO_AEROPUERTO_MAX[category] / 1.16)) * 1.16);
 
   // Salida de terminal en traslado, con el mínimo de la categoría si lo tiene.
+  // La tabla por zona de SUV Lux sólo puede subir el precio: manda el mayor.
+  const zona = (hacia: boolean) =>
+    category === "suv" && serviceType === "route" ? tarifaZonaSuvLux(km, aeropuerto, hacia) : 0;
+
   const desde = () =>
     serviceType === "route"
-      ? Math.max(conRecargo(), MINIMO_DESDE_AEROPUERTO[category] ?? 0)
+      ? Math.max(conRecargo(), MINIMO_DESDE_AEROPUERTO[category] ?? 0, zona(false))
       : conRecargo();
 
   if (airport) return desde();
@@ -213,7 +278,7 @@ export function calculatePrice(
     // no contra una tabla aparte: así la brecha se mantiene aunque cambien el
     // tope del recargo, la tarifa por kilómetro o la distancia.
     const techo = Math.floor(desde() / BRECHA_MINIMA_AEROPUERTO);
-    return Math.max(Math.min(pedido, techo), MINIMO_HACIA_AEROPUERTO[category] ?? 0);
+    return Math.max(Math.min(pedido, techo), MINIMO_HACIA_AEROPUERTO[category] ?? 0, zona(true));
   }
 
   return sinRecargo;

@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { AirportCode } from "./vehicles";
+
 /**
  * Las distancias y duraciones de cada trayecto. Fuente única.
  *
@@ -126,6 +128,13 @@ export const LEGS = {
 } as const satisfies Record<string, Leg>;
 
 export type LegKey = keyof typeof LEGS;
+
+/** De qué aeropuerto sale cada trayecto de `LEGS`: el AICM salvo los del AIFA y Toluca. */
+export function aeropuertoDeLeg(key: LegKey): AirportCode {
+  if (key === "aifa" || key === "aifapolanco" || key === "aifasantafe") return "NLU";
+  if (key === "toluca") return "TLC";
+  return "MEX";
+}
 
 /** La matriz de la página corporativa: de cada aeropuerto a cada zona. */
 export const B2B_LEGS: Record<string, Record<string, Leg | null>> = {

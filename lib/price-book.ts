@@ -26,19 +26,20 @@ import {
   type TablasTarifas,
 } from "./rate-tables";
 import { CATEGORIES, type Category } from "./vehicles";
-import { LEGS, B2B_LEGS, type LegKey } from "./distances";
+import { LEGS, B2B_LEGS, aeropuertoDeLeg, type LegKey } from "./distances";
+import type { AirportCode } from "./vehicles";
 import { REDONDO_HORAS_CORTESIA } from "./service-limits";
 
 function porCategoria(fn: (cat: Category) => number): PrecioPorCategoria {
   return Object.fromEntries(CATEGORIES.map((c) => [c, fn(c)])) as PrecioPorCategoria;
 }
 
-const ruta = (km: number, min: number, airport: boolean) =>
-  porCategoria((c) => calculatePrice(km, min, c, "route", 0, airport));
+const ruta = (km: number, min: number, airport: boolean, aeropuerto: AirportCode = "MEX") =>
+  porCategoria((c) => calculatePrice(km, min, c, "route", 0, airport, false, aeropuerto));
 
 /** El trayecto HACIA la terminal, que desde el 12 oct 2026 lleva su alza. */
-const haciaAeropuerto = (km: number, min: number) =>
-  porCategoria((c) => calculatePrice(km, min, c, "route", 0, false, true));
+const haciaAeropuerto = (km: number, min: number, aeropuerto: AirportCode = "MEX") =>
+  porCategoria((c) => calculatePrice(km, min, c, "route", 0, false, true, aeropuerto));
 
 // El redondo de la tabla se publica con las horas de cortesía incluidas y sin
 // recargo de aeropuerto: /tarifas lista destinos, no puntos de recogida.
@@ -53,9 +54,9 @@ export function tablasTarifas(): TablasTarifas {
   return {
     // La salida desde aeropuerto lleva el recargo de estacionamiento y
     // espera; el trayecto hacia el aeropuerto no.
-    desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, true)])),
+    desde: Object.fromEntries(RUTAS_DESDE.map((r) => [r.key, ruta(LEGS[r.key].km, LEGS[r.key].min, true, aeropuertoDeLeg(r.key))])),
     hacia: Object.fromEntries(
-      RUTAS_HACIA.map((r) => [r.key, haciaAeropuerto(LEGS[r.key].km, LEGS[r.key].min)]),
+      RUTAS_HACIA.map((r) => [r.key, haciaAeropuerto(LEGS[r.key].km, LEGS[r.key].min, aeropuertoDeLeg(r.key))]),
     ),
     horas: Object.fromEntries(DURACIONES.map((h) => [h, bloque(h)])),
     redondo: Object.fromEntries(
@@ -95,8 +96,9 @@ export function tablasB2b(): TablasB2b {
     for (const destino of s.zones) {
       const leg = B2B_LEGS[s.code]?.[destino];
       if (!leg) continue;
-      rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true);
-      rutasHacia[`${s.code}:${destino}`] = haciaAeropuerto(leg.km, leg.min);
+      const codigo = s.code as AirportCode;
+      rutas[`${s.code}:${destino}`] = ruta(leg.km, leg.min, true, codigo);
+      rutasHacia[`${s.code}:${destino}`] = haciaAeropuerto(leg.km, leg.min, codigo);
     }
   }
   // La tarifa por hora se deriva del bloque de dos horas, no del de una.

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getMapsLimiter, getIp } from "@/lib/rate-limit";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
 import { calculatePrice, precioHoraExtraRedondo, precioRedondo } from "@/lib/booking";
-import { CATEGORIES, isAirportAddress } from "@/lib/vehicles";
+import { CATEGORIES, airportCodeOf, isAirportAddress } from "@/lib/vehicles";
 import { admiteRedondo, REDONDO_HORAS_CORTESIA } from "@/lib/service-limits";
 import type { PrecioPorCategoria, TablasRedondo } from "@/lib/rate-tables";
 
@@ -56,8 +56,12 @@ export async function POST(req: Request) {
     // terminal, manda el recargo de salida y la ida no entra.
     const hacia = !airport && (isAirportAddress(String(destination)) || Boolean(airportDropoff));
 
+    // Qué aeropuerto, por el texto del lado que lo es: AICM, AIFA o Toluca
+    // tienen tabla propia en SUV Lux. Ante la duda, AICM.
+    const aeropuerto = airportCodeOf(String(airport ? origin : destination));
+
     const prices = Object.fromEntries(
-      CATEGORIES.map((c) => [c, calculatePrice(km, minutes, c, "route", 0, airport, hacia)]),
+      CATEGORIES.map((c) => [c, calculatePrice(km, minutes, c, "route", 0, airport, hacia, aeropuerto)]),
     );
 
     // El viaje redondo sólo existe en las foráneas, y quien lo decide es la

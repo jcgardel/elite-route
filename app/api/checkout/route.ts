@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import {
+  airportCodeOf,
   calculatePrice,
   precioRedondo,
   detectZone,
@@ -174,6 +175,7 @@ export async function POST(req: Request) {
       ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
       : calculatePrice(
           km, minutes, category, serviceType, rentalHours, airportPickup, haciaAeropuerto,
+          airportCodeOf(airportPickup ? origin : destination),
         );
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });

@@ -6,7 +6,7 @@ import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import { ROUTE_KEYS, ROUTES, routePath, type RouteKey } from "@/lib/routes";
-import { LEGS } from "@/lib/distances";
+import { LEGS, aeropuertoDeLeg } from "@/lib/distances";
 import {
   GOOGLE_PLACE_URL,
   GOOGLE_RATING,
@@ -311,7 +311,7 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
    * cuestan lo mismo: la ida a la terminal lleva su propia alza.
    */
   const bruto = (cat: Category, airport: boolean) =>
-    calculatePrice(leg.km, leg.min, cat, "route", 3, airport, !airport && !unico);
+    calculatePrice(leg.km, leg.min, cat, "route", 3, airport, !airport && !unico, aeropuertoDeLeg(routeKey));
   const precio = (cat: Category, airport: boolean) => mxn(bruto(cat, airport));
 
   // El precio más bajo que de verdad se ve en la tabla, que es el de la

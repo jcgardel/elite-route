@@ -7,7 +7,7 @@ import { CATEGORIES, vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import { ROUTES, ROUTE_KEYS, routePath, type RouteKey } from "@/lib/routes";
-import { LEGS } from "@/lib/distances";
+import { LEGS, aeropuertoDeLeg } from "@/lib/distances";
 import {
   GOOGLE_PLACE_URL,
   GOOGLE_RATING,
@@ -72,7 +72,7 @@ function menor(rutas: readonly RouteKey[], salidaDeAeropuerto: boolean) {
       cats.map((c) =>
         // Si no es salida, es la ida hacia la terminal: esta página sólo
         // habla de rutas de aeropuerto, así que no hay tercer caso.
-        calculatePrice(LEGS[k].km, LEGS[k].min, c, "route", 0, salidaDeAeropuerto, !salidaDeAeropuerto),
+        calculatePrice(LEGS[k].km, LEGS[k].min, c, "route", 0, salidaDeAeropuerto, !salidaDeAeropuerto, aeropuertoDeLeg(k)),
       ),
     ),
   );

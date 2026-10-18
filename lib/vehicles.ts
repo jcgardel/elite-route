@@ -191,6 +191,25 @@ export function isAirportAddress(address: string): boolean {
   return AIRPORT_CODES.test(a);
 }
 
+/** Los tres aeropuertos con tarifa propia de SUV Lux (18 oct 2026). */
+export type AirportCode = "MEX" | "NLU" | "TLC";
+
+const NLU_KEYWORDS = ["felipe angeles", "aifa", "santa lucia", "zumpango"];
+const TLC_KEYWORDS = ["toluca", "totoltepec"];
+
+/**
+ * Qué aeropuerto es, a partir del texto del lado que ES aeropuerto. Ante la
+ * duda devuelve "MEX": la tabla del AICM nunca cobra menos que la fórmula, así
+ * que un AIFA o un Toluca mal identificados quedan al precio de fórmula, no
+ * por debajo.
+ */
+export function airportCodeOf(text: string): AirportCode {
+  const a = normalizeAddress(text);
+  if (/\bnlu\b/.test(a) || NLU_KEYWORDS.some((k) => a.includes(k))) return "NLU";
+  if (/\btlc\b/.test(a) || TLC_KEYWORDS.some((k) => a.includes(k))) return "TLC";
+  return "MEX";
+}
+
 type PlaceLike =
   | { name?: string | null; formatted_address?: string | null; types?: string[] | null }
   | null

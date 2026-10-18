@@ -747,8 +747,10 @@ const styles = `
   .er-fleet-note { font-size:11px; color:#8b8b88; line-height:1.6; margin-top:4px; }
   .er-fleet-card--featured .er-fleet-name { font-size:24px; }
   .er-fleet-card--featured { border-color:rgba(200,164,107,0.42); }
+  /* Alternativas: foto 16:9 completa (sin recorte) a la izquierda y texto a
+     la derecha; en celular se apilan como las destacadas. */
   .er-fleet-card--alt { display:grid; grid-template-columns:42% 1fr; align-items:center; }
-  .er-fleet-card--alt img { height:100%; aspect-ratio:auto; min-height:120px; }
+  .er-fleet-card--alt img { height:auto; aspect-ratio:16 / 9; }
   .er-fleet-card--alt .er-fleet-name { font-size:17px; }
   .er-fleet-badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; margin-bottom:10px; }
   .er-fleet-badge--alt { background:transparent; color:#8b8b88; padding:0; margin-bottom:6px; }
@@ -904,6 +906,7 @@ const styles = `
     .er-vehicles { grid-template-columns:1fr; }
     .er-vehicle, .er-vehicle-content { min-height:440px; }
     .er-fleet-grid { grid-template-columns:1fr; gap:16px; }
+    .er-fleet-card--alt { display:block; }
     .er-fleet-title { font-size:27px; }
     .er-benefits { grid-template-columns:1fr; }
     .er-contact-grid { grid-template-columns:1fr; }

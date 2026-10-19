@@ -83,3 +83,35 @@ export function track(evento: EventoEmbudo, parametros?: Record<string, unknown>
     // Silencio a propósito: ver arriba.
   }
 }
+
+/**
+ * EL IDENTIFICADOR QUE GA4 LE PUSO A ESTE NAVEGADOR, leído de su propia
+ * cookie, más el de la sesión en curso.
+ *
+ * PARA QUÉ. La conversión `reserva_pagada` ya no se manda desde la página de
+ * gracias: se manda desde el webhook de Stripe (ver lib/analytics-server.ts).
+ * Un evento de servidor no sabe quién es el visitante, así que sin esto GA4
+ * lo apunta como un usuario nuevo sin origen y la reserva queda sin atribuir
+ * — que es justo lo que se quería arreglar. Con el par (cliente, sesión), la
+ * venta se pega al mismo recorrido que trajo a la persona.
+ *
+ * No se inventa ni se persiste nada: son las dos cookies de origen propio que
+ * GA4 ya escribió en este navegador. Si no existen —bloqueador, primera
+ * visita sin consentimiento, navegación privada— se devuelve null y el evento
+ * se manda igual, sólo que sin atribución. Nunca se bloquea una reserva por
+ * esto.
+ */
+export function identidadGa(): { clientId: string; sessionId: string | null } | null {
+  if (typeof document === "undefined" || !analyticsEnabled) return null;
+  try {
+    // `_ga` vale GA1.1.<cliente>, y el cliente son los dos últimos campos.
+    const ga = document.cookie.match(/(?:^|;\s*)_ga=GA\d\.\d\.([\d]+\.[\d]+)/);
+    if (!ga) return null;
+    // `_ga_<contenedor>` vale GS1.1.<sesión>.<número>.…; la sesión es el 3.º.
+    const contenedor = GA_ID.replace(/^G-/, "");
+    const ses = document.cookie.match(new RegExp(`(?:^|;\\s*)_ga_${contenedor}=GS\\d\\.\\d\\.([\\d]+)`));
+    return { clientId: ga[1], sessionId: ses ? ses[1] : null };
+  } catch {
+    return null;
+  }
+}

@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { path, type Lang } from "@/lib/i18n";
-import { track } from "@/lib/analytics";
 import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 
 /** Lo que la página de gracias necesita saber de la reserva. Vive aquí y no
@@ -94,22 +93,16 @@ export default function SuccessClient({
   const [sent, setSent] = useState(false);
   const t = TX[lang];
 
-  // Cierra el embudo con el importe real cobrado, no con el estimado del
-  // cotizador. Se manda una sola vez por montaje y lleva el folio como
-  // identificador: si el visitante recarga la página de gracias, GA4 tiene
-  // con qué reconocer que es la misma reserva y no una segunda venta.
-  const yaContado = useRef(false);
-  useEffect(() => {
-    if (yaContado.current || !booking) return;
-    yaContado.current = true;
-    track("reserva_pagada", {
-      transaction_id: booking.folio,
-      value: booking.montoMxn,
-      currency: "MXN",
-      vehiculo: booking.vehiculo,
-      servicio: booking.servicio,
-    });
-  }, [booking]);
+  // LA CONVERSIÓN YA NO SE MANDA DESDE AQUÍ (19 oct 2026).
+  //
+  // Dependía de que el cliente volviera al sitio después de pagar, y quien
+  // cierra la pestaña en la pantalla de "pago correcto" —habitual en móvil—
+  // nunca la disparaba: GA4 no recibió ni una `reserva_pagada` en 28 días con
+  // 22 reservas pagadas por el cotizador. Ahora la manda el webhook de
+  // Stripe, que siempre corre. Ver lib/analytics-server.ts.
+  //
+  // No volver a ponerla aquí: GA4 no deduplica eventos personalizados por
+  // `transaction_id`, así que tener las dos contaría cada venta dos veces.
 
   function handleWhatsApp() {
     setSent(true);

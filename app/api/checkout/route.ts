@@ -226,6 +226,10 @@ export async function POST(req: Request) {
       zone,
       km: String(km),
       minutes: String(minutes),
+      // Para que el webhook pueda atribuir la conversión en GA4.
+      // Ver lib/analytics-server.ts. Se recortan por si llegan raros.
+      ...(body.gaClientId ? { gaClientId: String(body.gaClientId).slice(0, 40) } : {}),
+      ...(body.gaSessionId ? { gaSessionId: String(body.gaSessionId).slice(0, 20) } : {}),
       airportPickup: String(airportPickup),
       airportDropoff: String(airportDropoff),
       /**

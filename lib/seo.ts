@@ -117,7 +117,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
     en: {
       title: "Hourly Chauffeur Service in Mexico City | Elite Route",
       description:
-        `Hire a private chauffeur by the hour in Mexico City. From three hours, ${KM_POR_HORA} km included per hour, fixed price with VAT. Car and driver stay with you between stops.`,
+        `Hire a private chauffeur by the hour in Mexico City. From three hours, ${KM_POR_HORA} km included per hour, fixed price with VAT. Car and driver stay with you.`,
       keywords:
         "hourly chauffeur Mexico City, hourly car service Mexico City, private driver by the hour CDMX, chauffeur for a day Mexico City, car and driver hire Mexico City",
     },

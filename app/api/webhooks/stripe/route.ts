@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { sendPaidBookingNotification, sendClientConfirmationEmail } from "@/lib/payment-notifications";
 import { getStripe } from "@/lib/stripe";
+import { enviarConversionGa4 } from "@/lib/analytics-server";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -31,10 +32,22 @@ export async function POST(req: Request) {
       metadata: session.metadata,
     });
 
-    const [notificationResult, clientEmailResult] = await Promise.allSettled([
+    // LA CONVERSIÓN DE GA4 VA APARTE Y NO ENTRA EN `avisado`.
+    //
+    // Es medición, no aviso: si GA4 está caído, la reserva está atendida
+    // igual y devolver 500 haría que Stripe reintentara —y volviera a mandar
+    // el correo al cliente— por un fallo que no le importa a nadie. Entra en
+    // el mismo `allSettled` sólo para no dejar una promesa suelta.
+    const [notificationResult, clientEmailResult, ga4Result] = await Promise.allSettled([
       sendPaidBookingNotification(session),
       sendClientConfirmationEmail(session),
+      enviarConversionGa4(session),
     ]);
+
+    console.info("Elite Route GA4 conversion:", {
+      sessionId: session.id,
+      result: ga4Result.status === "fulfilled" ? ga4Result.value : "error",
+    });
 
     if (notificationResult.status === "fulfilled") {
       console.info("Elite Route operator notification:", {

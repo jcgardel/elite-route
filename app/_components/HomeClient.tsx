@@ -35,7 +35,7 @@ import {
 } from "@/lib/vehicles";
 import { HORAS_MIN, type PrecioPorCategoria, type TablasCotizador, type TablasRedondo } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
-import { track } from "@/lib/analytics";
+import { identidadGa, track } from "@/lib/analytics";
 import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 import {
   CENTRO_CDMX,
@@ -1397,6 +1397,11 @@ export default function HomeClient({
           serviceType, rentalHours, origin, destination, serviceDate, serviceTime, notes,
           km, minutes, zone, category, fullName, phone, airportPickup, lang,
           airportDropoff,
+          // La identidad que GA4 ya le puso a este navegador. Viaja hasta la
+          // metadata de Stripe para que el webhook pueda mandar la conversión
+          // atribuida al recorrido real. Si no hay cookie va null y la venta
+          // se cuenta igual, sólo que sin origen.
+          ...(() => { const g = identidadGa(); return g ? { gaClientId: g.clientId, gaSessionId: g.sessionId } : {}; })(),
           // Sólo si el viaje lo necesita: un vuelo escrito y luego
           // abandonado al cambiar de destino no debe colarse en el aviso
           // del equipo ni en la metadata de la reserva.

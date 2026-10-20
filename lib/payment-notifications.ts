@@ -86,6 +86,10 @@ function eventoDeLaReserva(session: Stripe.Checkout.Session): EventoReserva | nu
       ? [`IDA Y VUELTA — esperar ${meta.horasEspera || "?"} h y regresar al pasajero`]
       : []),
     ...(meta.flightNumber ? [`Vuelo: ${meta.flightNumber}`] : []),
+    // Cuánta gente y cuánto equipaje: el chofer sale de la base sabiendo
+    // si cabe. Sólo aparece si la reserva lo trae —las anteriores al 19
+    // oct 2026 no lo tienen— para no inventar un dato que nadie dio.
+    ...(meta.pasajeros ? [`Pasajeros: ${meta.pasajeros}` + (meta.maletas ? ` · Maletas: ${meta.maletas}` : "")] : []),
     ...(meta.notes ? ["", `Solicitudes: ${meta.notes}`] : []),
     "",
     `Stripe: ${session.id}`,
@@ -201,6 +205,7 @@ export function buildPaidBookingMessage(session: Stripe.Checkout.Session) {
     // para monitorear la llegada y ajustar la hora del chofer, y sólo sale en
     // los traslados de aeropuerto.
     ...(meta.flightNumber ? [`✈️ Vuelo: ${meta.flightNumber}`] : []),
+    ...(meta.pasajeros ? [`👥 ${meta.pasajeros} pax` + (meta.maletas ? ` · 🧳 ${meta.maletas}` : "")] : []),
     "",
     "*Ruta y unidad*",
     `Vehículo: ${meta.vehicle || meta.category || "—"}`,

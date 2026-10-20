@@ -48,6 +48,27 @@ export const FEATURED: readonly Category[] = ["executive", "suv"];
  * cotizador los tenía en inglés, y un cliente que comparaba las dos veía dos
  * catálogos distintos.
  */
+/**
+ * CUÁNTA GENTE Y CUÁNTAS MALETAS CABEN DE VERDAD. Los números son la fuente
+ * y el texto se arma con ellos, no al revés: hasta el 19 oct 2026 la
+ * capacidad existía sólo como cadena ("1-3 pasajeros · 2 maletas"), así que
+ * el cotizador no podía comprobar nada y alguien podía reservar un Sedan
+ * Lite para cinco personas. El chofer se enteraba en la puerta.
+ *
+ * `maxConEquipaje` es el matiz de SUV Urban y SUV Lux: caben seis personas,
+ * pero no seis personas CON todas sus maletas. Es lo que ya decía `noteEs`,
+ * ahora en un número que se puede comprobar.
+ */
+export const CAPACIDAD: Record<Category, { pax: number; maletas: number; maxConEquipaje?: number }> = {
+  sedan: { pax: 3, maletas: 2 },
+  executive: { pax: 3, maletas: 3 },
+  minivan: { pax: 6, maletas: 4, maxConEquipaje: 4 },
+  suv: { pax: 6, maletas: 6, maxConEquipaje: 4 },
+};
+
+const cap = (c: Category) => `1-${CAPACIDAD[c].pax} passengers · ${CAPACIDAD[c].maletas} bags`;
+const capEs = (c: Category) => `1-${CAPACIDAD[c].pax} pasajeros · ${CAPACIDAD[c].maletas} maletas`;
+
 export const vehicles: Record<
   Category,
   {
@@ -66,29 +87,29 @@ export const vehicles: Record<
 > = {
   sedan: {
     name: "Sedan Lite",
-    cap: "1-3 passengers · 2 bags",
-    capEs: "1-3 pasajeros · 2 maletas",
+    cap: cap("sedan"),
+    capEs: capEs("sedan"),
     tag: "Nissan · VW",
   },
   executive: {
     name: "Executive",
-    cap: "1-3 passengers · 3 bags",
-    capEs: "1-3 pasajeros · 3 maletas",
+    cap: cap("executive"),
+    capEs: capEs("executive"),
     // Ya no hay Mercedes en la flota (el C200 se sustituyó por un Lexus ES).
     tag: "BMW · Lexus · Tesla",
   },
   minivan: {
     name: "SUV Urban",
-    cap: "1-6 passengers · 4 bags",
-    capEs: "1-6 pasajeros · 4 maletas",
+    cap: cap("minivan"),
+    capEs: capEs("minivan"),
     note: "recommended 4 passengers with full luggage",
     noteEs: "recomendado 4 pasajeros con equipaje completo",
     tag: "Captiva",
   },
   suv: {
     name: "SUV Lux",
-    cap: "1-6 passengers · 6 bags",
-    capEs: "1-6 pasajeros · 6 maletas",
+    cap: cap("suv"),
+    capEs: capEs("suv"),
     note: "recommended 4 passengers with full luggage",
     noteEs: "recomendado 4 pasajeros con equipaje completo",
     tag: "Suburban · Escalade",

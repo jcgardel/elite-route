@@ -181,12 +181,14 @@ const TX = {
     // "Dispositions" era calco de "Disposiciones": en inglés significa
     // carácter o temperamento, no servicio por horas.
     services: "Hourly", airports: "Transfers", corporate: "Corporate", contact: "Contact", reserveNow: "Reserve Now",
-    kicker: "Executive transportation and private chauffeur in Mexico City",
+    kicker: "Private Airport Transfers & Chauffeur Services in Mexico City",
     heroTitle: "We move your level.",
-    heroCopy: "Airport transfers, hourly service and executive transport for companies.",
+    heroCopy: "Arrive in Mexico City with confidence. Enjoy professional chauffeurs, flight monitoring, fixed prices, and personalized airport pickup arrangements.",
+    heroPromise: "Your journey begins before you land. We coordinate your arrival, monitor your flight, and keep you informed every step of the way.",
     heroWaitStrong: "1 free hour of waiting at the airport.",
     heroWaitRest: "We track your flight and the chauffeur adjusts to the actual landing time.",
-    heroBtnReserve: "Reserve Now",
+    heroBtnReserve: "Get Your Quote",
+    heroBtnTalk: "Talk to Our Team",
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
     fleetKicker: "The fleet",
@@ -333,12 +335,14 @@ const TX = {
   },
   es: {
     services: "Disposiciones", airports: "Traslados", corporate: "Corporativo", contact: "Contacto", reserveNow: "Reservar",
-    kicker: "Transporte ejecutivo y chofer privado en Ciudad de México",
+    kicker: "Transporte privado y ejecutivo en Ciudad de México",
     heroTitle: "Movemos tu nivel.",
-    heroCopy: "Traslados al aeropuerto, servicio por hora y transporte ejecutivo para empresas.",
+    heroCopy: "Viaja con tranquilidad. Conductores profesionales, monitoreo de vuelos, tarifas transparentes y atención personalizada desde tu llegada.",
+    heroPromise: "Tu viaje empieza antes de aterrizar. Coordinamos tu llegada, monitoreamos tu vuelo y te mantenemos al tanto en cada paso.",
     heroWaitStrong: "1 hora de espera gratuita en el aeropuerto.",
     heroWaitRest: "Monitoreamos tu vuelo y el chofer se ajusta a la hora real de aterrizaje.",
-    heroBtnReserve: "Reservar Ahora",
+    heroBtnReserve: "Cotizar traslado",
+    heroBtnTalk: "Hablar con un asesor",
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
     fleetKicker: "La flota",
@@ -533,6 +537,7 @@ const styles = `
   .er-hero-h1 { font-size:14px; letter-spacing:0.17em; font-weight:600; margin:0 0 16px; max-width:640px; line-height:1.6; }
   .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; text-wrap:balance; }
   .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
+  .er-hero-promise { max-width:620px; color:#9AA0A6; font-size:15px; line-height:1.7; margin:0; }
   .er-hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
   .er-hero-btn { display:inline-flex; min-height:46px; align-items:center; justify-content:center; border:1px solid #C8A46B; color:#fff; background:rgba(10,10,10,0.58); text-decoration:none; padding:13px 20px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
   .er-hero-btn:hover { background:#C8A46B; color:#0A0A0A; }
@@ -893,6 +898,7 @@ const styles = `
     .er-hero-title { font-size:42px; }
     .er-hero-h1 { font-size:12px; letter-spacing:0.14em; line-height:1.55; }
     .er-hero-copy { font-size:15px; }
+    .er-hero-promise { font-size:13px; }
     /* Compacta, no apilada: apilada empujaba el cotizador 200 px hacia
        abajo, justo lo que se quería evitar en móvil. */
     .er-hero-wait { margin-top:16px; font-size:13px; padding-left:11px; gap:8px; }
@@ -1476,6 +1482,16 @@ export default function HomeClient({
                 <p className="er-hero-title">{t.heroTitle}</p>
                 <p className="er-hero-copy">{t.heroCopy}</p>
 
+                {/* LA PROMESA QUE DISTINGUE AL VIAJERO QUE LLEGA.
+                    Decisión del dueño, 19 oct 2026. El resto de la portada
+                    vende el servicio; esta línea vende la tranquilidad de
+                    tenerlo resuelto ANTES de aterrizar, que es lo que busca
+                    el extranjero —la mayoría de las reservas web del
+                    cotizador se hacen en inglés—. No dice nada que el sitio
+                    no cumpla ya: monitoreo de vuelo y coordinación de la
+                    llegada están en el servicio y en los términos. */}
+                <p className="er-hero-promise">{t.heroPromise}</p>
+
                 {/* El miedo de quien reserva un aeropuerto no es el precio,
                     es aterrizar tarde y que el chofer ya no esté. La política
                     de los 60 minutos existe desde el 20 sep 2026 y vivía sólo
@@ -1489,10 +1505,23 @@ export default function HomeClient({
                 </p>
 
 
+                {/* EL SEGUNDO BOTÓN ERA UN `mailto:` CON LA DIRECCIÓN A LA
+                    VISTA. Ahora lleva a WhatsApp, y no es estética: el 69 %
+                    de las reservas pagadas entre junio y octubre de 2026 se
+                    cotizaron a mano por WhatsApp, teléfono o convenio, y son
+                    el 75 % del dinero. El correo sigue estando en el pie y
+                    en la sección de contacto; lo que cambia es cuál de los
+                    dos caminos se ofrece en el primer vistazo. */}
                 <div className="er-hero-actions">
                   <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>
-                  <a className="er-hero-btn er-hero-mail" href="mailto:business@eliteroute.mx">
-                    business@eliteroute.mx
+                  <a
+                    className="er-hero-btn er-hero-mail"
+                    href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => track("clic_whatsapp", { origen: "hero" })}
+                  >
+                    {t.heroBtnTalk}
                   </a>
                 </div>
 

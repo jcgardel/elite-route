@@ -18,7 +18,7 @@ import WelcomeEn from "./WelcomeEn";
 import LangToggle from "./LangToggle";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import {
+import { CAPACIDAD,
   detectZone,
   isAirportAddress,
   isAirportPlace,
@@ -233,6 +233,11 @@ const TX = {
     airportAskFrom: "You are picked up at an airport",
     airportAskTo: "You are dropped off at an airport",
     airportAskHelp: "Tick it if you wrote the city instead of the terminal. We use it to track your flight and have the chauffeur there at the right time.",
+    pax: "Passengers",
+    bags: "Bags",
+    paxBagsHelp: "So the chauffeur knows what to expect at arrivals. A bag means a checked suitcase; cabin bags do not count.",
+    alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
+      `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
     rtTitle: "Want to come back the same day?",
     rtLabel: "Round trip with the chauffeur waiting",
     rtHelp: (h: number) =>
@@ -387,6 +392,11 @@ const TX = {
     airportAskFrom: "Te recogemos en un aeropuerto",
     airportAskTo: "Te dejamos en un aeropuerto",
     airportAskHelp: "Márcalo si escribiste la ciudad en lugar de la terminal. Nos sirve para monitorear tu vuelo y que el chofer esté ahí a la hora correcta.",
+    pax: "Pasajeros",
+    bags: "Maletas",
+    paxBagsHelp: "Para que el chofer sepa qué esperar en llegadas. Maleta es la documentada; el equipaje de mano no cuenta.",
+    alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
+      `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
     rtTitle: "¿Quieres regresar el mismo día?",
     rtLabel: "Viaje redondo con el chofer esperándote",
     rtHelp: (h: number) =>
@@ -615,6 +625,7 @@ const styles = `
      borde dorado del campo de vuelo—: la ve todo el mundo en cada cotización
      y la mayoría no la necesita, así que no puede competir con las
      direcciones ni con la fecha, que sí son obligatorias. */
+  .er-paxbags { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
   .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
   .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
   .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#8B8B87; }
@@ -1104,6 +1115,33 @@ export default function HomeClient({
   const [manualAirportPickup, setManualAirportPickup] = useState(false);
   const [manualAirportDropoff, setManualAirportDropoff] = useState(false);
   const [flightNumber, setFlightNumber] = useState("");
+  /**
+   * Cuánta gente y cuánto equipaje llega. Sólo se pregunta en traslados de
+   * aeropuerto, que es donde el dato cambia la operación: el chofer sale de
+   * la base sabiendo si caben. Arrancan en 1 y 1 porque es el caso normal y
+   * así nadie tiene que tocarlos para reservar.
+   */
+  const [pasajeros, setPasajeros] = useState(1);
+  /**
+   * Devuelve el aviso si lo que el cliente indicó no cabe en la categoría
+   * elegida, o null si cabe. Se comprueba aquí Y en el servidor: la lista
+   * desplegable no obliga a quien llame a la API directamente.
+   */
+  function avisoCapacidad(): string | null {
+    const c = CAPACIDAD[category];
+    if (pasajeros <= c.pax && maletas <= c.maletas) return null;
+    const caben = (Object.keys(CAPACIDAD) as Category[])
+      .filter((k) => pasajeros <= CAPACIDAD[k].pax && maletas <= CAPACIDAD[k].maletas)
+      .map((k) => vehicles[k].name);
+    return t.alertCapacity(
+      vehicles[category].name,
+      c.pax,
+      c.maletas,
+      caben.length ? caben.join(" o ") : "—",
+    );
+  }
+
+  const [maletas, setMaletas] = useState(1);
   const [fullName, setFullName] = useState("");
   /** Solicitudes extra del cliente. Opcional: la reserva es válida sin ellas. */
   const [notes, setNotes] = useState("");
@@ -1345,6 +1383,7 @@ export default function HomeClient({
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
       airportPickup ? "✈️ Salida desde aeropuerto — cargo por estacionamiento y espera incluido" : null,
       airportTrip && flightNumber.trim() ? `✈️ Vuelo: ${flightNumber.trim().toUpperCase()}` : null,
+      airportTrip ? `👥 ${pasajeros} ${pasajeros === 1 ? "pasajero" : "pasajeros"} · ${maletas} ${maletas === 1 ? "maleta" : "maletas"}` : null,
       // Junto al resto del servicio y no al final: es parte de lo que hay
       // que preparar, no una posdata.
       notes.trim() ? `*Solicitudes del cliente:* ${notes.trim()}` : null,
@@ -1362,6 +1401,7 @@ export default function HomeClient({
     if (!phone) { setAlert3(t.alertPhone); return; }
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
     if (airportTrip && !esVueloValido(flightNumber)) { setAlert3(t.alertFlight); return; }
+    if (airportTrip) { const m = avisoCapacidad(); if (m) { setAlert3(m); return; } }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
     setAlert3("");
     // Después de las validaciones: un clic que sólo enseñó "falta el nombre"
@@ -1384,6 +1424,7 @@ export default function HomeClient({
     if (!phone) { setAlert3(t.alertPhone); return; }
     if (!isValidPhoneNumber(phone)) { setAlert3(t.alertPhoneInvalid); return; }
     if (airportTrip && !esVueloValido(flightNumber)) { setAlert3(t.alertFlight); return; }
+    if (airportTrip) { const m = avisoCapacidad(); if (m) { setAlert3(m); return; } }
     if (price === 0) { setAlert3(t.alertPriceErr); return; }
 
     setAlert3("");
@@ -1412,6 +1453,7 @@ export default function HomeClient({
           // abandonado al cambiar de destino no debe colarse en el aviso
           // del equipo ni en la metadata de la reserva.
           flightNumber: airportTrip ? flightNumber.trim().toUpperCase() : "",
+          ...(airportTrip ? { pasajeros, maletas } : {}),
           // Se manda lo que de verdad está activo, no lo que quedó en el
           // estado: `redondoActivo` ya exige que la ruta lo admita. El
           // servidor lo vuelve a comprobar contra sus propios kilómetros y
@@ -1925,6 +1967,47 @@ export default function HomeClient({
                 <p id="flight-help" className="er-flight-help">
                   {airportPickup ? t.flightHelpFrom : t.flightHelpTo}
                 </p>
+
+                {/* PASAJEROS Y MALETAS. Sólo aquí, en traslados de
+                    aeropuerto: es donde el chofer necesita saberlo antes de
+                    salir, y donde el 88 % del volumen son recogidas en
+                    terminal. En un traslado urbano el dato no cambia nada y
+                    preguntarlo sería fricción sin motivo.
+
+                    SE OFRECEN HASTA 6 EN LAS DOS LISTAS AUNQUE LA CATEGORÍA
+                    ELEGIDA NO LOS ADMITA, a propósito. Recortar las opciones
+                    escondería que existe una categoría más grande; dejarlas y
+                    avisar convierte un "no cabe" en "elige SUV Urban". El
+                    aviso nombra las categorías que sí caben. */}
+                <div className="er-paxbags">
+                  <div className="er-field">
+                    <label className="er-label" htmlFor="pax-input">{t.pax}</label>
+                    <select
+                      id="pax-input"
+                      className="er-input"
+                      value={pasajeros}
+                      onChange={(e) => setPasajeros(Number(e.target.value))}
+                    >
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <option key={n} value={n}>{n}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="er-field">
+                    <label className="er-label" htmlFor="bags-input">{t.bags}</label>
+                    <select
+                      id="bags-input"
+                      className="er-input"
+                      value={maletas}
+                      onChange={(e) => setMaletas(Number(e.target.value))}
+                    >
+                      {[0, 1, 2, 3, 4, 5, 6].map((n) => (
+                        <option key={n} value={n}>{n}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <p className="er-flight-help">{t.paxBagsHelp}</p>
               </div>
             )}
 

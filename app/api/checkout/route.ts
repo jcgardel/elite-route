@@ -15,6 +15,7 @@ import {
   type ServiceType,
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
+import { CAPACIDAD } from "@/lib/vehicles";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
@@ -100,6 +101,26 @@ export async function POST(req: Request) {
     // sitio promete en el hero, en el FAQ y en las páginas de ruta. Se
     // comprueba también aquí porque la validación del navegador no obliga a
     // quien llame a la API directamente.
+    // PASAJEROS Y MALETAS, comprobados contra la capacidad real.
+    //
+    // Se repite aquí y no sólo en el navegador porque la lista desplegable
+    // no obliga a quien llame a la API directamente, y porque el coste de
+    // equivocarse lo paga el chofer en la puerta: una reserva de cinco
+    // personas en un Sedan Lite no se puede servir.
+    const pasajeros = Number(body.pasajeros);
+    const maletas = Number(body.maletas);
+    if (airportPickup || airportDropoff) {
+      const cabe = CAPACIDAD[category];
+      const paxOk = !Number.isFinite(pasajeros) || (pasajeros >= 1 && pasajeros <= cabe.pax);
+      const malOk = !Number.isFinite(maletas) || (maletas >= 0 && maletas <= cabe.maletas);
+      if (!paxOk || !malOk) {
+        return NextResponse.json(
+          { error: `La categoría elegida admite ${cabe.pax} pasajeros y ${cabe.maletas} maletas` },
+          { status: 400 },
+        );
+      }
+    }
+
     if ((airportPickup || airportDropoff) && !esVueloValido(flightNumber)) {
       return NextResponse.json(
         { error: "El número de vuelo es obligatorio en traslados de aeropuerto" },
@@ -228,6 +249,8 @@ export async function POST(req: Request) {
       minutes: String(minutes),
       // Para que el webhook pueda atribuir la conversión en GA4.
       // Ver lib/analytics-server.ts. Se recortan por si llegan raros.
+      ...(Number.isFinite(pasajeros) ? { pasajeros: String(pasajeros) } : {}),
+      ...(Number.isFinite(maletas) ? { maletas: String(maletas) } : {}),
       ...(body.gaClientId ? { gaClientId: String(body.gaClientId).slice(0, 40) } : {}),
       ...(body.gaSessionId ? { gaSessionId: String(body.gaSessionId).slice(0, 20) } : {}),
       airportPickup: String(airportPickup),

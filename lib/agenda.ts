@@ -32,12 +32,20 @@ import { detectZone, type Category } from "./vehicles";
  * CUÁNTAS UNIDADES HAY POR CATEGORÍA. Una categoría que no aparece aquí no
  * tiene límite y nunca se bloquea.
  *
- * ⚠️ ESTE NÚMERO LO CONFIRMA EL DUEÑO. Se puso 1 como valor prudente al
- * construirlo el 21 oct 2026, a falta del dato: con 1, cualquier SUV Lux ya
- * reservada en la ventana manda al siguiente cliente a WhatsApp. Si de
- * verdad hay dos unidades, subir el número aquí es todo lo que hace falta.
+ * SUV LUX SON DOS, Y SE VENDEN DOS. Confirmado por el dueño el 21 oct 2026.
+ *
+ * HAY UNA TERCERA POR CONVENIO CON OTRO OPERADOR Y NO SE CUENTA AQUÍ, a
+ * propósito: está sujeta a disponibilidad del aliado, así que venderla en
+ * línea sería prometer una unidad que puede no existir el día del servicio.
+ * Ese es justo el caso que cubre la salida a WhatsApp: cuando las dos
+ * propias están tomadas, el cliente llega al equipo, que sí puede preguntar
+ * por la del convenio y cerrarla a mano si la hay. El bloqueo no pierde esa
+ * venta, la pasa a quien puede confirmarla.
+ *
+ * Si algún día el convenio pasa a ser capacidad firme, este número sube a 3
+ * y nada más cambia.
  */
-export const UNIDADES: Partial<Record<Category, number>> = { suv: 1 };
+export const UNIDADES: Partial<Record<Category, number>> = { suv: 2 };
 
 export type Ventana = { inicio: number; fin: number };
 

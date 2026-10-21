@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { sendPaidBookingNotification, sendClientConfirmationEmail } from "@/lib/payment-notifications";
 import { getStripe } from "@/lib/stripe";
 import { enviarConversionGa4 } from "@/lib/analytics-server";
+import { apartar, ventanaDeOcupacion } from "@/lib/agenda";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -38,11 +39,36 @@ export async function POST(req: Request) {
     // igual y devolver 500 haría que Stripe reintentara —y volviera a mandar
     // el correo al cliente— por un fallo que no le importa a nadie. Entra en
     // el mismo `allSettled` sólo para no dejar una promesa suelta.
-    const [notificationResult, clientEmailResult, ga4Result] = await Promise.allSettled([
+    const [notificationResult, clientEmailResult, ga4Result, agendaResult] = await Promise.allSettled([
       sendPaidBookingNotification(session),
       sendClientConfirmationEmail(session),
       enviarConversionGa4(session),
+      // APARTAR LA UNIDAD. Se hace aquí y no en el checkout a propósito: una
+      // sesión de pago abierta y abandonada no debe bloquear a nadie. Entra
+      // en el mismo `allSettled` y NO cuenta para `avisado`: si Redis está
+      // caído, la reserva está cobrada y atendida igual, y devolver 500 haría
+      // que Stripe reintentara el correo al cliente por un fallo de agenda.
+      (async () => {
+        const m = session.metadata || {};
+        const v = ventanaDeOcupacion({
+          serviceDate: String(m.serviceDate || ""),
+          serviceTime: String(m.serviceTime || ""),
+          serviceType: m.serviceType === "hour" || m.serviceType === "day" ? m.serviceType : "route",
+          minutes: Number(m.minutes) || 0,
+          rentalHours: Number(m.rentalHours) || 0,
+          km: Number(m.km) || 0,
+          redondo: m.redondo === "true",
+          horasEspera: Number(m.horasEspera) || 0,
+        });
+        if (!v || !m.category) return { apuntado: false, motivo: "sin datos" };
+        return apartar(m.category as Parameters<typeof apartar>[0], v, session.id);
+      })(),
     ]);
+
+    console.info("Elite Route agenda:", {
+      sessionId: session.id,
+      result: agendaResult.status === "fulfilled" ? agendaResult.value : "error",
+    });
 
     console.info("Elite Route GA4 conversion:", {
       sessionId: session.id,

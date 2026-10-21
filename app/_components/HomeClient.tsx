@@ -236,6 +236,9 @@ const TX = {
     pax: "Passengers",
     bags: "Bags",
     paxBagsHelp: "So the chauffeur knows what to expect at arrivals. A bag means a checked suitcase; cabin bags do not count.",
+    sinUnidades: "That time is already taken in this category",
+    sinUnidadesCopy: "SUV Lux has a limited fleet and the slot you picked is booked. Write to us on WhatsApp and we will check what we can do — another time, another category, or a unit that frees up.",
+    sinUnidadesCta: "Continue on WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
     rtTitle: "Want to come back the same day?",
@@ -395,6 +398,9 @@ const TX = {
     pax: "Pasajeros",
     bags: "Maletas",
     paxBagsHelp: "Para que el chofer sepa qué esperar en llegadas. Maleta es la documentada; el equipaje de mano no cuenta.",
+    sinUnidades: "Ese horario ya está tomado en esta categoría",
+    sinUnidadesCopy: "SUV Lux tiene flota limitada y el horario que elegiste está reservado. Escríbenos por WhatsApp y vemos qué se puede hacer: otro horario, otra categoría, o una unidad que se libere.",
+    sinUnidadesCta: "Continuar por WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
     rtTitle: "¿Quieres regresar el mismo día?",
@@ -625,6 +631,11 @@ const styles = `
      borde dorado del campo de vuelo—: la ve todo el mundo en cada cotización
      y la mayoría no la necesita, así que no puede competir con las
      direcciones ni con la fecha, que sí son obligatorias. */
+  .er-sinunidades { margin:-4px 0 18px; padding:15px 16px; border:1px solid rgba(200,164,107,0.42); border-radius:3px; background:rgba(200,164,107,0.07); }
+  .er-sinunidades-t { margin:0 0 7px; font-size:13px; font-weight:700; color:#C8A46B; letter-spacing:0.02em; }
+  .er-sinunidades-c { margin:0 0 13px; font-size:13px; line-height:1.6; color:#BFC3C8; }
+  .er-sinunidades-btn { display:inline-block; padding:11px 18px; border:1px solid #C8A46B; border-radius:2px; color:#C8A46B; text-decoration:none; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+  .er-sinunidades-btn:hover { background:#C8A46B; color:#0A0A0A; }
   .er-paxbags { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
   .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
   .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
@@ -1121,6 +1132,8 @@ export default function HomeClient({
    * la base sabiendo si caben. Arrancan en 1 y 1 porque es el caso normal y
    * así nadie tiene que tocarlos para reservar.
    */
+  /** Se enciende cuando el servidor contesta que no quedan unidades. */
+  const [sinUnidades, setSinUnidades] = useState(false);
   const [pasajeros, setPasajeros] = useState(1);
   /**
    * Devuelve el aviso si lo que el cliente indicó no cabe en la categoría
@@ -1463,6 +1476,14 @@ export default function HomeClient({
         }),
       });
       const data = await res.json();
+      // SIN UNIDADES. No es un error que el cliente pueda corregir en el
+      // formulario, así que no va al mismo sitio que los demás: abre el
+      // aviso con salida a WhatsApp. Ver lib/agenda.ts.
+      if (res.status === 409 && data.whatsapp) {
+        setSinUnidades(true);
+        track("clic_whatsapp", { origen: "sin_unidades", categoria: category });
+        return;
+      }
       if (!res.ok || !data.url) {
         setAlert3(data.error || t.alertCheckoutErr);
         return;
@@ -1882,6 +1903,7 @@ export default function HomeClient({
                     onClick={() => {
                       setCategory(cat);
                       track("vehiculo_seleccionado", { categoria: cat, value: p, currency: "MXN" });
+                      setSinUnidades(false);
                     }}>
                     <div className="er-vehicle-bg"
                       style={{ backgroundImage:`url(${vehicleImages[cat]})` }}/>
@@ -1948,6 +1970,27 @@ export default function HomeClient({
                 el precio delante y la tarjeta en la mano, y un campo nuevo
                 que parece opcional se salta. La ayuda cambia según el
                 sentido —llegada o salida— porque el motivo es distinto. */}
+            {/* SIN UNIDADES EN ESTA CATEGORÍA. Aparece cuando el servidor
+                contesta 409: el horario ya está apartado para una categoría
+                de flota limitada. No es un callejón sin salida —la agenda
+                sólo ve las reservas del sitio y puede equivocarse—, así que
+                lo único que ofrece es seguir por WhatsApp, que es donde el
+                equipo puede comprobar la disponibilidad de verdad. */}
+            {sinUnidades && (
+              <div className="er-sinunidades" role="alert">
+                <p className="er-sinunidades-t">{t.sinUnidades}</p>
+                <p className="er-sinunidades-c">{t.sinUnidadesCopy}</p>
+                <a
+                  className="er-sinunidades-btn"
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t.sinUnidadesCta}
+                </a>
+              </div>
+            )}
+
             {airportTrip && (
               <div className="er-field er-flight" style={{ marginBottom: 20 }}>
                 <label className="er-label" htmlFor="flight-input">

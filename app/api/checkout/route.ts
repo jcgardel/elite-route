@@ -16,6 +16,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { CAPACIDAD } from "@/lib/vehicles";
+import { hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
@@ -183,6 +184,31 @@ export async function POST(req: Request) {
         return NextResponse.json(
           { error: `La espera debe ser de entre ${REDONDO_HORAS_CORTESIA} y ${REDONDO_HORAS_MAX} horas` },
           { status: 400 },
+        );
+      }
+    }
+
+    // ¿QUEDA UNIDAD DE ESTA CATEGORÍA A ESTA HORA?
+    //
+    // Sólo muerde en las categorías con flota limitada (hoy SUV Lux). Se
+    // comprueba aquí y no sólo en el formulario porque el formulario no
+    // obliga a quien llame a la API directamente.
+    //
+    // NO CIERRA LA PUERTA: devuelve 409 con `whatsapp: true` para que el
+    // cotizador mande al cliente a WhatsApp. Esta agenda sólo ve las
+    // reservas del sitio —el 69 % se cotiza a mano— así que un bloqueo
+    // puede ser falso, y perder la venta por un dato incompleto sería peor
+    // que pasarla a un humano. Ver lib/agenda.ts.
+    const ventana = ventanaDeOcupacion({
+      serviceDate, serviceTime, serviceType, minutes, rentalHours, km,
+      redondo: quiereRedondo, horasEspera,
+    });
+    if (ventana) {
+      const hueco = await hayHueco(category, ventana);
+      if (!hueco.libre) {
+        return NextResponse.json(
+          { error: "sin_unidades", whatsapp: true, categoria: category },
+          { status: 409 },
         );
       }
     }

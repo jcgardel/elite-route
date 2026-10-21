@@ -28,6 +28,7 @@ import {
   admiteRedondo,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
+  categoriaBloqueada,
 } from "@/lib/service-limits";
 
 const categories = CATEGORIES;
@@ -133,6 +134,13 @@ export async function POST(req: Request) {
     const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
     if (!Number.isFinite(hoursUntilService) || hoursUntilService < MIN_ADVANCE_HOURS) {
       return NextResponse.json({ error: `El servicio requiere al menos ${MIN_ADVANCE_HOURS} horas de anticipación` }, { status: 400 });
+    }
+
+    if (categoriaBloqueada(category, serviceDate)) {
+      return NextResponse.json(
+        { error: `${vehicles[category].name} no está disponible en esa fecha. Elige otra categoría o escríbenos por WhatsApp.` },
+        { status: 400 },
+      );
     }
 
     // La distancia se vuelve a consultar aquí: el precio depende de los km, así

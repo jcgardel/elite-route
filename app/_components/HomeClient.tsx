@@ -46,6 +46,7 @@ import {
   LEYENDA_POR_HORAS,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
+  categoriaBloqueada,
 } from "@/lib/service-limits";
 
 const WHATSAPP_NUMBER = "525543582919";
@@ -316,6 +317,8 @@ const TX = {
     alertAdvance: "At least 12 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
     alertRouteErr: "We could not calculate the route. Please verify the addresses.",
+    alertBloqueada: (n: string) => `${n} is not available on that date. Choose another category or message us on WhatsApp.`,
+    notAvailable: "Not available on this date",
     alertFueraCdmx: "Hourly service applies only within Mexico City. For AIFA, Toluca or out-of-town trips, message us on WhatsApp for a special quote.",
     alertConnErr: "Connection error. Please try again.",
     alertName: "Full name is required.",
@@ -471,6 +474,8 @@ const TX = {
     alertAdvance: "Se requieren al menos 12 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
     alertRouteErr: "No pudimos calcular la ruta. Por favor verifica las direcciones.",
+    alertBloqueada: (n: string) => `${n} no está disponible en esa fecha. Elige otra categoría o escríbenos por WhatsApp.`,
+    notAvailable: "No disponible en esta fecha",
     alertFueraCdmx: "El servicio por horas aplica sólo dentro de la Ciudad de México. Para AIFA, Toluca o foráneos, escríbenos por WhatsApp y te hacemos una cotización especial.",
     alertConnErr: "Error de conexión. Por favor intenta de nuevo.",
     alertName: "El nombre completo es requerido.",
@@ -704,6 +709,7 @@ const styles = `
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
   .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
   .er-vehicle.selected { border-color:#fff; box-shadow:0 0 0 1px #fff; }
+  .er-vehicle.blocked { opacity:0.4; cursor:not-allowed; }
   /* Foto vertical 4:5 a todo lo ancho y alineada arriba: así el auto se ve
      completo aunque la tarjeta sea angosta (computadora) o casi cuadrada
      (celular). Si la tarjeta es más alta que la foto, el borde inferior se
@@ -1308,6 +1314,7 @@ export default function HomeClient({
     const diff = (svc.getTime() - Date.now()) / 3600000;
     if (diff <= 0) { setAlert1(t.alertPast); return; }
     if (diff < MIN_ADVANCE_HOURS) { setAlert1(t.alertAdvance); return; }
+    if (categoriaBloqueada(category, serviceDate)) { setAlert1(t.alertBloqueada(vehicles[category].name)); return; }
 
     setAlert1("");
     setLoading(true);
@@ -1782,8 +1789,8 @@ export default function HomeClient({
                 onChange={(e) => setCategory(e.target.value as Category)}
               >
                 {DISPLAY_ORDER.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {vehicles[cat].name} · {capFor(cat)}
+                  <option key={cat} value={cat} disabled={categoriaBloqueada(cat, serviceDate)}>
+                    {vehicles[cat].name} · {categoriaBloqueada(cat, serviceDate) ? t.notAvailable : capFor(cat)}
                   </option>
                 ))}
               </select>
@@ -1876,9 +1883,10 @@ export default function HomeClient({
             <div className="er-vehicles">
               {DISPLAY_ORDER.map((cat) => {
                 const p = priceFor(cat);
+                const bloqueada = categoriaBloqueada(cat, serviceDate);
                 return (
-                  <button key={cat} type="button"
-                    className={`er-vehicle${category===cat?" selected":""}`}
+                  <button key={cat} type="button" disabled={bloqueada}
+                    className={`er-vehicle${category===cat?" selected":""}${bloqueada?" blocked":""}`}
                     onClick={() => {
                       setCategory(cat);
                       track("vehiculo_seleccionado", { categoria: cat, value: p, currency: "MXN" });
@@ -1891,6 +1899,7 @@ export default function HomeClient({
                       <div className="er-vehicle-tag">{vehicles[cat].tag}</div>
                       <div className="er-vehicle-cap">{capFor(cat)}</div>
                       {noteFor(cat) && <div className="er-vehicle-cap">{noteFor(cat)}</div>}
+                      {bloqueada && <div className="er-vehicle-cap">{t.notAvailable}</div>}
                       <div className="er-vehicle-price">
                         ${p.toLocaleString("es-MX")} <span style={{fontSize:"14px",color:"#b8b8b8"}}>MXN</span>
                       </div>

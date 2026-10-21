@@ -14,6 +14,8 @@
  * lista de zonas, no el tarifario: no hay nada que proteger.
  */
 
+import type { Category } from "@/lib/vehicles";
+
 /**
  * Kilómetros incluidos por cada hora contratada.
  *
@@ -145,4 +147,21 @@ export const REDONDO_KM_MINIMO = 70;
  */
 export function admiteRedondo(km: number, destinoEsAeropuerto: boolean) {
   return km > REDONDO_KM_MINIMO && !destinoEsAeropuerto;
+}
+
+/**
+ * FECHAS BLOQUEADAS POR CATEGORÍA. Días en que una categoría no se vende en
+ * línea, decisión del dueño. Se compara contra la fecha de inicio del
+ * servicio (AAAA-MM-DD, hora de CDMX). Se valida en el cotizador y en
+ * /api/checkout, que es el que de verdad impide el cobro.
+ *
+ * 20 oct 2026: SUV Lux bloqueada el fin de semana del GP de México
+ * (30 oct – 1 nov 2026); esos servicios se cotizan aparte.
+ */
+export const FECHAS_BLOQUEADAS: Partial<Record<Category, readonly string[]>> = {
+  suv: ["2026-10-30", "2026-10-31", "2026-11-01"],
+};
+
+export function categoriaBloqueada(cat: Category, fecha: string) {
+  return FECHAS_BLOQUEADAS[cat]?.includes(fecha) ?? false;
 }

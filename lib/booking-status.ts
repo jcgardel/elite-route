@@ -27,29 +27,29 @@
 export const DESPUES_DE_PAGAR = {
   es: {
     pagoRecibido: "Pago recibido",
-    enValidacion: "Reserva en validación",
+    enValidacion: "Reserva recibida",
     validacion:
-      "Validamos la disponibilidad y te confirmamos la reserva por WhatsApp o correo el mismo día. Si no hubiera disponibilidad, te reembolsamos el importe completo.",
+      "Tu reserva quedó registrada. Te enviamos la confirmación por WhatsApp o correo.",
     conductor:
       "Un día antes del servicio te enviamos por WhatsApp los datos del conductor y de la unidad (si reservas con menos anticipación, al confirmar).",
     /** Los tres pasos, para listas cortas junto al botón de pago. */
     pasos: [
       ["Pagas con Stripe", "Te enviamos el comprobante por correo."],
-      ["Validamos y confirmamos", "Por WhatsApp o correo, el mismo día. Sin disponibilidad, reembolso completo."],
+      ["Confirmamos tu reserva", "Por WhatsApp o correo."],
       ["Datos del conductor", "Conductor y unidad asignados, un día antes del servicio."],
     ],
     pasosTitulo: "Qué pasa al pagar",
   },
   en: {
     pagoRecibido: "Payment received",
-    enValidacion: "Booking under review",
+    enValidacion: "Booking received",
     validacion:
-      "We check availability and confirm your booking over WhatsApp or email the same day. If there is no availability, we refund the full amount.",
+      "Your booking is registered. We send you the confirmation over WhatsApp or email.",
     conductor:
       "One day before the service we send you the chauffeur's and vehicle's details over WhatsApp (if you book at shorter notice, when we confirm).",
     pasos: [
       ["You pay through Stripe", "We email you the receipt."],
-      ["We check and confirm", "Over WhatsApp or email, the same day. No availability means a full refund."],
+      ["We confirm your booking", "Over WhatsApp or email."],
       ["Chauffeur details", "Your assigned chauffeur and vehicle, one day before the service."],
     ],
     pasosTitulo: "What happens when you pay",

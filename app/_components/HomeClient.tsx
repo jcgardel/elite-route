@@ -237,11 +237,7 @@ const TX = {
     pax: "Passengers",
     bags: "Bags",
     paxBagsHelp: "So the chauffeur knows what to expect at arrivals. A bag means a checked suitcase; cabin bags do not count.",
-    sinUnidades: "That time is already taken in this category",
-    sinUnidadesCopy: "SUV Lux has a limited fleet and the slot you picked is booked. Write to us on WhatsApp and we will check what we can do — another time, another category, or a unit that frees up.",
-    sinUnidadesCta: "Continue on WhatsApp",
-    sujetoConf: "Time slot subject to confirmation",
-    sujetoConfCopy: "Our own SUV Lux is already booked at that time. We can still take your booking with a partner unit of the same class: you pay now and we confirm the same day. If it is not available, we refund you in full.",
+    sinUnidadesCta: "Assistance on WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
     rtTitle: "Want to come back the same day?",
@@ -403,11 +399,7 @@ const TX = {
     pax: "Pasajeros",
     bags: "Maletas",
     paxBagsHelp: "Para que el chofer sepa qué esperar en llegadas. Maleta es la documentada; el equipaje de mano no cuenta.",
-    sinUnidades: "Ese horario ya está tomado en esta categoría",
-    sinUnidadesCopy: "SUV Lux tiene flota limitada y el horario que elegiste está reservado. Escríbenos por WhatsApp y vemos qué se puede hacer: otro horario, otra categoría, o una unidad que se libere.",
-    sinUnidadesCta: "Continuar por WhatsApp",
-    sujetoConf: "Horario sujeto a confirmación",
-    sujetoConfCopy: "Nuestra SUV Lux propia ya está reservada a esa hora. Podemos tomar tu reserva con una unidad de convenio de la misma categoría: pagas ahora y te confirmamos el mismo día. Si no hubiera disponibilidad, te reembolsamos el importe completo.",
+    sinUnidadesCta: "Atención por WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
     rtTitle: "¿Quieres regresar el mismo día?",
@@ -1983,16 +1975,8 @@ export default function HomeClient({
 
             <p className="er-bycat">{t.byCategory}</p>
 
-            {hueco?.sujetoAConfirmacion && (
-              <div className="er-sinunidades" role="status">
-                <p className="er-sinunidades-t">{t.sujetoConf}</p>
-                <p className="er-sinunidades-c" style={{ marginBottom: 0 }}>{t.sujetoConfCopy}</p>
-              </div>
-            )}
             {bloqueadoPorAgenda && (
               <div className="er-sinunidades" role="alert">
-                <p className="er-sinunidades-t">{t.sinUnidades}</p>
-                <p className="er-sinunidades-c">{t.sinUnidadesCopy}</p>
                 <a
                   className="er-sinunidades-btn"
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
@@ -2050,16 +2034,8 @@ export default function HomeClient({
                 sólo ve las reservas del sitio y puede equivocarse—, así que
                 lo único que ofrece es seguir por WhatsApp, que es donde el
                 equipo puede comprobar la disponibilidad de verdad. */}
-            {hueco?.sujetoAConfirmacion && !sinUnidades && (
-              <div className="er-sinunidades" role="status">
-                <p className="er-sinunidades-t">{t.sujetoConf}</p>
-                <p className="er-sinunidades-c" style={{ marginBottom: 0 }}>{t.sujetoConfCopy}</p>
-              </div>
-            )}
             {(sinUnidades || bloqueadoPorAgenda) && (
               <div className="er-sinunidades" role="alert">
-                <p className="er-sinunidades-t">{t.sinUnidades}</p>
-                <p className="er-sinunidades-c">{t.sinUnidadesCopy}</p>
                 <a
                   className="er-sinunidades-btn"
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}

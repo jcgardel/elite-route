@@ -46,7 +46,11 @@ import { detectZone, type Category } from "./vehicles";
  * salida es WhatsApp. Si el convenio pasa a ser capacidad firme, FIRMES sube
  * a 2 y nada más cambia.
  */
-export const UNIDADES: Partial<Record<Category, number>> = { suv: 2 };
+// 24 oct 2026: el dueño quitó del sitio la venta "sujeta a confirmación" de
+// la unidad de convenio (asustaba al cliente y costó una cancelación). En la
+// web SUV Lux se vende con UNA unidad: si el horario choca, se bloquea sin
+// aviso y la salida es WhatsApp. Para volver a vender el convenio: suv: 2.
+export const UNIDADES: Partial<Record<Category, number>> = { suv: 1 };
 /** De esas, cuántas son propias y se venden sin condición. */
 export const UNIDADES_FIRMES: Partial<Record<Category, number>> = { suv: 1 };
 
@@ -74,8 +78,9 @@ const HORA = 3600_000;
  * que eso libere la unidad. Todo lo demás —salidas al aeropuerto, ciudad,
  * por horas— lleva noventa minutos: posicionamiento y regreso.
  */
-const MARGEN_AEROPUERTO = 2 * HORA;
-const MARGEN = 90 * 60_000;
+// 24 oct 2026: el dueño lo amplió a dos horas y media para todo servicio.
+const MARGEN_AEROPUERTO = 2.5 * HORA;
+const MARGEN = 2.5 * HORA;
 
 /**
  * CUÁNTO TIEMPO DEJA OCUPADA LA UNIDAD UN SERVICIO.

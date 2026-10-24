@@ -37,9 +37,37 @@ function color(unidad: string) {
   return s.sedan;
 }
 
+/**
+ * El chofer se guarda como "Nombre · WhatsApp" en un solo campo. De ahí sale
+ * el número para el link directo; 10 dígitos = celular de México (+52).
+ */
+function telChofer(chofer: string | null) {
+  const digitos = (chofer || "").match(/\+?[\d\s-]{10,}/)?.[0].replace(/[^0-9]/g, "") || "";
+  if (digitos.length === 10) return `52${digitos}`;
+  return digitos.length > 10 ? digitos : "";
+}
+
+/** Mensaje listo para el chofer: datos del servicio, sin precios. */
+function mensajeChofer(r: ServicioEquipo, etiqueta: string) {
+  return [
+    `Servicio EliteRoute ${r.folio}`,
+    etiqueta,
+    `Cliente: ${r.cliente || ""}${r.telefono ? ` · ${r.telefono}` : ""}`,
+    `Recoger: ${r.origen}`,
+    `Destino: ${r.destino}`,
+    [r.vuelo ? `Vuelo ${r.vuelo}` : "", r.unidad, r.pasajeros ? `${r.pasajeros} pax` : ""].filter(Boolean).join(" · "),
+    r.notas ? `Notas: ${r.notas}` : "",
+    "Confírmame de recibido, por favor.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
+  const telCh = telChofer(r.chofer);
+  const etiqueta = p ? `${p.etiqueta} · ${p.hora}` : "Fecha y hora por confirmar";
   const calendario = p
     ? buildGoogleCalendarUrl({
         titulo: `${r.folio} · ${r.cliente || ""} · ${r.unidad}`,
@@ -80,17 +108,24 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         <input type="hidden" name="lang" value={lang} />
         <input type="hidden" name="folio" value={r.folio} />
         <input
-          className={r.chofer ? s.choferInput : `${s.choferInput} ${s.sinChofer}`}
+          className={!r.chofer ? `${s.choferInput} ${s.sinChofer}` : telCh ? s.choferInput : `${s.choferInput} ${s.faltaTel}`}
           name="chofer"
+          list="choferes"
           defaultValue={r.chofer || ""}
-          placeholder="Sin chofer · escribe nombre"
+          placeholder="Sin chofer · Nombre · WhatsApp"
           maxLength={80}
         />
         <button className={s.choferBoton} type="submit">Guardar</button>
       </form>
+      {r.chofer && !telCh && <p className={s.aviso}>Falta el WhatsApp del chofer (10 dígitos)</p>}
       <nav className={s.acciones}>
-        {tel && <a href={`tel:+${tel}`}>Llamar</a>}
-        {tel && <a href={`https://wa.me/${tel}`}>WhatsApp</a>}
+        {telCh && (
+          <a className={s.enviar} href={`https://wa.me/${telCh}?text=${encodeURIComponent(mensajeChofer(r, etiqueta))}`}>
+            Enviar al chofer
+          </a>
+        )}
+        {tel && <a href={`tel:+${tel}`}>Llamar cliente</a>}
+        {tel && <a href={`https://wa.me/${tel}`}>WhatsApp cliente</a>}
         {calendario && <a href={calendario}>+ Calendario</a>}
       </nav>
     </article>
@@ -153,6 +188,12 @@ export default async function EquipoPage({
         </form>
       </header>
       {servicios.length === 0 && <p className={s.sub}>No hay servicios próximos.</p>}
+      {/* Choferes ya usados, para no volver a escribir su WhatsApp. */}
+      <datalist id="choferes">
+        {[...new Set(servicios.map((r) => r.chofer).filter(Boolean))].map((c) => (
+          <option key={c} value={c!} />
+        ))}
+      </datalist>
       {[...dias].map(([dia, lista]) => (
         <section key={dia}>
           <h2 className={s.dia}>{dia}</h2>

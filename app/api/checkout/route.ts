@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
+import { registrarReserva } from "@/lib/reservas";
 import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
 import {
@@ -338,6 +339,15 @@ export async function POST(req: Request) {
       payment_intent_data: { metadata: reserva },
       metadata: reserva,
     });
+
+    // La cotización queda registrada como "pendiente de pago" desde ya, para
+    // darle seguimiento aunque no se pague. Va después de la respuesta para
+    // no hacer esperar al cliente; si falla, el pago la registra igual.
+    after(() =>
+      registrarReserva(session, { pendiente: true }).catch((error) =>
+        console.error("Elite Route registro pendiente error:", error),
+      ),
+    );
 
     return NextResponse.json({ url: session.url });
   } catch (error) {

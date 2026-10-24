@@ -1,4 +1,5 @@
 import type Stripe from "stripe";
+import { getStripe } from "./stripe";
 
 /**
  * REGISTRO CENTRAL DE RESERVAS (Supabase, tabla `reservations`).
@@ -42,15 +43,38 @@ function unidad(m: Stripe.Metadata) {
   return /high\s*suv/i.test(v) ? "SUV Lux" : v;
 }
 
-export async function registrarReserva(session: Stripe.Checkout.Session): Promise<Resultado> {
-  const m = session.metadata || {};
-  const pagado = (session.amount_total ?? 0) / 100;
+/**
+ * Los links de pago de Stripe no pasan su metadata a la sesión. Las
+ * cotizaciones hechas fuera de la web llevan ahí su folio, así que se lee
+ * del link para confirmar ese mismo registro en vez de crear otro.
+ */
+async function metadataDelLink(session: Stripe.Checkout.Session): Promise<Stripe.Metadata> {
+  const link = session.payment_link;
+  if (!link) return {};
+  if (typeof link !== "string") return link.metadata || {};
+  try {
+    return (await getStripe().paymentLinks.retrieve(link)).metadata || {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * `pendiente`: la cotización se guarda al generar el link, antes de pagar,
+ * para poder darle seguimiento. El pago actualiza ese mismo registro.
+ */
+export async function registrarReserva(
+  session: Stripe.Checkout.Session,
+  { pendiente = false }: { pendiente?: boolean } = {},
+): Promise<Resultado> {
+  const m: Stripe.Metadata = { ...(await metadataDelLink(session)), ...(session.metadata || {}) };
+  const pagado = pendiente ? 0 : (session.amount_total ?? 0) / 100;
   const precio = Number(m.priceMxn) || pagado;
   const fecha = m.serviceDate && m.serviceTime ? `${m.serviceDate} ${m.serviceTime}` : "";
 
   // Si pagó menos que el precio, es anticipo: el resto vence 24 h antes.
   const saldo = Math.max(0, Math.round((precio - pagado) * 100) / 100);
-  const anticipo = saldo > 1;
+  const anticipo = !pendiente && saldo > 1;
   const vence =
     anticipo && fecha
       ? new Date(new Date(`${m.serviceDate}T${m.serviceTime}:00-06:00`).getTime() - 24 * 3600 * 1000).toISOString()
@@ -61,6 +85,7 @@ export async function registrarReserva(session: Stripe.Checkout.Session): Promis
 
   return rpc("registrar_reserva_stripe", {
     p: {
+      folio: m.folio || "",
       name: m.fullName || session.customer_details?.name || "",
       phone: m.phone || session.customer_details?.phone || "",
       email: session.customer_details?.email || "",
@@ -75,7 +100,7 @@ export async function registrarReserva(session: Stripe.Checkout.Session): Promis
       service_type: ["route", "hour", "day"].includes(String(m.serviceType)) ? m.serviceType : "",
       rental_hours: m.rentalHours || "",
       source: session.payment_link ? "payment_link" : "web",
-      status: anticipo ? "anticipo_pagado" : "confirmada",
+      status: pendiente ? "pendiente_pago" : anticipo ? "anticipo_pagado" : "confirmada",
       flight_number: m.flightNumber || "",
       passengers: m.pasajeros || "",
       notes: m.notes || "",

@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
       // conserva sola.
       { source: "/success", destination: "/en/success", permanent: false },
       { source: "/cancel", destination: "/en/cancel", permanent: false },
+      // La vista interna del equipo se comparte como eliteroute.mx/equipo.
+      { source: "/equipo", destination: "/es/equipo", permanent: false },
     ];
   },
 };

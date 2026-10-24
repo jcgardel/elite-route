@@ -59,6 +59,7 @@ export async function POST(req: Request) {
           km: Number(m.km) || 0,
           redondo: m.redondo === "true",
           horasEspera: Number(m.horasEspera) || 0,
+          airportPickup: m.airportPickup === "true",
         });
         if (!v || !m.category) return { apuntado: false, motivo: "sin datos" };
         return apartar(m.category as Parameters<typeof apartar>[0], v, session.id);

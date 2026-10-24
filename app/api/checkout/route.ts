@@ -209,7 +209,7 @@ export async function POST(req: Request) {
     // que pasarla a un humano. Ver lib/agenda.ts.
     const ventana = ventanaDeOcupacion({
       serviceDate, serviceTime, serviceType, minutes, rentalHours, km,
-      redondo: quiereRedondo, horasEspera,
+      redondo: quiereRedondo, horasEspera, airportPickup,
     });
     if (ventana) {
       const hueco = await hayHueco(category, ventana);

@@ -32,20 +32,23 @@ import { detectZone, type Category } from "./vehicles";
  * CUÁNTAS UNIDADES HAY POR CATEGORÍA. Una categoría que no aparece aquí no
  * tiene límite y nunca se bloquea.
  *
- * SUV LUX SON DOS, Y SE VENDEN DOS. Confirmado por el dueño el 21 oct 2026.
+ * SUV LUX: UNA PROPIA Y UNA POR CONVENIO. Corregido por el dueño el 23 oct
+ * 2026 (el 21 se había anotado que eran dos propias).
  *
- * HAY UNA TERCERA POR CONVENIO CON OTRO OPERADOR Y NO SE CUENTA AQUÍ, a
- * propósito: está sujeta a disponibilidad del aliado, así que venderla en
- * línea sería prometer una unidad que puede no existir el día del servicio.
- * Ese es justo el caso que cubre la salida a WhatsApp: cuando las dos
- * propias están tomadas, el cliente llega al equipo, que sí puede preguntar
- * por la del convenio y cerrarla a mano si la hay. El bloqueo no pierde esa
- * venta, la pasa a quien puede confirmarla.
+ * Las dos se venden, pero no igual. La propia es firme. La del convenio
+ * depende de que el aliado tenga la unidad libre ese día, así que una
+ * reserva que cae sobre ella se vende como "sujeta a confirmación": el
+ * cobro entra, pero el cliente sabe desde el formulario que el equipo tiene
+ * que confirmarla, y el equipo sabe que tiene que preguntar al aliado. Eso
+ * es lo que `hayHueco` devuelve en `sujetoAConfirmacion`.
  *
- * Si algún día el convenio pasa a ser capacidad firme, este número sube a 3
- * y nada más cambia.
+ * Con las dos tomadas no hay nada que prometer: ahí sí se bloquea y la
+ * salida es WhatsApp. Si el convenio pasa a ser capacidad firme, FIRMES sube
+ * a 2 y nada más cambia.
  */
 export const UNIDADES: Partial<Record<Category, number>> = { suv: 2 };
+/** De esas, cuántas son propias y se venden sin condición. */
+export const UNIDADES_FIRMES: Partial<Record<Category, number>> = { suv: 1 };
 
 export type Ventana = { inicio: number; fin: number };
 
@@ -58,16 +61,28 @@ type Servicio = {
   km: number;
   redondo: boolean;
   horasEspera: number;
+  /** Recoge en una terminal: el margen de ocupación es mayor. */
+  airportPickup?: boolean;
 };
 
 const HORA = 3600_000;
+/**
+ * MÁRGENES, fijados por el dueño el 23 oct 2026. Antes era una hora pareja.
+ *
+ * Recoger en aeropuerto se come dos horas por lado: el chofer entra antes
+ * para estacionarse y esperar en llegadas, y el vuelo puede retrasarse sin
+ * que eso libere la unidad. Todo lo demás —salidas al aeropuerto, ciudad,
+ * por horas— lleva noventa minutos: posicionamiento y regreso.
+ */
+const MARGEN_AEROPUERTO = 2 * HORA;
+const MARGEN = 90 * 60_000;
 
 /**
  * CUÁNTO TIEMPO DEJA OCUPADA LA UNIDAD UN SERVICIO.
  *
  * No es la duración del trayecto: un AICM→Polanco de 35 minutos se come el
- * posicionamiento, el viaje y el regreso. Se añade una hora por delante y
- * otra por detrás, que es lo que el dueño aprobó el 21 oct 2026.
+ * posicionamiento, el viaje y el regreso. Se añade un margen por delante y
+ * otro por detrás: ver MARGEN y MARGEN_AEROPUERTO.
  *
  * Las fechas se construyen igual que en app/api/checkout/route.ts, con el
  * mismo `new Date("YYYY-MM-DDTHH:mm")`. Lo que importa aquí es la comparación
@@ -77,6 +92,7 @@ const HORA = 3600_000;
 export function ventanaDeOcupacion(s: Servicio): Ventana | null {
   const inicio = new Date(`${s.serviceDate}T${s.serviceTime}`).getTime();
   if (!Number.isFinite(inicio)) return null;
+  const m = s.airportPickup ? MARGEN_AEROPUERTO : MARGEN;
 
   // Foráneo sencillo: el día entero. La unidad sale y no vuelve a tiempo
   // para nada más.
@@ -90,15 +106,15 @@ export function ventanaDeOcupacion(s: Servicio): Ventana | null {
     // Ida, espera y vuelta. Puede cruzar la medianoche y está bien: la
     // comprobación mira todos los días que toca la ventana.
     const viaje = 2 * s.minutes * 60_000 + s.horasEspera * HORA;
-    return { inicio: inicio - HORA, fin: inicio + viaje + HORA };
+    return { inicio: inicio - m, fin: inicio + viaje + m };
   }
 
   if (s.serviceType === "hour" || s.serviceType === "day") {
     const horas = s.serviceType === "day" ? HORAS_DIA_COMPLETO : s.rentalHours;
-    return { inicio: inicio - HORA, fin: inicio + horas * HORA + HORA };
+    return { inicio: inicio - m, fin: inicio + horas * HORA + m };
   }
 
-  return { inicio: inicio - HORA, fin: inicio + s.minutes * 60_000 + HORA };
+  return { inicio: inicio - m, fin: inicio + s.minutes * 60_000 + m };
 }
 
 function getRedis(): Redis | null {
@@ -153,16 +169,61 @@ export async function apartar(categoria: Category, v: Ventana, id: string) {
   return { apuntado: true };
 }
 
+export type Hueco = {
+  /** Queda alguna unidad, firme o por convenio. */
+  libre: boolean;
+  /** Las firmes ya están tomadas: lo que queda es la del convenio. */
+  sujetoAConfirmacion: boolean;
+  ocupadas: number;
+  unidades: number;
+};
+
+const sinLimite = (unidades = 0): Hueco => ({
+  libre: true, sujetoAConfirmacion: false, ocupadas: 0, unidades,
+});
+
+/**
+ * Quita un apunte. Para corregir una reserva manual mal metida o una que se
+ * canceló. Hace falta la misma ventana con la que se apuntó: el apunte se
+ * guarda como texto y sólo se borra el texto idéntico.
+ */
+export async function liberar(categoria: Category, v: Ventana, id: string) {
+  const redis = getRedis();
+  if (!redis) return { liberado: false, motivo: "sin redis" };
+  const apunte: Apunte = { inicio: v.inicio, fin: v.fin, id };
+  let n = 0;
+  for (const dia of diasQueToca(v)) n += await redis.srem(clave(categoria, dia), JSON.stringify(apunte));
+  return { liberado: n > 0 };
+}
+
+/** Los apuntes de una categoría entre dos fechas (AAAA-MM-DD), sin repetir. */
+export async function listar(categoria: Category, desde: string, hasta: string) {
+  const redis = getRedis();
+  if (!redis) return [];
+  const vistos = new Map<string, Apunte>();
+  const d = new Date(`${desde}T00:00:00Z`);
+  const fin = new Date(`${hasta}T00:00:00Z`).getTime();
+  while (d.getTime() <= fin) {
+    for (const c of await redis.smembers(clave(categoria, d.toISOString().slice(0, 10)))) {
+      const a: Apunte = typeof c === "string" ? JSON.parse(c) : (c as Apunte);
+      vistos.set(a.id, a);
+    }
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+  return [...vistos.values()].sort((x, y) => x.inicio - y.inicio);
+}
+
 /**
  * Cuántas unidades de esa categoría están ya comprometidas en la ventana, y
  * si queda alguna libre. Ante cualquier fallo contesta que SÍ hay hueco: un
  * Redis caído no puede dejar de vender.
  */
-export async function hayHueco(categoria: Category, v: Ventana) {
+export async function hayHueco(categoria: Category, v: Ventana): Promise<Hueco> {
   const unidades = UNIDADES[categoria];
-  if (!unidades) return { libre: true, ocupadas: 0, unidades: 0 };
+  if (!unidades) return sinLimite();
+  const firmes = UNIDADES_FIRMES[categoria] ?? unidades;
   const redis = getRedis();
-  if (!redis) return { libre: true, ocupadas: 0, unidades };
+  if (!redis) return sinLimite(unidades);
   try {
     const vistos = new Set<string>();
     for (const dia of diasQueToca(v)) {
@@ -173,8 +234,14 @@ export async function hayHueco(categoria: Category, v: Ventana) {
         if (a.inicio <= v.fin && v.inicio <= a.fin) vistos.add(a.id);
       }
     }
-    return { libre: vistos.size < unidades, ocupadas: vistos.size, unidades };
+    const ocupadas = vistos.size;
+    return {
+      libre: ocupadas < unidades,
+      sujetoAConfirmacion: ocupadas >= firmes && ocupadas < unidades,
+      ocupadas,
+      unidades,
+    };
   } catch {
-    return { libre: true, ocupadas: 0, unidades };
+    return sinLimite(unidades);
   }
 }

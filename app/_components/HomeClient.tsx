@@ -240,6 +240,8 @@ const TX = {
     sinUnidades: "That time is already taken in this category",
     sinUnidadesCopy: "SUV Lux has a limited fleet and the slot you picked is booked. Write to us on WhatsApp and we will check what we can do — another time, another category, or a unit that frees up.",
     sinUnidadesCta: "Continue on WhatsApp",
+    sujetoConf: "Time slot subject to confirmation",
+    sujetoConfCopy: "Our own SUV Lux is already booked at that time. We can still take your booking with a partner unit of the same class: you pay now and we confirm the same day. If it is not available, we refund you in full.",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
     rtTitle: "Want to come back the same day?",
@@ -404,6 +406,8 @@ const TX = {
     sinUnidades: "Ese horario ya está tomado en esta categoría",
     sinUnidadesCopy: "SUV Lux tiene flota limitada y el horario que elegiste está reservado. Escríbenos por WhatsApp y vemos qué se puede hacer: otro horario, otra categoría, o una unidad que se libere.",
     sinUnidadesCta: "Continuar por WhatsApp",
+    sujetoConf: "Horario sujeto a confirmación",
+    sujetoConfCopy: "Nuestra SUV Lux propia ya está reservada a esa hora. Podemos tomar tu reserva con una unidad de convenio de la misma categoría: pagas ahora y te confirmamos el mismo día. Si no hubiera disponibilidad, te reembolsamos el importe completo.",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
     rtTitle: "¿Quieres regresar el mismo día?",
@@ -1140,6 +1144,17 @@ export default function HomeClient({
    */
   /** Se enciende cuando el servidor contesta que no quedan unidades. */
   const [sinUnidades, setSinUnidades] = useState(false);
+  /**
+   * LO QUE CONTESTÓ /api/disponibilidad para el horario y la categoría
+   * elegidos. `null` mientras no aplique (categoría sin límite, sin fecha)
+   * o no haya contestado. Ver lib/agenda.ts: sólo SUV Lux tiene límite.
+   *
+   * Dos estados que importan: `sujetoAConfirmacion` (queda la unidad del
+   * convenio) muestra un aviso y deja pagar; `!libre` (las dos tomadas)
+   * abre la salida a WhatsApp y apaga el botón de pago. El servidor vuelve
+   * a comprobarlo en /api/checkout: esto avisa antes, no protege.
+   */
+  const [huecoRespuesta, setHueco] = useState<{ libre: boolean; sujetoAConfirmacion: boolean } | null>(null);
   const [pasajeros, setPasajeros] = useState(1);
   /**
    * Devuelve el aviso si lo que el cliente indicó no cabe en la categoría
@@ -1201,6 +1216,35 @@ export default function HomeClient({
    */
   /** El redondo está activo sólo si la ruta lo admite Y el cliente lo marcó. */
   const redondoActivo = redondo && redondoTabla !== null;
+
+  /** Sólo se pregunta cuando hay algo que preguntar. */
+  const huecoAplica = category === "suv" && Boolean(serviceDate) && Boolean(serviceTime);
+  useEffect(() => {
+    if (!huecoAplica) return;
+    const ctrl = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/disponibilidad", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: ctrl.signal,
+          body: JSON.stringify({
+            category, serviceDate, serviceTime, serviceType, minutes, rentalHours, km,
+            redondo: redondoActivo, horasEspera: redondoActivo ? horasEspera : 0, airportPickup,
+          }),
+        });
+        const d = await res.json();
+        setHueco({ libre: d.libre !== false, sujetoAConfirmacion: Boolean(d.sujetoAConfirmacion) });
+      } catch {
+        if (!ctrl.signal.aborted) setHueco(null);
+      }
+    }, 400);
+    return () => { clearTimeout(timer); ctrl.abort(); };
+  }, [huecoAplica, category, serviceDate, serviceTime, serviceType, minutes, rentalHours, km, redondoActivo, horasEspera, airportPickup]);
+
+  /** La última respuesta, pero sólo mientras siga aplicando. */
+  const hueco = huecoAplica ? huecoRespuesta : null;
+  const bloqueadoPorAgenda = hueco !== null && !hueco.libre;
 
   function priceFor(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;
@@ -1939,9 +1983,30 @@ export default function HomeClient({
 
             <p className="er-bycat">{t.byCategory}</p>
 
+            {hueco?.sujetoAConfirmacion && (
+              <div className="er-sinunidades" role="status">
+                <p className="er-sinunidades-t">{t.sujetoConf}</p>
+                <p className="er-sinunidades-c" style={{ marginBottom: 0 }}>{t.sujetoConfCopy}</p>
+              </div>
+            )}
+            {bloqueadoPorAgenda && (
+              <div className="er-sinunidades" role="alert">
+                <p className="er-sinunidades-t">{t.sinUnidades}</p>
+                <p className="er-sinunidades-c">{t.sinUnidadesCopy}</p>
+                <a
+                  className="er-sinunidades-btn"
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t.sinUnidadesCta}
+                </a>
+              </div>
+            )}
+
             {airportPickup && <p className="er-airport-note">{t.airportNote}</p>}
 
-            <button className="er-btn-primary" onClick={() => goStep(3)} type="button">
+            <button className="er-btn-primary" onClick={() => goStep(3)} type="button" disabled={bloqueadoPorAgenda}>
               {t.continue}
             </button>
             <button className="er-btn-secondary" onClick={goBackToStep1} type="button">
@@ -1985,7 +2050,13 @@ export default function HomeClient({
                 sólo ve las reservas del sitio y puede equivocarse—, así que
                 lo único que ofrece es seguir por WhatsApp, que es donde el
                 equipo puede comprobar la disponibilidad de verdad. */}
-            {sinUnidades && (
+            {hueco?.sujetoAConfirmacion && !sinUnidades && (
+              <div className="er-sinunidades" role="status">
+                <p className="er-sinunidades-t">{t.sujetoConf}</p>
+                <p className="er-sinunidades-c" style={{ marginBottom: 0 }}>{t.sujetoConfCopy}</p>
+              </div>
+            )}
+            {(sinUnidades || bloqueadoPorAgenda) && (
               <div className="er-sinunidades" role="alert">
                 <p className="er-sinunidades-t">{t.sinUnidades}</p>
                 <p className="er-sinunidades-c">{t.sinUnidadesCopy}</p>
@@ -2180,7 +2251,7 @@ export default function HomeClient({
             */}
             {lang === "en" && <p className="er-currency-note">{t.currencyNote}</p>}
 
-            <button className="er-btn-primary" onClick={handleCheckout} disabled={paymentLoading} type="button">
+            <button className="er-btn-primary" onClick={handleCheckout} disabled={paymentLoading || bloqueadoPorAgenda} type="button">
               {paymentLoading ? t.payLoading : t.payBtn}
             </button>
 

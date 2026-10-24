@@ -36,6 +36,7 @@ export async function POST(req: Request) {
       km: Number(b.km) || 0,
       redondo: Boolean(b.redondo),
       horasEspera: Number(b.horasEspera) || 0,
+      airportPickup: Boolean(b.airportPickup),
     });
     if (!v) return NextResponse.json({ libre: true });
 

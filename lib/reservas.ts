@@ -132,6 +132,7 @@ export type ServicioEquipo = {
   notas: string | null;
   estado: string;
   chofer: string | null;
+  chofer_tel: string | null;
 };
 
 /**
@@ -155,7 +156,7 @@ export async function reservasEquipo(clave: string): Promise<ServicioEquipo[] | 
 }
 
 /** Asigna (o quita, con texto vacío) el chofer de un servicio desde /equipo. */
-export async function asignarChofer(clave: string, folio: string, chofer: string): Promise<boolean> {
+export async function asignarChofer(clave: string, folio: string, chofer: string, tel: string): Promise<boolean> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/asignar_chofer`, {
     method: "POST",
     headers: {
@@ -163,7 +164,7 @@ export async function asignarChofer(clave: string, folio: string, chofer: string
       Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ p_clave: clave, p_folio: folio, p_chofer: chofer }),
+    body: JSON.stringify({ p_clave: clave, p_folio: folio, p_chofer: chofer, p_tel: tel }),
     cache: "no-store",
   });
   return res.ok;

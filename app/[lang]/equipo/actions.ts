@@ -8,7 +8,7 @@ export async function guardarChofer(formData: FormData) {
   const lang = String(formData.get("lang") || "es");
   const folio = String(formData.get("folio") || "");
   const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
-  if (clave && folio) await asignarChofer(clave, folio, String(formData.get("chofer") || ""));
+  if (clave && folio) await asignarChofer(clave, folio, String(formData.get("chofer") || ""), String(formData.get("tel") || ""));
   redirect(`/${lang}/equipo#${folio}`);
 }
 

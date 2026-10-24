@@ -37,12 +37,9 @@ function color(unidad: string) {
   return s.sedan;
 }
 
-/**
- * El chofer se guarda como "Nombre · WhatsApp" en un solo campo. De ahí sale
- * el número para el link directo; 10 dígitos = celular de México (+52).
- */
-function telChofer(chofer: string | null) {
-  const digitos = (chofer || "").match(/\+?[\d\s-]{10,}/)?.[0].replace(/[^0-9]/g, "") || "";
+/** WhatsApp del chofer para el link directo; 10 dígitos = celular de México (+52). */
+function telChofer(tel: string | null) {
+  const digitos = (tel || "").replace(/[^0-9]/g, "");
   if (digitos.length === 10) return `52${digitos}`;
   return digitos.length > 10 ? digitos : "";
 }
@@ -66,7 +63,7 @@ function mensajeChofer(r: ServicioEquipo, etiqueta: string) {
 function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
-  const telCh = telChofer(r.chofer);
+  const telCh = telChofer(r.chofer_tel);
   const etiqueta = p ? `${p.etiqueta} · ${p.hora}` : "Fecha y hora por confirmar";
   const calendario = p
     ? buildGoogleCalendarUrl({
@@ -108,12 +105,24 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         <input type="hidden" name="lang" value={lang} />
         <input type="hidden" name="folio" value={r.folio} />
         <input
-          className={!r.chofer ? `${s.choferInput} ${s.sinChofer}` : telCh ? s.choferInput : `${s.choferInput} ${s.faltaTel}`}
+          className={r.chofer ? s.choferInput : `${s.choferInput} ${s.sinChofer}`}
           name="chofer"
           list="choferes"
           defaultValue={r.chofer || ""}
-          placeholder="Sin chofer · Nombre · WhatsApp"
+          placeholder="Nombre del chofer"
+          aria-label="Nombre del chofer"
           maxLength={80}
+        />
+        <input
+          className={telCh || !r.chofer ? `${s.choferInput} ${s.telInput}` : `${s.choferInput} ${s.telInput} ${s.faltaTel}`}
+          name="tel"
+          type="tel"
+          inputMode="tel"
+          list="telefonos"
+          defaultValue={r.chofer_tel || ""}
+          placeholder="WhatsApp"
+          aria-label="WhatsApp del chofer"
+          maxLength={20}
         />
         <button className={s.choferBoton} type="submit">Guardar</button>
       </form>
@@ -188,10 +197,15 @@ export default async function EquipoPage({
         </form>
       </header>
       {servicios.length === 0 && <p className={s.sub}>No hay servicios próximos.</p>}
-      {/* Choferes ya usados, para no volver a escribir su WhatsApp. */}
+      {/* Choferes ya usados, para no volver a escribirlos. */}
       <datalist id="choferes">
         {[...new Set(servicios.map((r) => r.chofer).filter(Boolean))].map((c) => (
           <option key={c} value={c!} />
+        ))}
+      </datalist>
+      <datalist id="telefonos">
+        {[...new Map(servicios.filter((r) => r.chofer_tel).map((r) => [r.chofer_tel!, r.chofer || ""]))].map(([tel, nombre]) => (
+          <option key={tel} value={tel} label={nombre} />
         ))}
       </datalist>
       {[...dias].map(([dia, lista]) => (

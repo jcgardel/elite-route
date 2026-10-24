@@ -128,6 +128,40 @@
   text-decoration: none;
 }
 
+.chofer {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.choferInput {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(111, 207, 151, 0.6);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.sinChofer {
+  border-color: rgba(235, 87, 87, 0.8);
+}
+
+.choferBoton {
+  padding: 8px 12px;
+  border: 1px solid rgba(199, 164, 106, 0.6);
+  border-radius: 6px;
+  background: transparent;
+  color: #c7a46a;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
 .login {
   display: grid;
   gap: 12px;

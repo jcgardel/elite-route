@@ -154,6 +154,21 @@ export async function reservasEquipo(clave: string): Promise<ServicioEquipo[] | 
   return (await res.json()) as ServicioEquipo[];
 }
 
+/** Asigna (o quita, con texto vacío) el chofer de un servicio desde /equipo. */
+export async function asignarChofer(clave: string, folio: string, chofer: string): Promise<boolean> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/asignar_chofer`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_clave: clave, p_folio: folio, p_chofer: chofer }),
+    cache: "no-store",
+  });
+  return res.ok;
+}
+
 /** Reembolso total en Stripe = reserva cancelada en la tabla. */
 export async function cancelarReserva(charge: Stripe.Charge): Promise<Resultado> {
   if (!charge.refunded) return { guardado: false, motivo: "reembolso parcial" };

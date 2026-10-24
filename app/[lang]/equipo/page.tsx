@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
-import { entrar, salir } from "./actions";
+import { entrar, guardarChofer, salir } from "./actions";
 import s from "./equipo.module.css";
 
 /**
@@ -37,7 +37,7 @@ function color(unidad: string) {
   return s.sedan;
 }
 
-function Tarjeta({ r }: { r: ServicioEquipo }) {
+function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
   const calendario = p
@@ -58,7 +58,7 @@ function Tarjeta({ r }: { r: ServicioEquipo }) {
     : null;
 
   return (
-    <article className={`${s.card} ${color(r.unidad)}`}>
+    <article id={r.folio} className={`${s.card} ${color(r.unidad)}`}>
       <header className={s.top}>
         <span className={s.hora}>{p ? p.hora : "Hora por confirmar"}</span>
         <span className={s.unidad}>{r.unidad}</span>
@@ -71,11 +71,23 @@ function Tarjeta({ r }: { r: ServicioEquipo }) {
         {r.origen} <span className={s.flecha}>›</span> {r.destino}
       </p>
       <p className={s.meta}>
-        {[r.tipo ? TIPO[r.tipo] : "", r.vuelo ? `Vuelo ${r.vuelo}` : "", r.pasajeros ? `${r.pasajeros} pax` : "", r.chofer ? `Chofer: ${r.chofer}` : "Sin chofer"]
+        {[r.tipo ? TIPO[r.tipo] : "", r.vuelo ? `Vuelo ${r.vuelo}` : "", r.pasajeros ? `${r.pasajeros} pax` : ""]
           .filter(Boolean)
           .join(" · ")}
       </p>
       {r.notas && <p className={s.notas}>{r.notas}</p>}
+      <form action={guardarChofer} className={s.chofer}>
+        <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="folio" value={r.folio} />
+        <input
+          className={r.chofer ? s.choferInput : `${s.choferInput} ${s.sinChofer}`}
+          name="chofer"
+          defaultValue={r.chofer || ""}
+          placeholder="Sin chofer · escribe nombre"
+          maxLength={80}
+        />
+        <button className={s.choferBoton} type="submit">Guardar</button>
+      </form>
       <nav className={s.acciones}>
         {tel && <a href={`tel:+${tel}`}>Llamar</a>}
         {tel && <a href={`https://wa.me/${tel}`}>WhatsApp</a>}
@@ -132,7 +144,7 @@ export default async function EquipoPage({
         <div>
           <h1 className={s.titulo}>Servicios programados</h1>
           <p className={s.sub}>
-            {servicios.length} servicios · actualizado {ahora}
+            {servicios.length} servicios · {servicios.filter((r) => !r.chofer).length} sin chofer · actualizado {ahora}
           </p>
         </div>
         <form action={salir}>
@@ -145,7 +157,7 @@ export default async function EquipoPage({
         <section key={dia}>
           <h2 className={s.dia}>{dia}</h2>
           {lista.map((r) => (
-            <Tarjeta key={r.folio} r={r} />
+            <Tarjeta key={r.folio} r={r} lang={lang} />
           ))}
         </section>
       ))}

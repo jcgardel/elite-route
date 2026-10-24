@@ -2,7 +2,15 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { COOKIE_EQUIPO, reservasEquipo } from "@/lib/reservas";
+import { COOKIE_EQUIPO, asignarChofer, reservasEquipo } from "@/lib/reservas";
+
+export async function guardarChofer(formData: FormData) {
+  const lang = String(formData.get("lang") || "es");
+  const folio = String(formData.get("folio") || "");
+  const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
+  if (clave && folio) await asignarChofer(clave, folio, String(formData.get("chofer") || ""));
+  redirect(`/${lang}/equipo#${folio}`);
+}
 
 export async function entrar(formData: FormData) {
   const clave = String(formData.get("clave") || "").trim().toLowerCase();

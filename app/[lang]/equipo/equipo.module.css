@@ -1,0 +1,176 @@
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  background: #0b1220;
+  color: #fff;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-cormorant), serif;
+  font-weight: 400;
+  font-size: 30px;
+}
+
+.sub {
+  margin: 4px 0 0;
+  color: #c7a46a;
+  font-size: 14px;
+}
+
+.dia {
+  margin: 28px 0 10px;
+  font-family: var(--font-barlow-condensed), sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c7a46a;
+  border-bottom: 1px solid rgba(199, 164, 106, 0.35);
+  padding-bottom: 6px;
+}
+
+.card {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 5px solid #c7a46a;
+}
+
+.lux { border-left-color: #8e2c48; }
+.exec { border-left-color: #4a6fd1; }
+.urban { border-left-color: #3e9b6a; }
+.sedan { border-left-color: #e0b33a; }
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hora {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.unidad {
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pagado,
+.anticipo {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pagado { color: #6fcf97; }
+.anticipo { color: #f2c94c; }
+
+.cliente {
+  margin: 8px 0 2px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.folio {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ruta {
+  margin: 2px 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.flecha { color: #c7a46a; }
+
+.meta {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.notas {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.acciones {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.acciones a {
+  color: #c7a46a;
+  text-decoration: none;
+}
+
+.login {
+  display: grid;
+  gap: 12px;
+  max-width: 340px;
+  margin: 18vh auto 0;
+}
+
+.input,
+.boton {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.input {
+  border: 1px solid rgba(199, 164, 106, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.boton {
+  border: 0;
+  background: #c7a46a;
+  color: #0b1220;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.salir {
+  border: 1px solid rgba(199, 164, 106, 0.5);
+  background: transparent;
+  color: #c7a46a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.error {
+  margin: 0;
+  color: #eb5757;
+  font-size: 14px;
+}

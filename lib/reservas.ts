@@ -114,6 +114,46 @@ export async function registrarReserva(
   });
 }
 
+/** Cookie con la clave del equipo para /equipo. */
+export const COOKIE_EQUIPO = "er_equipo";
+
+/** Una fila de la vista del equipo: sin precios ni montos, a propósito. */
+export type ServicioEquipo = {
+  folio: string;
+  servicio: string | null;
+  cliente: string | null;
+  telefono: string | null;
+  vuelo: string | null;
+  origen: string;
+  destino: string;
+  unidad: string;
+  tipo: string | null;
+  pasajeros: number | null;
+  notas: string | null;
+  estado: string;
+  chofer: string | null;
+};
+
+/**
+ * Servicios próximos para /equipo. La clave la valida Postgres
+ * (`reservas_equipo`); con una clave mala devuelve null.
+ */
+export async function reservasEquipo(clave: string): Promise<ServicioEquipo[] | null> {
+  if (!clave) return null;
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/reservas_equipo`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_clave: clave }),
+    cache: "no-store",
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as ServicioEquipo[];
+}
+
 /** Reembolso total en Stripe = reserva cancelada en la tabla. */
 export async function cancelarReserva(charge: Stripe.Charge): Promise<Resultado> {
   if (!charge.refunded) return { guardado: false, motivo: "reembolso parcial" };

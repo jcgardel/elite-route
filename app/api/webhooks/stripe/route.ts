@@ -4,6 +4,7 @@ import { sendPaidBookingNotification, sendClientConfirmationEmail } from "@/lib/
 import { getStripe } from "@/lib/stripe";
 import { enviarConversionGa4 } from "@/lib/analytics-server";
 import { apartar, ventanaDeOcupacion } from "@/lib/agenda";
+import { registrarReserva, cancelarReserva } from "@/lib/reservas";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature");
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
     // igual y devolver 500 haría que Stripe reintentara —y volviera a mandar
     // el correo al cliente— por un fallo que no le importa a nadie. Entra en
     // el mismo `allSettled` sólo para no dejar una promesa suelta.
-    const [notificationResult, clientEmailResult, ga4Result, agendaResult] = await Promise.allSettled([
+    const [notificationResult, clientEmailResult, ga4Result, agendaResult, registroResult] = await Promise.allSettled([
       sendPaidBookingNotification(session),
       sendClientConfirmationEmail(session),
       enviarConversionGa4(session),
@@ -64,7 +65,15 @@ export async function POST(req: Request) {
         if (!v || !m.category) return { apuntado: false, motivo: "sin datos" };
         return apartar(m.category as Parameters<typeof apartar>[0], v, session.id);
       })(),
+      // REGISTRO CENTRAL (Supabase). Tampoco cuenta para `avisado`: si falla,
+      // el cruce con Stripe cada 12 h la recupera. Ver lib/reservas.ts.
+      registrarReserva(session),
     ]);
+
+    console.info("Elite Route registro:", {
+      sessionId: session.id,
+      result: registroResult.status === "fulfilled" ? registroResult.value : String(registroResult.reason),
+    });
 
     console.info("Elite Route agenda:", {
       sessionId: session.id,
@@ -116,6 +125,15 @@ export async function POST(req: Request) {
         { error: "Reserva cobrada pero no se pudo avisar por ningún canal" },
         { status: 500 },
       );
+    }
+  }
+
+  if (event.type === "charge.refunded") {
+    const charge = event.data.object as Stripe.Charge;
+    try {
+      console.info("Elite Route cancelación:", { chargeId: charge.id, result: await cancelarReserva(charge) });
+    } catch (error) {
+      console.error("Elite Route cancelación error:", error);
     }
   }
 

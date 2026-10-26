@@ -166,3 +166,34 @@ export const FECHAS_BLOQUEADAS: Partial<Record<Category, readonly string[]>> = {
 export function categoriaBloqueada(cat: Category, fecha: string) {
   return FECHAS_BLOQUEADAS[cat]?.includes(fecha) ?? false;
 }
+
+/**
+ * TARIFA DE EVENTO, decisión del dueño el 26 oct 2026 por el GP de México
+ * (29 oct – 1 nov 2026). Multiplica el precio final con IVA según la fecha
+ * de inicio del servicio: Sedan Lite +100 %, Executive y SUV Urban +80 %
+ * (SUV Lux está bloqueada esos días). Por horas, mínimo de 8 horas.
+ * Se aplica en el cotizador y en /api/checkout, que es el que cobra.
+ */
+export const TARIFA_EVENTO = {
+  fechas: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01"],
+  factor: { sedan: 2, executive: 1.8, minivan: 1.8 } as Partial<Record<Category, number>>,
+  horasMin: 8,
+} as const;
+
+export function esFechaEvento(fecha: string) {
+  return (TARIFA_EVENTO.fechas as readonly string[]).includes(fecha);
+}
+
+export function factorEvento(cat: Category, fecha: string) {
+  return esFechaEvento(fecha) ? (TARIFA_EVENTO.factor[cat] ?? 1) : 1;
+}
+
+/** Precio con la tarifa de evento aplicada (si toca), redondeado a pesos. */
+export function precioConEvento(precio: number, cat: Category, fecha: string) {
+  return Math.round(precio * factorEvento(cat, fecha));
+}
+
+/** Horas mínimas del servicio por horas para esa fecha. */
+export function horasMinimas(fecha: string, normal: number) {
+  return esFechaEvento(fecha) ? Math.max(normal, TARIFA_EVENTO.horasMin) : normal;
+}

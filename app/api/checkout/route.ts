@@ -30,6 +30,8 @@ import {
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
   categoriaBloqueada,
+  horasMinimas,
+  precioConEvento,
 } from "@/lib/service-limits";
 
 const categories = CATEGORIES;
@@ -144,6 +146,14 @@ export async function POST(req: Request) {
       );
     }
 
+    const horasMin = horasMinimas(serviceDate, HORAS_MIN);
+    if (serviceType === "hour" && rentalHours < horasMin) {
+      return NextResponse.json(
+        { error: `En esa fecha el servicio por horas es de mínimo ${horasMin} horas.` },
+        { status: 400 },
+      );
+    }
+
     // La distancia se vuelve a consultar aquí: el precio depende de los km, así
     // que aceptarlos del cliente permitiría cobrarse la tarifa mínima.
     // Por horas y por día no hay destino: se mide la recogida contra el
@@ -227,12 +237,16 @@ export async function POST(req: Request) {
     // entra: un AICM -> AIFA no puede cobrar las dos cosas.
     const haciaAeropuerto = !airportPickup && airportDropoff;
 
-    const price = quiereRedondo
-      ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
-      : calculatePrice(
-          km, minutes, category, serviceType, rentalHours, airportPickup, haciaAeropuerto,
-          airportCodeOf(airportPickup ? origin : destination),
-        );
+    const price = precioConEvento(
+      quiereRedondo
+        ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
+        : calculatePrice(
+            km, minutes, category, serviceType, rentalHours, airportPickup, haciaAeropuerto,
+            airportCodeOf(airportPickup ? origin : destination),
+          ),
+      category,
+      serviceDate,
+    );
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }

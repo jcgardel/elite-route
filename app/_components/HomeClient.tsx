@@ -47,6 +47,8 @@ import {
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
   categoriaBloqueada,
+  horasMinimas,
+  precioConEvento,
 } from "@/lib/service-limits";
 
 const WHATSAPP_NUMBER = "525543582919";
@@ -313,7 +315,7 @@ const TX = {
     alertOrigin: "Enter the pickup location.",
     alertDest: "Enter the destination.",
     alertDateTime: "Select the service date and time.",
-    alertMinHours: `Minimum hourly service is ${HORAS_MIN} hours.`,
+    alertMinHours: (h: number) => `Minimum hourly service is ${h} hours.`,
     alertPast: "Select a future date and time.",
     alertAdvance: "At least 12 hours of advance notice are required.",
     alertTooManyReq: "Too many requests. Please wait a moment and try again.",
@@ -471,7 +473,7 @@ const TX = {
     alertOrigin: "Ingresa el lugar de recogida.",
     alertDest: "Ingresa el destino.",
     alertDateTime: "Selecciona la fecha y hora del servicio.",
-    alertMinHours: `El servicio mínimo por hora es de ${HORAS_MIN} horas.`,
+    alertMinHours: (h: number) => `El servicio mínimo por hora es de ${h} horas.`,
     alertPast: "Selecciona una fecha y hora futura.",
     alertAdvance: "Se requieren al menos 12 horas de anticipación.",
     alertTooManyReq: "Demasiadas solicitudes. Por favor espera un momento e intenta de nuevo.",
@@ -1238,7 +1240,14 @@ export default function HomeClient({
   const hueco = huecoAplica ? huecoRespuesta : null;
   const bloqueadoPorAgenda = hueco !== null && !hueco.libre;
 
+  /** Mínimo por horas según la fecha (8 h en fechas de evento). */
+  const horasMin = horasMinimas(serviceDate, HORAS_MIN);
+
+  /** Precio con la tarifa de evento aplicada según la fecha. */
   function priceFor(cat: Category) {
+    return precioConEvento(precioBase(cat), cat, serviceDate);
+  }
+  function precioBase(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;
     if (serviceType === "hour") return tablas.horas[rentalHours]?.[cat] ?? 0;
     if (redondoActivo && redondoTabla) {
@@ -1357,7 +1366,7 @@ export default function HomeClient({
     if (!origin) { setAlert1(t.alertOrigin); return; }
     if (serviceType === "route" && !destination) { setAlert1(t.alertDest); return; }
     if (!serviceDate || !serviceTime) { setAlert1(t.alertDateTime); return; }
-    if (serviceType === "hour" && rentalHours < HORAS_MIN) { setAlert1(t.alertMinHours); return; }
+    if (serviceType === "hour" && rentalHours < horasMin) { setAlert1(t.alertMinHours(horasMin)); return; }
 
     const svc = new Date(`${serviceDate}T${serviceTime}`);
     const diff = (svc.getTime() - Date.now()) / 3600000;
@@ -1697,7 +1706,7 @@ export default function HomeClient({
               ] as const).map(([val, label, d]) => (
                 <button key={val} type="button"
                   className={`er-svc-tab${serviceType===val?" active":""}`}
-                  onClick={() => { setServiceType(val as ServiceType); if(val==="hour") setRentalHours(HORAS_MIN); }}>
+                  onClick={() => { setServiceType(val as ServiceType); if(val==="hour") setRentalHours(horasMin); }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d={d}/>
                   </svg>
@@ -1725,7 +1734,7 @@ export default function HomeClient({
                 <label className="er-label" id="rental-hours-label">{t.duration}</label>
                 <div className="er-hours-selector" role="group" aria-labelledby="rental-hours-label">
                   <button type="button" className="er-hr-btn" aria-label={t.decreaseHours}
-                    onClick={() => setRentalHours(h => Math.max(HORAS_MIN, h-1))}>−</button>
+                    onClick={() => setRentalHours(h => Math.max(horasMin, h-1))}>−</button>
                   <div className="er-hr-count" role="status" aria-atomic="true">{rentalHours}</div>
                   <div className="er-hr-unit">{t.hours}</div>
                   <button type="button" className="er-hr-btn" aria-label={t.increaseHours}
@@ -1828,7 +1837,7 @@ export default function HomeClient({
               <div className="er-field">
                 <label className="er-label" htmlFor="service-date-input">{t.date}</label>
                 <input id="service-date-input" className="er-input" type="date" min={getMinDate()}
-                  value={serviceDate} onChange={(e) => setServiceDate(e.target.value)}/>
+                  value={serviceDate} onChange={(e) => { setServiceDate(e.target.value); setRentalHours((h) => Math.max(h, horasMinimas(e.target.value, HORAS_MIN))); }}/>
               </div>
               <div className="er-field">
                 <label className="er-label" htmlFor="service-time-input">{t.time}</label>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
+import { CHOFERES } from "@/lib/choferes";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
 import s from "./equipo.module.css";
@@ -197,14 +198,19 @@ export default async function EquipoPage({
         </form>
       </header>
       {servicios.length === 0 && <p className={s.sub}>No hay servicios próximos.</p>}
-      {/* Choferes ya usados, para no volver a escribirlos. */}
+      {/* Directorio de choferes + los ya usados, para no volver a escribirlos. */}
       <datalist id="choferes">
-        {[...new Set(servicios.map((r) => r.chofer).filter(Boolean))].map((c) => (
+        {[...new Set([...CHOFERES.map((c) => c.nombre), ...servicios.map((r) => r.chofer).filter(Boolean)])].map((c) => (
           <option key={c} value={c!} />
         ))}
       </datalist>
       <datalist id="telefonos">
-        {[...new Map(servicios.filter((r) => r.chofer_tel).map((r) => [r.chofer_tel!, r.chofer || ""]))].map(([tel, nombre]) => (
+        {[
+          ...new Map([
+            ...CHOFERES.map((c) => [c.tel, c.nombre] as [string, string]),
+            ...servicios.filter((r) => r.chofer_tel).map((r) => [r.chofer_tel!, r.chofer || ""] as [string, string]),
+          ]),
+        ].map(([tel, nombre]) => (
           <option key={tel} value={tel} label={nombre} />
         ))}
       </datalist>

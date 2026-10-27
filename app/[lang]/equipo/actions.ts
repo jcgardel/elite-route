@@ -2,13 +2,17 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { telDeChofer } from "@/lib/choferes";
 import { COOKIE_EQUIPO, asignarChofer, reservasEquipo } from "@/lib/reservas";
 
 export async function guardarChofer(formData: FormData) {
   const lang = String(formData.get("lang") || "es");
   const folio = String(formData.get("folio") || "");
   const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
-  if (clave && folio) await asignarChofer(clave, folio, String(formData.get("chofer") || ""), String(formData.get("tel") || ""));
+  const chofer = String(formData.get("chofer") || "");
+  // Sin teléfono escrito, se toma el del directorio.
+  const tel = String(formData.get("tel") || "").trim() || telDeChofer(chofer);
+  if (clave && folio) await asignarChofer(clave, folio, chofer, tel);
   redirect(`/${lang}/equipo#${folio}`);
 }
 

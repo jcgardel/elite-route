@@ -13,6 +13,7 @@ export const CHOFERES: { nombre: string; tel: string }[] = [
   { nombre: "José Gardel", tel: "+52 55 1836 3817" },
   { nombre: "Luis Daniel", tel: "+52 55 1080 0335" },
   { nombre: "Itzel Sánchez", tel: "+52 55 4130 1651" },
+  { nombre: "Erick Zavala", tel: "+52 55 1201 4183" },
 ];
 
 const clave = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();

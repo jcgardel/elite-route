@@ -415,11 +415,11 @@ const CORREO = {
   en: {
     htmlLang: "en",
     kicker: "Elite Route · Mexico City",
-    // "Pago recibido", no "confirmado": el equipo valida después. Ver
+    // Desde el 28 oct 2026 este correo ES la confirmación. Ver
     // lib/booking-status.ts, que es de donde salen estas frases.
-    titulo: DESPUES_DE_PAGAR.en.pagoRecibido,
+    titulo: DESPUES_DE_PAGAR.en.enValidacion,
     saludo: (nombre: string) =>
-      `Hi <strong style="color:#fff">${nombre}</strong>, we received your payment and your booking is now under review. ${DESPUES_DE_PAGAR.en.validacion} ${DESPUES_DE_PAGAR.en.conductor}`,
+      `Hi <strong style="color:#fff">${nombre}</strong>, thank you, we received your payment. ${DESPUES_DE_PAGAR.en.validacion} ${DESPUES_DE_PAGAR.en.conductor}`,
     detallesTitulo: "Service details",
     fechaHora: "Date and time",
     tipo: "Type",
@@ -435,7 +435,7 @@ const CORREO = {
     referencia: "Payment reference:",
     factura: "Need a Mexican tax invoice (CFDI)? Write to",
     asunto: (cuando: string) =>
-      `Payment received, booking under review · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+      `Booking confirmed · Elite Route${cuando ? ` · ${cuando}` : ""}`,
     /** El valor que escribe /api/checkout cuando el servicio es libre. */
     disposicionLibre: "Disposición libre",
     tipoPorDefecto: "Executive transfer",
@@ -445,9 +445,9 @@ const CORREO = {
   es: {
     htmlLang: "es",
     kicker: "Elite Route · Ciudad de México",
-    titulo: DESPUES_DE_PAGAR.es.pagoRecibido,
+    titulo: DESPUES_DE_PAGAR.es.enValidacion,
     saludo: (nombre: string) =>
-      `Hola <strong style="color:#fff">${nombre}</strong>, recibimos tu pago y tu reserva quedó en validación. ${DESPUES_DE_PAGAR.es.validacion} ${DESPUES_DE_PAGAR.es.conductor}`,
+      `Hola <strong style="color:#fff">${nombre}</strong>, gracias, recibimos tu pago. ${DESPUES_DE_PAGAR.es.validacion} ${DESPUES_DE_PAGAR.es.conductor}`,
     detallesTitulo: "Detalles del servicio",
     fechaHora: "Fecha y hora",
     tipo: "Tipo",
@@ -463,7 +463,7 @@ const CORREO = {
     referencia: "Referencia de pago:",
     factura: "¿Necesitas factura CFDI? Escríbenos a",
     asunto: (cuando: string) =>
-      `Pago recibido, reserva en validación · Elite Route${cuando ? ` · ${cuando}` : ""}`,
+      `Reserva confirmada · Elite Route${cuando ? ` · ${cuando}` : ""}`,
     disposicionLibre: "Disposición libre",
     tipoPorDefecto: "Traslado ejecutivo",
     vehiculoPorDefecto: "Vehículo ejecutivo",

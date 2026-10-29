@@ -4,6 +4,7 @@ import { buildGoogleCalendarUrl } from "@/lib/calendar";
 import { CHOFERES } from "@/lib/choferes";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
+import ChoferNombre from "./ChoferNombre";
 import s from "./equipo.module.css";
 
 /**
@@ -105,14 +106,9 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
       <form action={guardarChofer} className={s.chofer}>
         <input type="hidden" name="lang" value={lang} />
         <input type="hidden" name="folio" value={r.folio} />
-        <input
+        <ChoferNombre
           className={r.chofer ? s.choferInput : `${s.choferInput} ${s.sinChofer}`}
-          name="chofer"
-          list="choferes"
           defaultValue={r.chofer || ""}
-          placeholder="Nombre del chofer"
-          aria-label="Nombre del chofer"
-          maxLength={80}
         />
         <input
           className={telCh || !r.chofer ? `${s.choferInput} ${s.telInput}` : `${s.choferInput} ${s.telInput} ${s.faltaTel}`}

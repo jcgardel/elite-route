@@ -188,8 +188,32 @@ export function factorEvento(cat: Category, fecha: string) {
   return esFechaEvento(fecha) ? (TARIFA_EVENTO.factor[cat] ?? 1) : 1;
 }
 
-/** Precio con la tarifa de evento aplicada (si toca), redondeado a pesos. */
-export function precioConEvento(precio: number, cat: Category, fecha: string) {
+/**
+ * TARIFA POR HORA DE TEMPORADA, con IVA, decisión del dueño el 29 oct 2026:
+ * Sedan Lite a $556 la hora en noviembre de 2026 (antes $464). Se compara
+ * contra la fecha de inicio del servicio y mueve por horas y por día (10 h).
+ * No se suma a la tarifa de evento: en una fecha de evento manda el evento.
+ */
+export const HORA_TEMPORADA: ReadonlyArray<{
+  desde: string; hasta: string; precios: Partial<Record<Category, number>>;
+}> = [
+  { desde: "2026-11-01", hasta: "2026-11-30", precios: { sedan: 556 } },
+];
+
+export function precioHoraTemporada(cat: Category, fecha: string) {
+  if (!fecha || esFechaEvento(fecha)) return null;
+  const t = HORA_TEMPORADA.find((x) => fecha >= x.desde && fecha <= x.hasta);
+  return t?.precios[cat] ?? null;
+}
+
+/**
+ * Precio con la tarifa de evento aplicada (si toca), redondeado a pesos.
+ * `horas` va sólo en servicios por horas o por día (10 en día completo): con
+ * él se aplica la tarifa por hora de temporada si la fecha la tiene.
+ */
+export function precioConEvento(precio: number, cat: Category, fecha: string, horas?: number) {
+  const hora = horas ? precioHoraTemporada(cat, fecha) : null;
+  if (hora && horas) return horas * hora;
   return Math.round(precio * factorEvento(cat, fecha));
 }
 

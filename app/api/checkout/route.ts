@@ -246,6 +246,7 @@ export async function POST(req: Request) {
           ),
       category,
       serviceDate,
+      serviceType === "day" ? 10 : serviceType === "hour" ? rentalHours : undefined,
     );
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });

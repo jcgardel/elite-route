@@ -1245,7 +1245,8 @@ export default function HomeClient({
 
   /** Precio con la tarifa de evento aplicada según la fecha. */
   function priceFor(cat: Category) {
-    return precioConEvento(precioBase(cat), cat, serviceDate);
+    const horas = serviceType === "day" ? 10 : serviceType === "hour" ? rentalHours : undefined;
+    return precioConEvento(precioBase(cat), cat, serviceDate, horas);
   }
   function precioBase(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;

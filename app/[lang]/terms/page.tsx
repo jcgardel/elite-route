@@ -19,9 +19,9 @@ export async function generateMetadata() {
  * contrato se celebra en México y se juzga en tribunales mexicanos. Los dos
  * archivos se cambian juntos o no se cambia ninguno.
  *
- * La política de cancelación (más de 24 h: reembolso de lo pagado menos 25%;
- * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 17 de
- * octubre de 2026. Se aplica a mano desde Stripe.
+ * La política de cancelación (más de 24 h: reembolso de lo pagado menos 15%;
+ * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 6 de
+ * noviembre de 2026 (antes 25%). Se aplica a mano desde Stripe.
  */
 export default function TermsPage() {
   return (
@@ -99,7 +99,7 @@ export default function TermsPage() {
       </p>
       <p>
         <strong>Cancellations:</strong> more than 24 hours before pickup, we
-        refund what you paid <strong>minus 25%</strong>; within 24 hours, or in
+        refund what you paid <strong>minus 15%</strong>; within 24 hours, or in
         case of no-show, <strong>there is no refund</strong>. Bookings
         confirmed less than 24 hours before pickup are subject to these terms
         from the moment of confirmation.

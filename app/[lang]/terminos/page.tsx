@@ -19,8 +19,8 @@ export async function generateMetadata() {
  * aeropuerto y la espera por retraso de vuelo están en la lógica de precio, y
  * la confirmación por WhatsApp es el flujo real después del pago.
  *
- * La política de cancelación (más de 24 h: reembolso de lo pagado menos 25%;
- * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 17 de
+ * La política de cancelación (más de 24 h: reembolso de lo pagado menos 15%;
+ * menos de 24 h o no presentado: sin reembolso) la fijó el dueño el 6 de
  * octubre de 2026; sustituye la tabla 0/50/100% del 20 de septiembre. Se aplica a mano: no hay automatismo de reembolso, así
  * que el equipo la ejecuta desde Stripe al recibir el aviso.
  *
@@ -95,7 +95,7 @@ export default function TerminosPage() {
       </p>
       <p>
         <strong>Cancelaciones:</strong> con más de 24 horas de anticipación te
-        reembolsamos lo pagado <strong>menos un 25%</strong>; con menos de 24
+        reembolsamos lo pagado <strong>menos un 15%</strong>; con menos de 24
         horas, o si el pasajero no se presenta, <strong>no hay reembolso</strong>. Las reservas confirmadas con menos de 24 horas de
         anticipación quedan sujetas a estas condiciones desde el momento de la
         confirmación.

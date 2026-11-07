@@ -219,6 +219,25 @@ export async function listar(categoria: Category, desde: string, hasta: string) 
 }
 
 /**
+ * DÍAS BLOQUEADOS A MANO, ambos inclusive. Para cuando la unidad ya está
+ * comprometida fuera de la web y no hay token de /api/agenda a la mano.
+ * Se arman con el mismo `new Date("YYYY-MM-DDTHH:mm")` que las ventanas.
+ */
+const BLOQUEOS: { categoria: Category; desde: string; hasta: string }[] = [
+  // 7 nov 2026: SUV Lux comprometida el sáb 14 y dom 15 nov (boda en Puebla).
+  { categoria: "suv", desde: "2026-11-14", hasta: "2026-11-15" },
+];
+
+function bloqueadoAMano(categoria: Category, v: Ventana) {
+  return BLOQUEOS.some((b) => {
+    if (b.categoria !== categoria) return false;
+    const inicio = new Date(`${b.desde}T00:00`).getTime();
+    const fin = new Date(`${b.hasta}T00:00`).getTime() + 24 * HORA - 1;
+    return v.inicio <= fin && inicio <= v.fin;
+  });
+}
+
+/**
  * Cuántas unidades de esa categoría están ya comprometidas en la ventana, y
  * si queda alguna libre. Ante cualquier fallo contesta que SÍ hay hueco: un
  * Redis caído no puede dejar de vender.
@@ -226,6 +245,9 @@ export async function listar(categoria: Category, desde: string, hasta: string) 
 export async function hayHueco(categoria: Category, v: Ventana): Promise<Hueco> {
   const unidades = UNIDADES[categoria];
   if (!unidades) return sinLimite();
+  if (bloqueadoAMano(categoria, v)) {
+    return { libre: false, sujetoAConfirmacion: false, ocupadas: unidades, unidades };
+  }
   const firmes = UNIDADES_FIRMES[categoria] ?? unidades;
   const redis = getRedis();
   if (!redis) return sinLimite(unidades);

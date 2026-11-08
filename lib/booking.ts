@@ -258,11 +258,11 @@ function tarifaZonaSuvLux(km: number, aeropuerto: AirportCode, hacia: boolean): 
 
 /**
  * PRECIO POR HORA CON IVA, para las categorías que lo tienen fijo. Decisión
- * del dueño, 18 oct 2026: SUV Lux a $1,050 la hora (3 h $3,150 · 10 h
- * $10,500). Sólo mueve el servicio por horas y por día; la fórmula de los
+ * del dueño: SUV Lux a $1,250 la hora desde el 8 nov 2026 (antes $1,050;
+ * mínimo 5 h $6,250 · 10 h $12,500). Sólo mueve el servicio por horas y por día; la fórmula de los
  * traslados y la hora de espera del redondo siguen saliendo de `tariffs`.
  */
-const PRECIO_HORA_CON_IVA: Partial<Record<Category, number>> = { suv: 1050 };
+const PRECIO_HORA_CON_IVA: Partial<Record<Category, number>> = { suv: 1250 };
 
 /**
  * AJUSTE DE FORÁNEOS, decidido por el dueño el 18 oct 2026 tras compararlos

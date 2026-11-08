@@ -146,10 +146,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const horasMin = horasMinimas(serviceDate, HORAS_MIN);
+    const horasMin = horasMinimas(serviceDate, HORAS_MIN, category);
     if (serviceType === "hour" && rentalHours < horasMin) {
       return NextResponse.json(
-        { error: `En esa fecha el servicio por horas es de mínimo ${horasMin} horas.` },
+        { error: `El servicio por horas en ${vehicles[category].name} es de mínimo ${horasMin} horas.` },
         { status: 400 },
       );
     }

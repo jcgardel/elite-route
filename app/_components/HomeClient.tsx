@@ -307,7 +307,7 @@ const TX = {
     condTitle: "Before you pay",
     condWait: "Waiting included: 60 min at the airport from actual landing; 30 min anywhere else.",
     condRoute: "One-way fare: tolls, fuel and parking included.",
-    condHourly: (h: number) => `Hourly: within Mexico City only · ${KM_POR_HORA} km per hour (${kmIncluidos(h)} km in total) · ${HORAS_MIN}-hour minimum.`,
+    condHourly: (h: number) => `Hourly: within Mexico City only · ${KM_POR_HORA} km per hour (${kmIncluidos(h)} km in total) · ${HORAS_MIN}-hour minimum (SUV Lux, 5).`,
     condCancel: "Cancellation: more than 24 h ahead, we refund what you paid minus 15%; within 24 h or in case of no-show, no refund.",
     condExtras: "Extra stops, route changes, extra hours or extra waiting time requested on the day are agreed and charged separately — we tell you before charging.",
     condTerms: "Full terms",
@@ -465,7 +465,7 @@ const TX = {
     condTitle: "Antes de pagar",
     condWait: "Espera incluida: 60 min en aeropuerto desde el aterrizaje real; 30 min en cualquier otro punto.",
     condRoute: "Tarifa por trayecto sencillo: casetas, gasolina y estacionamiento incluidos.",
-    condHourly: (h: number) => `Por horas: sólo dentro de la CDMX · ${KM_POR_HORA} km por hora (${kmIncluidos(h)} km en total) · mínimo ${HORAS_MIN} horas.`,
+    condHourly: (h: number) => `Por horas: sólo dentro de la CDMX · ${KM_POR_HORA} km por hora (${kmIncluidos(h)} km en total) · mínimo ${HORAS_MIN} horas (SUV Lux, 5).`,
     condCancel: "Cancelación: con más de 24 h te reembolsamos lo pagado menos 15%; con menos de 24 h o si no te presentas, no hay reembolso.",
     condExtras: "Paradas extra, cambios de ruta, horas extra o esperas adicionales pedidas en el momento se acuerdan y cobran aparte; te avisamos antes de cobrar.",
     condTerms: "Términos completos",
@@ -1240,17 +1240,20 @@ export default function HomeClient({
   const hueco = huecoAplica ? huecoRespuesta : null;
   const bloqueadoPorAgenda = hueco !== null && !hueco.libre;
 
-  /** Mínimo por horas según la fecha (8 h en fechas de evento). */
-  const horasMin = horasMinimas(serviceDate, HORAS_MIN);
+  /** Mínimo por horas según la fecha y la categoría (SUV Lux 5 h; 8 h en fechas de evento). */
+  const horasMin = horasMinimas(serviceDate, HORAS_MIN, category);
+
+  /** Horas a cobrar por categoría: la tarjeta de SUV Lux enseña su mínimo. */
+  const horasPara = (cat: Category) => Math.max(rentalHours, horasMinimas(serviceDate, HORAS_MIN, cat));
 
   /** Precio con la tarifa de evento aplicada según la fecha. */
   function priceFor(cat: Category) {
-    const horas = serviceType === "day" ? 10 : serviceType === "hour" ? rentalHours : undefined;
+    const horas = serviceType === "day" ? 10 : serviceType === "hour" ? horasPara(cat) : undefined;
     return precioConEvento(precioBase(cat), cat, serviceDate, horas);
   }
   function precioBase(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;
-    if (serviceType === "hour") return tablas.horas[rentalHours]?.[cat] ?? 0;
+    if (serviceType === "hour") return tablas.horas[horasPara(cat)]?.[cat] ?? 0;
     if (redondoActivo && redondoTabla) {
       // La base ya trae las horas de cortesía; sólo se suman las de encima.
       const extras = Math.max(0, horasEspera - REDONDO_HORAS_CORTESIA);
@@ -1838,7 +1841,7 @@ export default function HomeClient({
               <div className="er-field">
                 <label className="er-label" htmlFor="service-date-input">{t.date}</label>
                 <input id="service-date-input" className="er-input" type="date" min={getMinDate()}
-                  value={serviceDate} onChange={(e) => { setServiceDate(e.target.value); setRentalHours((h) => Math.max(h, horasMinimas(e.target.value, HORAS_MIN))); }}/>
+                  value={serviceDate} onChange={(e) => { setServiceDate(e.target.value); setRentalHours((h) => Math.max(h, horasMinimas(e.target.value, HORAS_MIN, category))); }}/>
               </div>
               <div className="er-field">
                 <label className="er-label" htmlFor="service-time-input">{t.time}</label>
@@ -1853,7 +1856,7 @@ export default function HomeClient({
                 id="vehicle-category-select"
                 className="er-input"
                 value={category}
-                onChange={(e) => setCategory(e.target.value as Category)}
+                onChange={(e) => { const c = e.target.value as Category; setCategory(c); setRentalHours((h) => Math.max(h, horasMinimas(serviceDate, HORAS_MIN, c))); }}
               >
                 {DISPLAY_ORDER.map((cat) => (
                   <option key={cat} value={cat} disabled={categoriaBloqueada(cat, serviceDate)}>
@@ -1956,6 +1959,7 @@ export default function HomeClient({
                     className={`er-vehicle${category===cat?" selected":""}${bloqueada?" blocked":""}`}
                     onClick={() => {
                       setCategory(cat);
+                      setRentalHours((h) => Math.max(h, horasMinimas(serviceDate, HORAS_MIN, cat)));
                       track("vehiculo_seleccionado", { categoria: cat, value: p, currency: "MXN" });
                       setSinUnidades(false);
                     }}>

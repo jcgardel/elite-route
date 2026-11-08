@@ -96,7 +96,7 @@ const TX = {
     faqs: [
       [
         "¿Cuál es el mínimo de horas?",
-        "Tres horas. A partir de ahí puedes contratar las que necesites; el día completo son diez.",
+        "Tres horas; en SUV Lux, cinco. A partir de ahí puedes contratar las que necesites; el día completo son diez.",
       ],
       [
         "¿El chofer se queda conmigo entre parada y parada?",
@@ -197,7 +197,7 @@ const TX = {
     faqs: [
       [
         "What is the minimum booking?",
-        "Three hours. Beyond that you book as many as you need; a full day is ten.",
+        "Three hours; five in the SUV Lux. Beyond that you book as many as you need; a full day is ten.",
       ],
       [
         "Does the chauffeur wait between stops?",

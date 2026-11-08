@@ -217,7 +217,14 @@ export function precioConEvento(precio: number, cat: Category, fecha: string, ho
   return Math.round(precio * factorEvento(cat, fecha));
 }
 
-/** Horas mínimas del servicio por horas para esa fecha. */
-export function horasMinimas(fecha: string, normal: number) {
-  return esFechaEvento(fecha) ? Math.max(normal, TARIFA_EVENTO.horasMin) : normal;
+/**
+ * Mínimo del servicio por horas por categoría, decisión del dueño el 8 nov
+ * 2026: SUV Lux a 5 horas; las demás se quedan en el mínimo general (3).
+ */
+export const HORAS_MIN_CATEGORIA: Partial<Record<Category, number>> = { suv: 5 };
+
+/** Horas mínimas del servicio por horas para esa fecha y categoría. */
+export function horasMinimas(fecha: string, normal: number, cat?: Category) {
+  const base = Math.max(normal, (cat && HORAS_MIN_CATEGORIA[cat]) || 0);
+  return esFechaEvento(fecha) ? Math.max(base, TARIFA_EVENTO.horasMin) : base;
 }

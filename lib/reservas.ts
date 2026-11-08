@@ -14,8 +14,8 @@ import { getStripe } from "./stripe";
  * llave publicable de Supabase son públicas por diseño; el token es lo único
  * secreto. Si falta, no se rompe nada: se registra el aviso en el log.
  */
-const SUPABASE_URL = "https://eznfourayhypefweazyq.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jN6hYX5vvk3qI24hzBfkUg_bP_PZAad";
+export const SUPABASE_URL = "https://eznfourayhypefweazyq.supabase.co";
+export const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jN6hYX5vvk3qI24hzBfkUg_bP_PZAad";
 
 type Resultado = { guardado: boolean; folio?: string | null; motivo?: string };
 

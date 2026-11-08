@@ -1,7 +1,8 @@
 import "server-only";
 import { Redis } from "@upstash/redis";
 import { HORAS_DIA_COMPLETO } from "./service-limits";
-import { detectZone, type Category } from "./vehicles";
+import { detectZone, vehicles, type Category } from "./vehicles";
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./reservas";
 
 /**
  * LA AGENDA DE UNIDADES: qué categoría está ocupada y cuándo.
@@ -238,6 +239,64 @@ function bloqueadoAMano(categoria: Category, v: Ventana) {
 }
 
 /**
+ * SERVICIOS AGENDADOS FUERA DE LA WEB (8 nov 2026, decisión del dueño). Lee
+ * de Supabase lo que ya ocupa la categoría —Blacklane, WhatsApp, corporativo—
+ * con el mismo criterio que la vista /equipo: confirmada, con anticipo, con
+ * chofer, o pendiente de pago pero agendada. La función sólo devuelve horas,
+ * nunca datos del cliente.
+ *
+ * Duración cuando la fila no la trae: traslado de una hora, día de 10. El
+ * margen de 2.5 h por lado se suma igual que a las reservas de la web.
+ */
+type Ocupacion = {
+  servicio: string; tipo: string | null; horas: number | string | null;
+  minutos: number | null; zona: string | null; aeropuerto: boolean | null;
+};
+
+async function ventanasSupabase(categoria: Category, v: Ventana): Promise<Ventana[]> {
+  const dia = (t: number) => new Date(t).toISOString().slice(0, 10);
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/ocupacion_categoria`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_categoria: vehicles[categoria].name, p_desde: dia(v.inicio), p_hasta: dia(v.fin) }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(4000),
+  });
+  if (!res.ok) throw new Error(`Supabase ocupacion_categoria ${res.status}`);
+  const filas = (await res.json()) as Ocupacion[];
+  return filas.flatMap((f) => {
+    const [fecha, hora] = f.servicio.replace(" ", "T").split("T");
+    const tipo = f.tipo === "hour" || f.tipo === "day" ? f.tipo : "route";
+    const w = ventanaDeOcupacion({
+      serviceDate: fecha,
+      serviceTime: hora.slice(0, 5),
+      serviceType: tipo,
+      minutes: f.minutos ?? 60,
+      rentalHours: Number(f.horas) || (tipo === "day" ? HORAS_DIA_COMPLETO : 3),
+      km: 0,
+      redondo: false,
+      horasEspera: 0,
+      airportPickup: Boolean(f.aeropuerto),
+    });
+    if (!w) return [];
+    // Día completo o por horas con más horas que el estándar (p. ej. 12 h).
+    if (tipo === "day" && Number(f.horas) > HORAS_DIA_COMPLETO) {
+      w.fin += (Number(f.horas) - HORAS_DIA_COMPLETO) * HORA;
+    }
+    // Foráneo agendado: el día entero, como los foráneos de la web.
+    if (tipo === "route" && f.zona?.startsWith("for")) {
+      const d0 = new Date(`${fecha}T00:00`).getTime();
+      return [{ inicio: d0, fin: d0 + 24 * HORA - 1 }];
+    }
+    return [w];
+  });
+}
+
+/**
  * Cuántas unidades de esa categoría están ya comprometidas en la ventana, y
  * si queda alguna libre. Ante cualquier fallo contesta que SÍ hay hueco: un
  * Redis caído no puede dejar de vender.
@@ -249,10 +308,22 @@ export async function hayHueco(categoria: Category, v: Ventana): Promise<Hueco> 
     return { libre: false, sujetoAConfirmacion: false, ocupadas: unidades, unidades };
   }
   const firmes = UNIDADES_FIRMES[categoria] ?? unidades;
-  const redis = getRedis();
-  if (!redis) return sinLimite(unidades);
+  const vistos = new Set<string>();
   try {
-    const vistos = new Set<string>();
+    (await ventanasSupabase(categoria, v)).forEach((a, i) => {
+      if (a.inicio <= v.fin && v.inicio <= a.fin) vistos.add(`db:${i}`);
+    });
+  } catch {
+    // Supabase caído no deja de vender: sigue con lo que tenga Redis.
+  }
+  const redis = getRedis();
+  if (!redis) {
+    const ocupadas = vistos.size;
+    return ocupadas
+      ? { libre: ocupadas < unidades, sujetoAConfirmacion: ocupadas >= firmes && ocupadas < unidades, ocupadas, unidades }
+      : sinLimite(unidades);
+  }
+  try {
     for (const dia of diasQueToca(v)) {
       const crudos = await redis.smembers(clave(categoria, dia));
       for (const c of crudos) {
@@ -269,6 +340,9 @@ export async function hayHueco(categoria: Category, v: Ventana): Promise<Hueco> 
       unidades,
     };
   } catch {
-    return sinLimite(unidades);
+    const ocupadas = vistos.size;
+    return ocupadas
+      ? { libre: ocupadas < unidades, sujetoAConfirmacion: ocupadas >= firmes && ocupadas < unidades, ocupadas, unidades }
+      : sinLimite(unidades);
   }
 }

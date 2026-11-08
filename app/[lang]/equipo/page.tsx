@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
-import { CHOFERES } from "@/lib/choferes";
+import { CHOFERES, choferDe, type Chofer } from "@/lib/choferes";
+import { SITE } from "@/lib/i18n";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
 import ChoferNombre from "./ChoferNombre";
@@ -21,6 +22,8 @@ export const metadata: Metadata = {
 
 const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const TIPO: Record<string, string> = { route: "Traslado", hour: "Por horas", day: "Por día" };
 
 function partes(servicio: string | null) {
@@ -29,6 +32,57 @@ function partes(servicio: string | null) {
   const [, y, mo, d, h, mi] = m;
   const dia = new Date(Date.UTC(+y, +mo - 1, +d)).getUTCDay();
   return { fecha: `${y}-${mo}-${d}`, hora: `${h}:${mi}`, etiqueta: `${DIAS[dia]} ${+d} ${MESES[+mo - 1]}` };
+}
+
+/** Fecha en inglés para el mensaje al cliente extranjero. */
+function fechaEn(servicio: string | null) {
+  const m = servicio?.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  if (!m) return "";
+  const [, y, mo, d, h, mi] = m;
+  const dia = new Date(Date.UTC(+y, +mo - 1, +d)).getUTCDay();
+  return `${DAYS[dia]}, ${MONTHS[+mo - 1]} ${+d} · ${h}:${mi}`;
+}
+
+/** Datos del chofer y su auto para el cliente, con la tarjeta (foto) del chofer. */
+function mensajeCliente(r: ServicioEquipo, ch: Chofer, etiqueta: string, en: boolean) {
+  const tel = ch.telCliente || ch.tel;
+  const tarjeta = `${SITE}/choferes/${ch.tarjeta}.jpg`;
+  const nombre = (r.cliente || "").split(" ")[0];
+  return (
+    en
+      ? [
+          `Hello${nombre ? ` ${nombre}` : ""}, here are the details for your EliteRoute service:`,
+          "",
+          `Date: ${fechaEn(r.servicio) || etiqueta}`,
+          `Pickup: ${r.origen}`,
+          "",
+          `Chauffeur: ${ch.nombre}`,
+          `WhatsApp: ${tel}`,
+          `Vehicle: ${ch.auto} · ${ch.color}`,
+          `Plates: ${ch.placa}`,
+          "",
+          tarjeta,
+          "",
+          "Thank you for choosing us.",
+          "EliteRoute Team",
+        ]
+      : [
+          `Hola${nombre ? ` ${nombre}` : ""}, le compartimos los datos de su servicio con EliteRoute:`,
+          "",
+          `Fecha: ${etiqueta}`,
+          `Recogida: ${r.origen}`,
+          "",
+          `Conductor: ${ch.nombre}`,
+          `WhatsApp: ${tel}`,
+          `Vehículo: ${ch.auto} · ${ch.color}`,
+          `Placas: ${ch.placa}`,
+          "",
+          tarjeta,
+          "",
+          "Gracias por su preferencia.",
+          "Equipo EliteRoute",
+        ]
+  ).join("\n");
 }
 
 function color(unidad: string) {
@@ -66,6 +120,7 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
   const telCh = telChofer(r.chofer_tel);
+  const ch = choferDe(r.chofer);
   const etiqueta = p ? `${p.etiqueta} · ${p.hora}` : "Fecha y hora por confirmar";
   const calendario = p
     ? buildGoogleCalendarUrl({
@@ -124,11 +179,24 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         <button className={s.choferBoton} type="submit">Guardar</button>
       </form>
       {r.chofer && !telCh && <p className={s.aviso}>Falta el WhatsApp del chofer (10 dígitos)</p>}
+      {ch && (
+        <p className={s.meta}>
+          {ch.auto} · {ch.color} · Placas {ch.placa}
+        </p>
+      )}
       <nav className={s.acciones}>
         {telCh && (
           <a className={s.enviar} href={`https://wa.me/${telCh}?text=${encodeURIComponent(mensajeChofer(r, etiqueta))}`}>
             Enviar al chofer
           </a>
+        )}
+        {tel && ch && (
+          <a className={s.enviar} href={`https://wa.me/${tel}?text=${encodeURIComponent(mensajeCliente(r, ch, etiqueta, false))}`}>
+            Datos al cliente
+          </a>
+        )}
+        {tel && ch && (
+          <a href={`https://wa.me/${tel}?text=${encodeURIComponent(mensajeCliente(r, ch, etiqueta, true))}`}>EN</a>
         )}
         {tel && <a href={`tel:+${tel}`}>Llamar cliente</a>}
         {tel && <a href={`https://wa.me/${tel}`}>WhatsApp cliente</a>}

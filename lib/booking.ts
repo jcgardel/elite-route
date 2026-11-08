@@ -57,7 +57,9 @@ export const tariffs: Record<Category, { km: number; hour: number; min: number }
   sedan: { km: 28, hour: 400, min: 600 },
   executive: { km: 55, hour: 600, min: 800 },
   minivan: { km: 50, hour: 580, min: 700 },
-  suv: { km: 73.5, hour: 900, min: 1200 },
+  // SUV Lux, 8 nov 2026 (decisión del dueño): km +15 % (antes 73.5) y mínimo
+  // de traslado a $1,650 con IVA (antes 1200 → $1,392).
+  suv: { km: 84.5, hour: 900, min: 1650 / 1.16 },
 };
 
 /**

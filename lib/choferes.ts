@@ -30,7 +30,7 @@ export const CHOFERES: Chofer[] = [
   { nombre: "Isaí Hernández", tel: "+52 56 4946 5408", auto: "Audi Q2", color: "Plata", placa: "LZG-638-A", tarjeta: "isai-hernandez" },
   { nombre: "Luis Daniel", tel: "+52 55 1080 0335", auto: "Audi A3", color: "Plata", placa: "C20-BUE", tarjeta: "luis-daniel" },
   { nombre: "Armando Traveseras", tel: "+52 55 3464 5222", auto: "Nissan Versa", color: "Azul", placa: "NZT-66-73", tarjeta: "armando-traveseras", alias: ["Armando Travesares"] },
-  { nombre: "Armando Noriega", tel: "+52 55 1371 0455", auto: "Audi A4", color: "Negro", placa: "PDE-476-A", tarjeta: "armando-noriega" },
+  { nombre: "Armando Noriega", tel: "+52 55 1371 0455", auto: "Audi A3", color: "Negro", placa: "PDE-476-A", tarjeta: "armando-noriega" },
   { nombre: "Erick Zavala", tel: "+52 55 1201 4183", auto: "Chevrolet Suburban", color: "Negro", placa: "014-BLE", tarjeta: "erick-zavala" },
   { nombre: "Gabriel Zúñiga", tel: "+52 55 2350 8983", auto: "Nissan Kicks", color: "Gris", placa: "54K-365", tarjeta: "gabriel-zuniga", alias: ["Gabriel"] },
 ];

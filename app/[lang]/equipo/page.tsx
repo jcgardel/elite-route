@@ -6,6 +6,7 @@ import { SITE } from "@/lib/i18n";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
 import ChoferNombre from "./ChoferNombre";
+import EnviarTarjeta from "./EnviarTarjeta";
 import s from "./equipo.module.css";
 
 /**
@@ -34,6 +35,8 @@ function partes(servicio: string | null) {
   return { fecha: `${y}-${mo}-${d}`, hora: `${h}:${mi}`, etiqueta: `${DIAS[dia]} ${+d} ${MESES[+mo - 1]}` };
 }
 
+const COLOR_EN: Record<string, string> = { Negro: "Black", Blanco: "White", Gris: "Gray", Plata: "Silver", Azul: "Blue", Rojo: "Red" };
+
 /** Fecha en inglés para el mensaje al cliente extranjero. */
 function fechaEn(servicio: string | null) {
   const m = servicio?.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
@@ -46,7 +49,7 @@ function fechaEn(servicio: string | null) {
 /** Datos del chofer y su auto para el cliente, con la tarjeta (foto) del chofer. */
 function mensajeCliente(r: ServicioEquipo, ch: Chofer, etiqueta: string, en: boolean) {
   const tel = ch.telCliente || ch.tel;
-  const tarjeta = `${SITE}/choferes/${ch.tarjeta}.jpg`;
+  const tarjeta = `${SITE}/${en ? "en" : "es"}/conductor/${ch.tarjeta}`;
   const nombre = (r.cliente || "").split(" ")[0];
   return (
     en
@@ -58,7 +61,7 @@ function mensajeCliente(r: ServicioEquipo, ch: Chofer, etiqueta: string, en: boo
           "",
           `Chauffeur: ${ch.nombre}`,
           `WhatsApp: ${tel}`,
-          `Vehicle: ${ch.auto} · ${ch.color}`,
+          `Vehicle: ${ch.auto} · ${COLOR_EN[ch.color] || ch.color}`,
           `Plates: ${ch.placa}`,
           "",
           tarjeta,
@@ -198,6 +201,7 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         {tel && ch && (
           <a href={`https://wa.me/${tel}?text=${encodeURIComponent(mensajeCliente(r, ch, etiqueta, true))}`}>EN</a>
         )}
+        {ch && <EnviarTarjeta tarjeta={ch.tarjeta} nombre={ch.nombre} />}
         {tel && <a href={`tel:+${tel}`}>Llamar cliente</a>}
         {tel && <a href={`https://wa.me/${tel}`}>WhatsApp cliente</a>}
         {calendario && <a href={calendario}>+ Calendario</a>}

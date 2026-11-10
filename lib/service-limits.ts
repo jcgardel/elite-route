@@ -174,18 +174,40 @@ export function categoriaBloqueada(cat: Category, fecha: string) {
  * (SUV Lux está bloqueada esos días). Por horas, mínimo de 8 horas.
  * Se aplica en el cotizador y en /api/checkout, que es el que cobra.
  */
-export const TARIFA_EVENTO = {
-  fechas: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01"],
-  factor: { sedan: 2, executive: 1.8, minivan: 1.8 } as Partial<Record<Category, number>>,
-  horasMin: 8,
-} as const;
+/*
+ * 10 nov 2026: partido de la NFL en el Estadio Banorte, sábado 22 nov 2026.
+ * +20 % en todas las categorías, encima de la tarifa del día (incluida la
+ * hora de temporada); el mínimo por horas no cambia.
+ */
+export const TARIFAS_EVENTO: ReadonlyArray<{
+  fechas: readonly string[];
+  factor: Partial<Record<Category, number>>;
+  horasMin?: number;
+  /** En el GP el evento sustituye a la hora de temporada en vez de sumarse. */
+  reemplazaTemporada?: boolean;
+}> = [
+  {
+    fechas: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01"],
+    factor: { sedan: 2, executive: 1.8, minivan: 1.8 },
+    horasMin: 8,
+    reemplazaTemporada: true,
+  },
+  {
+    fechas: ["2026-11-22"],
+    factor: { sedan: 1.2, executive: 1.2, minivan: 1.2, suv: 1.2 },
+  },
+];
+
+function eventoDe(fecha: string) {
+  return TARIFAS_EVENTO.find((e) => e.fechas.includes(fecha));
+}
 
 export function esFechaEvento(fecha: string) {
-  return (TARIFA_EVENTO.fechas as readonly string[]).includes(fecha);
+  return !!eventoDe(fecha);
 }
 
 export function factorEvento(cat: Category, fecha: string) {
-  return esFechaEvento(fecha) ? (TARIFA_EVENTO.factor[cat] ?? 1) : 1;
+  return eventoDe(fecha)?.factor[cat] ?? 1;
 }
 
 /**
@@ -201,7 +223,7 @@ export const HORA_TEMPORADA: ReadonlyArray<{
 ];
 
 export function precioHoraTemporada(cat: Category, fecha: string) {
-  if (!fecha || esFechaEvento(fecha)) return null;
+  if (!fecha || eventoDe(fecha)?.reemplazaTemporada) return null;
   const t = HORA_TEMPORADA.find((x) => fecha >= x.desde && fecha <= x.hasta);
   return t?.precios[cat] ?? null;
 }
@@ -213,7 +235,7 @@ export function precioHoraTemporada(cat: Category, fecha: string) {
  */
 export function precioConEvento(precio: number, cat: Category, fecha: string, horas?: number) {
   const hora = horas ? precioHoraTemporada(cat, fecha) : null;
-  if (hora && horas) return horas * hora;
+  if (hora && horas) return Math.round(horas * hora * factorEvento(cat, fecha));
   return Math.round(precio * factorEvento(cat, fecha));
 }
 
@@ -226,5 +248,5 @@ export const HORAS_MIN_CATEGORIA: Partial<Record<Category, number>> = { suv: 5 }
 /** Horas mínimas del servicio por horas para esa fecha y categoría. */
 export function horasMinimas(fecha: string, normal: number, cat?: Category) {
   const base = Math.max(normal, (cat && HORAS_MIN_CATEGORIA[cat]) || 0);
-  return esFechaEvento(fecha) ? Math.max(base, TARIFA_EVENTO.horasMin) : base;
+  return Math.max(base, eventoDe(fecha)?.horasMin ?? 0);
 }

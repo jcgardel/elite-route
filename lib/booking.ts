@@ -58,7 +58,8 @@ export const tariffs: Record<Category, { km: number; hour: number; min: number }
   executive: { km: 55, hour: 600, min: 800 },
   minivan: { km: 50, hour: 580, min: 700 },
   // SUV Lux, 8 nov 2026 (decisión del dueño): km +15 % (antes 73.5) y mínimo
-  // de traslado a $1,650 con IVA (antes 1200 → $1,392).
+  // de fórmula $1,650 con IVA. El mínimo de traslado que ve el cliente
+  // ($2,300 desde el 10 nov 2026) vive en MINIMO_TRASLADO_CON_IVA.
   suv: { km: 84.5, hour: 900, min: 1650 / 1.16 },
 };
 
@@ -178,7 +179,8 @@ export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = {
   // por el mínimo de la categoría. El resto de rutas ya está por encima.
   executive: 1300,
 };
-export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2150 };
+// SUV Lux: $2,300 desde el 10 nov 2026 (antes 2150), igual al mínimo de traslado.
+export const MINIMO_HACIA_AEROPUERTO: Partial<Record<Category, number>> = { suv: 2300 };
 
 /**
  * PRIMA POR RECOGER EN LA TERMINAL, sobre el precio de LLEVAR a esa misma
@@ -290,6 +292,14 @@ const PISO_FORANEO: Partial<Record<Category, (km: number) => number>> = {
   suv: (km) => Math.round((6800 + 12 * km) / 50) * 50,
 };
 
+/**
+ * MÍNIMO DE TRASLADO CON IVA, sobre el precio final. Decisión del dueño,
+ * 10 nov 2026: ningún traslado de SUV Lux por menos de $2,300. Se aplica al
+ * final y no a `tariffs.min` para no inflar los traslados de aeropuerto, que
+ * ya fija la tabla por zona (hacia la terminal: MINIMO_HACIA_AEROPUERTO).
+ */
+const MINIMO_TRASLADO_CON_IVA: Partial<Record<Category, number>> = { suv: 2300 };
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -366,6 +376,7 @@ export function calculatePrice(
 
   if (haciaAeropuerto && serviceType === "route") return hacia();
 
+  if (serviceType === "route") return Math.max(sinRecargo, MINIMO_TRASLADO_CON_IVA[category] ?? 0);
   return sinRecargo;
 }
 

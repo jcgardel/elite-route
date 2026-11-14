@@ -6,6 +6,7 @@ import { SITE } from "@/lib/i18n";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
 import ChoferNombre from "./ChoferNombre";
+import EnviarChofer from "./EnviarChofer";
 import EnviarTarjeta from "./EnviarTarjeta";
 import ImagenChofer from "./ImagenChofer";
 import s from "./equipo.module.css";
@@ -127,6 +128,12 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const telCh = telChofer(r.chofer_tel);
   const ch = choferDe(r.chofer);
   const etiqueta = p ? `${p.etiqueta} · ${p.hora}` : "Fecha y hora por confirmar";
+  // La imagen subida a mano manda; si no hay, la ficha se genera sola en cuanto hay pago al chofer.
+  const imagen = r.imagen_chofer
+    ? `/${lang}/equipo/imagen/${encodeURIComponent(r.folio)}`
+    : r.pago_chofer
+      ? `/${lang}/equipo/tarjeta/${encodeURIComponent(r.folio)}`
+      : null;
   const calendario = p
     ? buildGoogleCalendarUrl({
         titulo: `${r.folio} · ${r.cliente || ""} · ${r.unidad}`,
@@ -190,17 +197,21 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         </p>
       )}
       {r.pago_chofer && <p className={s.meta}>Pago al chofer: {r.pago_chofer}</p>}
-      {r.imagen_chofer && (
-        <a href={`/${lang}/equipo/imagen/${encodeURIComponent(r.folio)}`} target="_blank" rel="noopener">
+      {imagen && (
+        <a href={imagen} target="_blank" rel="noopener">
           {/* eslint-disable-next-line @next/next/no-img-element -- imagen privada, servida con la clave del equipo */}
-          <img className={s.imagen} src={`/${lang}/equipo/imagen/${encodeURIComponent(r.folio)}`} alt={`Imagen del servicio ${r.folio}`} loading="lazy" />
+          <img className={s.imagen} src={imagen} alt={`Imagen del servicio ${r.folio}`} loading="lazy" />
         </a>
       )}
       <nav className={s.acciones}>
         {telCh && (
-          <a className={s.enviar} href={`https://wa.me/${telCh}?text=${encodeURIComponent(mensajeChofer(r, etiqueta))}`}>
-            Enviar al chofer
-          </a>
+          <EnviarChofer
+            className={s.enviar}
+            wa={`https://wa.me/${telCh}?text=${encodeURIComponent(mensajeChofer(r, etiqueta))}`}
+            imagen={imagen}
+            mensaje={mensajeChofer(r, etiqueta)}
+            folio={r.folio}
+          />
         )}
         {tel && ch && (
           <a className={s.enviar} href={`https://wa.me/${tel}?text=${encodeURIComponent(mensajeCliente(r, ch, etiqueta, false))}`}>

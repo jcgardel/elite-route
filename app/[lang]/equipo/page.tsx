@@ -7,6 +7,7 @@ import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reserv
 import { entrar, guardarChofer, salir } from "./actions";
 import ChoferNombre from "./ChoferNombre";
 import EnviarTarjeta from "./EnviarTarjeta";
+import ImagenChofer from "./ImagenChofer";
 import s from "./equipo.module.css";
 
 /**
@@ -103,7 +104,7 @@ function telChofer(tel: string | null) {
   return digitos.length > 10 ? digitos : "";
 }
 
-/** Mensaje listo para el chofer: datos del servicio, sin precios. */
+/** Mensaje listo para el chofer: datos del servicio y lo que se le paga, sin el precio al cliente. */
 function mensajeChofer(r: ServicioEquipo, etiqueta: string) {
   return [
     `Servicio EliteRoute ${r.folio}`,
@@ -113,6 +114,7 @@ function mensajeChofer(r: ServicioEquipo, etiqueta: string) {
     `Destino: ${r.destino}`,
     [r.vuelo ? `Vuelo ${r.vuelo}` : "", r.unidad, r.pasajeros ? `${r.pasajeros} pax` : ""].filter(Boolean).join(" · "),
     r.notas ? `Notas: ${r.notas}` : "",
+    r.pago_chofer ? `Pago al chofer: ${r.pago_chofer}` : "",
     "Confírmame de recibido, por favor.",
   ]
     .filter(Boolean)
@@ -187,6 +189,13 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
           {ch.auto} · {ch.color} · Placas {ch.placa}
         </p>
       )}
+      {r.pago_chofer && <p className={s.meta}>Pago al chofer: {r.pago_chofer}</p>}
+      {r.imagen_chofer && (
+        <a href={`/${lang}/equipo/imagen/${encodeURIComponent(r.folio)}`} target="_blank" rel="noopener">
+          {/* eslint-disable-next-line @next/next/no-img-element -- imagen privada, servida con la clave del equipo */}
+          <img className={s.imagen} src={`/${lang}/equipo/imagen/${encodeURIComponent(r.folio)}`} alt={`Imagen del servicio ${r.folio}`} loading="lazy" />
+        </a>
+      )}
       <nav className={s.acciones}>
         {telCh && (
           <a className={s.enviar} href={`https://wa.me/${telCh}?text=${encodeURIComponent(mensajeChofer(r, etiqueta))}`}>
@@ -201,6 +210,7 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         {tel && ch && (
           <a href={`https://wa.me/${tel}?text=${encodeURIComponent(mensajeCliente(r, ch, etiqueta, true))}`}>EN</a>
         )}
+        <ImagenChofer folio={r.folio} lang={lang} tiene={!!r.imagen_chofer} />
         {ch && <EnviarTarjeta tarjeta={ch.tarjeta} nombre={ch.nombre} />}
         {tel && <a href={`tel:+${tel}`}>Llamar cliente</a>}
         {tel && <a href={`https://wa.me/${tel}`}>WhatsApp cliente</a>}

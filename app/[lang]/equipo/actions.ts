@@ -3,7 +3,20 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { telDeChofer } from "@/lib/choferes";
-import { COOKIE_EQUIPO, asignarChofer, reservasEquipo } from "@/lib/reservas";
+import { COOKIE_EQUIPO, asignarChofer, reservasEquipo, subirImagenChofer } from "@/lib/reservas";
+
+const TIPOS = ["image/jpeg", "image/png", "image/webp"];
+
+/**
+ * Sube la imagen ya hecha del servicio (la que dice abajo "Pago al chofer").
+ * El navegador la reduce antes de mandarla; base64 vacío la quita.
+ */
+export async function guardarImagenChofer(folio: string, tipo: string, base64: string): Promise<boolean> {
+  const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
+  if (!clave || !folio) return false;
+  if (base64 && (!TIPOS.includes(tipo) || base64.length > 4 * 1024 * 1024)) return false;
+  return subirImagenChofer(clave, folio, tipo, base64);
+}
 
 export async function guardarChofer(formData: FormData) {
   const lang = String(formData.get("lang") || "es");

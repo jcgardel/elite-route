@@ -133,7 +133,41 @@ export type ServicioEquipo = {
   estado: string;
   chofer: string | null;
   chofer_tel: string | null;
+  /** "Pago al chofer $X" de las notas: el único monto que ve el equipo, para el mensaje al chofer. */
+  pago_chofer?: string | null;
+  /** Ya se subió la imagen del servicio para el chofer (la que dice abajo "Pago al chofer"). */
+  imagen_chofer?: boolean;
 };
+
+async function rpcEquipo(fn: string, args: Record<string, unknown>) {
+  return fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(args),
+    cache: "no-store",
+  });
+}
+
+/** Guarda (o quita, con base64 vacío) la imagen del servicio para el chofer. */
+export async function subirImagenChofer(clave: string, folio: string, tipo: string, base64: string): Promise<boolean> {
+  const res = await rpcEquipo("subir_imagen_chofer", { p_clave: clave, p_folio: folio, p_tipo: tipo, p_base64: base64 });
+  return res.ok && (await res.json()) === true;
+}
+
+/** La imagen del servicio para el chofer, o null si no hay o la clave no sirve. */
+export async function imagenChofer(clave: string, folio: string): Promise<{ tipo: string; datos: Buffer } | null> {
+  if (!clave || !folio) return null;
+  const res = await rpcEquipo("imagen_chofer", { p_clave: clave, p_folio: folio });
+  if (!res.ok) return null;
+  const [fila] = (await res.json()) as { tipo: string; base64: string }[];
+  if (!fila) return null;
+  // Postgres parte el base64 en renglones de 76 caracteres.
+  return { tipo: fila.tipo, datos: Buffer.from(fila.base64.replace(/\s/g, ""), "base64") };
+}
 
 /**
  * Servicios próximos para /equipo. La clave la valida Postgres

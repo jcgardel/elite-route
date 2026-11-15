@@ -85,8 +85,8 @@ function Esquema({ c, lang, semana }: { c: ChoferEsquema | ChoferLiq; lang: stri
     <form action={configurarChofer} className={s.fila}>
       <Oculto lang={lang} semana={semana} driver={c.driver_id} />
       <select name="esquema" defaultValue={c.esquema} className={s.campo} aria-label="Esquema">
-        <option value="servicio">Por servicio</option>
-        <option value="renta">Renta semanal</option>
+        <option value="servicio">Auto propio · sin renta</option>
+        <option value="renta">Auto de la flota · renta semanal</option>
       </select>
       <input name="renta" inputMode="decimal" placeholder="Renta $/sem" defaultValue={c.renta_semanal || ""} className={s.campo} aria-label="Renta semanal" />
       <label className={s.check}>
@@ -111,7 +111,7 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
           <p className={s.meta}>
             {c.esquema === "renta"
               ? `Renta ${mx(c.renta_semanal)}/sem · Uber ${c.uber_por_flota ? "lo cobro yo" : "lo cobra él"}`
-              : "Por servicio"}
+              : "Auto propio · sin renta"}
           </p>
         </div>
         <div className={s.balance}>
@@ -306,7 +306,7 @@ export default async function LiquidacionesPage({
 
       <details className={s.det}>
         <summary>Esquema de todos los choferes</summary>
-        <p className={s.meta}>Los choferes en renta aparecen cada semana aunque no tengan traslados.</p>
+        <p className={s.meta}>Por defecto todos son "Auto propio · sin renta": solo se les pagan sus traslados EliteRoute. Los de auto de la flota aparecen cada semana aunque no tengan traslados.</p>
         {todos.map((c) => (
           <div key={c.driver_id} className={s.esquemaFila}>
             <strong>{c.nombre}</strong>

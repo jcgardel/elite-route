@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
-import { CHOFERES, choferDe, type Chofer } from "@/lib/choferes";
+import { CHOFERES, choferDe, choferPorTel, type Chofer } from "@/lib/choferes";
 import { SITE } from "@/lib/i18n";
 import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
@@ -126,7 +126,7 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
   const telCh = telChofer(r.chofer_tel);
-  const ch = choferDe(r.chofer);
+  const ch = choferDe(r.chofer) ?? choferPorTel(r.chofer_tel);
   const etiqueta = p ? `${p.etiqueta} · ${p.hora}` : "Fecha y hora por confirmar";
   // La imagen subida a mano manda; si no hay, la ficha se genera sola en cuanto hay pago al chofer.
   const imagen = r.imagen_chofer

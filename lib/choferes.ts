@@ -23,7 +23,7 @@ export const CHOFERES: Chofer[] = [
   { nombre: "Paulo Traveseras", tel: "+52 55 7298 8365", auto: "Chevrolet Captiva", color: "Blanco", placa: "NAC-155-B", tarjeta: "paulo-traveseras", alias: ["Paulo Travesares", "Paulo"] },
   { nombre: "José Gardel", tel: "+52 55 1836 3817", telCliente: "+52 55 4358 2919", auto: "Chevrolet Suburban", color: "Negro", placa: "RDZ-836-E", tarjeta: "jose-gardel" },
   { nombre: "Rodrigo Pineda", tel: "+52 55 4827 4770", auto: "Mercedes-Benz GLA", color: "Gris", placa: "H99-BNF", tarjeta: "rodrigo-pineda" },
-  { nombre: "Itzel Sánchez", tel: "+52 55 4130 1651", auto: "Lexus ES", color: "Negro", placa: "41H-806", tarjeta: "itzel-sanchez" },
+  { nombre: "Itzel Sánchez", tel: "+52 55 4130 1651", auto: "Lexus ES", color: "Negro", placa: "41H-806", tarjeta: "itzel-sanchez", alias: ["Itzel", "Itzel Sanchez"] },
   { nombre: "Rubén Alejandro", tel: "+52 56 2022 0348", auto: "BMW X1", color: "Azul", placa: "G29-BPL", tarjeta: "ruben-alejandro" },
   { nombre: "José Luis Islas", tel: "+52 55 4918 0801", auto: "BMW Serie 3", color: "Blanco", placa: "J25-BCY", tarjeta: "jose-luis-islas", alias: ["José Islas"] },
   { nombre: "Ivan Zuñiga", tel: "+52 55 3387 5193", auto: "Nissan Kicks", color: "Blanco", placa: "10K-952", tarjeta: "ivan-zuniga" },
@@ -44,6 +44,13 @@ export function choferDe(nombre: string | null | undefined) {
   const k = clave(nombre || "");
   if (!k) return undefined;
   return CHOFERES.find((c) => clave(c.nombre) === k || c.alias?.some((a) => clave(a) === k));
+}
+
+/** Chofer del directorio por WhatsApp (últimos 10 dígitos). */
+export function choferPorTel(tel: string | null | undefined) {
+  const d = (tel || "").replace(/\D/g, "").slice(-10);
+  if (d.length < 10) return undefined;
+  return CHOFERES.find((c) => c.tel.replace(/\D/g, "").slice(-10) === d);
 }
 
 /** WhatsApp del directorio para un nombre. */

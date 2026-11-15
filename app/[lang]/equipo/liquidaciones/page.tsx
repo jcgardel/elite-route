@@ -65,7 +65,7 @@ function mensaje(c: ChoferLiq, t: Totales, lunes: string) {
   if (t.uberSuma) l.push(`Uber: ${mx(t.uberSuma)}`);
   for (const m of c.movimientos.filter((m) => m.tipo !== "uber"))
     l.push(`${ETIQUETA[m.tipo]}${m.concepto ? ` (${m.concepto})` : ""}: ${mx(SIGNO[m.tipo] * m.monto)}`);
-  if (t.renta) l.push(`Renta semanal: ${mx(-t.renta)}`);
+  if (t.renta) l.push(`${c.esquema === "venta" ? "Abono semanal" : "Renta semanal"}: ${mx(-t.renta)}`);
   l.push("", t.balance >= 0 ? `Total a pagarte: ${mx(t.balance)}` : `Saldo a tu cargo: ${mx(-t.balance)}`, "", "Cualquier duda, avísanos.");
   return l.join("\n");
 }
@@ -87,8 +87,9 @@ function Esquema({ c, lang, semana }: { c: ChoferEsquema | ChoferLiq; lang: stri
       <select name="esquema" defaultValue={c.esquema} className={s.campo} aria-label="Esquema">
         <option value="servicio">Sin renta (auto propio o por comisión)</option>
         <option value="renta">Auto de la flota · renta semanal</option>
+        <option value="venta">Venta a plazos · abono semanal</option>
       </select>
-      <input name="renta" inputMode="decimal" placeholder="Renta $/sem" defaultValue={c.renta_semanal || ""} className={s.campo} aria-label="Renta semanal" />
+      <input name="renta" inputMode="decimal" placeholder="Renta o abono $/sem" defaultValue={c.renta_semanal || ""} className={s.campo} aria-label="Renta semanal" />
       <label className={s.check}>
         <input type="checkbox" name="uber_flota" value="1" defaultChecked={c.uber_por_flota} /> Uber me paga a mí
       </label>
@@ -111,7 +112,9 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
           <p className={s.meta}>
             {c.esquema === "renta"
               ? `Renta ${mx(c.renta_semanal)}/sem · Uber ${c.uber_por_flota ? "lo cobro yo" : "lo cobra él"}`
-              : "Sin renta (auto propio o por comisión)"}
+              : c.esquema === "venta"
+                ? `Venta a plazos · abono ${mx(c.renta_semanal)}/sem`
+                : "Sin renta (auto propio o por comisión)"}
           </p>
         </div>
         <div className={s.balance}>
@@ -139,7 +142,7 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
           ))}
         {t.renta > 0 && (
           <>
-            <dt>Renta semanal</dt>
+            <dt>{c.esquema === "venta" ? "Abono semanal" : "Renta semanal"}</dt>
             <dd>{mx(-t.renta)}</dd>
           </>
         )}
@@ -306,7 +309,7 @@ export default async function LiquidacionesPage({
 
       <details className={s.det}>
         <summary>Esquema de todos los choferes</summary>
-        <p className={s.meta}>Por defecto todos son "Sin renta (auto propio o por comisión)": solo se les pagan sus traslados EliteRoute. Los de auto de la flota aparecen cada semana aunque no tengan traslados.</p>
+        <p className={s.meta}>Por defecto todos son “Sin renta (auto propio o por comisión)”: solo se les pagan sus traslados EliteRoute. Los de auto de la flota aparecen cada semana aunque no tengan traslados.</p>
         {todos.map((c) => (
           <div key={c.driver_id} className={s.esquemaFila}>
             <strong>{c.nombre}</strong>

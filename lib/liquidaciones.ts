@@ -43,7 +43,7 @@ export type ChoferLiq = {
   driver_id: string;
   nombre: string;
   tel: string | null;
-  esquema: "servicio" | "renta";
+  esquema: "servicio" | "renta" | "venta";
   renta_semanal: number;
   uber_por_flota: boolean;
   servicios: ServicioLiq[];
@@ -57,7 +57,7 @@ export type ChoferEsquema = {
   nombre: string;
   tel: string | null;
   activo: boolean;
-  esquema: "servicio" | "renta";
+  esquema: "servicio" | "renta" | "venta";
   renta_semanal: number;
   uber_por_flota: boolean;
 };
@@ -120,7 +120,8 @@ export function totales(c: ChoferLiq): Totales {
   const porTipo = { uber: 0, reembolso: 0, bono: 0, gasolina: 0, gasto: 0, adelanto: 0 } as Record<TipoMovimiento, number>;
   for (const m of c.movimientos) porTipo[m.tipo] += m.monto;
   const elite = c.servicios.reduce((t, s) => t + (s.pago ?? 0), 0);
-  const renta = c.esquema === "renta" ? c.renta_semanal : 0;
+  // Renta o abono semanal de venta: se descuenta igual.
+  const renta = c.esquema === "servicio" ? 0 : c.renta_semanal;
   const uberSuma = c.esquema === "renta" && c.uber_por_flota ? porTipo.uber : 0;
   const balance =
     elite + uberSuma + porTipo.reembolso + porTipo.bono - renta - porTipo.gasolina - porTipo.gasto - porTipo.adelanto;

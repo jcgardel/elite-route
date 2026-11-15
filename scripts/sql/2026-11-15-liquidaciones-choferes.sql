@@ -324,3 +324,90 @@ end;
 $function$;
 revoke all on function public.definir_pago_chofer(text, text, numeric) from public;
 grant execute on function public.definir_pago_chofer(text, text, numeric) to anon, authenticated, service_role;
+
+-- 15 nov 2026: esquema 'venta' (auto vendido a plazos): abono semanal fijo, se paga fuera de Uber.
+alter table privado.esquema_chofer drop constraint if exists esquema_chofer_esquema_check;
+alter table privado.esquema_chofer add constraint esquema_chofer_esquema_check check (esquema in ('servicio', 'renta', 'venta'));
+
+create or replace function public.liquidacion_semana(p_clave text, p_semana date)
+ returns jsonb
+ language plpgsql
+ stable
+ security definer
+ set search_path to 'public', 'privado', 'extensions', 'pg_temp'
+as $function$
+declare
+  v_lunes date := p_semana - (extract(isodow from p_semana)::int - 1);
+begin
+  if not privado.clave_equipo_ok(p_clave) then
+    raise exception 'no autorizado';
+  end if;
+
+  return coalesce((
+    with srv as (
+      select r.driver_id, r.folio, r.service_datetime, r.name, r.origin, r.destination, r.category,
+             r.service_type, r.rental_hours, r.status, p.monto, p.origen
+        from reservations r
+        cross join lateral privado.pago_reserva(r) p
+       where r.driver_id is not null
+         and r.service_datetime >= v_lunes and r.service_datetime < v_lunes + 7
+         and r.status <> 'cancelada'
+         and (r.status <> 'pendiente_pago' or r.agendado)
+    ),
+    ch as (
+      select d.id from drivers d
+       where not d.is_owner
+         and (d.id in (select driver_id from srv)
+              or d.id in (select driver_id from movimientos_chofer where semana = v_lunes)
+              or d.id in (select driver_id from liquidaciones where semana = v_lunes)
+              or (d.active and d.id in (select driver_id from esquema_chofer where esquema in ('renta', 'venta'))))
+    )
+    select jsonb_agg(jsonb_build_object(
+             'driver_id', d.id,
+             'nombre', d.name,
+             'tel', d.phone,
+             'esquema', coalesce(e.esquema, 'servicio'),
+             'renta_semanal', coalesce(e.renta_semanal, 0),
+             'uber_por_flota', coalesce(e.uber_por_flota, false),
+             'servicios', coalesce((
+               select jsonb_agg(jsonb_build_object(
+                        'folio', s.folio, 'fecha', s.service_datetime, 'cliente', s.name,
+                        'origen', s.origin, 'destino', s.destination, 'unidad', s.category,
+                        'tipo', s.service_type, 'horas', s.rental_hours,
+                        'pendiente_pago', s.status = 'pendiente_pago',
+                        'pago', s.monto, 'origen_pago', s.origen) order by s.service_datetime)
+                 from srv s where s.driver_id = d.id), '[]'::jsonb),
+             'movimientos', coalesce((
+               select jsonb_agg(jsonb_build_object('id', m.id, 'tipo', m.tipo, 'concepto', m.concepto, 'monto', m.monto) order by m.creado)
+                 from movimientos_chofer m where m.driver_id = d.id and m.semana = v_lunes), '[]'::jsonb),
+             'pagado', l.monto,
+             'pagado_en', l.pagado_en
+           ) order by d.name)
+      from drivers d
+      join ch on ch.id = d.id
+      left join esquema_chofer e on e.driver_id = d.id
+      left join liquidaciones l on l.driver_id = d.id and l.semana = v_lunes
+  ), '[]'::jsonb);
+end;
+$function$;
+
+create or replace function public.configurar_chofer(p_clave text, p_driver uuid, p_esquema text, p_renta numeric, p_uber_flota boolean)
+ returns boolean
+ language plpgsql
+ security definer
+ set search_path to 'public', 'privado', 'extensions', 'pg_temp'
+as $function$
+begin
+  if not privado.clave_equipo_ok(p_clave) then
+    raise exception 'no autorizado';
+  end if;
+  insert into esquema_chofer (driver_id, esquema, renta_semanal, uber_por_flota)
+  values (p_driver, case when p_esquema in ('renta', 'venta') then p_esquema else 'servicio' end,
+          case when p_esquema in ('renta', 'venta') then greatest(coalesce(p_renta, 0), 0) else 0 end,
+          p_esquema = 'renta' and coalesce(p_uber_flota, false))
+  on conflict (driver_id) do update
+     set esquema = excluded.esquema, renta_semanal = excluded.renta_semanal,
+         uber_por_flota = excluded.uber_por_flota, actualizado = now();
+  return true;
+end;
+$function$;

@@ -281,10 +281,13 @@ export default async function EquipoPage({
             {servicios.length} servicios · {servicios.filter((r) => !r.chofer).length} sin chofer · actualizado {ahora}
           </p>
         </div>
-        <form action={salir}>
-          <input type="hidden" name="lang" value={lang} />
-          <button className={s.salir} type="submit">Salir</button>
-        </form>
+        <nav className={s.acciones} style={{ marginTop: 0 }}>
+          <a href={`/${lang}/equipo/liquidaciones`}>Liquidaciones</a>
+          <form action={salir}>
+            <input type="hidden" name="lang" value={lang} />
+            <button className={s.salir} type="submit">Salir</button>
+          </form>
+        </nav>
       </header>
       {servicios.length === 0 && <p className={s.sub}>No hay servicios próximos.</p>}
       {/* Directorio de choferes + los ya usados, para no volver a escribirlos. */}

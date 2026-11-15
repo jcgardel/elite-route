@@ -34,6 +34,7 @@ export const CHOFERES: Chofer[] = [
   { nombre: "Erick Zavala", tel: "+52 55 1201 4183", auto: "Chevrolet Suburban", color: "Negro", placa: "014-BLE", tarjeta: "erick-zavala" },
   { nombre: "Omar Pérez", tel: "+52 55 2891 5576", auto: "Audi A3", color: "Gris", placa: "NRB-130-B", tarjeta: "omar-perez", alias: ["Omar Perez"] },
   { nombre: "Gabriel Zúñiga", tel: "+52 55 2350 8983", auto: "Nissan Kicks", color: "Gris", placa: "54K-365", tarjeta: "gabriel-zuniga", alias: ["Gabriel"] },
+  { nombre: "Oscar Flores", tel: "+52 56 3368 3841", auto: "Audi A4", color: "Gris", placa: "MYP-037-B", tarjeta: "oscar-flores", alias: ["Oscar"] },
 ];
 
 const clave = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").trim().toLowerCase();

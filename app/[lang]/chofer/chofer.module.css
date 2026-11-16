@@ -1,0 +1,64 @@
+.pago {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #c7a46a;
+}
+
+.estados {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.estado {
+  width: 100%;
+  padding: 10px 6px;
+  border: 1px solid rgba(199, 164, 106, 0.6);
+  border-radius: 8px;
+  background: transparent;
+  color: #c7a46a;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actual {
+  background: #c7a46a;
+  color: #0b1220;
+}
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.filaTitulo {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filaPago {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.filaPago span {
+  margin-left: 0;
+}

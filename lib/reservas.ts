@@ -137,6 +137,9 @@ export type ServicioEquipo = {
   pago_chofer?: string | null;
   /** Ya se subió la imagen del servicio para el chofer (la que dice abajo "Pago al chofer"). */
   imagen_chofer?: boolean;
+  /** Lo que marcó el chofer en /chofer: en_camino, a_bordo o terminado. */
+  estado_chofer?: string | null;
+  estado_chofer_at?: string | null;
 };
 
 async function rpcEquipo(fn: string, args: Record<string, unknown>) {

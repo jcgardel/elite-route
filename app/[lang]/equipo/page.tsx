@@ -28,6 +28,10 @@ const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "o
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const TIPO: Record<string, string> = { route: "Traslado", hour: "Por horas", day: "Por día" };
+const ESTADO_CHOFER: Record<string, string> = { en_camino: "En camino", a_bordo: "Pasajero a bordo", terminado: "Terminado" };
+
+const horaCdmx = (iso: string) =>
+  new Intl.DateTimeFormat("es-MX", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
 
 function partes(servicio: string | null) {
   const m = servicio?.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
@@ -191,6 +195,12 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         <button className={s.choferBoton} type="submit">Guardar</button>
       </form>
       {r.chofer && !telCh && <p className={s.aviso}>Falta el WhatsApp del chofer (10 dígitos)</p>}
+      {r.estado_chofer && (
+        <p className={s.meta}>
+          Chofer: {ESTADO_CHOFER[r.estado_chofer] || r.estado_chofer}
+          {r.estado_chofer_at ? ` · ${horaCdmx(r.estado_chofer_at)}` : ""}
+        </p>
+      )}
       {ch && (
         <p className={s.meta}>
           {ch.auto} · {ch.color} · Placas {ch.placa}

@@ -83,3 +83,8 @@
 .wa { padding: 7px 12px; border-radius: 6px; background: #25d366; color: #0b1220; font-weight: 700; font-size: 14px; text-decoration: none; }
 
 .esquemaFila { padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+
+/* Panel solo para dirección: entrada con su propia clave. */
+.login { display: grid; gap: 12px; max-width: 340px; margin: 18vh auto 0; }
+.headNav { display: flex; gap: 8px; align-items: flex-start; }
+.tagOk { margin-left: 6px; padding: 1px 6px; border-radius: 999px; font-size: 11px; background: rgba(111, 207, 151, 0.18); color: #6fcf97; }

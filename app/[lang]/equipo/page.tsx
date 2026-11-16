@@ -309,7 +309,6 @@ export default async function EquipoPage({
           </p>
         </div>
         <nav className={s.acciones} style={{ marginTop: 0 }}>
-          <a href={`/${lang}/equipo/liquidaciones`}>Liquidaciones</a>
           <form action={salir}>
             <input type="hidden" name="lang" value={lang} />
             <button className={s.salir} type="submit">Salir</button>

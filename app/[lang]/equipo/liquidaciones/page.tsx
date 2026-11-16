@@ -1,21 +1,31 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import {
+  COOKIE_ADMIN,
   MOVIMIENTOS,
   choferesEsquema,
   hoyCdmx,
   liquidacionSemana,
   lunesDe,
+  pendientesChoferes,
   sumarDias,
   totales,
   type ChoferEsquema,
   type ChoferLiq,
+  type Pendiente,
   type Totales,
 } from "@/lib/liquidaciones";
-import { COOKIE_EQUIPO } from "@/lib/reservas";
-import { agregarMovimiento, borrarMovimiento, configurarChofer, definirPago, guardarUber, marcarPagado } from "./actions";
+import {
+  agregarMovimiento,
+  borrarMovimiento,
+  configurarChofer,
+  definirPago,
+  entrarAdmin,
+  guardarUber,
+  marcarPagado,
+  salirAdmin,
+} from "./actions";
 import s from "./liquidaciones.module.css";
 
 /**
@@ -102,6 +112,7 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
   const t = totales(c);
   const tel = wa(c.tel);
   const pagado = c.pagado != null;
+  const yaPagado = c.servicios.filter((x) => x.pagado).reduce((a, x) => a + (x.pago ?? 0), 0);
   const o = { lang, semana, driver: c.driver_id };
 
   return (
@@ -150,6 +161,12 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
       {pagado && c.pagado !== t.balance && (
         <p className={s.aviso}>Se marcó {mx(c.pagado!)} y ahora da {mx(t.balance)}: revisa y vuelve a marcar.</p>
       )}
+      {!pagado && yaPagado > 0 && (
+        <p className={s.nota}>
+          Ya pagado por servicio: {mx(yaPagado)} · falta {mx(t.balance - yaPagado)}
+        </p>
+      )}
+      {pagado && c.comprobante && <p className={s.nota}>Comprobante: {c.comprobante}</p>}
       {t.sinPago > 0 && <p className={s.aviso}>{t.sinPago} traslado(s) sin pago definido</p>}
       {t.estimados > 0 && <p className={s.nota}>{t.estimados} traslado(s) con pago estimado por regla: confirma o corrige.</p>}
 
@@ -171,6 +188,7 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
             <div className={s.servicioTxt}>
               <strong>{dia(x.fecha)} {x.fecha.slice(11, 16)}</strong> · {x.folio} · {x.unidad}
               {x.pendiente_pago && <span className={s.tag}>cliente sin pagar</span>}
+              {x.pagado && <span className={s.tagOk}>✓ pagado{x.comprobante ? ` · ${x.comprobante}` : ""}</span>}
               <br />
               <span className={s.meta}>
                 {x.cliente} · {x.origen} › {x.destino}
@@ -227,10 +245,42 @@ function Chofer({ c, lang, semana }: { c: ChoferLiq; lang: string; semana: strin
         <form action={marcarPagado}>
           <Oculto {...o} />
           {pagado && <input type="hidden" name="desmarcar" value="1" />}
+          {!pagado && (
+            <input name="comprobante" placeholder="Comprobante (opcional)" className={s.campo} maxLength={80} aria-label="Comprobante" />
+          )}
           <button className={pagado ? s.salir : s.botonOro}>{pagado ? "Desmarcar" : t.balance >= 0 ? "Marcar pagado" : "Marcar cobrado"}</button>
         </form>
       </nav>
     </article>
+  );
+}
+
+/** Servicios realizados en semanas anteriores que siguen sin pagarse. */
+function Pendientes({ lista, lang }: { lista: Pendiente[]; lang: string }) {
+  if (lista.length === 0) return null;
+  const total = lista.reduce((a, p) => a + p.total, 0);
+  return (
+    <details className={s.det}>
+      <summary>
+        Pendientes de semanas anteriores · {mx(total)} ({lista.reduce((a, p) => a + p.servicios, 0)} servicios)
+      </summary>
+      {lista.map((p) => (
+        <div key={p.driver_id} className={s.esquemaFila}>
+          <strong>
+            {p.nombre} · {mx(p.total)}
+            {p.sin_pago ? ` · ${p.sin_pago} sin monto` : ""}
+          </strong>
+          {p.detalle.map((d) => (
+            <p key={d.folio} className={s.meta}>
+              <Link href={`/${lang}/equipo/liquidaciones?semana=${d.fecha.slice(0, 10)}#${p.driver_id}`}>
+                {dia(d.fecha)} · {d.folio}
+              </Link>{" "}
+              · {d.cliente} · {d.pago == null ? "sin monto" : mx(d.pago)}
+            </p>
+          ))}
+        </div>
+      ))}
+    </details>
   );
 }
 
@@ -239,16 +289,29 @@ export default async function LiquidacionesPage({
   searchParams,
 }: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ semana?: string }>;
+  searchParams: Promise<{ semana?: string; error?: string }>;
 }) {
   const { lang } = await params;
-  const { semana: q } = await searchParams;
-  const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
+  const { semana: q, error } = await searchParams;
+  const clave = (await cookies()).get(COOKIE_ADMIN)?.value || "";
   // Por defecto la última semana cerrada: es la que se paga el lunes.
   const semana = q && /^\d{4}-\d{2}-\d{2}$/.test(q) ? lunesDe(q) : sumarDias(lunesDe(hoyCdmx()), -7);
-  const choferes = await liquidacionSemana(clave, semana);
-  if (!choferes) redirect(`/${lang}/equipo`);
-  const todos = await choferesEsquema(clave);
+  const choferes = clave ? await liquidacionSemana(clave, semana) : null;
+  if (!choferes) {
+    return (
+      <main className={s.page}>
+        <form action={entrarAdmin} className={s.login}>
+          <h1 className={s.titulo}>Choferes · pagos</h1>
+          <p className={s.sub}>EliteRoute · solo dirección</p>
+          <input type="hidden" name="lang" value={lang} />
+          <input className={s.campo} name="clave" type="password" placeholder="Clave de dirección" autoComplete="current-password" required />
+          {error && <p className={s.aviso}>Clave incorrecta</p>}
+          <button className={s.botonOro} type="submit">Entrar</button>
+        </form>
+      </main>
+    );
+  }
+  const [todos, pendientesPrevios] = await Promise.all([choferesEsquema(clave), pendientesChoferes(clave, semana)]);
 
   const conT = choferes.map((c) => ({ c, t: totales(c) }));
   const aPagar = conT.filter((x) => x.t.balance > 0 && x.c.pagado == null).reduce((a, x) => a + x.t.balance, 0);
@@ -264,9 +327,15 @@ export default async function LiquidacionesPage({
           <h1 className={s.titulo}>Liquidaciones</h1>
           <p className={s.sub}>Semana {rango(semana)} · lunes a domingo</p>
         </div>
-        <Link className={s.salir} href={`/${lang}/equipo`}>
-          Servicios
-        </Link>
+        <nav className={s.headNav}>
+          <Link className={s.salir} href={`/${lang}/equipo`}>
+            Servicios
+          </Link>
+          <form action={salirAdmin}>
+            <input type="hidden" name="lang" value={lang} />
+            <button className={s.salir} type="submit">Salir</button>
+          </form>
+        </nav>
       </header>
 
       <nav className={s.semanas}>
@@ -290,6 +359,7 @@ export default async function LiquidacionesPage({
         </div>
       </section>
       {faltaUber > 0 && <p className={s.aviso}>Falta capturar Uber de {faltaUber} chofer(es) en renta.</p>}
+      <Pendientes lista={pendientesPrevios} lang={lang} />
 
       <details className={s.ayuda}>
         <summary>Cómo se hace cada lunes</summary>

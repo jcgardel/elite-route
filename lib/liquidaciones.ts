@@ -7,8 +7,9 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./reservas";
  *           + reembolsos/bonos − renta semanal − gasolina − gastos − adelantos.
  * Positivo: se le paga al chofer. Negativo: el chofer debe.
  *
- * Todo pasa por funciones de Postgres con la clave del equipo
- * (scripts/sql/2026-11-15-liquidaciones-choferes.sql). Nunca llega aquí el
+ * Todo pasa por funciones de Postgres con la clave del dueño, distinta de la
+ * del equipo (scripts/sql/2026-11-15-liquidaciones-choferes.sql y
+ * 2026-11-16-panel-choferes-admin.sql). Nunca llega aquí el
  * precio al cliente: solo el pago al chofer de cada traslado.
  */
 
@@ -35,6 +36,9 @@ export type ServicioLiq = {
   pago: number | null;
   /** definido = capturado; nota = de las notas; regla = calculado (30% del neto o tarifa por hora). */
   origen_pago: "definido" | "nota" | "regla" | null;
+  /** Ya se le pagó este servicio (por semana o suelto) y con qué comprobante. */
+  pagado: string | null;
+  comprobante: string | null;
 };
 
 export type Movimiento = { id: string; tipo: TipoMovimiento; concepto: string | null; monto: number };
@@ -50,6 +54,7 @@ export type ChoferLiq = {
   movimientos: Movimiento[];
   pagado: number | null;
   pagado_en: string | null;
+  comprobante: string | null;
 };
 
 export type ChoferEsquema = {
@@ -60,6 +65,20 @@ export type ChoferEsquema = {
   esquema: "servicio" | "renta" | "venta";
   renta_semanal: number;
   uber_por_flota: boolean;
+};
+
+/** Cookie con la clave del dueño: solo Cezar ve pagos, rentas, Uber y gasolina. */
+export const COOKIE_ADMIN = "er_admin";
+
+/** Servicios realizados antes de una semana que siguen sin pagarse, por chofer. */
+export type Pendiente = {
+  driver_id: string;
+  nombre: string;
+  servicios: number;
+  total: number;
+  sin_pago: number;
+  desde: string;
+  detalle: { folio: string; fecha: string; cliente: string | null; pago: number | null }[];
 };
 
 async function rpc(fn: string, args: Record<string, unknown>) {
@@ -90,6 +109,16 @@ export async function liquidacionSemana(clave: string, lunes: string): Promise<C
     pagado: n(c.pagado),
     servicios: c.servicios.map((s) => ({ ...s, pago: n(s.pago) })),
     movimientos: c.movimientos.map((m) => ({ ...m, monto: Number(m.monto) })),
+  }));
+}
+
+export async function pendientesChoferes(clave: string, antes: string): Promise<Pendiente[]> {
+  const res = await rpc("pendientes_choferes", { p_clave: clave, p_antes: antes });
+  if (!res.ok) return [];
+  return ((await res.json()) as Pendiente[]).map((p) => ({
+    ...p,
+    total: Number(p.total) || 0,
+    detalle: p.detalle.map((d) => ({ ...d, pago: n(d.pago) })),
   }));
 }
 

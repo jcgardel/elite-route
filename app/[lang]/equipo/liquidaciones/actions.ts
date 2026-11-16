@@ -2,13 +2,12 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { liquidacionSemana, llamar, lunesDe, monto, totales } from "@/lib/liquidaciones";
-import { COOKIE_EQUIPO } from "@/lib/reservas";
+import { COOKIE_ADMIN, hoyCdmx, liquidacionSemana, llamar, lunesDe, monto, totales } from "@/lib/liquidaciones";
 
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
 async function contexto(formData: FormData) {
-  const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
+  const clave = (await cookies()).get(COOKIE_ADMIN)?.value || "";
   const lang = String(formData.get("lang") || "es");
   const s = String(formData.get("semana") || "");
   const semana = FECHA.test(s) ? lunesDe(s) : "";
@@ -80,8 +79,34 @@ export async function marcarPagado(formData: FormData) {
       const ch = (await liquidacionSemana(clave, semana))?.find((c) => c.driver_id === driver);
       if (ch) importe = totales(ch).balance;
     }
-    if (desmarcar || importe != null)
+    if (desmarcar || importe != null) {
       await llamar("marcar_liquidacion", { p_clave: clave, p_driver: driver, p_semana: semana, p_monto: importe });
+      const ref = String(formData.get("comprobante") || "").trim();
+      if (!desmarcar && ref)
+        await llamar("comprobante_liquidacion", { p_clave: clave, p_driver: driver, p_semana: semana, p_ref: ref });
+    }
   }
   volver(lang, semana, driver);
+}
+
+/** Entrada con la clave del dueño (distinta de la del equipo). */
+export async function entrarAdmin(formData: FormData) {
+  const clave = String(formData.get("clave") || "").trim().toLowerCase();
+  const lang = String(formData.get("lang") || "es");
+  if (!(await liquidacionSemana(clave, hoyCdmx()))) redirect(`/${lang}/equipo/liquidaciones?error=1`);
+  (await cookies()).set({
+    name: COOKIE_ADMIN,
+    value: clave,
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 90,
+  });
+  redirect(`/${lang}/equipo/liquidaciones`);
+}
+
+export async function salirAdmin(formData: FormData) {
+  (await cookies()).delete(COOKIE_ADMIN);
+  redirect(`/${String(formData.get("lang") || "es")}/equipo/liquidaciones`);
 }

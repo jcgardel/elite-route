@@ -1,0 +1,90 @@
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  background: #0b1220;
+  color: #fff;
+}
+
+.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.titulo { margin: 0; font-family: var(--font-cormorant), serif; font-weight: 400; font-size: 30px; }
+.sub { margin: 4px 0 0; color: #c7a46a; font-size: 14px; }
+.meta { display: block; margin: 2px 0 0; font-size: 13px; color: rgba(255, 255, 255, 0.65); }
+
+.semanas { display: flex; justify-content: space-between; margin: 16px 0; font-size: 14px; }
+.semanas a, .det summary, .ayuda summary { color: #c7a46a; text-decoration: none; cursor: pointer; }
+
+.resumen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.resumen > div { padding: 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); }
+.cifra { font-size: 20px; font-weight: 700; }
+.aPagar { font-size: 20px; font-weight: 700; color: #6fcf97; }
+.debe { font-size: 20px; font-weight: 700; color: #eb5757; }
+
+.ayuda { margin: 12px 0 20px; font-size: 14px; color: rgba(255, 255, 255, 0.8); }
+.ayuda ol { padding-left: 20px; line-height: 1.5; }
+
+.card { margin-bottom: 14px; padding: 14px 16px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border-left: 5px solid #c7a46a; }
+.pagadoCard { border-left-color: #6fcf97; opacity: 0.75; }
+.top { display: flex; justify-content: space-between; gap: 12px; }
+.nombre { margin: 0; font-size: 18px; font-weight: 600; }
+.balance { text-align: right; }
+
+.desglose { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 12px 0 4px; font-size: 14px; }
+.desglose dt { color: rgba(255, 255, 255, 0.75); }
+.desglose dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.par { display: contents; }
+
+.aviso { margin: 6px 0 0; font-size: 13px; color: #f2c94c; }
+.nota { margin: 6px 0 0; font-size: 12px; color: rgba(242, 201, 76, 0.8); }
+
+.det { margin-top: 10px; font-size: 14px; }
+.det summary { padding: 4px 0; }
+
+.fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.movTxt { flex: 1 1 auto; }
+.campo {
+  flex: 1 1 140px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(199, 164, 106, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+}
+.campo option { color: #0b1220; }
+.pago { flex: 0 1 110px; text-align: right; }
+.estimado { border-color: #f2c94c; color: #f2c94c; }
+.check { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+
+.servicio { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.servicioTxt { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.tag { margin-left: 6px; padding: 1px 6px; border-radius: 999px; font-size: 11px; background: rgba(242, 201, 76, 0.2); color: #f2c94c; }
+
+.boton, .salir {
+  padding: 8px 12px;
+  border: 1px solid rgba(199, 164, 106, 0.6);
+  border-radius: 6px;
+  background: transparent;
+  color: #c7a46a;
+  font-family: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.botonOro { padding: 8px 14px; border: 0; border-radius: 6px; background: #c7a46a; color: #0b1220; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.quitar { border: 0; background: transparent; color: #eb5757; font-size: 20px; cursor: pointer; }
+
+.acciones { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 12px; }
+.wa { padding: 7px 12px; border-radius: 6px; background: #25d366; color: #0b1220; font-weight: 700; font-size: 14px; text-decoration: none; }
+
+.esquemaFila { padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+
+/* Panel solo para dirección: entrada con su propia clave. */
+.login { display: grid; gap: 12px; max-width: 340px; margin: 18vh auto 0; }
+.headNav { display: flex; gap: 8px; align-items: flex-start; }
+.tagOk { margin-left: 6px; padding: 1px 6px; border-radius: 999px; font-size: 11px; background: rgba(111, 207, 151, 0.18); color: #6fcf97; }

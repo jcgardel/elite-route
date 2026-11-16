@@ -301,6 +301,13 @@ const PISO_FORANEO: Partial<Record<Category, (km: number) => number>> = {
  */
 const MINIMO_TRASLADO_CON_IVA: Partial<Record<Category, number>> = { suv: 2300 };
 
+/**
+ * BRECHA MÁXIMA ENTRE RECOGER Y LLEVAR, con IVA. Decisión del dueño, 16 nov
+ * 2026: en SUV Lux la salida desde el aeropuerto cuesta $200 más que la ida
+ * hacia él, en todas las rutas. Se sube la ida; la recogida no se toca.
+ */
+const BRECHA_MAXIMA_CON_IVA: Partial<Record<Category, number>> = { suv: 200 };
+
 export function calculatePrice(
   km: number,
   minutes: number,
@@ -362,7 +369,13 @@ export function calculatePrice(
   const hacia = () => {
     const pedido = Math.round(sinRecargo * ALZA_HACIA_AEROPUERTO[category]);
     const techo = Math.floor(desdeFormula() / BRECHA_MINIMA_AEROPUERTO);
-    return Math.max(Math.min(pedido, techo), MINIMO_HACIA_AEROPUERTO[category] ?? 0, zona(true));
+    const brecha = serviceType === "route" ? BRECHA_MAXIMA_CON_IVA[category] : undefined;
+    return Math.max(
+      Math.min(pedido, techo),
+      MINIMO_HACIA_AEROPUERTO[category] ?? 0,
+      zona(true),
+      brecha ? desdeFormula() - brecha : 0,
+    );
   };
 
   const desde = () => {

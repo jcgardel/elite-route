@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { COOKIE_CHOFER, ESTADOS, portalChofer, type ServicioChofer } from "@/lib/portal-chofer";
-import { marcarEstado, salir } from "./actions";
+import { salir } from "./actions";
+import BotonesEstado from "./BotonesEstado";
 import e from "../equipo/equipo.module.css";
 import s from "./chofer.module.css";
 
@@ -62,7 +63,7 @@ function color(unidad: string) {
   return e.sedan;
 }
 
-function Proximo({ r, lang }: { r: ServicioChofer; lang: string }) {
+function Proximo({ r }: { r: ServicioChofer }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
   const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(r.origen)}`;
@@ -96,18 +97,7 @@ function Proximo({ r, lang }: { r: ServicioChofer; lang: string }) {
         {tel && <a href={`https://wa.me/${tel}`}>WhatsApp cliente</a>}
         <a href={mapa}>Mapa recogida</a>
       </nav>
-      <div className={s.estados}>
-        {ESTADOS.map((x) => (
-          <form key={x.valor} action={marcarEstado}>
-            <input type="hidden" name="lang" value={lang} />
-            <input type="hidden" name="folio" value={r.folio} />
-            <input type="hidden" name="estado" value={x.valor} />
-            <button className={r.estado === x.valor ? `${s.estado} ${s.actual}` : s.estado} type="submit">
-              {x.texto}
-            </button>
-          </form>
-        ))}
-      </div>
+      <BotonesEstado folio={r.folio} actual={r.estado} />
     </article>
   );
 }
@@ -193,7 +183,7 @@ export default async function ChoferPage({
         <section key={dia}>
           <h2 className={e.dia}>{dia}</h2>
           {lista.map((r) => (
-            <Proximo key={r.folio} r={r} lang={lang} />
+            <Proximo key={r.folio} r={r} />
           ))}
         </section>
       ))}

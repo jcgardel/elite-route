@@ -192,6 +192,24 @@ export async function reservasEquipo(clave: string): Promise<ServicioEquipo[] | 
   return (await res.json()) as ServicioEquipo[];
 }
 
+/** Un toque del chofer en /chofer (En camino, A bordo, Terminado) con su ubicación. */
+export type EventoChofer = {
+  folio: string;
+  estado: string;
+  marcado: string;
+  lat: number | null;
+  lng: number | null;
+  precision_m: number | null;
+};
+
+/** Toques de los choferes en servicios recientes, para /equipo. [] si la clave no sirve. */
+export async function eventosEquipo(clave: string): Promise<EventoChofer[]> {
+  if (!clave) return [];
+  const res = await rpcEquipo("eventos_equipo", { p_clave: clave });
+  if (!res.ok) return [];
+  return (await res.json()) as EventoChofer[];
+}
+
 /** Asigna (o quita, con texto vacío) el chofer de un servicio desde /equipo. */
 export async function asignarChofer(clave: string, folio: string, chofer: string, tel: string): Promise<boolean> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/asignar_chofer`, {

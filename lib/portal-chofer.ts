@@ -1,3 +1,4 @@
+import type { EstadoChofer, Gps } from "./estados-chofer";
 import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./reservas";
 
 /**
@@ -11,13 +12,7 @@ export const COOKIE_CHOFER = "er_chofer";
 /** WhatsApp de Kevin, que da seguimiento a los choferes en cada servicio. */
 export const WHATSAPP_SEGUIMIENTO = "525551996496";
 
-export type EstadoChofer = "en_camino" | "a_bordo" | "terminado";
-
-export const ESTADOS: { valor: EstadoChofer; texto: string }[] = [
-  { valor: "en_camino", texto: "En camino" },
-  { valor: "a_bordo", texto: "Pasajero a bordo" },
-  { valor: "terminado", texto: "Terminado" },
-];
+export { ESTADOS, type EstadoChofer, type Gps } from "./estados-chofer";
 
 export type ServicioChofer = {
   folio: string;
@@ -64,9 +59,24 @@ export async function portalChofer(token: string): Promise<PortalChofer | null> 
   return (await res.json()) as PortalChofer | null;
 }
 
-/** Marca el estado de un servicio del chofer; false si no es suyo. */
-export async function marcarEstadoChofer(token: string, folio: string, estado: EstadoChofer): Promise<boolean> {
+/**
+ * Marca el estado de un servicio del chofer y guarda dónde estaba (evidencia
+ * para disputas: llegada, abordaje, dejada). false si el servicio no es suyo.
+ */
+export async function marcarEstadoChofer(
+  token: string,
+  folio: string,
+  estado: EstadoChofer,
+  gps: Gps | null,
+): Promise<boolean> {
   if (!token || !folio) return false;
-  const res = await rpc("chofer_estado", { p_token: token, p_folio: folio, p_estado: estado });
+  const res = await rpc("chofer_marcar", {
+    p_token: token,
+    p_folio: folio,
+    p_estado: estado,
+    p_lat: gps?.lat ?? null,
+    p_lng: gps?.lng ?? null,
+    p_precision: gps?.precision ?? null,
+  });
   return res.ok && (await res.json()) === true;
 }

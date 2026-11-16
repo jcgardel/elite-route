@@ -62,3 +62,14 @@
 .filaPago span {
   margin-left: 0;
 }
+
+.estado:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.aviso {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #f2c94c;
+}

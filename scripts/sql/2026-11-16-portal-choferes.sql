@@ -162,3 +162,78 @@ update public.reservations r
    and d.phone = '5541301651';
 
 commit;
+
+-- 5. GPS: cada estado que marca el chofer guarda la ubicación del teléfono
+--    (si dio permiso) en privado.eventos_chofer, como evidencia. No se
+--    sobrescribe: queda un renglón por cada toque.
+begin;
+
+create table if not exists privado.eventos_chofer (
+  id bigint generated always as identity primary key,
+  folio text not null references public.reservations(folio) on update cascade on delete cascade,
+  driver_id uuid references public.drivers(id) on delete set null,
+  estado text not null check (estado in ('en_camino', 'a_bordo', 'terminado')),
+  marcado timestamptz not null default now(),
+  lat double precision check (lat between -90 and 90),
+  lng double precision check (lng between -180 and 180),
+  precision_m double precision
+);
+create index if not exists eventos_chofer_folio on privado.eventos_chofer (folio, marcado);
+revoke all on table privado.eventos_chofer from public, anon, authenticated;
+
+create or replace function public.chofer_marcar(p_token text, p_folio text, p_estado text,
+  p_lat double precision default null, p_lng double precision default null, p_precision double precision default null)
+ returns boolean
+ language plpgsql
+ security definer
+ set search_path to 'public', 'privado', 'pg_temp'
+as $f$
+declare
+  v_id uuid := privado.chofer_por_token(p_token);
+  v_folio text;
+  v_gps boolean := p_lat between -90 and 90 and p_lng between -180 and 180;
+begin
+  if v_id is null or p_estado not in ('en_camino', 'a_bordo', 'terminado') then
+    return false;
+  end if;
+  update public.reservations
+     set driver_status = p_estado, driver_status_at = now()
+   where folio = p_folio and driver_id = v_id and status <> 'cancelada'
+  returning folio into v_folio;
+  if v_folio is null then
+    return false;
+  end if;
+  insert into privado.eventos_chofer (folio, driver_id, estado, lat, lng, precision_m)
+  values (v_folio, v_id, p_estado,
+          case when v_gps then p_lat end, case when v_gps then p_lng end,
+          case when v_gps then p_precision end);
+  return true;
+end
+$f$;
+revoke all on function public.chofer_marcar(text, text, text, double precision, double precision, double precision) from public;
+grant execute on function public.chofer_marcar(text, text, text, double precision, double precision, double precision) to anon, authenticated;
+
+-- /equipo: los toques del chofer (con ubicación) de servicios recientes.
+create or replace function public.eventos_equipo(p_clave text)
+ returns table(folio text, estado text, marcado timestamptz, lat double precision, lng double precision, precision_m double precision)
+ language plpgsql
+ security definer
+ set search_path to 'public', 'privado', 'pg_temp'
+as $f$
+begin
+  if not privado.clave_equipo_ok(p_clave) then
+    raise exception 'no autorizado';
+  end if;
+  return query
+  select e.folio, e.estado, e.marcado, e.lat, e.lng, e.precision_m
+    from privado.eventos_chofer e
+    join public.reservations r on r.folio = e.folio
+   where r.service_datetime is null
+      or r.service_datetime >= (now() at time zone 'America/Mexico_City') - interval '2 days'
+   order by e.folio, e.marcado;
+end
+$f$;
+revoke all on function public.eventos_equipo(text) from public;
+grant execute on function public.eventos_equipo(text) to anon, authenticated;
+
+commit;

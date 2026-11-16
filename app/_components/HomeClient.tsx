@@ -244,9 +244,9 @@ const TX = {
     sinUnidadesCta: "Assistance on WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
-    escLabel: "Guarantee the Cadillac Escalade 2026",
-    escHelp: (pct: number) => `+${pct}% on the SUV Lux fare. Without it, we assign the Suburban High Country or the Escalade depending on availability.`,
-    escVehicle: "SUV Lux · Escalade 2026 guaranteed",
+    escLabel: "Guarantee the Cadillac Escalade 2027",
+    escHelp: (pct: number) => `+${pct}% on the SUV Lux fare. Without it, we assign the Suburban High Country or the Cadillac Escalade 2027 depending on availability.`,
+    escVehicle: "SUV Lux · Cadillac Escalade 2027 guaranteed",
     rtTitle: "Want to come back the same day?",
     rtLabel: "Round trip with the chauffeur waiting",
     rtHelp: (h: number) =>
@@ -409,9 +409,9 @@ const TX = {
     sinUnidadesCta: "Atención por WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
-    escLabel: "Garantizar Cadillac Escalade 2026",
-    escHelp: (pct: number) => `+${pct}% sobre la tarifa de SUV Lux. Sin esta opción asignamos la Suburban High Country o la Escalade según disponibilidad.`,
-    escVehicle: "SUV Lux · Escalade 2026 garantizada",
+    escLabel: "Garantizar Cadillac Escalade 2027",
+    escHelp: (pct: number) => `+${pct}% sobre la tarifa de SUV Lux. Sin esta opción asignamos la Suburban High Country o la Cadillac Escalade 2027 según disponibilidad.`,
+    escVehicle: "SUV Lux · Cadillac Escalade 2027 garantizada",
     rtTitle: "¿Quieres regresar el mismo día?",
     rtLabel: "Viaje redondo con el chofer esperándote",
     rtHelp: (h: number) =>
@@ -1146,7 +1146,7 @@ export default function HomeClient({
    */
   /** Se enciende cuando el servidor contesta que no quedan unidades. */
   const [sinUnidades, setSinUnidades] = useState(false);
-  /** Garantizar Escalade 2026 (+20 %). Sólo cuenta con SUV Lux elegida. */
+  /** Garantizar Cadillac Escalade 2027 (+20 %). Sólo cuenta con SUV Lux elegida. */
   const [escalade, setEscalade] = useState(false);
   /**
    * LO QUE CONTESTÓ /api/disponibilidad para el horario y la categoría
@@ -1458,7 +1458,7 @@ export default function HomeClient({
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
       "",
       "*Detalles*",
-      `Vehículo: ${escaladeActivo ? "SUV Lux · Escalade 2026 garantizada" : vehicles[category].name}`,
+      `Vehículo: ${escaladeActivo ? "SUV Lux · Cadillac Escalade 2027 garantizada" : vehicles[category].name}`,
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,

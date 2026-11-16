@@ -52,7 +52,7 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./reservas";
 // web SUV Lux se vende con UNA unidad: si el horario choca, se bloquea sin
 // aviso y la salida es WhatsApp. Para volver a vender el convenio: suv: 2.
 // 16 nov 2026: SUV Lux pasa a DOS unidades propias (Suburban High Country y
-// Escalade 2026), las dos firmes.
+// Cadillac Escalade 2027), las dos firmes.
 export const UNIDADES: Partial<Record<Category, number>> = { suv: 2 };
 /** De esas, cuántas son propias y se venden sin condición. */
 export const UNIDADES_FIRMES: Partial<Record<Category, number>> = { suv: 2 };

@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     const quiereRedondo = Boolean(body.redondo);
     const horasEspera = Number(body.horasEspera);
     const flightNumber = String(body.flightNumber || "").trim().toUpperCase().slice(0, VUELO_MAX);
-    // Garantizar Escalade 2026 (+20 %): sólo existe dentro de SUV Lux.
+    // Garantizar Cadillac Escalade 2027 (+20 %): sólo existe dentro de SUV Lux.
     const escalade = Boolean(body.escalade) && category === "suv";
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
@@ -265,7 +265,7 @@ export async function POST(req: Request) {
     // leen el equipo, el chofer y el correo del cliente.
     const vehicle = vehicles[category].name;
     const notasConEscalade = escalade
-      ? `Escalade 2026 garantizada${notes ? ` · ${notes}` : ""}`
+      ? `Cadillac Escalade 2027 garantizada${notes ? ` · ${notes}` : ""}`
       : notes;
     // EL NOMBRE DEL SERVICIO LO DICE TODO, y no es cosmético: esta cadena es
     // la que viaja a Stripe, al correo del cliente, al aviso de Telegram y al
@@ -346,7 +346,7 @@ export async function POST(req: Request) {
             currency: "mxn",
             unit_amount: price * 100,
             product_data: {
-              name: `Elite Route · ${vehicle}${escalade ? " · Escalade 2026 garantizada" : ""}`,
+              name: `Elite Route · ${vehicle}${escalade ? " · Cadillac Escalade 2027 garantizada" : ""}`,
               description: `${serviceLabel} · ${serviceDate} ${serviceTime}`,
             },
           },

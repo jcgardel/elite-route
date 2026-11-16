@@ -241,7 +241,7 @@ export function precioConEvento(precio: number, cat: Category, fecha: string, ho
 
 /**
  * GARANTIZAR ESCALADE 2026, decisión del dueño (7 y 16 nov 2026). SUV Lux
- * tiene dos unidades propias —Suburban High Country y Escalade 2026— y se
+ * tiene dos unidades propias —Suburban High Country y Cadillac Escalade 2027— y se
  * vende por categoría; quien quiera la Escalade segura paga +20 % sobre el
  * precio final de SUV Lux (evento y temporada incluidos). Sin categoría
  * aparte: es una opción dentro de SUV Lux. Lo cobra /api/checkout.

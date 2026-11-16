@@ -113,7 +113,7 @@ export const vehicles: Record<
     note: "recommended 4 passengers with full luggage",
     noteEs: "recomendado 4 pasajeros con equipaje completo",
     // 16 nov 2026: dos unidades propias. La Escalade se puede garantizar (+20 %).
-    tag: "Suburban High Country · Escalade 2026",
+    tag: "Suburban High Country · Cadillac Escalade 2027",
   },
 };
 

@@ -137,6 +137,9 @@ export type ServicioEquipo = {
   pago_chofer?: string | null;
   /** Ya se subió la imagen del servicio para el chofer (la que dice abajo "Pago al chofer"). */
   imagen_chofer?: boolean;
+  /** Lo que marcó el chofer en /chofer: en_camino, a_bordo o terminado. */
+  estado_chofer?: string | null;
+  estado_chofer_at?: string | null;
 };
 
 async function rpcEquipo(fn: string, args: Record<string, unknown>) {
@@ -187,6 +190,24 @@ export async function reservasEquipo(clave: string): Promise<ServicioEquipo[] | 
   });
   if (!res.ok) return null;
   return (await res.json()) as ServicioEquipo[];
+}
+
+/** Un toque del chofer en /chofer (En camino, A bordo, Terminado) con su ubicación. */
+export type EventoChofer = {
+  folio: string;
+  estado: string;
+  marcado: string;
+  lat: number | null;
+  lng: number | null;
+  precision_m: number | null;
+};
+
+/** Toques de los choferes en servicios recientes, para /equipo. [] si la clave no sirve. */
+export async function eventosEquipo(clave: string): Promise<EventoChofer[]> {
+  if (!clave) return [];
+  const res = await rpcEquipo("eventos_equipo", { p_clave: clave });
+  if (!res.ok) return [];
+  return (await res.json()) as EventoChofer[];
 }
 
 /** Asigna (o quita, con texto vacío) el chofer de un servicio desde /equipo. */

@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { buildGoogleCalendarUrl } from "@/lib/calendar";
 import { CHOFERES, choferDe, choferPorTel, type Chofer } from "@/lib/choferes";
 import { SITE } from "@/lib/i18n";
-import { COOKIE_EQUIPO, reservasEquipo, type ServicioEquipo } from "@/lib/reservas";
+import { COOKIE_EQUIPO, eventosEquipo, reservasEquipo, type EventoChofer, type ServicioEquipo } from "@/lib/reservas";
 import { entrar, guardarChofer, salir } from "./actions";
 import ChoferNombre from "./ChoferNombre";
 import EnviarChofer from "./EnviarChofer";
@@ -28,6 +28,10 @@ const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "o
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const TIPO: Record<string, string> = { route: "Traslado", hour: "Por horas", day: "Por día" };
+const ESTADO_CHOFER: Record<string, string> = { en_camino: "En camino", a_bordo: "Pasajero a bordo", terminado: "Terminado" };
+
+const horaCdmx = (iso: string) =>
+  new Intl.DateTimeFormat("es-MX", { timeZone: "America/Mexico_City", hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
 
 function partes(servicio: string | null) {
   const m = servicio?.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
@@ -122,7 +126,7 @@ function mensajeChofer(r: ServicioEquipo, etiqueta: string) {
     .join("\n");
 }
 
-function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
+function Tarjeta({ r, lang, eventos }: { r: ServicioEquipo; lang: string; eventos: EventoChofer[] }) {
   const p = partes(r.servicio);
   const tel = (r.telefono || "").replace(/[^0-9]/g, "");
   const telCh = telChofer(r.chofer_tel);
@@ -191,6 +195,29 @@ function Tarjeta({ r, lang }: { r: ServicioEquipo; lang: string }) {
         <button className={s.choferBoton} type="submit">Guardar</button>
       </form>
       {r.chofer && !telCh && <p className={s.aviso}>Falta el WhatsApp del chofer (10 dígitos)</p>}
+      {eventos.length > 0 ? (
+        <ul className={s.eventos}>
+          {eventos.map((ev) => (
+            <li key={`${ev.estado}-${ev.marcado}`}>
+              {ESTADO_CHOFER[ev.estado] || ev.estado} · {horaCdmx(ev.marcado)} ·{" "}
+              {ev.lat != null && ev.lng != null ? (
+                <a href={`https://maps.google.com/?q=${ev.lat},${ev.lng}`} target="_blank" rel="noopener">
+                  ver en mapa{ev.precision_m ? ` (±${Math.round(ev.precision_m)} m)` : ""}
+                </a>
+              ) : (
+                "sin GPS"
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        r.estado_chofer && (
+          <p className={s.meta}>
+            Chofer: {ESTADO_CHOFER[r.estado_chofer] || r.estado_chofer}
+            {r.estado_chofer_at ? ` · ${horaCdmx(r.estado_chofer_at)}` : ""}
+          </p>
+        )
+      )}
       {ch && (
         <p className={s.meta}>
           {ch.auto} · {ch.color} · Placas {ch.placa}
@@ -241,7 +268,7 @@ export default async function EquipoPage({
   const { lang } = await params;
   const { error } = await searchParams;
   const clave = (await cookies()).get(COOKIE_EQUIPO)?.value || "";
-  const servicios = clave ? await reservasEquipo(clave) : null;
+  const [servicios, eventos] = clave ? await Promise.all([reservasEquipo(clave), eventosEquipo(clave)]) : [null, []];
 
   if (!servicios) {
     return (
@@ -307,7 +334,7 @@ export default async function EquipoPage({
         <section key={dia}>
           <h2 className={s.dia}>{dia}</h2>
           {lista.map((r) => (
-            <Tarjeta key={r.folio} r={r} lang={lang} />
+            <Tarjeta key={r.folio} r={r} lang={lang} eventos={eventos.filter((ev) => ev.folio === r.folio)} />
           ))}
         </section>
       ))}

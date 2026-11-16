@@ -248,3 +248,16 @@
   border-radius: 6px;
   border: 1px solid rgba(199, 164, 106, 0.4);
 }
+
+/* Toques del chofer en /chofer, con su ubicación GPS. */
+.eventos {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.eventos a {
+  color: #c7a46a;
+}

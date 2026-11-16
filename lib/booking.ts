@@ -171,8 +171,9 @@ export const BRECHA_MINIMA_AEROPUERTO = 1.05;
  * Una categoría sin valor aquí se queda con el mínimo de la fórmula.
  */
 export const MINIMO_DESDE_AEROPUERTO: Partial<Record<Category, number>> = {
-  // SUV Lux bajado $300 el 18 oct 2026 (antes 2750 / 2450 hacia).
-  suv: 2450,
+  // SUV Lux: $2,500 desde el 16 nov 2026 = $2,300 hacia + $200 (antes 2450;
+  // 2750 antes del 18 oct 2026).
+  suv: 2500,
   // Executive, decisión del dueño del 18 oct 2026. Sólo muerde en los
   // trayectos cortos desde terminal —AICM a Centro/Roma/Condesa y cualquier
   // destino a menos de unos 13 km—, que es donde la fórmula caía a $1,160
@@ -229,7 +230,7 @@ const SUV_LUX_AEROPUERTO: Record<AirportCode, ReadonlyArray<readonly [number, nu
   // la competencia: $2,950 a Polanco quedaba arriba del mercado. Por horas no
   // se toca. AIFA y Toluca sin cambio.
   MEX: [
-    [8.5, 2450, 2150], // Centro / Roma / Condesa
+    [8.5, 2500, 2150], // Centro / Roma / Condesa ($2,500 desde el 16 nov 2026)
     [17.8, 2650, 2350], // Polanco / Lomas
     [27.1, 3250, 2950], // Satélite / Naucalpan
     [28.2, 3350, 3050], // Santa Fe / Interlomas

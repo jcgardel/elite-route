@@ -17,7 +17,7 @@ import {
 } from "@/lib/booking";
 import { getStripe } from "@/lib/stripe";
 import { CAPACIDAD } from "@/lib/vehicles";
-import { hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
+import { escaladeLibre, hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
 import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
 import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
 import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
@@ -32,6 +32,7 @@ import {
   categoriaBloqueada,
   horasMinimas,
   precioConEvento,
+  precioConEscalade,
 } from "@/lib/service-limits";
 
 const categories = CATEGORIES;
@@ -71,6 +72,8 @@ export async function POST(req: Request) {
     const quiereRedondo = Boolean(body.redondo);
     const horasEspera = Number(body.horasEspera);
     const flightNumber = String(body.flightNumber || "").trim().toUpperCase().slice(0, VUELO_MAX);
+    // Garantizar Cadillac Escalade 2027 (+20 %): sólo existe dentro de SUV Lux.
+    const escalade = Boolean(body.escalade) && category === "suv";
 
     // km, minutes y zone se calculan server-side — no se aceptan del cliente
     if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
@@ -224,7 +227,7 @@ export async function POST(req: Request) {
     });
     if (ventana) {
       const hueco = await hayHueco(category, ventana);
-      if (!hueco.libre) {
+      if (!hueco.libre || (escalade && !(await escaladeLibre(ventana)))) {
         return NextResponse.json(
           { error: "sin_unidades", whatsapp: true, categoria: category },
           { status: 409 },
@@ -237,7 +240,7 @@ export async function POST(req: Request) {
     // entra: un AICM -> AIFA no puede cobrar las dos cosas.
     const haciaAeropuerto = !airportPickup && airportDropoff;
 
-    const price = precioConEvento(
+    const price = precioConEscalade(precioConEvento(
       quiereRedondo
         ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
         : calculatePrice(
@@ -247,7 +250,7 @@ export async function POST(req: Request) {
       category,
       serviceDate,
       serviceType === "day" ? 10 : serviceType === "hour" ? rentalHours : undefined,
-    );
+    ), category, escalade);
     if (price <= 0) {
       return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
     }
@@ -257,7 +260,13 @@ export async function POST(req: Request) {
     // trae idioma —una petición vieja o manipulada— cae al de por defecto en
     // lugar de fallar: nadie debe perder un pago por esto.
     const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
+    // "SUV Lux" se queda tal cual: con ese nombre cruza la agenda de Supabase.
+    // La Escalade viaja en `escalade` y al frente de las notas, que es lo que
+    // leen el equipo, el chofer y el correo del cliente.
     const vehicle = vehicles[category].name;
+    const notasConEscalade = escalade
+      ? `Cadillac Escalade 2027 garantizada${notes ? ` · ${notes}` : ""}`
+      : notes;
     // EL NOMBRE DEL SERVICIO LO DICE TODO, y no es cosmético: esta cadena es
     // la que viaja a Stripe, al correo del cliente, al aviso de Telegram y al
     // de WhatsApp. Si un redondo llega rotulado "Traslado punto a punto", el
@@ -321,7 +330,8 @@ export async function POST(req: Request) {
       redondo: String(quiereRedondo),
       horasEspera: quiereRedondo ? String(horasEspera) : "",
       flightNumber: trimMetadata(flightNumber),
-      notes: trimMetadata(notes),
+      notes: trimMetadata(notasConEscalade),
+      escalade: String(escalade),
       priceMxn: String(price),
     };
 
@@ -336,7 +346,7 @@ export async function POST(req: Request) {
             currency: "mxn",
             unit_amount: price * 100,
             product_data: {
-              name: `Elite Route · ${vehicle}`,
+              name: `Elite Route · ${vehicle}${escalade ? " · Cadillac Escalade 2027 garantizada" : ""}`,
               description: `${serviceLabel} · ${serviceDate} ${serviceTime}`,
             },
           },

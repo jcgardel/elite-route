@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
+import { escaladeLibre, hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
 import { getMapsLimiter } from "@/lib/rate-limit";
 import { CATEGORIES, type Category } from "@/lib/vehicles";
 
@@ -41,6 +41,9 @@ export async function POST(req: Request) {
     if (!v) return NextResponse.json({ libre: true });
 
     const r = await hayHueco(category, v);
+    if (r.libre && category === "suv" && b.escalade && !(await escaladeLibre(v))) {
+      return NextResponse.json({ ...r, libre: false });
+    }
     return NextResponse.json(r);
   } catch {
     // Medir disponibilidad es lo menos importante que hace esta ruta.

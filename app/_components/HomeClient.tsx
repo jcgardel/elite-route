@@ -49,6 +49,8 @@ import {
   categoriaBloqueada,
   horasMinimas,
   precioConEvento,
+  precioConEscalade,
+  ESCALADE_PRIMA,
 } from "@/lib/service-limits";
 
 const WHATSAPP_NUMBER = "525543582919";
@@ -242,6 +244,9 @@ const TX = {
     sinUnidadesCta: "Assistance on WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `${cat} takes up to ${pax} passengers and ${bags} bags. For what you entered, choose ${cabe}.`,
+    escLabel: "Guarantee the Cadillac Escalade 2027",
+    escHelp: (pct: number) => `+${pct}% on the SUV Lux fare. Without it, we assign the Suburban High Country or the Cadillac Escalade 2027 depending on availability.`,
+    escVehicle: "SUV Lux · Cadillac Escalade 2027 guaranteed",
     rtTitle: "Want to come back the same day?",
     rtLabel: "Round trip with the chauffeur waiting",
     rtHelp: (h: number) =>
@@ -404,6 +409,9 @@ const TX = {
     sinUnidadesCta: "Atención por WhatsApp",
     alertCapacity: (cat: string, pax: number, bags: number, cabe: string) =>
       `En ${cat} caben ${pax} pasajeros y ${bags} maletas. Para lo que indicaste, elige ${cabe}.`,
+    escLabel: "Garantizar Cadillac Escalade 2027",
+    escHelp: (pct: number) => `+${pct}% sobre la tarifa de SUV Lux. Sin esta opción asignamos la Suburban High Country o la Cadillac Escalade 2027 según disponibilidad.`,
+    escVehicle: "SUV Lux · Cadillac Escalade 2027 garantizada",
     rtTitle: "¿Quieres regresar el mismo día?",
     rtLabel: "Viaje redondo con el chofer esperándote",
     rtHelp: (h: number) =>
@@ -1138,6 +1146,8 @@ export default function HomeClient({
    */
   /** Se enciende cuando el servidor contesta que no quedan unidades. */
   const [sinUnidades, setSinUnidades] = useState(false);
+  /** Garantizar Cadillac Escalade 2027 (+20 %). Sólo cuenta con SUV Lux elegida. */
+  const [escalade, setEscalade] = useState(false);
   /**
    * LO QUE CONTESTÓ /api/disponibilidad para el horario y la categoría
    * elegidos. `null` mientras no aplique (categoría sin límite, sin fecha)
@@ -1210,6 +1220,7 @@ export default function HomeClient({
    */
   /** El redondo está activo sólo si la ruta lo admite Y el cliente lo marcó. */
   const redondoActivo = redondo && redondoTabla !== null;
+  const escaladeActivo = escalade && category === "suv";
 
   /** Sólo se pregunta cuando hay algo que preguntar. */
   const huecoAplica = category === "suv" && Boolean(serviceDate) && Boolean(serviceTime);
@@ -1225,6 +1236,7 @@ export default function HomeClient({
           body: JSON.stringify({
             category, serviceDate, serviceTime, serviceType, minutes, rentalHours, km,
             redondo: redondoActivo, horasEspera: redondoActivo ? horasEspera : 0, airportPickup,
+            escalade: escaladeActivo,
           }),
         });
         const d = await res.json();
@@ -1234,7 +1246,7 @@ export default function HomeClient({
       }
     }, 400);
     return () => { clearTimeout(timer); ctrl.abort(); };
-  }, [huecoAplica, category, serviceDate, serviceTime, serviceType, minutes, rentalHours, km, redondoActivo, horasEspera, airportPickup]);
+  }, [huecoAplica, category, serviceDate, serviceTime, serviceType, minutes, rentalHours, km, redondoActivo, horasEspera, airportPickup, escaladeActivo]);
 
   /** La última respuesta, pero sólo mientras siga aplicando. */
   const hueco = huecoAplica ? huecoRespuesta : null;
@@ -1249,7 +1261,7 @@ export default function HomeClient({
   /** Precio con la tarifa de evento aplicada según la fecha. */
   function priceFor(cat: Category) {
     const horas = serviceType === "day" ? 10 : serviceType === "hour" ? horasPara(cat) : undefined;
-    return precioConEvento(precioBase(cat), cat, serviceDate, horas);
+    return precioConEscalade(precioConEvento(precioBase(cat), cat, serviceDate, horas), cat, escalade);
   }
   function precioBase(cat: Category) {
     if (serviceType === "day") return tablas.dia[cat] ?? 0;
@@ -1284,7 +1296,7 @@ export default function HomeClient({
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, vehicles[category].name],
+        [t.stVehicle, escaladeActivo ? t.escVehicle : vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabelEs(serviceType, rentalHours)],
@@ -1295,7 +1307,7 @@ export default function HomeClient({
         [t.stDateTime, formatDateTime(serviceDate, serviceTime, locale)],
         [t.stPickup, origin || "—"],
         [t.stDestination, serviceType === "route" ? (destination || "—") : t.stOpenItinerary],
-        [t.stVehicle, vehicles[category].name],
+        [t.stVehicle, escaladeActivo ? t.escVehicle : vehicles[category].name],
         serviceType === "route"
           ? [t.stDistance, `${km} km · ${minutes} min`]
           : [t.stDuration, serviceTypeLabel(serviceType, rentalHours)],
@@ -1446,7 +1458,7 @@ export default function HomeClient({
       `Destino: ${serviceType === "route" ? destination : "Disposición libre"}`,
       "",
       "*Detalles*",
-      `Vehículo: ${vehicles[category].name}`,
+      `Vehículo: ${escaladeActivo ? "SUV Lux · Cadillac Escalade 2027 garantizada" : vehicles[category].name}`,
       serviceType === "route"
         ? `Distancia: ${km} km / ${minutes} min`
         : `Duración: ${serviceTypeLabelEs(serviceType, rentalHours)}`,
@@ -1529,6 +1541,7 @@ export default function HomeClient({
           // rechaza la reserva si no cuadra.
           redondo: redondoActivo,
           horasEspera: redondoActivo ? horasEspera : undefined,
+          escalade: escaladeActivo,
         }),
       });
       const data = await res.json();
@@ -1988,6 +2001,21 @@ export default function HomeClient({
             </div>
 
             <p className="er-bycat">{t.byCategory}</p>
+
+            {category === "suv" && !categoriaBloqueada("suv", serviceDate) && (
+              <div className="er-rt">
+                <label className="er-rt-check">
+                  <input type="checkbox" checked={escalade}
+                    onChange={(e) => {
+                      setEscalade(e.target.checked);
+                      setSinUnidades(false);
+                      if (e.target.checked) track("vehiculo_seleccionado", { categoria: "suv_escalade" });
+                    }}/>
+                  <span>{t.escLabel}</span>
+                </label>
+                <p className="er-rt-help">{t.escHelp(Math.round(ESCALADE_PRIMA * 100))}</p>
+              </div>
+            )}
 
             {bloqueadoPorAgenda && (
               <div className="er-sinunidades" role="alert">

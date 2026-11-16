@@ -51,9 +51,18 @@ import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./reservas";
 // la unidad de convenio (asustaba al cliente y costó una cancelación). En la
 // web SUV Lux se vende con UNA unidad: si el horario choca, se bloquea sin
 // aviso y la salida es WhatsApp. Para volver a vender el convenio: suv: 2.
-export const UNIDADES: Partial<Record<Category, number>> = { suv: 1 };
+// 16 nov 2026: SUV Lux pasa a DOS unidades propias (Suburban High Country y
+// Cadillac Escalade 2027), las dos firmes.
+export const UNIDADES: Partial<Record<Category, number>> = { suv: 2 };
 /** De esas, cuántas son propias y se venden sin condición. */
-export const UNIDADES_FIRMES: Partial<Record<Category, number>> = { suv: 1 };
+export const UNIDADES_FIRMES: Partial<Record<Category, number>> = { suv: 2 };
+
+/**
+ * La Escalade como unidad concreta: una reserva con "Garantizar Escalade"
+ * ocupa la categoría SUV Lux Y este cajón aparte, de una sola unidad, para
+ * no vender la misma Escalade dos veces a la misma hora.
+ */
+type Cajon = Category | "escalade";
 
 export type Ventana = { inicio: number; fin: number };
 
@@ -151,7 +160,7 @@ function diasQueToca(v: Ventana): string[] {
   return dias.length ? dias : [new Date(v.inicio).toISOString().slice(0, 10)];
 }
 
-const clave = (c: Category, dia: string) => `agenda:${c}:${dia}`;
+const clave = (c: Cajon, dia: string) => `agenda:${c}:${dia}`;
 /** Noventa días: pasado el servicio, el apunte ya no sirve para nada. */
 const TTL = 90 * 24 * 3600;
 
@@ -162,8 +171,8 @@ type Apunte = { inicio: number; fin: number; id: string };
  * cobro entra, no el checkout: una sesión de pago abierta y abandonada no
  * debe bloquear a nadie.
  */
-export async function apartar(categoria: Category, v: Ventana, id: string) {
-  if (!UNIDADES[categoria]) return { apuntado: false, motivo: "categoría sin límite" };
+export async function apartar(categoria: Cajon, v: Ventana, id: string) {
+  if (categoria !== "escalade" && !UNIDADES[categoria]) return { apuntado: false, motivo: "categoría sin límite" };
   const redis = getRedis();
   if (!redis) return { apuntado: false, motivo: "sin redis" };
   const apunte: Apunte = { inicio: v.inicio, fin: v.fin, id };
@@ -193,7 +202,7 @@ const sinLimite = (unidades = 0): Hueco => ({
  * canceló. Hace falta la misma ventana con la que se apuntó: el apunte se
  * guarda como texto y sólo se borra el texto idéntico.
  */
-export async function liberar(categoria: Category, v: Ventana, id: string) {
+export async function liberar(categoria: Cajon, v: Ventana, id: string) {
   const redis = getRedis();
   if (!redis) return { liberado: false, motivo: "sin redis" };
   const apunte: Apunte = { inicio: v.inicio, fin: v.fin, id };
@@ -203,7 +212,7 @@ export async function liberar(categoria: Category, v: Ventana, id: string) {
 }
 
 /** Los apuntes de una categoría entre dos fechas (AAAA-MM-DD), sin repetir. */
-export async function listar(categoria: Category, desde: string, hasta: string) {
+export async function listar(categoria: Cajon, desde: string, hasta: string) {
   const redis = getRedis();
   if (!redis) return [];
   const vistos = new Map<string, Apunte>();
@@ -344,5 +353,25 @@ export async function hayHueco(categoria: Category, v: Ventana): Promise<Hueco> 
     return ocupadas
       ? { libre: ocupadas < unidades, sujetoAConfirmacion: ocupadas >= firmes && ocupadas < unidades, ocupadas, unidades }
       : sinLimite(unidades);
+  }
+}
+
+/**
+ * ¿Está libre la Escalade? Sólo mira las reservas que la garantizaron
+ * (cajón "escalade" en Redis). Ante cualquier fallo contesta que sí.
+ */
+export async function escaladeLibre(v: Ventana): Promise<boolean> {
+  const redis = getRedis();
+  if (!redis) return true;
+  try {
+    for (const dia of diasQueToca(v)) {
+      for (const c of await redis.smembers(clave("escalade", dia))) {
+        const a: Apunte = typeof c === "string" ? JSON.parse(c) : (c as Apunte);
+        if (a.inicio <= v.fin && v.inicio <= a.fin) return false;
+      }
+    }
+    return true;
+  } catch {
+    return true;
   }
 }

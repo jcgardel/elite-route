@@ -70,9 +70,9 @@ export function fleetPriceRange() {
 const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; notEn: string }> = {
   suv: {
     forEs:
-      "Es la que más equipaje admite y la que más se pide para aeropuerto con familia o con equipo. Va cómoda en carretera, así que también es la de las rutas foráneas largas. Es una de las dos categorías que llevan chofer bilingüe.",
+      "Es la que más equipaje admite y la que más se pide para aeropuerto con familia o con equipo. Va cómoda en carretera, así que también es la de las rutas foráneas largas. Es una de las dos categorías que llevan chofer bilingüe. Unidades: Chevrolet Suburban High Country y Cadillac Escalade 2027; si quieres la Escalade segura, puedes garantizarla al reservar.",
     forEn:
-      "It takes the most luggage and is the one most asked for at the airport with family or with equipment. It is comfortable on the motorway, so it is also the one for the long out-of-town routes. It is also one of the two categories that travel with a bilingual chauffeur.",
+      "It takes the most luggage and is the one most asked for at the airport with family or with equipment. It is comfortable on the motorway, so it is also the one for the long out-of-town routes. It is also one of the two categories that travel with a bilingual chauffeur. Vehicles: Chevrolet Suburban High Country and Cadillac Escalade 2027; if you want the Escalade for sure, you can guarantee it when booking.",
     notEs:
       "Si van tres personas con poco equipaje, es más auto del que necesitas: la Executive cuesta menos y llega igual de bien.",
     notEn:

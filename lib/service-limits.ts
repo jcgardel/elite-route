@@ -240,6 +240,19 @@ export function precioConEvento(precio: number, cat: Category, fecha: string, ho
 }
 
 /**
+ * GARANTIZAR ESCALADE 2026, decisión del dueño (7 y 16 nov 2026). SUV Lux
+ * tiene dos unidades propias —Suburban High Country y Escalade 2026— y se
+ * vende por categoría; quien quiera la Escalade segura paga +20 % sobre el
+ * precio final de SUV Lux (evento y temporada incluidos). Sin categoría
+ * aparte: es una opción dentro de SUV Lux. Lo cobra /api/checkout.
+ */
+export const ESCALADE_PRIMA = 0.2;
+
+export function precioConEscalade(precio: number, cat: Category, escalade: boolean) {
+  return escalade && cat === "suv" ? Math.round(precio * (1 + ESCALADE_PRIMA)) : precio;
+}
+
+/**
  * Mínimo del servicio por horas por categoría, decisión del dueño el 8 nov
  * 2026: SUV Lux a 5 horas; las demás se quedan en el mínimo general (3).
  */

@@ -63,6 +63,7 @@ export async function POST(req: Request) {
           airportPickup: m.airportPickup === "true",
         });
         if (!v || !m.category) return { apuntado: false, motivo: "sin datos" };
+        if (m.escalade === "true") await apartar("escalade", v, session.id);
         return apartar(m.category as Parameters<typeof apartar>[0], v, session.id);
       })(),
       // REGISTRO CENTRAL (Supabase). Tampoco cuenta para `avisado`: si falla,

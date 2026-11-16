@@ -112,7 +112,8 @@ export const vehicles: Record<
     capEs: capEs("suv"),
     note: "recommended 4 passengers with full luggage",
     noteEs: "recomendado 4 pasajeros con equipaje completo",
-    tag: "Suburban · Escalade",
+    // 16 nov 2026: dos unidades propias. La Escalade se puede garantizar (+20 %).
+    tag: "Suburban High Country · Escalade 2026",
   },
 };
 

@@ -152,6 +152,7 @@ function enlacesDeRuta(lang: Lang) {
   const corto = (nombre: string) => nombre.match(/\(([A-Z]{3,5})\)/)?.[1] ?? nombre;
 
   return ROUTE_KEYS.map((key) => ({
+    key,
     href: routePath(lang, key),
     label: `${corto(ROUTES[key][lang].airport)} → ${ROUTES[key][lang].zone}`,
     foranea: ROUTES[key].precioUnico === true,

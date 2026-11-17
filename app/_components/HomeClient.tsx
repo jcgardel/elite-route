@@ -196,6 +196,18 @@ const TX = {
     heroBtnTalk: "Talk to Our Team",
     comfortTitleA: "Safety, comfort and ", comfortTitleB: "confidence", comfortTitleC: " in every ride.",
     insured: "Every vehicle insured", gps: "GPS-monitored fleet, 24/7",
+    toursKicker: "Tours & day trips with a chauffeur",
+    toursTitle: "Your chauffeur, at your disposal all day",
+    toursCopy: "No tour schedules, no groups: the car and the chauffeur are yours alone. They wait at every stop and take you back to your hotel.",
+    tours: [
+      { tag: "Hourly · 9–10 h", title: "Teotihuacán & the Basilica", copy: "The pyramids in the morning and the Basilica of Guadalupe on the way back — same direction, one day, at your pace.", cta: "See the Teotihuacán trip" },
+      { tag: "Hourly · from 3 h", title: "Xochimilco & Coyoacán", copy: "Trajineras on the canals, then an afternoon in Coyoacán or San Ángel. Inside the city, with your chauffeur by the hour.", cta: "See hourly service" },
+      { tag: "Same-day round trip", title: "Valle de Bravo", copy: "The lake and the magic town, there and back the same day with your chauffeur waiting for you. No driving, no rush.", cta: "See price to Valle de Bravo" },
+      { tag: "Same-day round trip", title: "Tepoztlán", copy: "Climb El Tepozteco and walk the market, then ride back with the chauffeur who waited for you.", cta: "See price to Tepoztlán" },
+    ],
+    toursGuide: "What fits in one day? Read the day-trip guide",
+    toursWa: "Plan my tour on WhatsApp",
+    toursWaText: "Hi, I'd like a quote for a tour with a chauffeur at my disposal.",
     fleetKicker: "The fleet",
     fleetTitle: "Executive and SUV Lux, with a bilingual chauffeur",
     fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan Lite and SUV Urban remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
@@ -361,6 +373,18 @@ const TX = {
     heroBtnTalk: "Hablar con un asesor",
     comfortTitleA: "Seguridad, comodidad y ", comfortTitleB: "confianza", comfortTitleC: " en cada viaje.",
     insured: "Todas las unidades con seguro vigente", gps: "Monitoreo GPS las 24 horas en toda la flota",
+    toursKicker: "Tours y excursiones con chofer",
+    toursTitle: "Tu chofer, a tu disposición todo el día",
+    toursCopy: "Sin horarios de tour ni grupos: el auto y el chofer son sólo para ti. Te esperan en cada parada y te regresan a tu hotel.",
+    tours: [
+      { tag: "Por horas · 9 a 10 h", title: "Teotihuacán y la Basílica", copy: "Las pirámides por la mañana y la Basílica de Guadalupe de regreso: quedan en la misma dirección. Un día, a tu ritmo.", cta: "Ver el viaje a Teotihuacán" },
+      { tag: "Por horas · desde 3 h", title: "Xochimilco y Coyoacán", copy: "Trajineras en los canales y la tarde en Coyoacán o San Ángel. Dentro de la ciudad, con tu chofer por horas.", cta: "Ver chofer por horas" },
+      { tag: "Ida y vuelta el mismo día", title: "Valle de Bravo", copy: "El lago y el pueblo mágico, ida y vuelta el mismo día con el chofer esperándote. Sin manejar y sin prisa.", cta: "Ver precio a Valle de Bravo" },
+      { tag: "Ida y vuelta el mismo día", title: "Tepoztlán", copy: "Sube al Tepozteco, recorre el mercado y regresa con el chofer que te esperó.", cta: "Ver precio a Tepoztlán" },
+    ],
+    toursGuide: "¿Qué cabe en un día? Lee la guía de excursiones",
+    toursWa: "Armar mi tour por WhatsApp",
+    toursWaText: "Hola, quiero cotizar un tour con chofer a disposición.",
     fleetKicker: "La flota",
     fleetTitle: "Executive y SUV Lux, con chofer bilingüe",
     fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan Lite y SUV Urban siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
@@ -807,6 +831,26 @@ const styles = `
   /* El índice de rutas. Sobrio a propósito: es un bloque de navegación y de
      señal para el buscador, no una sección de venta — no puede competir con
      la flota ni con el cotizador. */
+  /* Tours y excursiones: el producto "chofer a disposición" para turistas,
+     con más peso visual que el índice de rutas porque es lo que el dueño
+     quiere vender (16 nov 2026). */
+  .er-tours { margin-top:58px; border:1px solid rgba(200,164,107,0.45); background:rgba(10,10,10,0.55); padding:34px 32px; border-radius:2px; }
+  .er-tours-kicker { margin:0 0 10px; color:#C8A46B; font-size:12px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; }
+  .er-tours-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:clamp(30px, 4vw, 42px); line-height:1.1; margin:0 0 12px; }
+  .er-tours-copy { margin:0 0 26px; max-width:680px; color:#BFC3C8; font-size:16px; line-height:1.65; }
+  .er-tours-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
+  .er-tour { display:flex; flex-direction:column; gap:10px; padding:20px; border:1px solid rgba(200,164,107,0.3); background:rgba(0,0,0,0.35); text-decoration:none; color:#fff; transition:border-color 0.2s, transform 0.2s; }
+  .er-tour:hover { border-color:#C8A46B; transform:translateY(-2px); }
+  .er-tour-tag { align-self:flex-start; font-size:10.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; }
+  .er-tour-title { font-size:19px; font-weight:600; margin:0; }
+  .er-tour-copy { margin:0; color:#BFC3C8; font-size:14px; line-height:1.6; flex:1; }
+  .er-tour-cta { color:#C8A46B; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+  .er-tours-foot { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:24px; }
+  .er-tours-guide { color:#ECEAE6; font-size:14px; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(200,164,107,0.6); }
+  .er-tours-wa { display:inline-flex; min-height:44px; align-items:center; padding:12px 18px; background:#25d366; color:#06140b; font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; }
+  .er-tours-wa:hover { background:#1fb85a; }
+  @media (max-width: 980px) { .er-tours-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+  @media (max-width: 560px) { .er-tours { padding:26px 18px; } .er-tours-grid { grid-template-columns:1fr; } }
   .er-routes { margin-top:58px; border-top:1px solid rgba(200,164,107,0.32); padding-top:28px; }
   .er-routes-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:30px; line-height:1.15; margin:0 0 8px; }
   .er-routes-help { margin:0 0 24px; font-size:13.5px; color:#B4B4AF; line-height:1.6; }
@@ -993,7 +1037,7 @@ const styles = `
 `;
 
 /** Un enlace de ruta ya resuelto en el servidor. Ver `app/[lang]/page.tsx`. */
-export type EnlaceDeRuta = { href: string; label: string; foranea: boolean };
+export type EnlaceDeRuta = { key: string; href: string; label: string; foranea: boolean };
 
 /** Un enlace a una guía, resuelto igual y por el mismo motivo. */
 export type EnlaceDeGuia = { href: string; label: string };
@@ -2380,6 +2424,46 @@ export default function HomeClient({
                 propósito: el precio depende de la ruta y lo da el cotizador,
                 que está justo arriba. Imágenes y datos son los mismos que
                 usa /b2b — /flota/*.webp y lib/vehicles.ts. */}
+            {/* TOURS Y EXCURSIONES. Antes de la flota para que se vea pronto.
+                Los enlaces a Valle de Bravo y Tepoztlán salen de `rutas`
+                (resueltas en el servidor); si una ruta desapareciera, su
+                tarjeta manda al cotizador en vez de romperse. */}
+            <section className="er-tours" id="tours" aria-label={t.toursTitle}>
+              <p className="er-tours-kicker">{t.toursKicker}</p>
+              <h2 className="er-tours-title">{t.toursTitle}</h2>
+              <p className="er-tours-copy">{t.toursCopy}</p>
+              <div className="er-tours-grid">
+                {t.tours.map((tour, i) => {
+                  const href = [
+                    path(lang, "teotihuacan"),
+                    path(lang, "hourly"),
+                    rutas.find((r) => r.key === "vallebravo")?.href ?? "#quote",
+                    rutas.find((r) => r.key === "tepoztlan")?.href ?? "#quote",
+                  ][i];
+                  return (
+                    <a key={tour.title} className="er-tour" href={href}>
+                      <span className="er-tour-tag">{tour.tag}</span>
+                      <h3 className="er-tour-title">{tour.title}</h3>
+                      <p className="er-tour-copy">{tour.copy}</p>
+                      <span className="er-tour-cta">{tour.cta} →</span>
+                    </a>
+                  );
+                })}
+              </div>
+              <div className="er-tours-foot">
+                <a
+                  className="er-tours-wa"
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(t.toursWaText)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track("clic_whatsapp", { origen: "tours" })}
+                >
+                  {t.toursWa}
+                </a>
+                <a className="er-tours-guide" href={path(lang, "guideDayTrips")}>{t.toursGuide}</a>
+              </div>
+            </section>
+
             <section className="er-fleet" id="flota" aria-label={t.fleetTitle}>
               <p className="er-fleet-kicker">{t.fleetKicker}</p>
               <h2 className="er-fleet-title">{t.fleetTitle}</h2>

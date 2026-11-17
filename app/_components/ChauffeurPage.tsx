@@ -99,7 +99,7 @@ const TX = {
       "El conductor es el mismo de principio a fin. No hay un auto distinto en cada parada ni un viaje nuevo que pedir cuando sales de la reunión.",
       "El precio se cierra antes de reservar y no lo mueve el tráfico, la hora ni la demanda del momento.",
       "Las unidades son propias y están aseguradas, con monitoreo GPS las 24 horas.",
-      "Se agenda con anticipación —doce horas como mínimo— y se confirma por WhatsApp; un día antes te enviamos los datos del chofer, la unidad y el punto de encuentro.",
+      "Se agenda con anticipación —doce horas como mínimo— y se confirma por WhatsApp; un día antes (o el mismo día si reservas con menos anticipación) te enviamos los datos del chofer, la unidad y el punto de encuentro.",
       "En salidas de aeropuerto monitoreamos el vuelo: si aterriza tarde, la espera ya está incluida en la tarifa.",
       "Se emite factura CFDI a solicitud, a nombre de una persona o de una empresa.",
     ],
@@ -116,7 +116,7 @@ const TX = {
     how: [
       "Dinos el punto de recogida, el destino o las horas que necesitas, y elige la categoría de vehículo. El precio aparece en pantalla antes de pedirte cualquier dato de pago.",
       "Pagas con tarjeta vía Stripe o reservas por WhatsApp y te enviamos el enlace de pago. Doce horas de anticipación como mínimo.",
-      "Un día antes te enviamos los datos del chofer, la unidad y el punto de encuentro. El chofer llega a la hora acordada y se queda contigo hasta terminar.",
+      "Un día antes (o el mismo día si reservas con menos anticipación) te enviamos los datos del chofer, la unidad y el punto de encuentro. El chofer llega a la hora acordada y se queda contigo hasta terminar.",
     ],
 
     forTitle: "Quién lo contrata",
@@ -221,7 +221,7 @@ const TX = {
       "The driver is the same from start to finish. No different car at every stop, no new ride to order when you walk out of the meeting.",
       "The price is closed before you book and is not moved by traffic, time of day or how busy the moment is.",
       "The vehicles are our own, insured, and GPS-monitored around the clock.",
-      "It is scheduled in advance — twelve hours minimum — and confirmed over WhatsApp; one day before, we send you the chauffeur's and vehicle's details and the meeting point.",
+      "It is scheduled in advance — twelve hours minimum — and confirmed over WhatsApp; one day before (or on the day if you book at shorter notice), we send you the chauffeur's and vehicle's details and the meeting point.",
       "On airport pickups we track the flight: if it lands late, the waiting time is already covered by the fare.",
       "A CFDI invoice is issued on request, to a person or to a company.",
     ],
@@ -238,7 +238,7 @@ const TX = {
     how: [
       "Tell us the pickup point and the destination, or the hours you need, and pick a vehicle category. The price appears on screen before you hand over any payment details.",
       "Pay by card through Stripe, or book over WhatsApp and we send you the payment link. Twelve hours' notice minimum.",
-      "One day before, we send you the chauffeur's and vehicle's details and the meeting point. Your chauffeur arrives at the agreed time and stays with you until the service ends.",
+      "One day before (or on the day if you book at shorter notice), we send you the chauffeur's and vehicle's details and the meeting point. Your chauffeur arrives at the agreed time and stays with you until the service ends.",
     ],
 
     forTitle: "Who books it",
@@ -264,7 +264,7 @@ const TX = {
     faqs: [
       [
         "How much does a private chauffeur cost in Mexico City?",
-        `A transfer within the city starts at ${mxn(desde("sedan"))} including VAT in a Sedan Lite; hourly service at ${mxn(porHora("sedan"))} an hour with a two-hour minimum, and a ten-hour full day at ${mxn(porDia("sedan"))}. The exact price depends on the category and the route, and the quote form shows it on screen before asking for any payment details.`,
+        `A transfer within the city starts at ${mxn(desde("sedan"))} including VAT in a Sedan Lite; hourly service at ${mxn(porHora("sedan"))} an hour with a three-hour minimum, and a ten-hour full day at ${mxn(porDia("sedan"))}. The exact price depends on the category and the route, and the quote form shows it on screen before asking for any payment details.`,
       ],
       [
         "Is it the same chauffeur for the whole service?",

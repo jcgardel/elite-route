@@ -18,6 +18,8 @@ import {
   KM_POR_HORA,
   ZONA_POR_HORAS,
   LEYENDA_POR_HORAS,
+  HORAS_MIN_CATEGORIA,
+  NOTA_TEMPORADA,
   REDONDO_HORAS_CORTESIA,
   REDONDO_HORAS_MAX,
 } from "@/lib/service-limits";
@@ -88,7 +90,7 @@ const TX = {
     rtLabel: "Ida y vuelta el mismo día",
     rtTitle: "Viaje redondo a destinos foráneos",
     rtCopy:
-      `El chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que reservar dos traslados por separado e incluye ${REDONDO_HORAS_CORTESIA} horas de espera. Si necesitas más tiempo, puedes añadir horas al reservar, hasta ${REDONDO_HORAS_MAX} en total.`,
+      `El chofer te lleva, te espera y te regresa el mismo día. Normalmente cuesta menos que reservar dos traslados por separado e incluye ${REDONDO_HORAS_CORTESIA} horas de espera. Si necesitas más tiempo, puedes añadir horas al reservar, hasta ${REDONDO_HORAS_MAX} en total.`,
     rtExtraNote: "Hora de espera adicional:",
     rtBook: "Reservar un viaje redondo",
     routesRedondo: {
@@ -171,7 +173,7 @@ const TX = {
     rtLabel: "Out and back the same day",
     rtTitle: "Round trips to out-of-town destinations",
     rtCopy:
-      `Your chauffeur drives you there, waits and brings you back the same day. It costs less than booking two separate transfers and includes ${REDONDO_HORAS_CORTESIA} hours of waiting. Need longer? You can add hours when you book, up to ${REDONDO_HORAS_MAX} in total.`,
+      `Your chauffeur drives you there, waits and brings you back the same day. It usually costs less than booking two separate transfers and includes ${REDONDO_HORAS_CORTESIA} hours of waiting. Need longer? You can add hours when you book, up to ${REDONDO_HORAS_MAX} in total.`,
     rtExtraNote: "Each additional waiting hour:",
     rtBook: "Book a round trip",
     routesRedondo: {
@@ -329,6 +331,7 @@ export default function TarifasClient({
         <p className="tf-kicker">{t.kicker}</p>
         <h1 className="tf-title">{t.title[0]}{" "}<br />{t.title[1]}</h1>
         <p className="tf-subtitle">{t.subtitle}</p>
+        <p className="tf-currency-note">{NOTA_TEMPORADA[lang]}</p>
         {"currencyNote" in t && (
           <p className="tf-currency-note">{(t as { currencyNote: string }).currencyNote}</p>
         )}
@@ -503,12 +506,23 @@ export default function TarifasClient({
                       <td style={{ fontWeight: esDia ? 600 : 400, color: esDia ? "#C8A46B" : "#fff" }}>
                         {esDia ? t.fullDay : t.hours(h)}
                       </td>
-                      {cats.map((cat) => (
-                        <td key={cat}>
-                          <span className="tf-price">{mxn(tablas.horas[h][cat])}</span>
-                          <span className="tf-price-note">{t.priceNote}</span>
-                        </td>
-                      ))}
+                      {cats.map((cat) => {
+                        // Bajo el mínimo de la categoría (SUV Lux: 5 h) el
+                        // cotizador no lo vende: no se publica precio.
+                        const minCat = HORAS_MIN_CATEGORIA[cat] ?? 0;
+                        return (
+                          <td key={cat}>
+                            {!esDia && h < minCat ? (
+                              <span className="tf-price-note">{lang === "es" ? `Mín. ${minCat} h` : `Min. ${minCat} h`}</span>
+                            ) : (
+                              <>
+                                <span className="tf-price">{mxn(tablas.horas[h][cat])}</span>
+                                <span className="tf-price-note">{t.priceNote}</span>
+                              </>
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}

@@ -847,7 +847,7 @@ export const ROUTES: Record<RouteKey, Route> = {
       title: "Traslado de Ciudad de México a Puebla",
       metaTitle: "Traslado privado CDMX a Puebla | Precio Fijo con IVA",
       metaDescription:
-        "Traslado privado de Ciudad de México a Puebla con chofer. Unas dos horas por la autopista. Precio fijo con IVA incluido, sin cargo por esperas razonables.",
+        "Traslado privado de Ciudad de México a Puebla con chofer. Unas dos horas por la autopista. Precio fijo con IVA incluido y 30 minutos de espera sin costo.",
       keywords:
         "traslado CDMX Puebla, chofer privado a Puebla, transporte ejecutivo Puebla, viaje privado México Puebla precio",
       intro:
@@ -973,7 +973,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "¿Hacen el viaje redondo el mismo día?",
-          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Normalmente cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
         ],
         ANTICIPACION_ES,
       ],
@@ -999,7 +999,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "Do you do the round trip in one day?",
-          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It usually costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
         ],
         ANTICIPACION_EN,
       ],
@@ -1093,7 +1093,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "¿Hacen el viaje redondo el mismo día?",
-          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Normalmente cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
         ],
         ANTICIPACION_ES,
       ],
@@ -1127,7 +1127,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "Do you do the round trip in one day?",
-          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It usually costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
         ],
         ANTICIPACION_EN,
       ],
@@ -1174,7 +1174,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "¿Hacen el viaje redondo el mismo día?",
-          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
+          "Sí, y se reserva en línea. Marca «viaje redondo» en el cotizador: el chofer te lleva, te espera y te regresa el mismo día. Normalmente cuesta menos que dos traslados por separado e incluye dos horas de espera, y puedes añadir más al reservar.",
         ],
         [
           "¿Cuántas horas de espera conviene contratar?",
@@ -1204,7 +1204,7 @@ export const ROUTES: Record<RouteKey, Route> = {
         ],
         [
           "Do you do the round trip in one day?",
-          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
+          "Yes, and you can book it online. Tick \u201cround trip\u201d in the quote form: the chauffeur drives you there, waits and brings you back the same day. It usually costs less than two separate transfers and includes two hours of waiting, with more available when you book.",
         ],
         [
           "How many waiting hours should I book?",

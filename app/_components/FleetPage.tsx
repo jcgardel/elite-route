@@ -94,9 +94,9 @@ const DETALLE: Record<Category, { forEs: string; forEn: string; notEs: string; n
     forEn:
       "This is the group one: six people seated without squeezing, easy access and a good height for getting in and out. It costs less than the Executive because it is more space, not more class.",
     notEs:
-      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, hay que ir a la SUV Lux o a dos unidades. Tampoco lleva chofer bilingüe: para eso es la Executive o la SUV Lux.",
+      "Seis pasajeros con equipaje completo no caben a la vez. Si van seis y todos con maleta grande, lo indicado son dos unidades: la SUV Lux lleva hasta seis maletas, pero con equipaje completo se recomienda para cuatro pasajeros. Tampoco lleva chofer bilingüe: para eso es la Executive o la SUV Lux.",
     notEn:
-      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, it has to be the SUV Lux or two vehicles. It does not travel with a bilingual chauffeur either — for that it is the Executive or the SUV Lux.",
+      "Six passengers with full luggage do not fit at the same time. If there are six of you and everyone has a large case, book two vehicles: the SUV Lux takes up to six cases, but with full luggage it is recommended for four passengers. It does not travel with a bilingual chauffeur either — for that it is the Executive or the SUV Lux.",
   },
   sedan: {
     forEs:
@@ -145,7 +145,7 @@ const TX = {
 
     assignTitle: "Cómo se asigna la unidad",
     assign: [
-      "Reservas una categoría y recibes esa categoría. La marca, el modelo y el color se asignan según la disponibilidad y lo que pida el traslado, y te los enviamos un día antes del servicio.",
+      "Reservas una categoría y recibes esa categoría. La marca, el modelo y el color se asignan según la disponibilidad y lo que pida el traslado, y te los enviamos un día antes del servicio (o el mismo día si reservas con menos anticipación).",
       "Por eso en cada categoría verás los modelos seguidos de «o equivalente»: son ejemplos de lo que opera en esa categoría, no una promesa de un auto concreto.",
       "Si tu servicio necesita un modelo o un color determinado —una boda, un evento con protocolo—, escríbenos por WhatsApp antes de reservar y te decimos si es posible.",
       "Si van más personas de las que entran en una unidad, se cotizan dos: el cotizador corporativo permite varios servicios en la misma solicitud.",
@@ -248,7 +248,7 @@ const TX = {
 
     assignTitle: "How the vehicle is assigned",
     assign: [
-      "You book a category and you get that category. Make, model and colour are assigned according to availability and what the service calls for, and we send them to you one day before the service.",
+      "You book a category and you get that category. Make, model and colour are assigned according to availability and what the service calls for, and we send them to you one day before the service (or on the day if you book at shorter notice).",
       "That is why each category lists models followed by “or equivalent”: they are examples of what runs in that category, not a promise of one particular car.",
       "If your service needs a specific model or colour — a wedding, an event with protocol — message us on WhatsApp before booking and we will tell you whether it is possible.",
       "If there are more of you than fit in one vehicle, two are quoted: the corporate quote form takes several services in a single request.",

@@ -79,6 +79,17 @@ export function dentroDeZonaPorHoras(kmAlCentro: number) {
   return kmAlCentro <= RADIO_POR_HORAS_KM;
 }
 
+/**
+ * Las tablas publicadas usan la tarifa base (calculatePrice sin fecha). El
+ * checkout aplica precioConEvento según la fecha —temporada o evento—, así
+ * que en esas fechas lo cobrado sube. Esta nota acompaña a cada tabla para
+ * que el precio publicado no se lea como definitivo (auditoría 16 nov 2026).
+ */
+export const NOTA_TEMPORADA = {
+  es: "Tarifas base. En fechas de alta demanda (temporada o eventos) puede aplicar un ajuste: el cotizador te muestra el precio final de tu fecha antes de pagar.",
+  en: "Base rates. On high-demand dates (season or events) an adjustment may apply: the quote form shows the final price for your date before you pay.",
+} as const;
+
 /** La leyenda que la página tiene que hacer notar. */
 export const LEYENDA_POR_HORAS = {
   es: "El servicio por horas aplica sólo dentro de la Ciudad de México. Si necesitas salir de la CDMX (AIFA, Toluca o foráneos), solicita una cotización especial.",

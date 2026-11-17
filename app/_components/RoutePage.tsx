@@ -74,7 +74,7 @@ const TX = {
     */
     diaTitle: "¿Ir y volver el mismo día?",
     diaCopy:
-      "La tabla de arriba es el traslado sencillo, en un sentido. Si quieres ir, pasar el día y volver con el mismo chofer esperándote, resérvalo como viaje redondo en el cotizador: cuesta menos que dos traslados por separado e incluye dos horas de espera.",
+      "La tabla de arriba es el traslado sencillo, en un sentido. Si quieres ir, pasar el día y volver con el mismo chofer esperándote, resérvalo como viaje redondo en el cotizador: normalmente cuesta menos que dos traslados por separado e incluye dos horas de espera.",
     diaAlt:
       "Pon tu origen y este destino, continúa al paso 2 y marca «viaje redondo». Si necesitas más espera, puedes añadir horas antes de pagar.",
     diaBtn: "Reservar viaje redondo",
@@ -131,7 +131,7 @@ const TX = {
     toAirport: (a: string) => `To ${a}`,
     diaTitle: "Going and coming back the same day?",
     diaCopy:
-      "The table above is the one-way transfer. If you want to go, spend the day and come back with the same chauffeur waiting for you, book it as a round trip in the quote form: it costs less than two separate transfers and includes two hours of waiting.",
+      "The table above is the one-way transfer. If you want to go, spend the day and come back with the same chauffeur waiting for you, book it as a round trip in the quote form: it usually costs less than two separate transfers and includes two hours of waiting.",
     diaAlt:
       "Enter your pickup and this destination, continue to step 2 and tick \u201cround trip\u201d. If you need longer, you can add waiting hours before paying.",
     diaBtn: "Book a round trip",

@@ -278,8 +278,8 @@ const TX = {
     routesOutRt: (
       <>
         <strong>Going and coming back the same day?</strong> On these routes you can
-        book a round trip with the chauffeur waiting for you. It costs less than two
-        separate transfers — pick your destination in the quote form above and tick it
+        book a round trip with the chauffeur waiting for you. It usually costs less than
+        two separate transfers — pick your destination in the quote form above and tick it
         in step 2.
       </>
     ),
@@ -349,7 +349,7 @@ const TX = {
     benefit1Title: "Professional Chauffeurs", benefit1Copy: "Licensed and professionally trained.",
     benefit2Title: "Fixed Pricing", benefit2Copy: "Transparent fares with no surprises.",
     benefit3Title: "24/7 Availability", benefit3Copy: "Airport and executive transportation.",
-    benefit4Title: "Direct Attention", benefit4Copy: "WhatsApp support; chauffeur details one day before.",
+    benefit4Title: "Direct Attention", benefit4Copy: "WhatsApp support; chauffeur details before the service.",
     b2bTitle: "Business to Business",
     b2bCopy: "Corporate accounts, executive transfers, recurring routes and commercial partnerships.",
     accTitle: "Accounting / Invoices",
@@ -455,8 +455,8 @@ const TX = {
     routesOutRt: (
       <>
         <strong>¿Ir y volver el mismo día?</strong> En estas rutas puedes reservar el
-        viaje redondo con el chofer esperándote. Cuesta menos que dos traslados por
-        separado: elige tu destino en el cotizador de arriba y márcalo en el paso 2.
+        viaje redondo con el chofer esperándote. Normalmente cuesta menos que dos
+        traslados por separado: elige tu destino en el cotizador de arriba y márcalo en el paso 2.
       </>
     ),
     notes: "¿Algo que debamos saber? (opcional)",
@@ -522,7 +522,7 @@ const TX = {
     benefit1Title: "Choferes Profesionales", benefit1Copy: "Licenciados y capacitados profesionalmente.",
     benefit2Title: "Tarifas Fijas", benefit2Copy: "Precios transparentes sin sorpresas.",
     benefit3Title: "Disponibilidad 24/7", benefit3Copy: "Transporte aeroportuario y ejecutivo.",
-    benefit4Title: "Atención Directa", benefit4Copy: "WhatsApp y datos del conductor un día antes.",
+    benefit4Title: "Atención Directa", benefit4Copy: "WhatsApp y datos del conductor antes del servicio.",
     b2bTitle: "Business to Business",
     b2bCopy: "Cuentas corporativas, traslados ejecutivos, rutas recurrentes y asociaciones comerciales.",
     accTitle: "Contabilidad / Facturas",

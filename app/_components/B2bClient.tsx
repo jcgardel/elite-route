@@ -6,6 +6,7 @@ import { GOOGLE_PLACE_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "@
 import { LEGAL } from "@/lib/legal";
 import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
 import { B2B_HORAS, B2B_SECTIONS, type TablasB2b } from "@/lib/rate-tables";
+import { HORAS_MIN_CATEGORIA, NOTA_TEMPORADA } from "@/lib/service-limits";
 import LangToggle from "./LangToggle";
 import { path, type Lang } from "@/lib/i18n";
 
@@ -91,7 +92,7 @@ const TX = {
       ["Conductores profesionales", "Conductores identificados y seleccionados conforme a nuestros estándares de servicio y operación."],
       ["Unidades aseguradas", "Todas las unidades con seguro vigente y monitoreo GPS las 24 horas."],
       ["Recepción personalizada en aeropuerto", "Tu conductor te espera en la zona de llegadas con un letrero o tablet con tu nombre."],
-      ["Datos del conductor un día antes", "Un día antes del servicio compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
+      ["Datos del conductor antes del servicio", "Un día antes del servicio (o el mismo día si se reserva con menos anticipación) compartimos los datos del conductor y de la unidad asignada para que el pasajero pueda identificarlos."],
     ],
     payLabel: "Forma de pago",
     payCard: "· Tarjeta de crédito o débito, nacional o internacional",
@@ -180,7 +181,7 @@ const TX = {
       ["Professional chauffeurs", "Chauffeurs identified and selected according to our own service and operating standards."],
       ["Insured vehicles", "Every vehicle insured and GPS-monitored around the clock."],
       ["Meet and greet in arrivals", "Your chauffeur waits in the arrivals hall with a sign or tablet showing your name."],
-      ["Chauffeur details one day before", "One day before the service we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
+      ["Chauffeur details before the service", "One day before the service (or on the day if booked at shorter notice) we share the assigned chauffeur's and vehicle's details so the passenger can identify them."],
     ],
     payLabel: "How you pay",
     payCard: "· Credit or debit card, Mexican or international",
@@ -560,6 +561,7 @@ export default function B2bClient({
           <div style={{marginTop:"48px",borderTop:"1px solid #2e2e2e",paddingTop:"32px"}}>
             <div style={{color:"#fff",fontWeight:600,fontSize:"15px",marginBottom:"6px"}}>{t.hourTitle}</div>
             <p style={{color:"#B4B4AF",fontSize:"12px",marginBottom:"16px"}}>{t.hourNote}</p>
+            <p style={{color:"#B4B4AF",fontSize:"12px",marginBottom:"16px"}}>{NOTA_TEMPORADA[lang]}</p>
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:"13px",minWidth:"480px"}}>
                 <thead>
@@ -581,7 +583,9 @@ export default function B2bClient({
                       </td>
                       {B2B_HORAS.map((h)=>(
                         <td key={h} style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>
-                          {mxn(tablas.horas[h][c.key])}
+                          {h < (HORAS_MIN_CATEGORIA[c.key as keyof typeof HORAS_MIN_CATEGORIA] ?? 0)
+                            ? (lang === "es" ? `Mín. ${HORAS_MIN_CATEGORIA[c.key as keyof typeof HORAS_MIN_CATEGORIA]} h` : `Min. ${HORAS_MIN_CATEGORIA[c.key as keyof typeof HORAS_MIN_CATEGORIA]} h`)
+                            : mxn(tablas.horas[h][c.key])}
                         </td>
                       ))}
                     </tr>

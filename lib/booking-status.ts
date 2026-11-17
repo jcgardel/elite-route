@@ -35,14 +35,14 @@ export const DESPUES_DE_PAGAR = {
     pagoRecibido: "Pago recibido",
     enValidacion: "Reserva confirmada",
     validacion:
-      "Tu reserva está confirmada; este mensaje es tu comprobante. Cualquier cambio o duda, escríbenos por WhatsApp.",
+      "Tu reserva está confirmada; este mensaje es tu comprobante. En el caso excepcional de no tener unidad disponible, te reembolsamos el importe completo, como dicen los términos. Cualquier cambio o duda, escríbenos por WhatsApp.",
     conductor:
       "Un día antes del servicio te enviamos por WhatsApp los datos del conductor y de la unidad (si reservas con menos anticipación, el mismo día).",
     /** Los tres pasos, para listas cortas junto al botón de pago. */
     pasos: [
       ["Pagas con Stripe", "Te enviamos el comprobante por correo."],
       ["Reserva confirmada", "Al instante, con el pago."],
-      ["Datos del conductor", "Conductor y unidad asignados, un día antes del servicio."],
+      ["Datos del conductor", "Conductor y unidad asignados, un día antes del servicio (o el mismo día si reservaste con menos anticipación)."],
     ],
     pasosTitulo: "Qué pasa al pagar",
   },
@@ -50,13 +50,13 @@ export const DESPUES_DE_PAGAR = {
     pagoRecibido: "Payment received",
     enValidacion: "Booking confirmed",
     validacion:
-      "Your booking is confirmed; this message is your confirmation. For any change or question, write to us on WhatsApp.",
+      "Your booking is confirmed; this message is your confirmation. In the exceptional case that no vehicle is available, we refund the full amount, as the terms state. For any change or question, write to us on WhatsApp.",
     conductor:
       "One day before the service we send you the chauffeur's and vehicle's details over WhatsApp (if you book at shorter notice, on the same day).",
     pasos: [
       ["You pay through Stripe", "We email you the receipt."],
       ["Booking confirmed", "Instantly, with your payment."],
-      ["Chauffeur details", "Your assigned chauffeur and vehicle, one day before the service."],
+      ["Chauffeur details", "Your assigned chauffeur and vehicle, one day before the service (or on the day if you booked at shorter notice)."],
     ],
     pasosTitulo: "What happens when you pay",
   },

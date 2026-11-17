@@ -13,7 +13,7 @@ import {
   TRANSFERS_PER_YEAR,
   YEARS_OPERATING,
 } from "@/lib/social-proof";
-import { KM_POR_HORA, LEYENDA_POR_HORAS, ZONA_POR_HORAS } from "@/lib/service-limits";
+import { HORAS_MIN_CATEGORIA, KM_POR_HORA, LEYENDA_POR_HORAS, NOTA_TEMPORADA, ZONA_POR_HORAS } from "@/lib/service-limits";
 
 /**
  * El chofer por horas, con su propia dirección.
@@ -446,7 +446,13 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
                         </span>
                       )}
                     </td>
-                    {BLOCKS.map((h) => <td key={h}>{mxn(hourlyPrice(cat, h))}</td>)}
+                    {BLOCKS.map((h) => (
+                      <td key={h}>
+                        {h < (HORAS_MIN_CATEGORIA[cat] ?? 0)
+                          ? (lang === "es" ? `Mín. ${HORAS_MIN_CATEGORIA[cat]} h` : `Min. ${HORAS_MIN_CATEGORIA[cat]} h`)
+                          : mxn(hourlyPrice(cat, h))}
+                      </td>
+                    ))}
                     <td>{mxn(hourlyPrice(cat, FULL_DAY_HOURS))}</td>
                   </tr>
                 ))}
@@ -454,6 +460,7 @@ export default function HourlyPage({ lang }: { lang: Lang }) {
             </table>
           </div>
           <p className="hp-zone-legend" role="note">{LEYENDA_POR_HORAS[lang]}</p>
+          <p style={{ color:"#B4B4AF", fontSize:13, lineHeight:1.6, margin:"12px 0 0", maxWidth:"70ch" }}>{NOTA_TEMPORADA[lang]}</p>
           <p className="hp-note">{t.tableNote}</p>
         </section>
 

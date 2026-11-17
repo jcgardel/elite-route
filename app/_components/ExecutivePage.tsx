@@ -43,7 +43,7 @@ import {
 const cats: readonly Category[] = CATEGORIES;
 
 /** El bloque mínimo y la jornada completa. Los define `calculatePrice`. */
-const MIN_BLOCK = 2;
+const MIN_BLOCK = 3; // = HORAS_MIN del cotizador (antes decía 2 y publicaba un bloque que no se podía comprar)
 const FULL_DAY_HOURS = 10;
 
 /**

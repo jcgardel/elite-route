@@ -145,7 +145,7 @@ const TX = {
     arriveTitle: "Cómo es la llegada",
     arrive: [
       "Al reservar nos dejas tu número de vuelo y la terminal. Monitoreamos el vuelo: si se adelanta o se retrasa, la hora del chofer se mueve con él, sin costo y sin que tengas que avisar.",
-      "Un día antes del servicio te enviamos por WhatsApp los datos del chofer y de la unidad, y el punto de encuentro exacto de tu terminal.",
+      "Un día antes del servicio (o el mismo día si reservas con menos anticipación) te enviamos por WhatsApp los datos del chofer y de la unidad, y el punto de encuentro exacto de tu terminal.",
       "Sales de la sala de llegadas, escribes por WhatsApp y el chofer se acerca al punto acordado. No hay que buscar una fila ni pedir nada por aplicación.",
       "Si viajas con equipaje voluminoso o con más gente de la prevista, dínoslo al reservar: la categoría se elige por maletas, no sólo por pasajeros.",
     ],
@@ -269,7 +269,7 @@ const TX = {
     arriveTitle: "What arrival looks like",
     arrive: [
       "When you book you leave us your flight number and terminal. We track the flight: if it comes in early or late, the chauffeur's time moves with it, at no cost and without you having to tell us.",
-      "One day before the service we send you over WhatsApp your chauffeur's and vehicle's details and the exact meeting point for your terminal.",
+      "One day before the service (or on the day if you book at shorter notice) we send you over WhatsApp your chauffeur's and vehicle's details and the exact meeting point for your terminal.",
       "You walk out of arrivals, message on WhatsApp and the chauffeur comes to the agreed point. No queue to find, nothing to order on an app.",
       "If you are travelling with bulky luggage or more people than planned, tell us when you book: the category is chosen by suitcases, not only by passengers.",
     ],

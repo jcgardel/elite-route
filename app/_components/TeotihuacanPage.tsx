@@ -29,6 +29,12 @@ import { KM_POR_HORA as KM_HORA } from "@/lib/service-limits";
  * 2026 que el viaje no lleva tarifa de ruta fija: se cotiza por WhatsApp o se
  * reserva por horas en la categoría que el cliente quiera. Por eso aquí no
  * hay un "precio del viaje", sino la tabla por horas, que sí es real.
+ *
+ * 16 NOV 2026: COTIZACIÓN ESPECIAL. El servicio por horas es sólo CDMX
+ * (decisión del 17 oct, lib/service-limits.ts) y Teotihuacán está en el
+ * Estado de México, así que el dueño decidió que este viaje se cotiza por
+ * WhatsApp con precio cerrado. La página ya no publica la tabla por horas
+ * ni manda al cotizador.
  */
 
 const cats: Category[] = ["sedan", "executive", "minivan", "suv"];
@@ -42,14 +48,10 @@ const KM_POR_HORA = KM_HORA;
 /** Las dos categorías con chofer bilingüe. Confirmado por el dueño. */
 const BILINGUES: Category[] = ["executive", "suv"];
 
-function mxn(n: number) {
-  return "$" + n.toLocaleString("es-MX");
-}
-
 const TX = {
   es: {
     navRates: "Tarifas",
-    navQuote: "Cotizar",
+    navQuote: "Cotizar por WhatsApp",
     navQuoteFull: "Cotizar un día a Teotihuacán",
     kicker: "Día completo · Teotihuacán",
     title: "Viaje a Teotihuacán desde la Ciudad de México",
@@ -58,15 +60,15 @@ const TX = {
 
     factHorasValue: "9 a 10 horas",
     factHorasLabel: "lo que suele tomar el día completo",
-    factKmValue: `${KM_POR_HORA} km por hora`,
-    factKmLabel: "incluidos; el viaje redondo cabe de sobra",
+    factKmValue: "Cotización especial",
+    factKmLabel: "por WhatsApp, con precio cerrado antes de confirmar",
     factPrecioValue: "Precio fijo",
     factPrecioLabel: "IVA incluido, sin cargos sorpresa",
 
     quesTitle: "Qué es, y qué no",
     esTitle: "Lo que sí incluye",
     es: [
-      "El vehículo y el chofer durante todas las horas que contrates, sólo para ti.",
+      "El vehículo y el chofer todo el día, sólo para ti.",
       "La espera mientras visitas la zona arqueológica: el chofer no se va y no cobra aparte por esperar.",
       "Paradas en el camino si las quieres, y una comida en el regreso si te acomoda.",
       "Precio cerrado antes de salir, con IVA, que no se mueve por tráfico.",
@@ -87,7 +89,10 @@ const TX = {
       "Vuelta a tu dirección a media tarde.",
     ],
 
-    precioTitle: "Precio por vehículo",
+    precioTitle: "Precio: cotización especial",
+    precioCopy:
+      "Teotihuacán está fuera de la Ciudad de México, así que este viaje no se reserva por horas en el cotizador: te lo cotizamos por WhatsApp según tu dirección de recogida, la categoría y cuánto tiempo quieres quedarte. Recibes un precio cerrado con IVA antes de confirmar, sin cargos sorpresa.",
+    vehiculosTitle: "Vehículos disponibles",
     colVehicle: "Vehículo",
     colHoras: (h: number) => `${h} horas`,
     precioNota: `Tarifa base en pesos con IVA incluido, del mismo tarifario que el cotizador; en fechas de alta demanda puede aplicar un ajuste y el cotizador te muestra el precio final. Cada hora contratada incluye ${KM_POR_HORA} km, así que nueve horas son ${9 * KM_POR_HORA} km: el viaje redondo a Teotihuacán cabe con holgura. Si tu día se alarga, se ajusta en el momento.`,
@@ -96,16 +101,16 @@ const TX = {
 
     reservarTitle: "Cómo se reserva",
     reservar: [
-      "En el cotizador, elige «Por hora», pon tu dirección de recogida, la fecha y las horas que quieras. El precio sale antes de pedirte ningún dato de pago.",
-      "Escribe en las notas que vas a Teotihuacán, y si viajas con niños o quieres silla para bebé o asiento elevado.",
-      "Si prefieres que lo armemos contigo, escríbenos por WhatsApp y lo cotizamos a mano.",
+      "Escríbenos por WhatsApp con la fecha, tu dirección de recogida, cuántas personas viajan y la categoría que prefieres. Dinos si viajas con niños o quieres silla para bebé o asiento elevado.",
+      "Te enviamos un precio cerrado con IVA para tu día.",
+      "Confirmas con un link de pago seguro y te mandamos los datos del chofer antes del servicio.",
     ],
 
     faqTitle: "Preguntas frecuentes",
     faqs: [
       [
-        "¿Cuántas horas necesito para Teotihuacán?",
-        "Nueve suele ser la medida justa: una hora de ida, el tiempo que quieras en la zona, la comida y el regreso. Con diez vas sobrado si piensas comer con calma o parar en el camino.",
+        "¿Cuánto dura el día en Teotihuacán?",
+        "Entre nueve y diez horas suele ser la medida justa: una hora de ida, el tiempo que quieras en la zona, la comida y el regreso. Dinos cuánto quieres quedarte y lo cotizamos con ese tiempo.",
       ],
       [
         "¿Es un tour con guía?",
@@ -113,7 +118,7 @@ const TX = {
       ],
       [
         "¿El chofer espera mientras visito las pirámides?",
-        "Sí. Ese es el servicio: las horas que contratas son suyas y tuyas, esté manejando o esperando. No hay un cargo extra por la espera.",
+        "Sí. Ese es el servicio: el chofer se queda contigo todo el día, manejando o esperando, y la espera va incluida en la cotización.",
       ],
       [
         "¿Están incluidas las entradas?",
@@ -121,7 +126,7 @@ const TX = {
       ],
       [
         "¿Puedo combinarlo con otra parada?",
-        "Sí. Muchos agregan la comida en La Gruta, la Basílica de Guadalupe de regreso o una parada de artesanías. Mientras quepa en las horas contratadas, el chofer te lleva.",
+        "Sí. Muchos agregan la comida en La Gruta, la Basílica de Guadalupe de regreso o una parada de artesanías. Dínoslo al pedir la cotización y lo incluimos.",
       ],
       [
         "¿Llevan sillas para niños?",
@@ -131,14 +136,14 @@ const TX = {
 
     ctaTitle: "Arma tu día",
     ctaCopy:
-      "Saca el precio en el cotizador con las horas que quieras, o escríbenos y lo vemos contigo.",
-    ctaQuote: "Cotizar por horas",
+      "Escríbenos con tu fecha y tu dirección y te mandamos el precio cerrado de tu día.",
+    ctaQuote: "Cotizar por WhatsApp",
     ctaWhats: "Escribir por WhatsApp",
   },
 
   en: {
     navRates: "Rates",
-    navQuote: "Get a quote",
+    navQuote: "Quote on WhatsApp",
     navQuoteFull: "Quote a Teotihuacán day trip",
     kicker: "Day trip · Teotihuacán",
     title: "Teotihuacán day trip from Mexico City",
@@ -147,15 +152,15 @@ const TX = {
 
     factHorasValue: "9 to 10 hours",
     factHorasLabel: "what the full day usually takes",
-    factKmValue: `${KM_POR_HORA} km per hour`,
-    factKmLabel: "included; the round trip fits comfortably",
+    factKmValue: "Custom quote",
+    factKmLabel: "on WhatsApp, with a fixed price before you confirm",
     factPrecioValue: "Fixed price",
     factPrecioLabel: "VAT included, no surprise charges",
 
     quesTitle: "What it is, and what it is not",
     esTitle: "What is included",
     es: [
-      "The vehicle and the chauffeur for every hour you book, yours alone.",
+      "The vehicle and the chauffeur for the whole day, yours alone.",
       "The waiting while you visit the site: the chauffeur stays, and waiting is not charged separately.",
       "Stops along the way if you want them, and lunch on the way back if it suits you.",
       "A price settled before you set off, VAT included, that traffic does not move.",
@@ -176,7 +181,10 @@ const TX = {
       "Back at your address in the middle of the afternoon.",
     ],
 
-    precioTitle: "Price by vehicle",
+    precioTitle: "Price: custom quote",
+    precioCopy:
+      "Teotihuacán is outside Mexico City, so this trip is not booked by the hour in the quote form: we quote it on WhatsApp from your pickup address, the vehicle category and how long you want to stay. You get a fixed price, VAT included, before you confirm — no surprise charges.",
+    vehiculosTitle: "Available vehicles",
     colVehicle: "Vehicle",
     colHoras: (h: number) => `${h} hours`,
     precioNota: `Base rates in Mexican pesos, VAT included, from the same rate book the quote form uses; on high-demand dates an adjustment may apply and the quote form shows the final price. Every hour you book includes ${KM_POR_HORA} km, so nine hours is ${9 * KM_POR_HORA} km: the round trip to Teotihuacán fits comfortably. If your day runs long, we settle it on the spot.`,
@@ -185,16 +193,16 @@ const TX = {
 
     reservarTitle: "How to book",
     reservar: [
-      "In the quote form choose “By the hour”, enter your pickup address, the date and the hours you want. The price appears before you are asked for any payment details.",
-      "Write in the notes that you are going to Teotihuacán, and whether you are travelling with children or need an infant or booster seat.",
-      "If you would rather we put it together with you, message us on WhatsApp and we quote it by hand.",
+      "Message us on WhatsApp with the date, your pickup address, how many people are travelling and the category you prefer. Tell us if you are travelling with children or need an infant or booster seat.",
+      "We send you a fixed price for your day, VAT included.",
+      "You confirm with a secure payment link and we send you the chauffeur's details before the service.",
     ],
 
     faqTitle: "Frequently asked",
     faqs: [
       [
-        "How many hours do I need for Teotihuacán?",
-        "Nine is usually the right size: an hour out, as long as you want at the site, lunch and the drive back. Ten gives you room if you plan to eat slowly or stop on the way.",
+        "How long does the Teotihuacán day take?",
+        "Nine to ten hours is usually the right size: an hour out, as long as you want at the site, lunch and the drive back. Tell us how long you want to stay and we quote it for that time.",
       ],
       [
         "Is this a guided tour?",
@@ -202,7 +210,7 @@ const TX = {
       ],
       [
         "Does the chauffeur wait while I visit the pyramids?",
-        "Yes. That is the service: the hours you book are yours whether he is driving or waiting. There is no separate charge for the waiting.",
+        "Yes. That is the service: the chauffeur stays with you all day, driving or waiting, and the waiting is included in the quote.",
       ],
       [
         "Are the entrance tickets included?",
@@ -210,7 +218,7 @@ const TX = {
       ],
       [
         "Can I add another stop?",
-        "Yes. People often add lunch at La Gruta, the Basilica of Guadalupe on the way back, or a craft stop. As long as it fits inside the hours you booked, the chauffeur takes you.",
+        "Yes. People often add lunch at La Gruta, the Basilica of Guadalupe on the way back, or a craft stop. Tell us when you ask for the quote and we include it.",
       ],
       [
         "Do you have child seats?",
@@ -220,8 +228,8 @@ const TX = {
 
     ctaTitle: "Put your day together",
     ctaCopy:
-      "Get the price in the quote form with whatever hours you want, or write to us and we work it out with you.",
-    ctaQuote: "Quote by the hour",
+      "Send us your date and your address and we send you a fixed price for your day.",
+    ctaQuote: "Quote on WhatsApp",
     ctaWhats: "Message us on WhatsApp",
   },
 } as const;
@@ -306,8 +314,9 @@ const styles = `
 export default function TeotihuacanPage({ lang }: { lang: Lang }) {
   const t = TX[lang];
   const home = path(lang, "home");
-  const quote = `${home}#quote`;
-  const whats = `https://wa.me/${LEGAL.whatsapp.replace(/[^0-9]/g, "")}`;
+  const whats = `https://wa.me/${LEGAL.whatsapp.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(
+    lang === "es" ? "Hola, quiero cotizar un día a Teotihuacán con chofer." : "Hi, I'd like a quote for a Teotihuacán day trip with a chauffeur.",
+  )}`;
 
   return (
     <div className="tt-root">
@@ -319,7 +328,7 @@ export default function TeotihuacanPage({ lang }: { lang: Lang }) {
         </Link>
         <div className="tt-nav-right">
           <Link href={path(lang, "rates")} className="tt-nav-link">{t.navRates}</Link>
-          <Link href={quote} className="tt-nav-cta" aria-label={t.navQuoteFull}>{t.navQuote}</Link>
+          <a href={whats} target="_blank" rel="noopener noreferrer" className="tt-nav-cta" aria-label={t.navQuoteFull}>{t.navQuote}</a>
           <LangToggle lang={lang} page="teotihuacan" />
         </div>
       </nav>
@@ -371,35 +380,21 @@ export default function TeotihuacanPage({ lang }: { lang: Lang }) {
 
         <section className="tt-section">
           <h2 className="tt-h2">{t.precioTitle}</h2>
-          <div className="tt-table-scroll">
-            <table className="tt-table">
-              <thead>
-                <tr>
-                  <th>{t.colVehicle}</th>
-                  {BLOQUES.map((h) => <th key={h}>{t.colHoras(h)}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {cats.map((c) => (
-                  <tr key={c}>
-                    <td>
-                      {vehicles[c].name}
-                      {BILINGUES.includes(c) && (
-                        <span className="tt-veh-bi">{lang === "es" ? "Bilingüe" : "Bilingual"}</span>
-                      )}
-                      <span className="tt-veh-cap">
-                        {lang === "es" ? vehicles[c].capEs : vehicles[c].cap}
-                      </span>
-                    </td>
-                    {BLOQUES.map((h) => (
-                      <td key={h}>{mxn(calculatePrice(0, 0, c, "hour", h, false))}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="tt-note">{t.precioNota}</p>
+          <p className="tt-intro">{t.precioCopy}</p>
+          <h3 className="tt-h3" style={{ marginTop: 28 }}>{t.vehiculosTitle}</h3>
+          <ul className="tt-list">
+            {cats.map((c) => (
+              <li key={c}>
+                {vehicles[c].name}
+                {BILINGUES.includes(c) && (
+                  <span className="tt-veh-bi">{lang === "es" ? "Bilingüe" : "Bilingual"}</span>
+                )}
+                <span className="tt-veh-cap">
+                  {lang === "es" ? vehicles[c].capEs : vehicles[c].cap}
+                </span>
+              </li>
+            ))}
+          </ul>
           <p className="tt-note">{t.bilingueNota}</p>
         </section>
 
@@ -424,10 +419,10 @@ export default function TeotihuacanPage({ lang }: { lang: Lang }) {
           <h2 className="tt-h2">{t.ctaTitle}</h2>
           <p className="tt-cta-copy">{t.ctaCopy}</p>
           <div className="tt-cta-row">
-            <Link href={quote} className="tt-btn tt-btn--solid">{t.ctaQuote}</Link>
-            <a href={whats} target="_blank" rel="noopener noreferrer" className="tt-btn tt-btn--ghost">
-              {t.ctaWhats}
+            <a href={whats} target="_blank" rel="noopener noreferrer" className="tt-btn tt-btn--solid">
+              {t.ctaQuote}
             </a>
+            <Link href={path(lang, "rates")} className="tt-btn tt-btn--ghost">{t.navRates}</Link>
           </div>
         </section>
       </main>

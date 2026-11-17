@@ -281,7 +281,8 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "lista",
               items: [
                 "Round trip. The chauffeur collects you in Mexico City, drives you to the destination, stays available for the agreed time and brings you back the same day. It is the most practical option for Puebla, Cuernavaca, Tepoztlán, Valle de Bravo, Querétaro and San Miguel de Allende.",
-                "By the hour. The car and chauffeur stay at your disposal for a block of time. This works particularly well for Teotihuacán, Xochimilco or any itinerary with several stops.",
+                "By the hour. The car and chauffeur stay at your disposal for a block of time within Mexico City. This works particularly well for Xochimilco, the Basilica or any itinerary with several stops in the city.",
+                "Custom quote. Teotihuacán is outside the city, so we quote it on WhatsApp with a fixed price for your day.",
                 "Separate transfers. If you are staying a night or more at the destination, it is normally better to book the outbound and the return separately.",
               ],
             },
@@ -343,7 +344,7 @@ export const GUIA_EXCURSIONES: Guia = {
         boton: "Get a quote",
       },
       relacionadas: [
-        { page: "teotihuacan", label: "Teotihuacán day trip: hours, prices and what to expect" },
+        { page: "teotihuacan", label: "Teotihuacán day trip: what to expect and how to get a quote" },
         { page: "hourly", label: "Hourly chauffeur service: how it works and what it covers" },
         { page: "rates", label: "Round trip prices to the out-of-town destinations" },
         { page: "guideAirport", label: "How to get from Mexico City airport into the city" },
@@ -566,7 +567,8 @@ export const GUIA_EXCURSIONES: Guia = {
               tipo: "lista",
               items: [
                 "Viaje redondo. El chofer te recoge en Ciudad de México, te lleva al destino, permanece disponible durante el tiempo acordado y te regresa el mismo día. Es la opción más práctica para Puebla, Cuernavaca, Tepoztlán, Valle de Bravo, Querétaro y San Miguel de Allende.",
-                "Servicio por horas. El vehículo y el chofer permanecen a tu disposición durante un bloque de tiempo. Funciona especialmente bien para Teotihuacán, Xochimilco o itinerarios con varias paradas.",
+                "Servicio por horas. El vehículo y el chofer permanecen a tu disposición durante un bloque de tiempo dentro de la Ciudad de México. Funciona especialmente bien para Xochimilco, la Basílica o itinerarios con varias paradas en la ciudad.",
+                "Cotización especial. Teotihuacán está fuera de la ciudad, así que lo cotizamos por WhatsApp con un precio cerrado para tu día.",
                 "Traslados separados. Si vas a pasar una o más noches en el destino, normalmente resulta más conveniente reservar la ida y el regreso por separado.",
               ],
             },
@@ -628,7 +630,7 @@ export const GUIA_EXCURSIONES: Guia = {
         boton: "Cotizar excursión",
       },
       relacionadas: [
-        { page: "teotihuacan", label: "Teotihuacán: horarios, precios y qué esperar" },
+        { page: "teotihuacan", label: "Teotihuacán: qué esperar y cómo cotizar" },
         { page: "hourly", label: "Servicio por horas: cómo funciona y qué incluye" },
         { page: "rates", label: "Precios del viaje redondo a los destinos foráneos" },
         { page: "guideAirport", label: "Cómo llegar del aeropuerto de la CDMX a la ciudad" },

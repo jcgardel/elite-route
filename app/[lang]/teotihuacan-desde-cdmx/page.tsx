@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import TeotihuacanPage, { teotihuacanFaqs, teotihuacanPriceRange } from "../../_components/TeotihuacanPage";
+import TeotihuacanPage, { teotihuacanFaqs } from "../../_components/TeotihuacanPage";
 import { pageMetadata } from "@/lib/seo";
 import { isLang, path, SITE, url } from "@/lib/i18n";
 
@@ -24,7 +24,6 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
   if (!isLang(lang) || lang !== LANG) notFound();
 
-  const { low, high } = teotihuacanPriceRange();
   const self = url(LANG, "teotihuacan");
 
   const jsonLd = {
@@ -39,13 +38,6 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       { "@type": "City", name: "Ciudad de México" },
       { "@type": "Place", name: "Teotihuacán, Estado de México" },
     ],
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: "MXN",
-      lowPrice: low,
-      highPrice: high,
-      url: self,
-    },
     mainEntityOfPage: self,
   };
 

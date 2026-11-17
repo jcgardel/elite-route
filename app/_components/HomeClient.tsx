@@ -200,7 +200,7 @@ const TX = {
     toursTitle: "Your chauffeur, at your disposal all day",
     toursCopy: "No tour schedules, no groups: the car and the chauffeur are yours alone. They wait at every stop and take you back to your hotel.",
     tours: [
-      { tag: "Hourly · 9–10 h", title: "Teotihuacán & the Basilica", copy: "The pyramids in the morning and the Basilica of Guadalupe on the way back — same direction, one day, at your pace.", cta: "See the Teotihuacán trip" },
+      { tag: "Custom quote · full day", title: "Teotihuacán & the Basilica", copy: "The pyramids in the morning and the Basilica of Guadalupe on the way back — same direction, one day, at your pace.", cta: "See the Teotihuacán trip" },
       { tag: "Hourly · from 3 h", title: "Xochimilco & Coyoacán", copy: "Trajineras on the canals, then an afternoon in Coyoacán or San Ángel. Inside the city, with your chauffeur by the hour.", cta: "See hourly service" },
       { tag: "Same-day round trip", title: "Valle de Bravo", copy: "The lake and the magic town, there and back the same day with your chauffeur waiting for you. No driving, no rush.", cta: "See price to Valle de Bravo" },
       { tag: "Same-day round trip", title: "Tepoztlán", copy: "Climb El Tepozteco and walk the market, then ride back with the chauffeur who waited for you.", cta: "See price to Tepoztlán" },
@@ -377,7 +377,7 @@ const TX = {
     toursTitle: "Tu chofer, a tu disposición todo el día",
     toursCopy: "Sin horarios de tour ni grupos: el auto y el chofer son sólo para ti. Te esperan en cada parada y te regresan a tu hotel.",
     tours: [
-      { tag: "Por horas · 9 a 10 h", title: "Teotihuacán y la Basílica", copy: "Las pirámides por la mañana y la Basílica de Guadalupe de regreso: quedan en la misma dirección. Un día, a tu ritmo.", cta: "Ver el viaje a Teotihuacán" },
+      { tag: "Cotización especial · día completo", title: "Teotihuacán y la Basílica", copy: "Las pirámides por la mañana y la Basílica de Guadalupe de regreso: quedan en la misma dirección. Un día, a tu ritmo.", cta: "Ver el viaje a Teotihuacán" },
       { tag: "Por horas · desde 3 h", title: "Xochimilco y Coyoacán", copy: "Trajineras en los canales y la tarde en Coyoacán o San Ángel. Dentro de la ciudad, con tu chofer por horas.", cta: "Ver chofer por horas" },
       { tag: "Ida y vuelta el mismo día", title: "Valle de Bravo", copy: "El lago y el pueblo mágico, ida y vuelta el mismo día con el chofer esperándote. Sin manejar y sin prisa.", cta: "Ver precio a Valle de Bravo" },
       { tag: "Ida y vuelta el mismo día", title: "Tepoztlán", copy: "Sube al Tepozteco, recorre el mercado y regresa con el chofer que te esperó.", cta: "Ver precio a Tepoztlán" },

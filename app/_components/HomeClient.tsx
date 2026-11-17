@@ -1494,6 +1494,22 @@ export default function HomeClient({
       currency: "MXN",
       con_solicitudes: notes.trim().length > 0,
     });
+    // Se guarda la solicitud para darle seguimiento aunque el cliente no
+    // llegue a mandar el mensaje. Sin await: window.open tiene que salir en
+    // este mismo clic o el navegador lo bloquea como ventana emergente, y
+    // keepalive deja terminar la petición aunque la pestaña pierda el foco.
+    // Si falla, WhatsApp se abre igual.
+    fetch("/api/solicitud-whatsapp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        serviceType, rentalHours, origin, destination, serviceDate, serviceTime, notes,
+        km, minutes, zone, category, fullName, phone, price, lang,
+        flightNumber: airportTrip ? flightNumber.trim().toUpperCase() : "",
+        ...(airportTrip ? { pasajeros } : {}),
+      }),
+    }).catch(() => {});
     window.open(
       `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`,
       "_blank", "noopener,noreferrer"

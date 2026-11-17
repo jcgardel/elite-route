@@ -3,6 +3,7 @@ import { Redis } from "@upstash/redis";
 
 let mapsLimiter: Ratelimit | null = null;
 let checkoutLimiter: Ratelimit | null = null;
+let whatsappLimiter: Ratelimit | null = null;
 
 function getRedis(): Redis | null {
   // Vercel KV integration uses KV_REST_API_URL / KV_REST_API_TOKEN
@@ -34,6 +35,19 @@ export function getCheckoutLimiter(): Ratelimit | null {
     prefix: "rl:checkout",
   });
   return checkoutLimiter;
+}
+
+/** Registro de clics a WhatsApp: aparte del de checkout para no comerle cupo. */
+export function getWhatsappLimiter(): Ratelimit | null {
+  if (whatsappLimiter) return whatsappLimiter;
+  const redis = getRedis();
+  if (!redis) return null;
+  whatsappLimiter = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, "1 m"),
+    prefix: "rl:whatsapp",
+  });
+  return whatsappLimiter;
 }
 
 export function getIp(req: Request): string {

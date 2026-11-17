@@ -232,3 +232,27 @@ export async function cancelarReserva(charge: Stripe.Charge): Promise<Resultado>
   if (!pi) return { guardado: false, motivo: "sin payment_intent" };
   return rpc("cancelar_reserva_stripe", { p_payment_intent: pi });
 }
+
+/**
+ * Clic en "Reservar por WhatsApp" desde la web. Antes sólo quedaba en
+ * analytics: si el cliente abría WhatsApp y no mandaba el mensaje, nadie
+ * se enteraba. Va a `solicitudes_whatsapp`, no a `reservations`, porque no
+ * es un servicio confirmado y no debe aparecer a los choferes ni en la agenda.
+ */
+export async function registrarSolicitudWhatsapp(p: Record<string, string>): Promise<Resultado> {
+  const token = process.env.RESERVAS_TOKEN;
+  if (!token) return { guardado: false, motivo: "falta RESERVAS_TOKEN" };
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/registrar_solicitud_whatsapp`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ p_token: token, p }),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Supabase registrar_solicitud_whatsapp ${res.status}: ${await res.text()}`);
+  return { guardado: true };
+}

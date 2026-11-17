@@ -238,7 +238,7 @@ export function teotihuacanPriceRange() {
 }
 
 const styles = `
-  .tt-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .tt-root { background:transparent; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .tt-nav { max-width:1180px; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .tt-nav a { text-decoration:none; }
   .tt-nav-right { display:flex; align-items:center; gap:14px; }

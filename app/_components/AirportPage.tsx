@@ -444,7 +444,7 @@ export function airportFaqs(lang: Lang) {
 }
 
 const styles = `
-  .ap-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .ap-root { background:transparent; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .ap-nav { max-width:1180px; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .ap-nav a { text-decoration:none; }
   .ap-nav-right { display:flex; align-items:center; gap:14px; }

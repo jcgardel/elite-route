@@ -48,7 +48,7 @@ export default function LegalPage({
   return (
     <>
       <style>{`
-        .lg-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; line-height:1.7; }
+        .lg-root { background:transparent; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; line-height:1.7; }
         .lg-nav { max-width:820px; margin:0 auto; padding:26px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
         .lg-nav a { text-decoration:none; }
         .lg-nav-right { display:flex; align-items:center; gap:12px; }

@@ -334,7 +334,7 @@ export function chauffeurFaqs(lang: Lang) {
  * separado.
  */
 const styles = `
-  .cf-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .cf-root { background:transparent; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .cf-nav { max-width:1180px; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .cf-nav a { text-decoration:none; }
   .cf-nav-right { display:flex; align-items:center; gap:14px; }

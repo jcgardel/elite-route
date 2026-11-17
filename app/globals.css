@@ -5,25 +5,32 @@
 
 /* Fondo de todas las páginas: degradado de negro a carbón con dos brillos
    dorados muy tenues (arriba a la derecha y abajo a la izquierda). Arranca
-   en #0a0a0a para empatar con el desvanecido inferior del hero. Cada página
-   lo usa en su contenedor raíz (.er-root, .rt-root, …) con var(--er-bg). */
+   en #0a0a0a para empatar con el desvanecido inferior del hero. Se pinta en
+   body::before (ver abajo). */
 :root {
   --er-bg:
-    radial-gradient(70vw 60vh at 92% 8%, rgba(200, 164, 107, 0.13), transparent 70%),
-    radial-gradient(60vw 55vh at 0% 100%, rgba(200, 164, 107, 0.09), transparent 70%),
-    linear-gradient(160deg, #0a0a0a 0%, #121214 45%, #1a1a1f 100%) #0a0a0a;
+    radial-gradient(80vw 70vh at 95% 5%, rgba(200, 164, 107, 0.26), transparent 70%),
+    radial-gradient(70vw 65vh at 0% 100%, rgba(200, 164, 107, 0.18), transparent 70%),
+    linear-gradient(160deg, #0a0a0a 0%, #17171c 45%, #24221f 100%) #0a0a0a;
 }
 
-/* El degradado se queda fijo a la ventana mientras el contenido se desplaza,
-   así los brillos se ven en toda la página y no sólo al final. Safari en
-   iPhone ignora "fixed" y lo deja desplazarse: se ve igual de bien. */
-.er-root, .rt-root, .hp-root, .tt-root, .lg-root, .cf-root, .ap-root, .ex-root, .fl-root {
-  background-attachment: fixed;
+/* El degradado va en una capa fija detrás de todo el contenido: así los
+   brillos se ven en toda la página mientras se desplaza. Antes se probó con
+   background-attachment: fixed en cada página, pero Chrome no lo pinta
+   cuando hay capas con transform (el zoom del hero) y Safari en iPhone lo
+   ignora. Los contenedores raíz (.er-root, .rt-root, …) son transparentes
+   para dejarla ver. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--er-bg);
+  pointer-events: none;
 }
 
 body {
   background: #0a0a0a;
-  background: var(--er-bg);
   color: #ededed;
   font-family: var(--font-barlow), system-ui, sans-serif;
 }

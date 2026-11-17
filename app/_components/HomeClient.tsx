@@ -516,7 +516,7 @@ const TX = {
 const styles = `
 
   * { box-sizing:border-box; }
-  .er-root { background:var(--er-bg); color:#fff; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .er-root { background:transparent; color:#fff; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .er-shell { min-height:100vh; }
   /* La foto va en un ::before propio, no en el fondo del <section>, para
      poder animarla con transform: escalar un background-size obliga al

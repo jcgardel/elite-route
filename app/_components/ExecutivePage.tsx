@@ -306,7 +306,7 @@ export function executiveFaqs(lang: Lang) {
 }
 
 const styles = `
-  .ex-root { background:#0A0A0A; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .ex-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .ex-nav { max-width:1180px; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .ex-nav a { text-decoration:none; }
   .ex-nav-right { display:flex; align-items:center; gap:14px; }

@@ -168,7 +168,7 @@ const TX = {
 } as const;
 
 const styles = `
-  .rt-root { background:#0A0A0A; color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  .rt-root { background:var(--er-bg); color:#ECEAE6; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .rt-nav { max-width:1180px; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .rt-nav a { text-decoration:none; }
   .rt-nav-right { display:flex; align-items:center; gap:14px; }

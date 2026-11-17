@@ -3,8 +3,27 @@
    ninguna página, las variables de las fuentes Geist, que no existen en el
    proyecto, y un fondo blanco en modo claro. */
 
+/* Fondo de todas las páginas: degradado de negro a carbón con dos brillos
+   dorados muy tenues (arriba a la derecha y abajo a la izquierda). Arranca
+   en #0a0a0a para empatar con el desvanecido inferior del hero. Cada página
+   lo usa en su contenedor raíz (.er-root, .rt-root, …) con var(--er-bg). */
+:root {
+  --er-bg:
+    radial-gradient(70vw 60vh at 92% 8%, rgba(200, 164, 107, 0.13), transparent 70%),
+    radial-gradient(60vw 55vh at 0% 100%, rgba(200, 164, 107, 0.09), transparent 70%),
+    linear-gradient(160deg, #0a0a0a 0%, #121214 45%, #1a1a1f 100%) #0a0a0a;
+}
+
+/* El degradado se queda fijo a la ventana mientras el contenido se desplaza,
+   así los brillos se ven en toda la página y no sólo al final. Safari en
+   iPhone ignora "fixed" y lo deja desplazarse: se ve igual de bien. */
+.er-root, .rt-root, .hp-root, .tt-root, .lg-root, .cf-root, .ap-root, .ex-root, .fl-root {
+  background-attachment: fixed;
+}
+
 body {
   background: #0a0a0a;
+  background: var(--er-bg);
   color: #ededed;
   font-family: var(--font-barlow), system-ui, sans-serif;
 }

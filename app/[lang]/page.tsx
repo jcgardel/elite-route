@@ -193,9 +193,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(fichaDeNegocio(lang)) }}
       />
-      {/* El fondo del hero vive dentro del CSS, así que el navegador lo
-          descubre tarde: es la imagen más grande de la primera pantalla. */}
-      <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />
       {/* Los precios por horas y de día completo se resuelven aquí, en el
           servidor, y bajan ya calculados. El cotizador no puede calcularlos
           por su cuenta sin arrastrar el tarifario al navegador. */}

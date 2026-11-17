@@ -518,31 +518,15 @@ const styles = `
   * { box-sizing:border-box; }
   .er-root { background:transparent; color:#fff; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
   .er-shell { min-height:100vh; }
-  /* La foto va en un ::before propio, no en el fondo del <section>, para
-     poder animarla con transform: escalar un background-size obliga al
-     navegador a repintar en cada cuadro; escalar una capa la mueve la
-     tarjeta gráfica y no cuesta nada. El degradado viaja en la misma capa
-     —estirarlo un 7% sobre un degradado suave no se percibe— y el ::after
-     de abajo sigue pintando encima porque va después en el orden. */
-  .er-hero { position:relative; min-height:720px; overflow:hidden; background:#0A0A0A; display:flex; flex-direction:column; }
-  .er-hero::before {
-    content:""; position:absolute; inset:0;
-    background-image:linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.76) 48%, rgba(0,0,0,0.68) 100%), url('/high-suv.webp');
-    background-size:cover; background-position:center 48%;
-    transform:scale(1.06); transform-origin:center 48%;
-    animation:erHeroZoom 32s ease-in-out infinite alternate;
-    will-change:transform;
-  }
-  @keyframes erHeroZoom { from { transform:scale(1.06); } to { transform:scale(1.15); } }
-  .er-hero::after { content:""; position:absolute; inset:auto 0 0; height:190px; background:linear-gradient(180deg, transparent, #0A0A0A); pointer-events:none; }
+  /* Primera pantalla sin foto desde el 16 nov 2026: deja ver el mismo
+     degradado bronce/dorado del resto del sitio (body::before en
+     globals.css). Antes llevaba /high-suv.webp con un zoom lento. */
+  .er-hero { position:relative; min-height:720px; overflow:hidden; background:transparent; display:flex; flex-direction:column; }
   .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
   .er-brand { display:inline-block; text-decoration:none; filter:drop-shadow(0 14px 26px rgba(0,0,0,0.75)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
   @keyframes erLogoIn { from{opacity:0;transform:translateY(-8px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
   @media (prefers-reduced-motion: reduce) {
     .er-brand { animation:none; }
-    /* Sin esto la regla de abajo comprime la animación a 0.01ms y la deja
-       congelada en su fotograma final, con el encuadre más cerrado. */
-    .er-hero::before { animation:none !important; transform:scale(1.06); }
     .er-root *, .er-root *::before, .er-root *::after {
       animation-duration:0.01ms !important; animation-iteration-count:1 !important;
       transition-duration:0.01ms !important; scroll-behavior:auto !important;

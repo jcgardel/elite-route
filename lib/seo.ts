@@ -131,9 +131,9 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
   },
   chauffeur: {
     en: {
-      title: "Private Chauffeur in Mexico City | Fixed Price | Elite Route",
+      title: "Luxury Private Chauffeur in Mexico City | Fixed Price",
       description:
-        "Hire a private chauffeur in Mexico City: the same driver throughout, an insured and GPS-monitored vehicle, and a fixed price with VAT. By the trip, hour or day.",
+        "Luxury chauffeur service in Mexico City: the same driver throughout, an insured, GPS-monitored vehicle and a fixed price with VAT. By the trip, hour or day.",
       keywords:
         "private chauffeur Mexico City, private driver Mexico City, hire a chauffeur CDMX, personal driver Mexico City, chauffeur service Mexico City, car with driver Mexico City",
     },
@@ -154,16 +154,16 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "executive transportation Mexico City, executive car service CDMX, executive transfers Mexico City, executive ground transportation Mexico, chauffeured transport CDMX",
     },
     es: {
-      title: "Transporte Ejecutivo en CDMX | Los 4 Servicios | Elite Route",
+      title: "Transporte Ejecutivo y Privado en CDMX | Elite Route",
       description:
-        "Transporte ejecutivo en Ciudad de México: traslados al aeropuerto, servicio por horas, día completo y rutas foráneas. Flota propia y precio fijo con IVA.",
+        "Transporte ejecutivo y privado en Ciudad de México: traslados al aeropuerto, por horas, día completo y rutas foráneas. Flota propia y precio fijo con IVA.",
       keywords:
         "transporte ejecutivo CDMX, transporte ejecutivo Ciudad de México, servicio de transporte ejecutivo, traslados ejecutivos CDMX, transporte privado ejecutivo México",
     },
   },
   airport: {
     en: {
-      title: "Mexico City Airport Transfers | AICM, AIFA and Toluca",
+      title: "Private Airport Transfer Mexico City | AICM, AIFA, Toluca",
       description:
         "Private airport transfers in Mexico City from AICM, AIFA and Toluca. We track your flight, one hour of waiting is included and the price is fixed with VAT.",
       keywords:
@@ -179,16 +179,16 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
   },
   fleet: {
     en: {
-      title: "Our Fleet: Which Vehicle to Choose | Elite Route",
+      title: "Luxury SUV & Executive Car with Chauffeur in Mexico City",
       description:
         "The four vehicle categories at Elite Route in Mexico City: how many passengers and suitcases each really takes, and when not to choose it. Own insured fleet.",
       keywords:
         "executive car with driver Mexico City, SUV with chauffeur Mexico City, van with driver Mexico City, vehicle for 6 passengers with driver, Suburban with chauffeur CDMX, fleet executive transport Mexico City",
     },
     es: {
-      title: "Nuestra Flota: Qué Vehículo Elegir | Elite Route",
+      title: "Camioneta de Lujo y Auto Ejecutivo con Chofer en CDMX",
       description:
-        "Las cuatro categorías de vehículo de Elite Route en CDMX: cuántos pasajeros y cuántas maletas entran de verdad, y cuándo no elegirla. Flota propia y asegurada.",
+        "Camionetas de lujo (Suburban, Escalade), autos ejecutivos y SUV con chofer en CDMX: cuántos pasajeros y maletas entran de verdad. Flota propia y asegurada.",
       keywords:
         "auto con chofer CDMX, camioneta con chofer Ciudad de México, van para 6 personas con chofer, Suburban con chofer CDMX, suv ejecutiva con chofer, flota transporte ejecutivo CDMX",
     },
@@ -202,7 +202,7 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "corporate transportation Mexico City, executive car service for companies, corporate ground transportation CDMX, business travel Mexico City",
     },
     es: {
-      title: "Transporte Ejecutivo Corporativo CDMX | Elite Route B2B",
+      title: "Transporte Corporativo y Ejecutivo en CDMX | Elite Route",
       description:
         "Cuenta corporativa para empresas en CDMX. Rutas recurrentes, factura electrónica CFDI, unidades aseguradas con GPS y pago con tarjeta vía Stripe.",
       keywords:

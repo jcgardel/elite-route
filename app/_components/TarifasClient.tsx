@@ -327,7 +327,7 @@ export default function TarifasClient({
 
       <div className="tf-hero">
         <p className="tf-kicker">{t.kicker}</p>
-        <h1 className="tf-title">{t.title[0]}<br />{t.title[1]}</h1>
+        <h1 className="tf-title">{t.title[0]}{" "}<br />{t.title[1]}</h1>
         <p className="tf-subtitle">{t.subtitle}</p>
         {"currencyNote" in t && (
           <p className="tf-currency-note">{(t as { currencyNote: string }).currencyNote}</p>

@@ -1090,20 +1090,47 @@ export default function HomeClient({
   useEffect(() => {
     const card = document.getElementById("quote");
     if (!card || typeof IntersectionObserver === "undefined") return;
+    // EL SDK DE MAPS (316 KB en ocho archivos) se pide antes del primer
+    // clic —esperarlo hasta el clic dejaba dos segundos sin sugerencias—,
+    // pero ya no en cuanto el cotizador entra en pantalla: está en la
+    // primera pantalla, así que eso era descargarlo al abrir la página y
+    // competir con la carga inicial en el teléfono (Lighthouse móvil:
+    // TBT 3.4 s, 16 nov 2026). Ahora se pide:
+    //   · al primer toque o foco dentro de la tarjeta, de inmediato;
+    //   · si no, con el navegador ya libre: cotizador a la vista, página
+    //     cargada y 2.5 s más (requestIdleCallback si existe).
+    let programado = false;
+    let espera: ReturnType<typeof setTimeout> | undefined;
+    const pedirMaps = () => loadGoogleMaps().catch(() => {});
+    const pedirCuandoLibre = () => {
+      if (programado) return;
+      programado = true;
+      const lanzar = () => {
+        espera = setTimeout(() => {
+          const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+          if (ric) ric(pedirMaps, { timeout: 3000 }); else pedirMaps();
+        }, 2500);
+      };
+      if (document.readyState === "complete") lanzar();
+      else window.addEventListener("load", lanzar, { once: true });
+    };
+    card.addEventListener("pointerdown", pedirMaps, { once: true, passive: true });
+    card.addEventListener("focusin", pedirMaps, { once: true });
+
     const obs = new IntersectionObserver(
       ([entry]) => {
         setFormularioALaVista(entry.isIntersecting);
-        // Que el cotizador entre en pantalla ya es intención suficiente
-        // para ir pidiendo el SDK de Maps: son 316 KB en ocho archivos, y
-        // esperarlos hasta el clic dejaba dos segundos en blanco justo
-        // cuando el visitante empieza a escribir su dirección. Quien sólo
-        // pasa por la portada sin bajar hasta aquí sigue sin descargarlo.
-        if (entry.isIntersecting) loadGoogleMaps().catch(() => {});
+        if (entry.isIntersecting) pedirCuandoLibre();
       },
       { threshold: 0.12 },
     );
     obs.observe(card);
-    return () => obs.disconnect();
+    return () => {
+      obs.disconnect();
+      if (espera) clearTimeout(espera);
+      card.removeEventListener("pointerdown", pedirMaps);
+      card.removeEventListener("focusin", pedirMaps);
+    };
   }, []);
 
   const [step, setStep] = useState(1);
@@ -2100,7 +2127,7 @@ export default function HomeClient({
                 <PhoneInput international defaultCountry="MX"
                   numberInputProps={{ id: "phone-input" }}
                   flagUrl="/flags/{XX}.svg"
-                  value={phone} onChange={setPhone} placeholder="+52 55 1234 5678"/>
+                  value={phone} onChange={setPhone} placeholder={lang === "es" ? "Tu número a 10 dígitos" : "Your phone number"}/>
               </div>
             </div>
 
@@ -2231,7 +2258,7 @@ export default function HomeClient({
                 quien paga ve qué tipo de unidad compra y que el modelo
                 concreto se asigna según disponibilidad. */}
             <div className="er-pick">
-              <img src={vehicleThumbs[category]} alt="" width={120} height={68} />
+              <img src={vehicleThumbs[category]} alt="" width={120} height={68} loading="lazy" decoding="async" />
               <div>
                 <div className="er-pick-name">{vehicles[category].name}</div>
                 <div className="er-pick-tag">{vehicles[category].tag}</div>

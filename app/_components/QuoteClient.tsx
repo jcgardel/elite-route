@@ -373,15 +373,15 @@ function ServiceRow({ service: s, index, showRemove, isLoaded, onUpdate, onRemov
       {/* Total por servicio */}
       <div className="cq-row-tot">
         {calculating ? (
-          <span style={{ color:"#8B8B87" }}>{t.calculating}</span>
+          <span style={{ color:"#B4B4AF" }}>{t.calculating}</span>
         ) : routeErr ? (
           <span style={{ color:"#e57373", fontSize:11 }}>{routeErr}</span>
         ) : (
           <>
-            {s.km > 0 && <span style={{ color:"#8B8B87", fontSize:11, marginRight:10 }}>{s.km} km · {s.minutes} min</span>}
+            {s.km > 0 && <span style={{ color:"#B4B4AF", fontSize:11, marginRight:10 }}>{s.km} km · {s.minutes} min</span>}
             {t.subtotal}: {fmt(r.base)}&nbsp;·&nbsp;{t.vat}: {fmt(r.iva)}&nbsp;·&nbsp;
             <strong>{t.total}: {fmt(r.total)}</strong>
-            {r.estimate && <span style={{ color:"#8B8B87", fontSize:11, marginLeft:6 }}>{t.estimate}</span>}
+            {r.estimate && <span style={{ color:"#B4B4AF", fontSize:11, marginLeft:6 }}>{t.estimate}</span>}
           </>
         )}
       </div>
@@ -507,7 +507,7 @@ export default function QuoteClient({
 
     .cq-body { padding:40px 56px 80px; max-width:960px; }
     .cq-sec { margin-bottom:36px; }
-    .cq-sec-label { font-size:10px; letter-spacing:0.2em; color:#8B8B87; text-transform:uppercase; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #1a1a1a; }
+    .cq-sec-label { font-size:10px; letter-spacing:0.2em; color:#B4B4AF; text-transform:uppercase; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #1a1a1a; }
 
     .cq-g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
     .cq-g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -548,7 +548,7 @@ export default function QuoteClient({
     .cq-add:disabled { color:#444; border-color:#1e1e1e; cursor:not-allowed; }
 
     .cq-card { background:#0b0b0b; border:1px solid #2e2e2e; border-radius:4px; padding:18px 18px 14px; margin-bottom:10px; position:relative; }
-    .cq-card-num { font-size:10px; letter-spacing:0.14em; color:#8B8B87; text-transform:uppercase; margin-bottom:12px; }
+    .cq-card-num { font-size:10px; letter-spacing:0.14em; color:#B4B4AF; text-transform:uppercase; margin-bottom:12px; }
     .cq-rm { position:absolute; top:12px; right:14px; background:transparent; border:none; color:#444; font-size:20px; cursor:pointer; line-height:1; padding:0 2px; }
     .cq-rm:hover { color:#C8A46B; }
 
@@ -558,7 +558,7 @@ export default function QuoteClient({
     .cq-vuelo-row { margin-bottom:10px; padding:12px 14px; background:#0f0f0f; border:1px solid rgba(200,164,107,0.25); border-radius:3px; }
     .cq-vuelo-row .cq-f label { color:#C8A46B; }
 
-    .cq-row-tot { text-align:right; font-size:12px; color:#8B8B87; margin-top:10px; padding-top:10px; border-top:1px solid #161616; }
+    .cq-row-tot { text-align:right; font-size:12px; color:#B4B4AF; margin-top:10px; padding-top:10px; border-top:1px solid #161616; }
     .cq-row-tot strong { color:#C8A46B; font-size:13px; }
 
     .cq-summary { background:#0a0a0a; border:1px solid #2e2e2e; border-radius:4px; padding:20px 24px; margin-bottom:16px; }
@@ -740,7 +740,7 @@ export default function QuoteClient({
         </div>
 
         <footer style={{ borderTop:"1px solid #1e1e1e", padding:"20px 56px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <span style={{ fontSize:11, color:"#8B8B87", letterSpacing:"0.06em" }}>Elite Route CDMX · business@eliteroute.mx</span>
+          <span style={{ fontSize:11, color:"#B4B4AF", letterSpacing:"0.06em" }}>Elite Route CDMX · business@eliteroute.mx</span>
           <Link href={path(lang, "corporate")} style={{ fontSize:11, color:"#C8A46B", textDecoration:"none", letterSpacing:"0.06em" }}>{t.backAccount}</Link>
         </footer>
       </div>

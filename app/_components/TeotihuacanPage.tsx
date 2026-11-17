@@ -276,13 +276,13 @@ const styles = `
 
   .tt-table-scroll { overflow-x:auto; }
   .tt-table { width:100%; min-width:420px; border-collapse:collapse; font-size:15px; }
-  .tt-table th { text-align:left; font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8B8B87; padding:0 0 12px; border-bottom:1px solid #232323; }
+  .tt-table th { text-align:left; font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#B4B4AF; padding:0 0 12px; border-bottom:1px solid #232323; }
   .tt-table th + th, .tt-table td + td { text-align:right; }
   .tt-table td { border-bottom:1px solid #1a1a1a; padding:14px 0; color:#BFC3C8; font-variant-numeric:tabular-nums; }
   .tt-table td:first-child { color:#fff; }
-  .tt-veh-cap { display:block; color:#8B8B87; font-size:12px; margin-top:2px; }
+  .tt-veh-cap { display:block; color:#B4B4AF; font-size:12px; margin-top:2px; }
   .tt-veh-bi { display:inline-block; margin-left:8px; font-family:var(--font-barlow-condensed),sans-serif; font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#C8A46B; border:1px solid rgba(200,164,107,0.45); border-radius:2px; padding:1px 6px; vertical-align:middle; }
-  .tt-note { color:#8B8B87; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
+  .tt-note { color:#B4B4AF; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
 
   .tt-faq { border-top:1px solid #232323; padding:22px 0; }
   .tt-faq-q { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:16px; letter-spacing:0.03em; color:#fff; margin:0 0 8px; }

@@ -131,7 +131,7 @@ export default function BrandMark({
         letterSpacing: "var(--bm-track)",
         paddingLeft: "var(--bm-track)",
         textTransform: "uppercase",
-        color: "#8B8B87",
+        color: "#B4B4AF",
         marginTop: "0.36em",
         whiteSpace: "nowrap",
       }}

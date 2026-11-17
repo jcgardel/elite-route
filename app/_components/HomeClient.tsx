@@ -619,8 +619,8 @@ const styles = `
   .er-textarea:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
   .er-textarea::placeholder { color:#BFC3C8; opacity:0.72; }
   .er-notes-foot { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-top:7px; }
-  .er-notes-help { color:#8B8B87; font-size:12px; line-height:1.5; max-width:62ch; }
-  .er-notes-count { color:#8B8B87; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
+  .er-notes-help { color:#B4B4AF; font-size:12px; line-height:1.5; max-width:62ch; }
+  .er-notes-count { color:#B4B4AF; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
   .er-notes-count.full { color:#C8A46B; }
 
   /* Enlace y no botón, a propósito: es la salida para quien todavía no
@@ -650,7 +650,7 @@ const styles = `
   .er-paxbags { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
   .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
   .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
-  .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#8B8B87; }
+  .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#B4B4AF; }
   /* ALTURA MÍNIMA DE 44 px, que es el objetivo táctil que recomiendan Apple y
      Google. La casilla en sí mide 17 px y eso no se toca con el pulgar; lo que
      se toca es la FILA, porque el <label> envuelve al input. Antes la fila
@@ -716,11 +716,11 @@ const styles = `
   .er-rt-q { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:#C8A46B; margin:0 0 10px; }
   .er-rt-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color:#ECEAE6; font-size:15px; line-height:1.45; }
   .er-rt-check input { width:17px; height:17px; margin:2px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
-  .er-rt-help { color:#8B8B87; font-size:12.5px; line-height:1.6; margin:8px 0 0 27px; }
+  .er-rt-help { color:#B4B4AF; font-size:12.5px; line-height:1.6; margin:8px 0 0 27px; }
   .er-rt-wait { margin-top:14px; padding-top:13px; border-top:1px solid rgba(200,164,107,0.25); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   .er-rt-wait-lbl { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
-  .er-rt-wait-note { color:#8B8B87; font-size:12.5px; line-height:1.5; margin-top:4px; }
-  .er-rt-max { color:#8B8B87; font-size:12px; line-height:1.5; margin:10px 0 0; }
+  .er-rt-wait-note { color:#B4B4AF; font-size:12.5px; line-height:1.5; margin-top:4px; }
+  .er-rt-max { color:#B4B4AF; font-size:12px; line-height:1.5; margin:10px 0 0; }
 
   .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
   .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
@@ -761,7 +761,7 @@ const styles = `
   .er-btn-wa { width:100%; background:#25D366; color:#000; border:none; border-radius:2px; padding:18px; font-family:var(--font-barlow),sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
   .er-btn-wa:hover { background:#1fb85a; }
   .er-payment-note { color:#BFC3C8; font-size:12px; line-height:1.6; margin:-8px 0 14px; text-align:center; }
-  .er-currency-note { margin:-6px 0 14px; font-size:12px; line-height:1.55; color:#8B8B87; text-align:center; }
+  .er-currency-note { margin:-6px 0 14px; font-size:12px; line-height:1.55; color:#B4B4AF; text-align:center; }
 
   .er-alert { padding:12px 16px; border-radius:2px; font-size:13px; margin-bottom:16px; }
   .er-alert-err { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; }
@@ -776,7 +776,7 @@ const styles = `
   .er-fleet { margin-top:58px; }
   .er-fleet-kicker { font-size:11px; letter-spacing:0.18em; color:#C8A46B; text-transform:uppercase; margin-bottom:10px; }
   .er-fleet-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:34px; color:#fff; margin:0 0 10px; }
-  .er-fleet-copy { color:#9a9a97; font-size:14px; line-height:1.8; max-width:560px; margin:0 0 28px; }
+  .er-fleet-copy { color:#B4B4AF; font-size:14px; line-height:1.8; max-width:560px; margin:0 0 28px; }
   .er-fleet-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:22px; }
   .er-fleet-card { border:1px solid #272727; background:#0c0c0c; overflow:hidden; }
   .er-fleet-card img { display:block; width:100%; height:auto; aspect-ratio:16 / 9; object-fit:cover; }
@@ -794,7 +794,7 @@ const styles = `
   .er-fleet-card--alt .er-fleet-name { font-size:17px; }
   .er-fleet-badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; margin-bottom:10px; }
   .er-fleet-badge--alt { background:transparent; color:#8b8b88; padding:0; margin-bottom:6px; }
-  .er-bycat { font-size:12px; line-height:1.6; color:#8B8B87; text-align:center; margin:-8px 0 18px; }
+  .er-bycat { font-size:12px; line-height:1.6; color:#B4B4AF; text-align:center; margin:-8px 0 18px; }
   .er-pick { display:flex; gap:14px; align-items:center; padding:12px; border:1px solid #292929; background:#111; margin-bottom:18px; }
   .er-pick img { width:120px; height:68px; object-fit:cover; flex-shrink:0; display:block; }
   .er-pick-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
@@ -810,7 +810,7 @@ const styles = `
   .er-trust-item { display:flex; flex-direction:column; gap:2px; padding:10px 12px; border:1px solid #242424; background:#0d0d0d; text-decoration:none; }
   a.er-trust-item:hover { border-color:#C8A46B; }
   .er-trust-item strong { color:#fff; font-size:12.5px; font-weight:600; }
-  .er-trust-item span { color:#8B8B87; font-size:11.5px; line-height:1.45; }
+  .er-trust-item span { color:#B4B4AF; font-size:11.5px; line-height:1.45; }
   .er-paysteps { margin-top:16px; padding:14px 16px; border-left:2px solid #C8A46B; background:#0f0f0f; }
   .er-paysteps strong { color:#fff; font-weight:600; }
   @media (max-width:420px) { .er-pick img { width:92px; height:52px; } }
@@ -825,13 +825,13 @@ const styles = `
      la flota ni con el cotizador. */
   .er-routes { margin-top:58px; border-top:1px solid rgba(200,164,107,0.32); padding-top:28px; }
   .er-routes-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:30px; line-height:1.15; margin:0 0 8px; }
-  .er-routes-help { margin:0 0 24px; font-size:13.5px; color:#8B8B87; line-height:1.6; }
+  .er-routes-help { margin:0 0 24px; font-size:13.5px; color:#B4B4AF; line-height:1.6; }
   .er-routes-group + .er-routes-group { margin-top:24px; }
   .er-routes-sub { font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; font-weight:600; margin:0 0 12px; }
   .er-routes-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 24px; }
   .er-routes-list a { color:#BFC3C8; text-decoration:none; font-size:14px; line-height:1.5; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
   .er-routes-list a:hover { color:#fff; border-bottom-color:rgba(200,164,107,0.6); }
-  .er-routes-rt { margin:14px 0 0; font-size:13px; line-height:1.65; color:#8B8B87; }
+  .er-routes-rt { margin:14px 0 0; font-size:13px; line-height:1.65; color:#B4B4AF; }
   .er-routes-rt strong { color:#C8A46B; font-weight:600; }
 
   .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
@@ -969,7 +969,7 @@ const styles = `
   .er-booking-card .er-trust-line { margin:-8px 0 18px; }
   .er-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; letter-spacing:-0.01em; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
   .er-cardmarks { display:inline-flex; gap:6px; flex-wrap:wrap; }
-  .er-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#8B8B87; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
+  .er-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#B4B4AF; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
 
   /* ── Pie de página ─────────────────────────────────────────────────
      El colchón inferior deja libre la esquina donde flota WhatsApp. */
@@ -977,14 +977,14 @@ const styles = `
   .er-foot-pay { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid #191919; }
   .er-foot-billing { color:#BFC3C8; font-size:13px; text-decoration:none; }
   .er-foot-billing:hover { color:#C8A46B; }
-  /* #8B8B87 da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
+  /* #B4B4AF da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
      por debajo del 4.5:1 que pide la WCAG para texto pequeño. */
-  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:18px; font-style:normal; font-size:12.5px; line-height:1.6; color:#8B8B87; }
+  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:18px; font-style:normal; font-size:12.5px; line-height:1.6; color:#B4B4AF; }
   .er-foot-id-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
   .er-foot-id-contact { display:flex; flex-wrap:wrap; gap:6px 18px; }
   .er-foot-id-contact a { color:#BFC3C8; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }
   .er-foot-id-contact a:hover { color:#C8A46B; border-bottom-color:#C8A46B; }
-  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid #191919; font-size:11px; color:#8B8B87; letter-spacing:0.06em; }
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid #191919; font-size:11px; color:#B4B4AF; letter-spacing:0.06em; }
   .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
   .er-foot-links a { color:#C8A46B; text-decoration:none; }
   .er-foot-links a:hover { color:#fff; }

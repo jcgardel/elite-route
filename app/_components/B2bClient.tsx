@@ -64,7 +64,7 @@ function celdaRuta(tablas: TablasB2b, code: string, destino: string, cat: Catego
     <>
       <span style={{ display: "block" }}>{mxn(desde[cat])}</span>
       {hacia && (
-        <span style={{ display: "block", color: "#8B8B87", fontWeight: 400, fontSize: "12px", marginTop: "2px" }}>
+        <span style={{ display: "block", color: "#B4B4AF", fontWeight: 400, fontSize: "12px", marginTop: "2px" }}>
           {mxn(hacia[cat])}
         </span>
       )}
@@ -316,7 +316,7 @@ export default function B2bClient({
         .b-sol-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1px; background: #2e2e2e; border: 1px solid #2e2e2e; }
         .b-sol-cell { background: #080808; padding: 30px 26px; }
         .b-sol-name { font-family: var(--font-barlow-condensed), sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; margin-bottom: 10px; }
-        .b-sol-copy-sm { color: #8B8B87; font-size: 13.5px; line-height: 1.8; }
+        .b-sol-copy-sm { color: #B4B4AF; font-size: 13.5px; line-height: 1.8; }
         @media (max-width: 860px) {
           .b-sol { padding: 56px 20px; }
           .b-sol-grid { grid-template-columns: 1fr; }
@@ -338,7 +338,7 @@ export default function B2bClient({
         .b-rev-score { display: flex; align-items: baseline; gap: 12px; margin: -14px 0 30px; }
         .b-rev-num { font-family: var(--font-cormorant), Georgia, serif; font-size: 42px; color: #fff; line-height: 1; }
         .b-rev-stars { color: #C8A46B; letter-spacing: 2px; font-size: 15px; }
-        .b-rev-count { color: #8B8B87; font-size: 13px; }
+        .b-rev-count { color: #B4B4AF; font-size: 13px; }
         .b-rev-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
         .b-rev-card { border: 1px solid #272727; background: #0c0c0c; padding: 26px 24px; }
         .b-rev-quote { color: #d6d6d2; font-size: 14px; line-height: 1.8; font-style: italic; }
@@ -353,13 +353,13 @@ export default function B2bClient({
 
         /* FLOTA */
         .b-fleet { padding: 72px 56px; border-bottom: 1px solid #1e1e1e; }
-        .b-fleet-copy { color: #8B8B87; font-size: 14px; line-height: 1.9; max-width: 640px; margin: -20px 0 36px; }
+        .b-fleet-copy { color: #B4B4AF; font-size: 14px; line-height: 1.9; max-width: 640px; margin: -20px 0 36px; }
         .b-fleet-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
         .b-fleet-card { border: 1px solid #2e2e2e; background: #080808; }
         .b-fleet-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
         .b-fleet-meta { padding: 20px 24px 24px; }
         .b-fleet-name { font-family: var(--font-cormorant), Georgia, serif; font-size: 26px; color: #fff; }
-        .b-fleet-cap { color: #8B8B87; font-size: 13px; letter-spacing: 0.04em; margin-top: 6px; }
+        .b-fleet-cap { color: #B4B4AF; font-size: 13px; letter-spacing: 0.04em; margin-top: 6px; }
         .b-fleet-note { color: #6f6f6c; font-size: 12px; line-height: 1.7; margin-top: 8px; }
         @media (max-width: 860px) {
           .b-fleet { padding: 56px 20px; }
@@ -486,7 +486,7 @@ export default function B2bClient({
                   <div className="b-payment-badge">
                     <div className="b-payment-dot" style={{ background: "#635BFF" }} />
                     <span className="b-payment-name" style={{ color: "#635BFF" }}>Stripe</span>
-                    <span style={{ color: "#8B8B87", fontSize: "11px" }}>{t.payCard}</span>
+                    <span style={{ color: "#B4B4AF", fontSize: "11px" }}>{t.payCard}</span>
                   </div>
                 </div>
               </div>
@@ -527,7 +527,7 @@ export default function B2bClient({
                 <span style={{color:"#fff",fontWeight:600,fontSize:"16px"}}>{section.airport}</span>
                 <span style={{color:"#C8A46B",fontSize:"11px",letterSpacing:"0.14em"}}>{section.code}</span>
               </div>
-              <p style={{color:"#8B8B87",fontSize:"12px",marginBottom:"16px"}}>{t.airportNotes[si]}</p>
+              <p style={{color:"#B4B4AF",fontSize:"12px",marginBottom:"16px"}}>{t.airportNotes[si]}</p>
               <div style={{overflowX:"auto"}}>
                 <table style={{width:"100%",borderCollapse:"collapse",fontSize:"13px",minWidth:"680px"}}>
                   <thead>
@@ -543,12 +543,12 @@ export default function B2bClient({
                       <tr key={i} style={{borderBottom:"1px solid #1a1a1a"}}>
                         <td style={{padding:"14px",color:"#fff"}}>
                           <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
-                          <div style={{color:"#8B8B87",fontSize:"11px"}}>{c.sub}</div>
+                          <div style={{color:"#B4B4AF",fontSize:"11px"}}>{c.sub}</div>
                         </td>
                         <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "polanco", c.key)}</td>
                         <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "santafe", c.key)}</td>
                         <td style={{textAlign:"right",padding:"14px",color:"#C8A46B",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>{celdaRuta(tablas, section.code, "centro", c.key)}</td>
-                        <td style={{textAlign:"right",padding:"14px",color:"#8B8B87",fontSize:"12px"}}>{celdaRuta(tablas, section.code, "sur", c.key) ?? t.quoteIt}</td>
+                        <td style={{textAlign:"right",padding:"14px",color:"#B4B4AF",fontSize:"12px"}}>{celdaRuta(tablas, section.code, "sur", c.key) ?? t.quoteIt}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -559,7 +559,7 @@ export default function B2bClient({
 
           <div style={{marginTop:"48px",borderTop:"1px solid #2e2e2e",paddingTop:"32px"}}>
             <div style={{color:"#fff",fontWeight:600,fontSize:"15px",marginBottom:"6px"}}>{t.hourTitle}</div>
-            <p style={{color:"#8B8B87",fontSize:"12px",marginBottom:"16px"}}>{t.hourNote}</p>
+            <p style={{color:"#B4B4AF",fontSize:"12px",marginBottom:"16px"}}>{t.hourNote}</p>
             <div style={{overflowX:"auto"}}>
               <table style={{width:"100%",borderCollapse:"collapse",fontSize:"13px",minWidth:"480px"}}>
                 <thead>
@@ -574,7 +574,7 @@ export default function B2bClient({
                     <tr key={i} style={{borderBottom:"1px solid #1a1a1a"}}>
                       <td style={{padding:"14px",color:"#fff"}}>
                         <div style={{fontWeight:600,marginBottom:"2px"}}>{c.cat}</div>
-                        <div style={{color:"#8B8B87",fontSize:"11px"}}>{c.sub}</div>
+                        <div style={{color:"#B4B4AF",fontSize:"11px"}}>{c.sub}</div>
                       </td>
                       <td style={{textAlign:"right",padding:"14px",color:"#BFC3C8",fontWeight:400,fontVariantNumeric:"tabular-nums"}}>
                         {mxn(tablas.tarifaHora[c.key])}
@@ -591,8 +591,8 @@ export default function B2bClient({
             </div>
           </div>
 
-          <p style={{color:"#8B8B87",fontSize:"11px",marginTop:"32px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.ratesFoot}</p>
-          <p style={{color:"#8B8B87",fontSize:"11px",marginTop:"10px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.cancelNote}</p>
+          <p style={{color:"#B4B4AF",fontSize:"11px",marginTop:"32px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.ratesFoot}</p>
+          <p style={{color:"#B4B4AF",fontSize:"11px",marginTop:"10px",letterSpacing:"0.06em",lineHeight:"1.8"}}>{t.cancelNote}</p>
         </section>
 
         {/* La flota va aquí a propósito: entre ver el precio y que le pidan

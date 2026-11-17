@@ -59,7 +59,7 @@ export default function LegalPage({
         .lg-kicker { color:#C8A46B; font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin:0 0 16px; }
         .lg-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:clamp(38px,6vw,60px); line-height:1.04; margin:0 0 20px; text-wrap:balance; }
         .lg-intro { color:#BFC3C8; font-size:17px; max-width:62ch; margin:0; }
-        .lg-updated { color:#8B8B87; font-size:13px; margin:22px 0 0; padding-top:22px; border-top:1px solid #232323; }
+        .lg-updated { color:#B4B4AF; font-size:13px; margin:22px 0 0; padding-top:22px; border-top:1px solid #232323; }
 
         .lg-body { margin-top:44px; }
         .lg-body h2 { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:30px; line-height:1.15; margin:52px 0 14px; color:#fff; text-wrap:balance; }
@@ -84,7 +84,7 @@ export default function LegalPage({
         .lg-table td:first-child { color:#fff; width:34%; padding-right:20px; }
         .lg-table tr:last-child td { border-bottom:none; }
 
-        .lg-foot { border-top:1px solid rgba(200,164,107,0.28); margin-top:64px; padding-top:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:13px; color:#8B8B87; }
+        .lg-foot { border-top:1px solid rgba(200,164,107,0.28); margin-top:64px; padding-top:24px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; font-size:13px; color:#B4B4AF; }
         .lg-foot a { color:#C8A46B; text-decoration:none; }
         .lg-foot a:hover { color:#fff; }
 

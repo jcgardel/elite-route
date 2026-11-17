@@ -360,12 +360,12 @@ const styles = `
 
   .cf-table-scroll { overflow-x:auto; }
   .cf-table { width:100%; min-width:520px; border-collapse:collapse; font-size:15px; }
-  .cf-table th { text-align:left; font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8B8B87; padding:0 0 12px; border-bottom:1px solid #232323; }
+  .cf-table th { text-align:left; font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#B4B4AF; padding:0 0 12px; border-bottom:1px solid #232323; }
   .cf-table th + th, .cf-table td + td { text-align:right; }
   .cf-table td { border-bottom:1px solid #1a1a1a; padding:14px 0; color:#BFC3C8; font-variant-numeric:tabular-nums; }
   .cf-table td:first-child { color:#fff; }
-  .cf-veh-cap { display:block; color:#8B8B87; font-size:12px; margin-top:2px; }
-  .cf-note { color:#8B8B87; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
+  .cf-veh-cap { display:block; color:#B4B4AF; font-size:12px; margin-top:2px; }
+  .cf-note { color:#B4B4AF; font-size:13px; line-height:1.65; max-width:66ch; margin:16px 0 0; }
 
   .cf-steps { list-style:none; counter-reset:cf; margin:0; padding:0; display:grid; gap:18px; max-width:66ch; }
   .cf-steps li { counter-increment:cf; position:relative; padding-left:44px; color:#BFC3C8; font-size:16px; line-height:1.7; }
@@ -390,12 +390,12 @@ const styles = `
   .cf-trust-quotes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:#232323; }
   .cf-trust-quote { background:#0A0A0A; padding:22px 24px; display:flex; flex-direction:column; gap:12px; }
   .cf-trust-q { font-family:var(--font-cormorant),Georgia,serif; font-size:19px; line-height:1.45; color:#ECEAE6; margin:0; flex-grow:1; text-wrap:balance; }
-  .cf-trust-who { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em; color:#8B8B87; }
+  .cf-trust-who { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:13px; letter-spacing:0.05em; color:#B4B4AF; }
   .cf-trust-who b { color:#fff; font-weight:600; }
   .cf-trust-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:#232323; border-top:1px solid #232323; }
   .cf-trust-fact { background:#0A0A0A; padding:20px 24px; }
   .cf-trust-fact-v { font-family:var(--font-barlow-condensed),sans-serif; font-size:19px; font-weight:700; letter-spacing:0.07em; color:#fff; text-transform:uppercase; }
-  .cf-trust-fact-l { color:#8B8B87; font-size:12px; line-height:1.5; margin-top:5px; }
+  .cf-trust-fact-l { color:#B4B4AF; font-size:12px; line-height:1.5; margin-top:5px; }
 
   .cf-cta { margin-top:64px; border:1px solid rgba(200,164,107,0.4); padding:36px 32px; text-align:center; }
   .cf-cta-btn { display:inline-block; margin-top:20px; background:#C8A46B; color:#0A0A0A; text-decoration:none; font-weight:700; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; padding:15px 30px; }
@@ -405,11 +405,11 @@ const styles = `
   .cf-also a { border:1px solid #232323; padding:11px 14px; color:#BFC3C8; text-decoration:none; font-size:13px; }
   .cf-also a:hover { border-color:#C8A46B; color:#fff; }
 
-  .cf-foot { border-top:1px solid rgba(200,164,107,0.28); margin-top:64px; padding-top:24px; font-size:13px; color:#8B8B87; }
+  .cf-foot { border-top:1px solid rgba(200,164,107,0.28); margin-top:64px; padding-top:24px; font-size:13px; color:#B4B4AF; }
   .cf-foot a { color:#C8A46B; text-decoration:none; }
   .cf-foot-pay { display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:12px; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid #191919; }
   .cf-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
-  .cf-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#8B8B87; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
+  .cf-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#B4B4AF; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
   .cf-foot-id { display:flex; flex-direction:column; gap:5px; font-style:normal; line-height:1.6; margin-bottom:18px; }
   .cf-foot-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
   .cf-foot-id a { color:#BFC3C8; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }

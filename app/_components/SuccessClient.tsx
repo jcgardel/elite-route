@@ -157,7 +157,7 @@ export default function SuccessClient({
           text-transform: uppercase; color: #C8A46B;
           display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
         }
-        .sc-folio { color: #8B8B87; letter-spacing: 0.12em; font-weight: 600; }
+        .sc-folio { color: #B4B4AF; letter-spacing: 0.12em; font-weight: 600; }
 
         .sc-title {
           font-family: var(--font-cormorant), Georgia, serif;
@@ -183,7 +183,7 @@ export default function SuccessClient({
           padding: 11px 0; border-bottom: 1px solid #222;
           font-family: var(--font-barlow), sans-serif; font-size: 14px;
         }
-        .sc-row dt { color: #8B8B87; flex-shrink: 0; }
+        .sc-row dt { color: #B4B4AF; flex-shrink: 0; }
         .sc-row dd { color: #fff; text-align: right; line-height: 1.45; }
         .sc-row--total dd {
           font-family: var(--font-cormorant), Georgia, serif;
@@ -215,7 +215,7 @@ export default function SuccessClient({
 
         .sc-note {
           font-family: var(--font-barlow), sans-serif;
-          font-size: 12.5px; color: #8B8B87; line-height: 1.6;
+          font-size: 12.5px; color: #B4B4AF; line-height: 1.6;
         }
         .sc-note--sent { color: #8FA98F; }
 

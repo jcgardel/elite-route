@@ -208,6 +208,15 @@ const TX = {
     toursGuide: "What fits in one day? Read the day-trip guide",
     toursWa: "Plan my tour on WhatsApp",
     toursWaText: "Hi, I'd like a quote for a tour with a chauffeur at my disposal.",
+    navServices: "Services", navRoutes: "Routes", navFleet: "Fleet", navCompanies: "Companies",
+    navCall: "Call +52 55 4358 2919", navQuote: "Get a quote", navMenu: "Menu",
+    stripAria: "Why travel with Elite Route",
+    strip: ["Insured vehicles", "Professional chauffeurs", "Flight tracking", "Fixed prices, VAT included", "Personal attention"],
+    catPax: "passengers", catBags: "bags", catSelect: "Select", catSelected: "Selected",
+    corpKicker: "For companies",
+    corpTitle: "Executive transportation for companies and events.",
+    corpCopy: "Coordination, invoicing and dedicated attention.",
+    corpCta: "Learn more",
     fleetKicker: "The fleet",
     fleetTitle: "Executive and SUV Lux, with a bilingual chauffeur",
     fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan Lite and SUV Urban remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
@@ -230,7 +239,7 @@ const TX = {
     pickup: "Pickup Location", pickupPlaceholder: "Hotel, airport, address...",
     destination: "Destination", destinationPlaceholder: "Where are we taking you?",
     date: "Date", time: "Time", vehicleCategory: "Vehicle Category",
-    getQuoteBtn: "Get Quote →", calculating: "Calculating route...",
+    getQuoteBtn: "Quote my transfer", calculating: "Calculating route...",
     continue: "Continue →", modifyRoute: "← Modify route", modifyVehicle: "← Modify vehicle",
     kilometers: "Kilometers", includedKm: "Included km", estimatedMin: "Estimated min.",
     airportNote: "✈️ Airport pickup — parking & flight-delay waiting time included",
@@ -385,6 +394,15 @@ const TX = {
     toursGuide: "¿Qué cabe en un día? Lee la guía de excursiones",
     toursWa: "Armar mi tour por WhatsApp",
     toursWaText: "Hola, quiero cotizar un tour con chofer a disposición.",
+    navServices: "Servicios", navRoutes: "Rutas", navFleet: "Flota", navCompanies: "Empresas",
+    navCall: "Llamar al +52 55 4358 2919", navQuote: "Cotizar", navMenu: "Menú",
+    stripAria: "Por qué viajar con Elite Route",
+    strip: ["Vehículos asegurados", "Conductores profesionales", "Seguimiento de vuelos", "Precios fijos con IVA incluido", "Atención personalizada"],
+    catPax: "pasajeros", catBags: "maletas", catSelect: "Seleccionar", catSelected: "Seleccionado",
+    corpKicker: "Para empresas",
+    corpTitle: "Transporte ejecutivo para empresas y eventos.",
+    corpCopy: "Coordinación, facturación y atención dedicada.",
+    corpCta: "Conoce más",
     fleetKicker: "La flota",
     fleetTitle: "Executive y SUV Lux, con chofer bilingüe",
     fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan Lite y SUV Urban siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
@@ -407,7 +425,7 @@ const TX = {
     pickup: "Lugar de recogida", pickupPlaceholder: "Hotel, aeropuerto, dirección...",
     destination: "Destino", destinationPlaceholder: "¿A dónde te llevamos?",
     date: "Fecha", time: "Hora", vehicleCategory: "Categoría de vehículo",
-    getQuoteBtn: "Obtener cotización →", calculating: "Calculando ruta...",
+    getQuoteBtn: "Cotizar traslado", calculating: "Calculando ruta...",
     continue: "Continuar →", modifyRoute: "← Modificar ruta", modifyVehicle: "← Modificar vehículo",
     kilometers: "Kilómetros", includedKm: "Km incluidos", estimatedMin: "Min. estimados",
     airportNote: "✈️ Salida desde aeropuerto — estacionamiento y espera por retraso de vuelo incluidos",
@@ -539,502 +557,447 @@ const TX = {
 
 const styles = `
 
-  * { box-sizing:border-box; }
-  .er-root { background:transparent; color:#fff; min-height:100vh; font-family:var(--font-barlow),sans-serif; font-weight:300; }
+  /* ── Rediseño oscuro (especificación nov 2026) ──────────────────────────
+     85-90 % tonos oscuros neutros; el dorado sólo como acento de marca y en
+     el botón de cotizar. Títulos en Cormorant (serif), interfaz en Manrope.
+     Nada de comillas invertidas en estos comentarios: esto vive dentro de
+     una plantilla de texto y una comilla invertida la cierra. */
+  .er-root {
+    --bg:#080D12; --bg2:#10171D; --card:#192127; --field:#252D34;
+    --tx:#F7F7F5; --tx2:#B8BEC3; --line:#343C43; --gold:#C8A76E; --gold-btn:#D5B57A;
+    --serif:var(--font-cormorant), Georgia, serif;
+    --sans:var(--font-manrope), system-ui, -apple-system, sans-serif;
+    --r:12px; --ease:cubic-bezier(0.2, 0.7, 0.2, 1);
+    --hero-photo:url('/high-suv.webp');
+    background:var(--bg); color:var(--tx); min-height:100vh;
+    font-family:var(--sans); font-weight:400; -webkit-font-smoothing:antialiased;
+  }
+  .er-root * { box-sizing:border-box; }
   .er-shell { min-height:100vh; }
-  /* Primera pantalla sin foto desde el 16 nov 2026: deja ver el mismo
-     degradado bronce/dorado del resto del sitio (body::before en
-     globals.css). Antes llevaba /high-suv.webp con un zoom lento. */
-  .er-hero { position:relative; min-height:720px; overflow:hidden; background:transparent; display:flex; flex-direction:column; }
-  .er-nav { position:relative; z-index:2; max-width:1180px; width:100%; margin:0 auto; padding:24px 28px; display:flex; align-items:center; justify-content:space-between; }
-  .er-brand { display:inline-block; text-decoration:none; filter:drop-shadow(0 14px 26px rgba(0,0,0,0.75)); animation:erLogoIn 1100ms cubic-bezier(0.16,1,0.3,1) both; }
-  @keyframes erLogoIn { from{opacity:0;transform:translateY(-8px) scale(0.96)} to{opacity:1;transform:translateY(0) scale(1)} }
   @media (prefers-reduced-motion: reduce) {
-    .er-brand { animation:none; }
     .er-root *, .er-root *::before, .er-root *::after {
       animation-duration:0.01ms !important; animation-iteration-count:1 !important;
       transition-duration:0.01ms !important; scroll-behavior:auto !important;
     }
   }
-  .er-nav-right { display:flex; align-items:center; gap:20px; }
-  .er-nav-links { display:flex; gap:28px; align-items:center; color:#BFC3C8; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; }
-  .er-nav-chip { border:1px solid #C8A46B; border-radius:2px; padding:10px 14px; color:#fff; background:transparent; cursor:pointer; letter-spacing:0.14em; text-transform:uppercase; font-size:12px; }
-  .er-nav-b2b-mobile { display:none; font-size:11px; letter-spacing:0.12em; color:#C8A46B; text-decoration:none; text-transform:uppercase; font-weight:600; border:1px solid rgba(200,164,107,0.4); padding:7px 12px; border-radius:2px; }
-  @media (max-width:700px) {
-    .er-nav-b2b-mobile { display:flex; align-items:center; min-height:44px; font-size:10.5px; padding:7px 10px; letter-spacing:0.08em; }
+
+  /* ── Encabezado ── */
+  .er-topbar { position:sticky; top:0; z-index:60; background:rgba(8,13,18,0.82); backdrop-filter:saturate(140%) blur(14px); -webkit-backdrop-filter:saturate(140%) blur(14px); border-bottom:1px solid rgba(52,60,67,0.7); }
+  .er-nav { max-width:1320px; margin:0 auto; padding:0 32px; height:76px; display:flex; align-items:center; gap:28px; }
+  .er-brand { display:inline-flex; align-items:center; text-decoration:none; flex:none; }
+  .er-nav-links { list-style:none; margin:0 0 0 auto; padding:0; display:flex; align-items:center; gap:30px; }
+  .er-nav-links a { color:var(--tx2); text-decoration:none; font-size:14px; font-weight:500; letter-spacing:0.01em; transition:color 0.18s var(--ease); }
+  .er-nav-links a:hover { color:var(--tx); }
+  .er-nav-right { display:flex; align-items:center; gap:18px; flex:none; }
+  .er-nav-tel { display:inline-flex; align-items:center; gap:8px; color:var(--tx); text-decoration:none; font-size:14px; font-weight:600; min-height:44px; }
+  .er-nav-tel svg { color:var(--tx2); }
+  .er-nav-cta { display:inline-flex; align-items:center; min-height:44px; padding:0 20px; border-radius:10px; background:var(--gold-btn); color:#14181C; font-size:14px; font-weight:700; text-decoration:none; transition:background 0.18s var(--ease); }
+  .er-nav-cta:hover { background:#E0C38D; }
+  .er-nav-burger { display:none; width:44px; height:44px; align-items:center; justify-content:center; background:transparent; border:1px solid var(--line); border-radius:10px; color:var(--tx); cursor:pointer; }
+
+  /* ── Portada: texto | fotografía | cotizador ── */
+  .er-hero { position:relative; overflow:hidden; background:var(--bg); }
+  .er-hero::before {
+    content:""; position:absolute; top:0; bottom:0; left:28%; width:46%;
+    background:var(--hero-photo) center 42% / cover no-repeat;
+    -webkit-mask-image:radial-gradient(ellipse 62% 70% at 50% 46%, #000 38%, transparent 78%);
+    mask-image:radial-gradient(ellipse 62% 70% at 50% 46%, #000 38%, transparent 78%);
+    opacity:0.92; pointer-events:none;
   }
-  /* min-height 44px: mínimo recomendado para un objetivo de toque. */
-  /* Tres hijos: texto, tarjeta de cotización y amenidades. En escritorio
-     texto y amenidades se apilan en la columna izquierda; en móvil el
-     orden cambia para que el cotizador quede antes que las amenidades. */
-  .er-hero-inner { position:relative; z-index:1; max-width:1180px; width:100%; margin:0 auto; padding:42px 28px 48px; display:grid; grid-template-columns:minmax(0, 1fr) 440px; gap:34px 48px; align-items:start; }
-  .er-kicker { color:#C8A46B; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; }
-  .er-hero-h1 { font-size:14px; letter-spacing:0.17em; font-weight:600; margin:0 0 16px; max-width:640px; line-height:1.6; }
-  .er-hero-title { font-family:var(--font-cormorant),serif; font-size:clamp(54px, 7vw, 92px); font-weight:300; line-height:0.96; margin:0 0 20px; max-width:720px; color:#FFFFFF; text-wrap:balance; }
-  .er-hero-copy { max-width:620px; color:#BFC3C8; font-size:18px; line-height:1.7; margin:0; }
-  .er-hero-promise { max-width:620px; color:#9AA0A6; font-size:15px; line-height:1.7; margin:0; }
-  .er-hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
-  .er-hero-btn { display:inline-flex; min-height:46px; align-items:center; justify-content:center; border:1px solid #C8A46B; color:#fff; background:rgba(10,10,10,0.58); text-decoration:none; padding:13px 20px; font-size:12px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
-  .er-hero-btn:hover { background:#C8A46B; color:#0A0A0A; }
-  .er-hero-mail { color:#BFC3C8; border-color:rgba(200,164,107,0.58); text-transform:none; letter-spacing:0.05em; font-size:14px; }
-  .er-hero-footer { margin-top:30px; color:#BFC3C8; border-left:2px solid #C8A46B; padding-left:16px; max-width:560px; font-size:15px; line-height:1.6; }
-  .er-hero-wait { display:flex; align-items:flex-start; gap:10px; margin:20px 0 0; padding-left:14px;
-                  border-left:2px solid #C8A46B; max-width:540px; color:#BFC3C8; font-size:14px; line-height:1.55; }
-  .er-hero-wait svg { flex-shrink:0; margin-top:3px; }
-  .er-hero-wait strong { color:#FFFFFF; font-weight:600; }
-  .er-proof { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:14px; max-width:620px; margin-top:34px; }
-  .er-proof-item { border-top:1px solid rgba(255,255,255,0.32); padding-top:14px; }
-  .er-proof-value { font-family:var(--font-barlow-condensed),sans-serif; font-size:24px; font-weight:700; letter-spacing:0.08em; }
-  .er-proof-label { color:#BFC3C8; font-size:12px; line-height:1.4; margin-top:4px; }
-  .er-booking-card { background:rgba(10,10,10,0.74); color:#FFFFFF; border:1px solid rgba(200,164,107,0.45); border-radius:2px; padding:26px; box-shadow:0 28px 70px rgba(0,0,0,0.58); backdrop-filter:blur(12px); }
-  .er-booking-title { font-size:23px; font-weight:600; margin:0 0 18px; letter-spacing:0; color:#FFFFFF; }
-  .er-main { max-width:1180px; margin:-56px auto 0; padding:0 28px 90px; position:relative; z-index:2; }
-  .er-workspace { display:grid; grid-template-columns:minmax(0, 1fr); gap:26px; }
+  .er-hero-inner { position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:72px 32px 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,0.8fr) 432px; grid-template-areas:"lede photo card" "strip strip strip"; column-gap:24px; align-items:start; }
+  .er-hero-lede { grid-area:lede; padding-top:28px; max-width:470px; }
+  .er-hero-photo { grid-area:photo; display:none; }
+  .er-booking-card { grid-area:card; }
+  .er-strip { grid-area:strip; }
+  .er-kicker { color:var(--tx2); font-size:12px; letter-spacing:0.2em; text-transform:uppercase; }
+  .er-hero-h1 { font-family:var(--sans); font-size:12px; font-weight:600; margin:0 0 22px; line-height:1.6; }
+  .er-hero-title { font-family:var(--serif); font-size:clamp(52px, 5.4vw, 76px); font-weight:400; line-height:0.98; letter-spacing:-0.01em; margin:0 0 22px; color:var(--tx); text-wrap:balance; }
+  .er-hero-copy { color:var(--tx2); font-size:17px; line-height:1.65; margin:0 0 26px; max-width:420px; }
+  .er-hero-reviews { display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:0 16px; border:1px solid var(--line); border-radius:10px; background:rgba(16,23,29,0.7); color:var(--tx); text-decoration:none; font-size:14px; transition:border-color 0.18s var(--ease); }
+  .er-hero-reviews:hover { border-color:#4A535B; }
+  .er-hero-reviews strong { font-weight:700; }
+  .er-hero-stars { color:#F4B400; letter-spacing:2px; font-size:13px; }
+  .er-hero-wa { display:block; width:max-content; margin-top:16px; color:var(--tx2); font-size:14px; text-decoration:underline; text-underline-offset:4px; text-decoration-color:rgba(184,190,195,0.4); min-height:24px; }
+  .er-hero-wa:hover { color:var(--tx); }
 
-  .er-progress { height:2px; background:rgba(255,255,255,0.14); margin-bottom:0; }
-  .er-progress-fill { height:100%; background:#C8A46B; transition:width 0.4s ease; }
-  .er-steps { display:flex; border:1px solid rgba(200,164,107,0.38); border-top:none; margin-bottom:24px; background:rgba(0,0,0,0.28); }
-  .er-step-tab { flex:1; padding:14px 10px; text-align:center; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; cursor:pointer; border:none; border-right:1px solid rgba(200,164,107,0.24); background:none; font-family:var(--font-barlow),sans-serif; font-weight:600; transition:all 0.25s; }
-  .er-step-tab:last-child { border-right:none; }
-  .er-step-tab.active { color:#0A0A0A; background:#C8A46B; }
-  .er-step-tab:disabled { cursor:default; opacity:0.55; }
-  .er-step-num { display:inline-block; width:18px; height:18px; border-radius:50%; border:1px solid currentColor; font-size:10px; line-height:18px; text-align:center; margin-right:7px; }
+  /* ── Franja de beneficios ── */
+  .er-strip { list-style:none; margin:56px 0 0; padding:26px 0; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .er-strip-item { display:flex; align-items:center; gap:12px; padding:0 20px; color:var(--tx); font-size:14px; font-weight:500; line-height:1.35; }
+  .er-strip-item + .er-strip-item { border-left:1px solid var(--line); }
+  .er-strip-icon { flex:none; width:24px; height:24px; color:#D9DCDF; }
+  .er-strip-icon svg { width:24px; height:24px; display:block; }
 
-  .er-panel { display:none; animation:erFadeIn 0.3s ease; }
+  /* ── Cotizador ── */
+  .er-booking-card { background:var(--card); color:var(--tx); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:0 24px 60px -30px rgba(0,0,0,0.8); scroll-margin-top:92px; }
+  .er-booking-title { font-family:var(--serif); font-size:28px; font-weight:500; margin:0 0 12px; color:var(--tx); }
+  .er-main { max-width:1320px; margin:0 auto; padding:0 32px 100px; }
+  .er-progress { height:2px; background:var(--line); border-radius:2px; overflow:hidden; }
+  .er-progress-fill { height:100%; background:var(--gold); transition:width 0.25s var(--ease); }
+  .er-steps { display:flex; gap:6px; margin:12px 0 22px; }
+  .er-step-tab { flex:1; min-height:44px; padding:8px 6px; display:flex; align-items:center; justify-content:center; font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--tx2); background:transparent; border:1px solid var(--line); border-radius:10px; cursor:pointer; transition:all 0.18s var(--ease); }
+  .er-step-tab.active { color:var(--tx); border-color:#5A636B; background:var(--field); }
+  .er-step-tab:disabled { cursor:default; opacity:0.5; }
+  .er-step-num { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; border:1px solid currentColor; font-size:10.5px; margin-right:7px; flex:none; }
+  .er-panel { display:none; animation:erFadeIn 0.22s var(--ease); }
   .er-panel.active { display:block; }
-  @keyframes erFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes erFadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
 
-  .er-service-tabs { display:flex; border:1px solid rgba(200,164,107,0.45); overflow:hidden; margin-bottom:22px; background:rgba(255,255,255,0.04); }
-  .er-svc-tab { flex:1; padding:13px 10px; background:transparent; border:none; color:#BFC3C8; font-family:var(--font-barlow-condensed),sans-serif; font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; border-right:1px solid rgba(200,164,107,0.24); transition:all 0.2s; }
-  .er-svc-tab:last-child { border-right:none; }
-  .er-svc-tab.active { background:#C8A46B; color:#0A0A0A; }
-  .er-svc-tab:hover:not(.active) { background:rgba(200,164,107,0.12); color:#fff; }
+  .er-service-tabs { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:6px; padding:4px; background:var(--bg2); border:1px solid var(--line); border-radius:12px; margin-bottom:20px; }
+  .er-svc-tab { min-height:44px; padding:8px; background:transparent; border:none; border-radius:9px; color:var(--tx2); font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all 0.18s var(--ease); }
+  .er-svc-tab.active { background:var(--field); color:var(--tx); box-shadow:inset 0 0 0 1px #4A535B; }
+  .er-svc-tab:hover:not(.active) { color:var(--tx); }
 
-  .er-field { margin-bottom:17px; }
-  .er-label { display:block; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; margin-bottom:8px; font-weight:600; }
-  /* font-size 16px: por debajo de eso Safari en iOS hace zoom al enfocar el campo. */
-  .er-input { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; }
-  .er-input:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
-  .er-input::placeholder { color:#BFC3C8; opacity:0.72; }
-  .er-input option { background:#0A0A0A; color:#FFFFFF; }
+  .er-field { margin-bottom:16px; }
+  .er-label { display:block; font-size:13px; font-weight:600; color:var(--tx2); margin-bottom:7px; }
+  /* 16 px: por debajo Safari en iOS hace zoom al enfocar. */
+  .er-input { width:100%; min-height:52px; background:var(--field); border:1px solid transparent; border-radius:10px; padding:14px 15px; color:var(--tx); font-family:var(--sans); font-size:16px; font-weight:500; outline:none; transition:border-color 0.18s var(--ease), box-shadow 0.18s var(--ease); -webkit-appearance:none; }
+  .er-input:hover { border-color:#3E474F; }
+  .er-input:focus { border-color:#6B747C; box-shadow:0 0 0 3px rgba(200,167,110,0.16); }
+  .er-input::placeholder { color:#8D959C; opacity:1; }
+  .er-input option { background:var(--card); color:var(--tx); }
+  input[type="date"].er-input, input[type="time"].er-input { color-scheme:dark; }
+  .er-textarea { width:100%; background:var(--field); border:1px solid transparent; border-radius:10px; padding:14px 15px; color:var(--tx); font-family:var(--sans); font-size:16px; line-height:1.55; outline:none; -webkit-appearance:none; resize:vertical; min-height:92px; display:block; transition:border-color 0.18s var(--ease); }
+  .er-textarea:focus { border-color:#6B747C; box-shadow:0 0 0 3px rgba(200,167,110,0.16); }
+  .er-textarea::placeholder { color:#8D959C; opacity:1; }
+  .er-notes-foot { display:flex; justify-content:space-between; gap:14px; margin-top:7px; }
+  .er-notes-help, .er-notes-count { color:var(--tx2); font-size:12.5px; line-height:1.5; }
+  .er-notes-count { white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .er-notes-count.full { color:var(--gold); }
 
-  /* Hereda del input: mismo fondo, mismo borde, mismo foco. Lo único propio
-     es que crece en alto y no en ancho —resize:vertical— porque un textarea
-     arrastrable en horizontal rompe la rejilla del formulario en el
-     teléfono. El alto mínimo deja ver tres renglones sin tener que
-     desplazar. */
-  .er-textarea { width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:14px 15px; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; line-height:1.55; outline:none; transition:border 0.2s, box-shadow 0.2s; -webkit-appearance:none; resize:vertical; min-height:92px; display:block; }
-  .er-textarea:focus { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
-  .er-textarea::placeholder { color:#BFC3C8; opacity:0.72; }
-  .er-notes-foot { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-top:7px; }
-  .er-notes-help { color:#B4B4AF; font-size:12px; line-height:1.5; max-width:62ch; }
-  .er-notes-count { color:#B4B4AF; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap; flex-shrink:0; }
-  .er-notes-count.full { color:#C8A46B; }
+  .er-wa-link { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; min-height:44px; color:var(--tx2); font-size:14px; text-decoration:none; }
+  .er-wa-link svg { color:#25D366; }
+  .er-wa-link:hover { color:var(--tx); text-decoration:underline; text-underline-offset:3px; }
 
-  /* Enlace y no botón, a propósito: es la salida para quien todavía no
-     quiere dejar la tarjeta, no una segunda llamada a la acción. El verde
-     de WhatsApp aparece sólo en el ícono; el texto se queda en el gris del
-     resto para no gritar más que el botón de pagar. */
-  .er-wa-link { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; padding:10px; min-height:44px; color:#BFC3C8; font-size:13.5px; text-decoration:none; transition:color 0.2s; }
-  .er-wa-link svg { color:#25D366; flex-shrink:0; }
-  .er-wa-link:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
-  .er-wa-link:focus-visible { outline:2px solid #C8A46B; outline-offset:2px; }
-  /* El campo de vuelo se distingue del resto: es obligatorio y aparece de
-     golpe en el último paso, así que tiene que leerse como parte del viaje
-     y no como un extra que se puede dejar en blanco. */
-  .er-flight { border:1px solid rgba(200,164,107,0.35); border-radius:3px; padding:14px 16px 12px; background:rgba(200,164,107,0.06); }
-  .er-flight .er-label { color:#C8A46B; }
-  .er-flight-help { margin:8px 0 0; font-size:12px; line-height:1.55; color:#BFC3C8; }
-
-  /* La pregunta de aeropuerto del paso 1. Deliberadamente DISCRETA —sin el
-     borde dorado del campo de vuelo—: la ve todo el mundo en cada cotización
-     y la mayoría no la necesita, así que no puede competir con las
-     direcciones ni con la fecha, que sí son obligatorias. */
-  .er-sinunidades { margin:-4px 0 18px; padding:15px 16px; border:1px solid rgba(200,164,107,0.42); border-radius:3px; background:rgba(200,164,107,0.07); }
-  .er-sinunidades-t { margin:0 0 7px; font-size:13px; font-weight:700; color:#C8A46B; letter-spacing:0.02em; }
-  .er-sinunidades-c { margin:0 0 13px; font-size:13px; line-height:1.6; color:#BFC3C8; }
-  .er-sinunidades-btn { display:inline-block; padding:11px 18px; border:1px solid #C8A46B; border-radius:2px; color:#C8A46B; text-decoration:none; font-size:11.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
-  .er-sinunidades-btn:hover { background:#C8A46B; color:#0A0A0A; }
+  .er-flight, .er-rt, .er-sinunidades { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:var(--bg2); }
+  .er-flight .er-label { color:var(--tx); }
+  .er-flight-help { margin:8px 0 0; font-size:12.5px; line-height:1.55; color:var(--tx2); }
+  .er-sinunidades { margin:-4px 0 18px; }
+  .er-sinunidades-t { margin:0 0 6px; font-size:14px; font-weight:700; color:var(--tx); }
+  .er-sinunidades-c { margin:0 0 12px; font-size:13.5px; line-height:1.6; color:var(--tx2); }
+  .er-sinunidades-btn { display:inline-flex; align-items:center; min-height:44px; padding:0 18px; border:1px solid #5A636B; border-radius:10px; color:var(--tx); text-decoration:none; font-size:13.5px; font-weight:600; }
+  .er-sinunidades-btn:hover { background:var(--field); }
   .er-paxbags { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
-  .er-airport-ask { margin:-4px 0 17px; padding:13px 15px 11px; border:1px solid rgba(255,255,255,0.10); border-radius:3px; background:rgba(255,255,255,0.022); }
-  .er-airport-ask-q { margin:0 0 10px; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
-  .er-airport-ask-help { margin:9px 0 0; font-size:11.5px; line-height:1.55; color:#B4B4AF; }
-  /* ALTURA MÍNIMA DE 44 px, que es el objetivo táctil que recomiendan Apple y
-     Google. La casilla en sí mide 17 px y eso no se toca con el pulgar; lo que
-     se toca es la FILA, porque el <label> envuelve al input. Antes la fila
-     medía 30 px de alto y había que apuntar. Medido en producción a 375 px el
-     3 de octubre de 2026.
-
-     Nada de comillas invertidas en estos comentarios: esto vive dentro de una
-     plantilla de texto y una comilla invertida la cierra a media hoja de
-     estilos.
-
-     La alineación arriba (align-items) se queda como estaba: estas etiquetas
-     pueden ocupar dos renglones en pantallas estrechas, y ahí la casilla tiene
-     que alinearse con el primero, no flotar a media altura. */
-  .er-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px 0; min-height:44px; box-sizing:border-box; font-size:13.5px; line-height:1.45; color:#E8E8E6; }
-  /* 17px y no el tamaño por defecto: en iOS la casilla nativa se encoge tanto
-     que cuesta atinarle con el pulgar, y esto se contesta desde el teléfono. */
-  .er-check input { width:17px; height:17px; margin:1px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
-
-  /* El botón de invertir. Alto de 44 px por lo mismo que las casillas: se
-     toca con el pulgar. Ver la nota del objetivo táctil más arriba. */
-  .er-swap-row { display:flex; justify-content:flex-end; margin:-10px 0 10px; }
-  .er-swap { display:inline-flex; align-items:center; gap:7px; min-height:44px; padding:0 12px; background:none; border:none; cursor:pointer; color:#BFC3C8; font-family:inherit; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; border-radius:2px; transition:color 0.15s; }
-  .er-swap:hover { color:#C8A46B; }
-  .er-swap svg { flex:none; }
-
+  .er-airport-ask { margin:-2px 0 16px; padding:10px 14px 8px; border:1px solid var(--line); border-radius:12px; }
+  .er-airport-ask-q { margin:0 0 2px; font-size:13px; font-weight:600; color:var(--tx2); }
+  .er-airport-ask-help { margin:6px 0 0; font-size:12px; line-height:1.55; color:var(--tx2); }
+  .er-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:11px 0; min-height:44px; font-size:14px; line-height:1.45; color:var(--tx); }
+  .er-check input { width:18px; height:18px; margin:1px 0 0; flex:none; accent-color:var(--gold); cursor:pointer; }
+  .er-swap-row { display:flex; justify-content:flex-end; margin:-10px 0 6px; }
+  .er-swap { display:inline-flex; align-items:center; gap:7px; min-height:44px; padding:0 8px; background:none; border:none; cursor:pointer; color:var(--tx2); font-family:inherit; font-size:12.5px; font-weight:600; }
+  .er-swap:hover { color:var(--tx); }
   .er-input-wrap { position:relative; }
-  .er-input-wrap .er-input--clearable { padding-right:40px; }
-  .er-input-clear {
-    position:absolute; right:8px; top:50%; transform:translateY(-50%);
-    width:24px; height:24px; display:flex; align-items:center; justify-content:center;
-    background:rgba(255,255,255,0.06); border:1px solid rgba(200,164,107,0.35); border-radius:50%;
-    color:#BFC3C8; font-size:15px; line-height:1; padding:0; cursor:pointer;
-    transition:background 0.15s, color 0.15s, border-color 0.15s;
-  }
-  .er-input-clear:hover { background:rgba(200,164,107,0.18); color:#fff; border-color:#C8A46B; }
-  select.er-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C8A46B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:40px; cursor:pointer; }
-  .er-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  @media (max-width:580px) { .er-row { grid-template-columns:1fr; } }
+  .er-input-wrap .er-input--clearable { padding-right:44px; }
+  .er-input-clear { position:absolute; right:10px; top:50%; transform:translateY(-50%); width:28px; height:28px; display:flex; align-items:center; justify-content:center; background:var(--card); border:1px solid var(--line); border-radius:50%; color:var(--tx2); font-size:15px; line-height:1; padding:0; cursor:pointer; }
+  .er-input-clear:hover { color:var(--tx); border-color:#5A636B; }
+  select.er-input { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23B8BEC3' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 15px center; padding-right:42px; cursor:pointer; }
+  .er-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
-  .er-hours-selector { display:flex; align-items:center; gap:0; background:#fff; border:1px solid #d9d2c4; border-radius:2px; padding:10px 16px; }
-  .er-hr-btn { width:32px; height:32px; border-radius:50%; border:1px solid #bdb4a5; background:transparent; color:#111; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
-  .er-hr-btn:hover { border-color:#111; background:#f0ece3; }
-  /* En móvil y tableta crecen a 44 px: son los − y + con los que se eligen las
-     horas de disposición y, desde ayer, las de espera del viaje redondo. A 32
-     px son pequeños para un pulgar. En escritorio se quedan en 32 porque ahí
-     se apunta con un ratón y agrandarlos sólo engorda el control. */
-  @media (max-width:900px) {
-    .er-hr-btn { width:44px; height:44px; font-size:20px; }
-  }
-  .er-hr-count { font-family:var(--font-cormorant),serif; font-size:26px; font-weight:400; width:52px; text-align:center; color:#0A0A0A; font-variant-numeric:tabular-nums; }
-  .er-hr-unit { font-size:13px; color:#0A0A0A; letter-spacing:0.08em; }
+  .er-hours-selector { display:flex; align-items:center; background:var(--field); border-radius:10px; padding:6px 12px; }
+  .er-hr-btn { width:40px; height:40px; border-radius:50%; border:1px solid #4A535B; background:transparent; color:var(--tx); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .er-hr-btn:hover { border-color:var(--tx2); }
+  @media (max-width:900px) { .er-hr-btn { width:44px; height:44px; } }
+  .er-hr-count { font-size:22px; font-weight:700; width:52px; text-align:center; color:var(--tx); font-variant-numeric:tabular-nums; }
+  .er-hr-unit { font-size:13px; color:var(--tx2); }
+  .er-zone-legend { font-size:13px; font-weight:500; color:var(--tx); line-height:1.5; background:var(--bg2); border:1px solid var(--line); border-left:2px solid var(--gold); border-radius:10px; padding:10px 14px; margin:-4px 0 12px; }
+  .er-service-note { font-size:13px; color:var(--tx2); margin:-6px 0 18px; line-height:1.55; background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .er-service-note span { color:var(--tx2) !important; }
 
-  .er-zone-legend { font-size:13px; font-weight:600; color:#0B1220; line-height:1.5; background:#F6EFE2; border:1px solid #C7A46A; border-left:4px solid #C7A46A; border-radius:2px; padding:10px 14px; margin:-6px 0 12px; }
-  .er-service-note { font-size:12px; color:#0A0A0A; margin-top:-6px; margin-bottom:18px; line-height:1.55; background:#eee9df; border:1px solid #ded7ca; border-radius:2px; padding:12px 14px; }
+  .er-section-title { font-family:var(--serif); color:var(--tx); font-size:30px; font-weight:500; margin:40px 0 18px; }
+  .er-rt { margin-bottom:20px; }
+  .er-rt-q { font-size:13px; font-weight:700; color:var(--tx); margin:0 0 10px; }
+  .er-rt-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color:var(--tx); font-size:15px; line-height:1.45; }
+  .er-rt-check input { width:18px; height:18px; margin:2px 0 0; flex:none; accent-color:var(--gold); }
+  .er-rt-help, .er-rt-wait-note, .er-rt-max { color:var(--tx2); font-size:12.5px; line-height:1.55; }
+  .er-rt-help { margin:8px 0 0 28px; }
+  .er-rt-wait { margin-top:14px; padding-top:12px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .er-rt-wait-lbl { font-size:13px; font-weight:600; color:var(--tx); }
+  .er-rt-max { margin:10px 0 0; }
 
-  .er-section-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:42px; font-weight:300; margin:42px 0 20px; text-wrap:balance; }
-  /* El viaje redondo. Mismo lenguaje visual que er-airport-ask —es la otra
-     pregunta que cambia el precio— pero en dorado, porque ésta es una oferta
-     y aquélla es un dato que nos hace falta.
-     Ojo: nada de comillas invertidas aquí dentro. Esto vive en una plantilla
-     de texto y una comilla invertida la cierra a media hoja de estilos. */
-  .er-rt { border:1px solid rgba(200,164,107,0.32); background:rgba(200,164,107,0.06); border-radius:3px; padding:16px 18px; margin-bottom:22px; }
-  .er-rt-q { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:#C8A46B; margin:0 0 10px; }
-  .er-rt-check { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color:#ECEAE6; font-size:15px; line-height:1.45; }
-  .er-rt-check input { width:17px; height:17px; margin:2px 0 0; flex:none; accent-color:#C8A46B; cursor:pointer; }
-  .er-rt-help { color:#B4B4AF; font-size:12.5px; line-height:1.6; margin:8px 0 0 27px; }
-  .er-rt-wait { margin-top:14px; padding-top:13px; border-top:1px solid rgba(200,164,107,0.25); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
-  .er-rt-wait-lbl { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#BFC3C8; font-weight:600; }
-  .er-rt-wait-note { color:#B4B4AF; font-size:12.5px; line-height:1.5; margin-top:4px; }
-  .er-rt-max { color:#B4B4AF; font-size:12px; line-height:1.5; margin:10px 0 0; }
-
-  .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; margin-bottom:24px; }
-  .er-vehicle { position:relative; border-radius:2px; cursor:pointer; transition:transform 0.2s, border-color 0.2s; text-align:left; overflow:hidden; border:1px solid #272727; min-height:360px; background:#090909; }
-  .er-vehicle:hover { transform:translateY(-3px); border-color:#858585; }
-  .er-vehicle.selected { border-color:#fff; box-shadow:0 0 0 1px #fff; }
+  /* Paso 2: mismas proporciones para todas; sólo la elegida con línea dorada. */
+  .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-bottom:22px; }
+  .er-vehicle { position:relative; border-radius:14px; cursor:pointer; text-align:left; overflow:hidden; border:1px solid var(--line); min-height:300px; background:#24292D; transition:border-color 0.18s var(--ease), transform 0.18s var(--ease); }
+  .er-vehicle:hover { border-color:#5A636B; }
+  .er-vehicle.selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
   .er-vehicle.blocked { opacity:0.4; cursor:not-allowed; }
-  /* Foto vertical 4:5 a todo lo ancho y alineada arriba: así el auto se ve
-     completo aunque la tarjeta sea angosta (computadora) o casi cuadrada
-     (celular). Si la tarjeta es más alta que la foto, el borde inferior se
-     funde con el fondo oscuro. */
-  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:4 / 5; background-size:cover; background-position:center top; transition:transform 0.3s ease; -webkit-mask-image:linear-gradient(to bottom, #000 82%, transparent); mask-image:linear-gradient(to bottom, #000 82%, transparent); }
-  .er-vehicle:hover .er-vehicle-bg { transform:scale(1.04); }
-  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(9,9,9,0.9) 0%, rgba(9,9,9,0.35) 45%, rgba(9,9,9,0) 70%); }
-  .er-vehicle-content { position:relative; z-index:1; padding:18px; display:flex; flex-direction:column; justify-content:flex-end; min-height:360px; }
-  .er-vehicle-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:22px; font-weight:700; letter-spacing:0.12em; color:#fff; margin-bottom:2px; text-transform:uppercase; }
-  .er-vehicle-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; }
-  .er-vehicle-cap { font-size:12px; color:#b4b4b4; margin-bottom:10px; }
-  .er-vehicle-price { font-family:var(--font-cormorant),serif; font-size:25px; color:#fff; font-variant-numeric:tabular-nums; }
-  .er-vehicle-price-label { font-size:10px; color:#a8a8a8; letter-spacing:0.1em; text-transform:uppercase; }
-  .er-vehicle-check { position:absolute; top:12px; right:12px; z-index:2; width:22px; height:22px; border-radius:50%; background:#fff; display:none; align-items:center; justify-content:center; }
+  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:4 / 5; background-size:cover; background-position:center 30%; }
+  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(25,33,39,0.98) 0%, rgba(25,33,39,0.75) 38%, rgba(25,33,39,0) 62%); }
+  .er-vehicle-content { position:relative; z-index:1; padding:16px; display:flex; flex-direction:column; justify-content:flex-end; min-height:300px; }
+  .er-vehicle-name { font-family:var(--serif); font-size:24px; font-weight:500; color:var(--tx); margin-bottom:2px; }
+  .er-vehicle-tag { font-size:11.5px; color:var(--tx2); letter-spacing:0.04em; margin-bottom:6px; }
+  .er-vehicle-cap { font-size:12.5px; color:var(--tx2); margin-bottom:8px; }
+  .er-vehicle-price { font-size:22px; font-weight:700; color:var(--tx); font-variant-numeric:tabular-nums; }
+  .er-vehicle-price-label { font-size:11px; color:var(--tx2); }
+  .er-vehicle-check { position:absolute; top:12px; right:12px; z-index:2; width:24px; height:24px; border-radius:50%; background:var(--gold); display:none; align-items:center; justify-content:center; }
   .er-vehicle.selected .er-vehicle-check { display:flex; }
 
-  .er-route-box { background:#111; border:1px solid #292929; border-radius:2px; padding:20px 24px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
-  .er-route-stats { display:flex; gap:24px; }
-  .er-stat-val { font-family:var(--font-cormorant),serif; font-size:30px; font-weight:400; color:#fff; line-height:1; font-variant-numeric:tabular-nums; }
-  .er-stat-lbl { font-size:11px; color:#9a9a9a; letter-spacing:0.1em; text-transform:uppercase; margin-top:4px; }
-  .er-zone-badge { display:inline-block; padding:5px 12px; border:1px solid #4a4a4a; border-radius:20px; font-size:11px; color:#d0d0d0; letter-spacing:0.1em; text-transform:uppercase; }
+  .er-route-box { background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:16px 20px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+  .er-route-stats { display:flex; gap:26px; }
+  .er-stat-val { font-size:24px; font-weight:700; color:var(--tx); line-height:1; font-variant-numeric:tabular-nums; }
+  .er-stat-lbl { font-size:12px; color:var(--tx2); margin-top:5px; }
+  .er-zone-badge { display:inline-block; padding:6px 12px; border:1px solid var(--line); border-radius:20px; font-size:12px; color:var(--tx2); }
+  .er-airport-note { color:var(--tx2); font-size:12.5px; margin:8px 0 16px; text-align:center; }
 
-  .er-airport-note { color:#C8A46B; font-size:12px; margin:8px 0 16px; text-align:center; }
-
-  .er-btn-primary { width:100%; background:#0A0A0A; color:#fff; border:1px solid #C8A46B; border-radius:2px; padding:16px; font-family:var(--font-barlow),sans-serif; font-size:13px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; transition:background 0.2s, color 0.2s; }
-  .er-btn-primary:hover { background:#C8A46B; color:#0A0A0A; }
-  .er-btn-primary:disabled { opacity:0.5; cursor:default; }
-  .er-btn-secondary { width:100%; background:transparent; color:#d8d8d8; border:1px solid #363636; border-radius:2px; padding:13px; font-family:var(--font-barlow),sans-serif; font-size:13px; font-weight:600; letter-spacing:0.1em; cursor:pointer; transition:border 0.2s; margin-top:10px; }
-  .er-btn-secondary:hover { border-color:#8a8a8a; }
-  .er-booking-card .er-btn-secondary { border-color:rgba(200,164,107,0.45); }
-  .er-booking-card .er-btn-secondary:hover { border-color:#C8A46B; }
-  .er-btn-wa { width:100%; background:#25D366; color:#000; border:none; border-radius:2px; padding:18px; font-family:var(--font-barlow),sans-serif; font-size:14px; font-weight:700; letter-spacing:0.08em; cursor:pointer; transition:background 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
+  /* Botón principal: dorado discreto, texto oscuro, 54 px. */
+  .er-btn-primary { width:100%; min-height:54px; background:var(--gold-btn); color:#14181C; border:none; border-radius:12px; padding:15px; font-family:var(--sans); font-size:15.5px; font-weight:700; cursor:pointer; transition:background 0.18s var(--ease), transform 0.18s var(--ease); }
+  .er-btn-primary:hover { background:#E0C38D; }
+  .er-btn-primary:active { transform:translateY(1px); }
+  .er-btn-primary:disabled { opacity:0.65; cursor:progress; background-image:linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent); background-size:200% 100%; animation:erLoad 1.1s linear infinite; }
+  @keyframes erLoad { from{background-position:200% 0} to{background-position:-200% 0} }
+  .er-btn-secondary { width:100%; min-height:48px; background:transparent; color:var(--tx); border:1px solid var(--line); border-radius:12px; padding:12px; font-family:var(--sans); font-size:14px; font-weight:600; cursor:pointer; margin-top:10px; transition:border-color 0.18s var(--ease); }
+  .er-btn-secondary:hover { border-color:#5A636B; }
+  .er-btn-wa { width:100%; min-height:54px; background:#25D366; color:#06140B; border:none; border-radius:12px; padding:15px; font-family:var(--sans); font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
   .er-btn-wa:hover { background:#1fb85a; }
-  .er-payment-note { color:#BFC3C8; font-size:12px; line-height:1.6; margin:-8px 0 14px; text-align:center; }
-  .er-currency-note { margin:-6px 0 14px; font-size:12px; line-height:1.55; color:#B4B4AF; text-align:center; }
+  .er-btn-outline { display:inline-flex; align-items:center; min-height:48px; padding:0 22px; border:1px solid #5A636B; border-radius:12px; color:var(--tx); text-decoration:none; font-size:14.5px; font-weight:600; transition:border-color 0.18s var(--ease), color 0.18s var(--ease); }
+  .er-btn-outline:hover { border-color:var(--gold); }
+  .er-payment-note, .er-currency-note { color:var(--tx2); font-size:12.5px; line-height:1.6; margin:-6px 0 14px; text-align:center; }
+  .er-alert { padding:12px 16px; border-radius:10px; font-size:14px; margin-bottom:16px; }
+  .er-alert-err { background:rgba(220,80,70,0.1); border:1px solid rgba(220,80,70,0.35); color:#F2A39B; }
 
-  .er-alert { padding:12px 16px; border-radius:2px; font-size:13px; margin-bottom:16px; }
-  .er-alert-err { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; }
-
-  .er-summary { background:#111; border:1px solid #292929; border-radius:2px; overflow:hidden; margin-bottom:24px; }
-  .er-summary-row { display:flex; justify-content:space-between; align-items:flex-start; padding:13px 16px; border-bottom:1px solid #222; font-size:14px; }
-  .er-summary-row:last-child { border-bottom:none; background:#191919; }
-  .er-summary-key { color:#9a9a9a; flex-shrink:0; }
-  .er-summary-val { color:#fff; text-align:right; max-width:65%; line-height:1.4; }
-  .er-summary-total { font-family:var(--font-cormorant),serif; font-size:22px; font-weight:400; font-variant-numeric:tabular-nums; }
-
-  .er-fleet { margin-top:58px; }
-  .er-fleet-kicker { font-size:11px; letter-spacing:0.18em; color:#C8A46B; text-transform:uppercase; margin-bottom:10px; }
-  .er-fleet-title { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:34px; color:#fff; margin:0 0 10px; }
-  .er-fleet-copy { color:#B4B4AF; font-size:14px; line-height:1.8; max-width:560px; margin:0 0 28px; }
-  .er-fleet-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:22px; }
-  .er-fleet-card { border:1px solid #272727; background:#0c0c0c; overflow:hidden; }
-  .er-fleet-card img { display:block; width:100%; height:auto; aspect-ratio:16 / 9; object-fit:cover; }
-  .er-fleet-meta { padding:18px 20px 20px; }
-  .er-fleet-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:20px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
-  .er-fleet-tag { font-size:11px; color:#ded8cd; letter-spacing:0.12em; text-transform:uppercase; margin-top:3px; }
-  .er-fleet-cap { font-size:12px; color:#b4b4b4; margin-top:8px; }
-  .er-fleet-note { font-size:11px; color:#8b8b88; line-height:1.6; margin-top:4px; }
-  .er-fleet-card--featured .er-fleet-name { font-size:24px; }
-  .er-fleet-card--featured { border-color:rgba(200,164,107,0.42); }
-  /* Alternativas: foto 16:9 completa (sin recorte) a la izquierda y texto a
-     la derecha; en celular se apilan como las destacadas. */
-  .er-fleet-card--alt { display:grid; grid-template-columns:42% 1fr; align-items:center; }
-  .er-fleet-card--alt img { height:auto; aspect-ratio:16 / 9; }
-  .er-fleet-card--alt .er-fleet-name { font-size:17px; }
-  .er-fleet-badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; margin-bottom:10px; }
-  .er-fleet-badge--alt { background:transparent; color:#8b8b88; padding:0; margin-bottom:6px; }
-  .er-bycat { font-size:12px; line-height:1.6; color:#B4B4AF; text-align:center; margin:-8px 0 18px; }
-  .er-pick { display:flex; gap:14px; align-items:center; padding:12px; border:1px solid #292929; background:#111; margin-bottom:18px; }
-  .er-pick img { width:120px; height:68px; object-fit:cover; flex-shrink:0; display:block; }
-  .er-pick-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:17px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#fff; }
-  .er-pick-tag { font-size:11px; color:#ded8cd; letter-spacing:0.1em; text-transform:uppercase; margin-top:2px; }
-  .er-pick-cap { font-size:12px; color:#b4b4b4; margin-top:4px; line-height:1.45; }
-  .er-cond { border:1px solid #292929; background:#0f0f0f; padding:14px 16px; margin-bottom:14px; }
+  .er-summary { background:var(--bg2); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-bottom:22px; }
+  .er-summary-row { display:flex; justify-content:space-between; gap:16px; padding:12px 16px; border-bottom:1px solid var(--line); font-size:14px; }
+  .er-summary-row:last-child { border-bottom:none; background:var(--field); }
+  .er-summary-key { color:var(--tx2); flex-shrink:0; }
+  .er-summary-val { color:var(--tx); text-align:right; max-width:65%; line-height:1.4; }
+  .er-summary-total { font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .er-pick { display:flex; gap:14px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:12px; background:var(--bg2); margin-bottom:16px; }
+  .er-pick img { width:120px; height:68px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+  .er-pick-name { font-family:var(--serif); font-size:21px; color:var(--tx); }
+  .er-pick-tag, .er-pick-cap { font-size:12.5px; color:var(--tx2); margin-top:2px; line-height:1.45; }
+  .er-cond, .er-paysteps { border:1px solid var(--line); border-radius:12px; background:var(--bg2); padding:14px 16px; margin-bottom:14px; }
   .er-cond ul, .er-paysteps ol { margin:0; padding-left:18px; }
-  .er-cond li, .er-paysteps li { color:#BFC3C8; font-size:12.5px; line-height:1.55; margin-bottom:5px; }
-  .er-cond a { display:inline-block; margin-top:4px; font-size:11.5px; color:#C8A46B; text-decoration:none; letter-spacing:0.04em; }
-  .er-cond a:hover { color:#fff; }
-  .er-cond-title { font-size:10.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; margin:0 0 8px; }
-  .er-trust { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; margin-bottom:18px; }
-  .er-trust-item { display:flex; flex-direction:column; gap:2px; padding:10px 12px; border:1px solid #242424; background:#0d0d0d; text-decoration:none; }
-  a.er-trust-item:hover { border-color:#C8A46B; }
-  .er-trust-item strong { color:#fff; font-size:12.5px; font-weight:600; }
-  .er-trust-item span { color:#B4B4AF; font-size:11.5px; line-height:1.45; }
-  .er-paysteps { margin-top:16px; padding:14px 16px; border-left:2px solid #C8A46B; background:#0f0f0f; }
-  .er-paysteps strong { color:#fff; font-weight:600; }
-  @media (max-width:420px) { .er-pick img { width:92px; height:52px; } }
-  .er-fleet-cta { display:inline-block; margin-top:24px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#C8A46B; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.45); padding-bottom:3px; }
-  .er-fleet-cta:hover { color:#fff; border-color:#fff; }
-  .er-benefits { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:22px; margin-top:58px; }
-  .er-benefit { border-top:1px solid #2e2e2e; padding-top:18px; }
-  .er-benefit-title { font-weight:600; font-size:17px; margin-bottom:8px; }
-  .er-benefit-copy { color:#BFC3C8; line-height:1.6; font-size:14px; }
-  /* El índice de rutas. Sobrio a propósito: es un bloque de navegación y de
-     señal para el buscador, no una sección de venta — no puede competir con
-     la flota ni con el cotizador. */
-  /* Tours y excursiones: el producto "chofer a disposición" para turistas,
-     con más peso visual que el índice de rutas porque es lo que el dueño
-     quiere vender (16 nov 2026). */
-  .er-tours { margin-top:58px; border:1px solid rgba(200,164,107,0.45); background:rgba(10,10,10,0.55); padding:34px 32px; border-radius:2px; }
-  .er-tours-kicker { margin:0 0 10px; color:#C8A46B; font-size:12px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; }
-  .er-tours-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:clamp(30px, 4vw, 42px); line-height:1.1; margin:0 0 12px; }
-  .er-tours-copy { margin:0 0 26px; max-width:680px; color:#BFC3C8; font-size:16px; line-height:1.65; }
+  .er-cond li, .er-paysteps li { color:var(--tx2); font-size:13px; line-height:1.55; margin-bottom:5px; }
+  .er-cond a { display:inline-block; margin-top:4px; font-size:13px; color:var(--tx); text-decoration:underline; text-underline-offset:3px; }
+  .er-cond-title { font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--tx); margin:0 0 8px; }
+  .er-paysteps strong { color:var(--tx); }
+  .er-trust { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; margin-bottom:16px; }
+  .er-trust-item { display:flex; flex-direction:column; gap:2px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; text-decoration:none; }
+  a.er-trust-item:hover { border-color:#5A636B; }
+  .er-trust-item strong { color:var(--tx); font-size:13px; font-weight:600; }
+  .er-trust-item span { color:var(--tx2); font-size:12px; line-height:1.45; }
+  .er-legal { text-align:center; font-size:11.5px; color:var(--tx2); margin-top:16px; line-height:1.8; }
+  .er-bycat { font-size:12.5px; line-height:1.6; color:var(--tx2); text-align:center; margin:-6px 0 16px; }
+
+  .PhoneInput { display:flex; align-items:center; min-height:52px; background:var(--field); border:1px solid transparent; border-radius:10px; padding:0 15px; }
+  .PhoneInput:focus-within { border-color:#6B747C; box-shadow:0 0 0 3px rgba(200,167,110,0.16); }
+  .PhoneInputCountry { margin-right:10px; }
+  .PhoneInputInput { flex:1; background:transparent; border:none; color:var(--tx); font-family:var(--sans); font-size:16px; font-weight:500; outline:none; padding:14px 0; }
+  .PhoneInputInput::placeholder { color:#8D959C; }
+
+  .er-trust-line { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:var(--tx2); font-size:12.5px; line-height:1.5; margin:0 0 16px; }
+  .er-trust-line svg { flex-shrink:0; stroke:var(--tx2); }
+  .er-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
+  .er-cardmarks { display:inline-flex; gap:6px; flex-wrap:wrap; }
+  .er-cardmark { font-weight:600; font-size:10px; letter-spacing:0.08em; color:var(--tx2); border:1px solid var(--line); border-radius:3px; padding:2px 6px 1px; line-height:1.5; }
+
+  /* ── Secciones ── */
+  .er-sec-kicker { color:var(--tx2); font-size:12px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; margin:0 0 14px; }
+  .er-sec-title { font-family:var(--serif); font-size:clamp(32px, 3.3vw, 44px); font-weight:400; line-height:1.08; color:var(--tx); margin:0 0 14px; text-wrap:balance; }
+  .er-sec-copy { color:var(--tx2); font-size:16.5px; line-height:1.65; max-width:620px; margin:0 0 30px; }
+
+  /* Catálogo */
+  .er-fleet { padding-top:104px; }
+  .er-cat-row { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
+  .er-cat-row > li { display:flex; }
+  .er-cat { width:100%; display:flex; flex-direction:column; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; padding:0; cursor:pointer; color:var(--tx); font-family:var(--sans); transition:border-color 0.18s var(--ease), transform 0.18s var(--ease); }
+  .er-cat:hover { border-color:#4A535B; transform:translateY(-2px); }
+  .er-cat.is-selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px rgba(200,167,110,0.6); }
+  .er-cat img { display:block; width:100%; height:auto; aspect-ratio:16 / 10; object-fit:cover; background:#24292D; }
+  .er-cat-body { display:flex; flex-direction:column; gap:6px; padding:18px 18px 20px; flex:1; }
+  .er-cat-name { font-family:var(--serif); font-size:27px; font-weight:500; line-height:1.05; }
+  .er-cat-tag { font-size:12px; color:var(--tx2); letter-spacing:0.03em; min-height:2.6em; }
+  .er-cat-specs { display:flex; gap:16px; color:var(--tx2); font-size:13.5px; margin-top:6px; }
+  .er-cat-specs > span { display:inline-flex; align-items:center; gap:6px; }
+  .er-cat-cta { margin-top:auto; padding-top:14px; font-size:13.5px; font-weight:600; color:var(--tx); display:inline-flex; align-items:center; gap:6px; }
+  .er-cat.is-selected .er-cat-cta { color:var(--gold); }
+  .er-cat-cta::after { content:"→"; transition:transform 0.18s var(--ease); }
+  .er-cat:hover .er-cat-cta::after { transform:translateX(3px); }
+
+  /* Corporativo */
+  .er-corp { margin-top:104px; border:1px solid var(--line); border-radius:20px; background:linear-gradient(120deg, var(--bg2) 0%, var(--card) 100%); padding:56px; display:grid; grid-template-columns:minmax(0,1fr); }
+  .er-corp-text { max-width:560px; }
+  .er-corp .er-sec-copy { margin-bottom:26px; }
+
+  /* Tours */
+  .er-tours { margin-top:104px; }
+  .er-tours-kicker { color:var(--tx2); font-size:12px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; margin:0 0 14px; }
+  .er-tours-title { font-family:var(--serif); font-size:clamp(32px, 3.3vw, 44px); font-weight:400; line-height:1.08; margin:0 0 14px; }
+  .er-tours-copy { margin:0 0 30px; max-width:620px; color:var(--tx2); font-size:16.5px; line-height:1.65; }
   .er-tours-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
-  .er-tour { display:flex; flex-direction:column; gap:10px; padding:20px; border:1px solid rgba(200,164,107,0.3); background:rgba(0,0,0,0.35); text-decoration:none; color:#fff; transition:border-color 0.2s, transform 0.2s; }
-  .er-tour:hover { border-color:#C8A46B; transform:translateY(-2px); }
-  .er-tour-tag { align-self:flex-start; font-size:10.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#0A0A0A; background:#C8A46B; padding:4px 8px; }
-  .er-tour-title { font-size:19px; font-weight:600; margin:0; }
-  .er-tour-copy { margin:0; color:#BFC3C8; font-size:14px; line-height:1.6; flex:1; }
-  .er-tour-cta { color:#C8A46B; font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+  .er-tour { display:flex; flex-direction:column; gap:10px; padding:22px; border:1px solid var(--line); border-radius:16px; background:var(--card); text-decoration:none; color:var(--tx); transition:border-color 0.18s var(--ease); }
+  .er-tour:hover { border-color:#4A535B; }
+  .er-tour-tag { align-self:flex-start; font-size:11.5px; font-weight:600; color:var(--tx2); border:1px solid var(--line); border-radius:20px; padding:4px 10px; }
+  .er-tour-title { font-family:var(--serif); font-size:24px; font-weight:500; margin:0; }
+  .er-tour-copy { margin:0; color:var(--tx2); font-size:14px; line-height:1.6; flex:1; }
+  .er-tour-cta { color:var(--tx); font-size:13.5px; font-weight:600; }
   .er-tours-foot { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:24px; }
-  .er-tours-guide { color:#ECEAE6; font-size:14px; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(200,164,107,0.6); }
-  .er-tours-wa { display:inline-flex; min-height:44px; align-items:center; padding:12px 18px; background:#25d366; color:#06140b; font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; }
-  .er-tours-wa:hover { background:#1fb85a; }
-  @media (max-width: 980px) { .er-tours-grid { grid-template-columns:repeat(2, minmax(0,1fr)); } }
-  @media (max-width: 560px) { .er-tours { padding:26px 18px; } .er-tours-grid { grid-template-columns:1fr; } }
-  .er-routes { margin-top:58px; border-top:1px solid rgba(200,164,107,0.32); padding-top:28px; }
-  .er-routes-title { font-family:var(--font-cormorant),serif; font-weight:300; font-size:30px; line-height:1.15; margin:0 0 8px; }
-  .er-routes-help { margin:0 0 24px; font-size:13.5px; color:#B4B4AF; line-height:1.6; }
+  .er-tours-guide { color:var(--tx2); font-size:14px; text-decoration:underline; text-underline-offset:4px; }
+  .er-tours-wa { display:inline-flex; min-height:48px; align-items:center; padding:0 20px; border-radius:12px; border:1px solid var(--line); color:var(--tx); font-size:14px; font-weight:600; text-decoration:none; }
+  .er-tours-wa:hover { border-color:#5A636B; }
+
+  /* Amenidades */
+  .er-comfort { margin-top:96px; display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.4fr); gap:32px; border-top:1px solid var(--line); padding-top:40px; }
+  .er-comfort-title { font-family:var(--serif); color:var(--tx); font-size:32px; line-height:1.12; font-weight:400; margin:0; }
+  .er-comfort-title span { color:var(--tx); font-style:italic; }
+  .er-comfort-list { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px 24px; margin:0; padding:0; list-style:none; }
+  .er-comfort-list li { color:var(--tx2); font-size:14px; line-height:1.45; border-top:1px solid var(--line); padding-top:11px; display:flex; gap:10px; }
+  .er-comfort-icon { color:var(--tx2); width:18px; min-width:18px; text-align:center; }
+  .er-comfort-icon svg { display:block; width:16px; height:16px; stroke:currentColor; }
+
+  /* Rutas (bajo perfil) */
+  .er-routes { margin-top:88px; border-top:1px solid var(--line); padding-top:40px; scroll-margin-top:90px; }
+  .er-routes-title { font-family:var(--serif); font-size:30px; font-weight:400; margin:0 0 8px; }
+  .er-routes-help { margin:0 0 24px; font-size:14px; color:var(--tx2); line-height:1.6; }
   .er-routes-group + .er-routes-group { margin-top:24px; }
-  .er-routes-sub { font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; font-weight:600; margin:0 0 12px; }
+  .er-routes-sub { font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--tx2); font-weight:600; margin:0 0 12px; }
   .er-routes-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 24px; }
-  .er-routes-list a { color:#BFC3C8; text-decoration:none; font-size:14px; line-height:1.5; border-bottom:1px solid transparent; transition:color 0.2s, border-color 0.2s; }
-  .er-routes-list a:hover { color:#fff; border-bottom-color:rgba(200,164,107,0.6); }
-  .er-routes-rt { margin:14px 0 0; font-size:13px; line-height:1.65; color:#B4B4AF; }
-  .er-routes-rt strong { color:#C8A46B; font-weight:600; }
+  .er-routes-list a { color:var(--tx); text-decoration:none; font-size:14px; line-height:1.5; opacity:0.85; }
+  .er-routes-list a:hover { opacity:1; text-decoration:underline; text-underline-offset:3px; }
+  .er-routes-rt { margin:14px 0 0; font-size:13.5px; line-height:1.65; color:var(--tx2); }
+  .er-routes-rt strong { color:var(--tx); }
 
-  .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:20px; margin-top:42px; border-top:1px solid rgba(200,164,107,0.32); padding-top:24px; }
-  .er-contact-item { border:1px solid #2e2e2e; padding:20px; background:rgba(255,255,255,0.025); }
-  .er-contact-title { color:#fff; font-weight:600; font-size:17px; margin-bottom:8px; }
-  .er-contact-copy { color:#BFC3C8; line-height:1.6; font-size:14px; margin-bottom:12px; }
-  /* Columna con gap: en línea, el correo y el enlace de cotizar se pegaban. */
+  .er-contact-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-top:44px; scroll-margin-top:90px; }
+  .er-contact-item { border:1px solid var(--line); border-radius:16px; padding:22px; background:var(--bg2); }
+  .er-contact-title { color:var(--tx); font-weight:700; font-size:16px; margin-bottom:8px; }
+  .er-contact-copy { color:var(--tx2); line-height:1.6; font-size:14px; margin-bottom:12px; }
   .er-contact-actions { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
-  .er-contact-link { color:#C8A46B; font-size:14px; font-weight:600; text-decoration:none; overflow-wrap:anywhere; }
-  .er-contact-link:hover { color:#fff; }
+  .er-contact-link { color:var(--tx); font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
 
-  .er-testimonials { padding:72px 40px; border-top:1px solid #1a1a1a; }
-  .er-testimonials-kicker { color:#C8A46B; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; margin-bottom:14px; }
-  .er-testimonials-title { font-family:var(--font-cormorant),serif; font-size:clamp(28px,4vw,46px); font-weight:300; color:#fff; margin-bottom:40px; line-height:1.1; text-wrap:balance; }
-  /* Tres columnas fijas: con auto-fit se abrían cuatro y el quinto
-     testimonio se quedaba solo en la segunda fila. */
-  /* Flex y no grid: son cinco reseñas y tres columnas, así que la última fila
-     va incompleta. Con grid se pegaba a la izquierda dejando un hueco; con
-     flex-wrap + justify-content:center las dos de abajo quedan centradas y
-     del mismo ancho que las tres de arriba (el max-width se encarga). */
-  .er-testimonials-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
-  /* La base tiene que ser el ancho de columna, no un mínimo cómodo: flex parte
-     las filas mirando flex-basis, no max-width, así que con 280px entraban
-     cuatro tarjetas arriba y una suelta abajo. Y grow en 0 para que las dos
-     de la última fila no se estiren a lo ancho de las tres de arriba. */
-  .er-testimonials-grid > * { flex:0 1 calc((100% - 40px) / 3); min-width:0; }
-  @media (max-width:1000px) { .er-testimonials-grid > * { flex-basis:calc((100% - 20px) / 2); } }
-  .er-testimonial-card { background:#0d0d0d; border:1px solid #2e2e2e; padding:28px 26px; display:flex; flex-direction:column; gap:16px; }
-  .er-testimonial-stars { color:#C8A46B; font-size:14px; letter-spacing:3px; }
-  .er-testimonial-quote { font-family:var(--font-cormorant),serif; font-size:16px; font-weight:300; color:#D8D8D8; line-height:1.7; font-style:italic; margin:0; }
+  /* Reseñas: neutras, sin bordes dorados; las estrellas conservan su color. */
+  .er-testimonials { padding:96px 32px; border-top:1px solid var(--line); background:var(--bg2); }
+  .er-testimonials > * { max-width:1320px; margin-left:auto; margin-right:auto; }
+  .er-testimonials-kicker { color:var(--tx2); font-size:12px; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px; text-align:center; }
+  .er-testimonials-title { font-family:var(--serif); font-size:clamp(30px,3.3vw,44px); font-weight:400; color:var(--tx); margin:0 auto 30px; line-height:1.1; text-align:center; }
+  .er-testimonials-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; }
+  .er-testimonials-grid > * { flex:0 1 calc((100% - 32px) / 3); min-width:0; }
+  @media (max-width:1000px) { .er-testimonials-grid > * { flex-basis:calc((100% - 16px) / 2); } }
+  .er-testimonial-card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; display:flex; flex-direction:column; gap:14px; }
+  .er-testimonial-stars { color:#F4B400; font-size:13px; letter-spacing:3px; }
+  .er-testimonial-quote { font-family:var(--serif); font-size:19px; font-weight:400; color:var(--tx); line-height:1.5; margin:0; }
   .er-testimonial-author { display:flex; align-items:center; gap:12px; margin-top:auto; }
-  .er-testimonial-avatar { width:36px; height:36px; border-radius:50%; background:rgba(200,164,107,0.15); border:1px solid rgba(200,164,107,0.35); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#C8A46B; flex-shrink:0; }
-  .er-testimonial-name { font-size:13px; font-weight:600; color:#fff; }
-  .er-testimonial-role { font-size:11px; color:#9a9a9a; margin-top:2px; }
-
-  .er-reviews-badge-row { display:flex; justify-content:center; margin-bottom:36px; }
-  .er-reviews-badge { display:inline-flex; align-items:center; gap:13px; border:1px solid #2e2e2e; background:#0d0d0d; border-radius:2px; padding:13px 24px; text-decoration:none; transition:border-color 0.2s, background 0.2s; }
-  .er-reviews-badge:hover { border-color:#C8A46B; background:rgba(200,164,107,0.06); }
+  .er-testimonial-avatar { width:34px; height:34px; border-radius:50%; background:var(--field); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--tx); flex-shrink:0; }
+  .er-testimonial-name { font-size:13.5px; font-weight:600; color:var(--tx); }
+  .er-testimonial-role { font-size:12px; color:var(--tx2); margin-top:2px; }
+  .er-reviews-badge-row { display:flex; justify-content:center; margin-bottom:30px; }
+  .er-reviews-badge { display:inline-flex; align-items:center; gap:13px; border:1px solid var(--line); background:var(--card); border-radius:12px; padding:12px 22px; text-decoration:none; }
+  .er-reviews-badge:hover { border-color:#5A636B; }
   .er-reviews-badge-text { display:flex; flex-direction:column; gap:2px; }
   .er-reviews-badge-top { display:flex; align-items:baseline; gap:8px; }
-  .er-reviews-score { font-family:var(--font-cormorant),serif; font-size:24px; color:#fff; line-height:1; }
-  .er-reviews-stars { letter-spacing:1px; color:#C8A46B; font-size:13px; }
-  .er-reviews-label { color:#9a9a9a; font-size:12px; }
+  .er-reviews-score { font-size:22px; font-weight:700; color:var(--tx); line-height:1; }
+  .er-reviews-stars { letter-spacing:1px; color:#F4B400; font-size:13px; }
+  .er-reviews-label { color:var(--tx2); font-size:12.5px; }
+  .er-reviews-cta-row { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:32px; }
+  .er-reviews-btn-primary, .er-reviews-btn-secondary { display:inline-flex; align-items:center; min-height:48px; padding:0 22px; font-size:14px; font-weight:600; border-radius:12px; text-decoration:none; font-family:var(--sans); }
+  .er-reviews-btn-primary { border:1px solid #5A636B; color:var(--tx); }
+  .er-reviews-btn-secondary { border:1px solid var(--line); color:var(--tx2); }
+  .er-reviews-btn-primary:hover, .er-reviews-btn-secondary:hover { border-color:var(--tx2); color:var(--tx); }
+  @media (max-width:900px) { .er-testimonials-grid > * { flex-basis:100%; } .er-testimonials { padding:64px 20px; } }
 
-  .er-reviews-cta-row { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-top:40px; }
-  .er-reviews-btn-primary, .er-reviews-btn-secondary { display:inline-flex; align-items:center; text-decoration:none; padding:15px 28px; font-size:12px; font-weight:700; letter-spacing:0.13em; text-transform:uppercase; border-radius:2px; font-family:var(--font-barlow),sans-serif; transition:background 0.2s, color 0.2s, border-color 0.2s; }
-  .er-reviews-btn-primary { background:transparent; border:1px solid #C8A46B; color:#fff; }
-  .er-reviews-btn-primary:hover { background:#C8A46B; color:#0A0A0A; }
-  .er-reviews-btn-secondary { background:transparent; border:1px solid #2e2e2e; color:#BFC3C8; }
-  .er-reviews-btn-secondary:hover { border-color:#C8A46B; color:#C8A46B; }
+  .er-wa-fab { position:fixed; bottom:calc(22px + env(safe-area-inset-bottom)); right:22px; z-index:50; width:56px; height:56px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px -8px rgba(0,0,0,0.6); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
+  @media (max-width:700px) { .er-wa-fab--oculto { opacity:0; visibility:hidden; transform:scale(0.8); pointer-events:none; } }
 
-  @media (max-width:900px) { .er-testimonials-grid > * { flex-basis:100%; } .er-testimonials { padding:48px 20px; } }
-  .er-comfort { margin-top:34px; border:1px solid rgba(200,164,107,0.34); background:rgba(255,255,255,0.035); padding:26px; display:grid; grid-template-columns:minmax(0,0.95fr) minmax(0,1.3fr); gap:28px; align-items:start; }
-  .er-hero .er-comfort { max-width:720px; margin-top:0; background:rgba(10,10,10,0.58); backdrop-filter:blur(8px); }
-  .er-comfort-title { color:#fff; font-family:var(--font-cormorant),serif; font-size:34px; line-height:1.05; font-weight:300; margin:0; }
-  .er-comfort-title span { color:#C8A46B; }
-  .er-comfort-list { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px 18px; margin:0; padding:0; list-style:none; }
-  .er-comfort-list li { color:#BFC3C8; font-size:14px; line-height:1.45; border-top:1px solid #2e2e2e; padding-top:10px; display:flex; align-items:flex-start; gap:10px; }
-  .er-comfort-icon { color:#C8A46B; width:18px; min-width:18px; text-align:center; font-size:16px; line-height:1.15; }
-  .er-comfort-icon svg { display:block; width:16px; height:16px; stroke:currentColor; }
-  .er-legal { text-align:center; font-size:11px; color:#9a9a9a; margin-top:16px; letter-spacing:0.05em; line-height:1.8; }
-
-  .PhoneInput { display:flex; align-items:center; background:rgba(255,255,255,0.08); border:1px solid rgba(200,164,107,0.35); border-radius:2px; padding:0 16px; }
-  .PhoneInput:focus-within { border-color:#C8A46B; box-shadow:0 0 0 1px #C8A46B; }
-  .PhoneInputCountry { margin-right:10px; }
-  .PhoneInputInput { flex:1; background:transparent; border:none; color:#FFFFFF; font-family:var(--font-barlow),sans-serif; font-size:16px; font-weight:400; outline:none; padding:14px 0; }
-
-  .er-wa-fab { position:fixed; bottom:calc(24px + env(safe-area-inset-bottom)); right:24px; z-index:9999; width:54px; height:54px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.45); transition:opacity 0.2s, transform 0.2s, visibility 0.2s; }
-  /* Un botón fijo sobre un formulario a todo el ancho siempre acaba encima de
-     algún campo: el toque abría WhatsApp en lugar del selector. En móvil se
-     retira mientras el cotizador está a la vista. */
-  @media (max-width:700px) {
-    .er-wa-fab--oculto { opacity:0; visibility:hidden; transform:scale(0.8); pointer-events:none; }
-  }
-  .PhoneInputInput::placeholder { color:#BFC3C8; opacity:0.72; }
-
-  @media (max-width:980px) {
-    .er-hero-inner { grid-template-columns:1fr; padding-bottom:70px; }
-    .er-booking-card { max-width:560px; }
-    .er-comfort { grid-template-columns:1fr; }
-    /* El cotizador antes que las amenidades: es lo que el visitante vino a usar. */
-    .er-hero-lede { order:1; }
-    .er-booking-card { order:2; }
-    .er-hero .er-comfort { order:3; }
-  }
-  @media (max-width:700px) {
-    .er-hero { min-height:auto; }
-    /* La barra en el teléfono. Antes el logotipo se encogía con
-       transform:scale(0.92), que reduce lo que se ve pero no lo que ocupa:
-       flex seguía reservándole 241 px de los 323 disponibles y el selector
-       de idioma terminaba fuera de la pantalla. Ahora encoge de verdad
-       —BrandMark compact={15}— y el resto sólo aprieta lo justo. */
-    .er-nav { padding:16px 14px; }
-    .er-brand .er-brand-tagline { display:none; }
-    .er-nav-links { display:none; }
-    .er-nav-right { gap:12px; }
-    .er-hero-inner { padding:22px 18px 54px; gap:26px; }
-    .er-hero-title { font-size:42px; }
-    .er-hero-h1 { font-size:12px; letter-spacing:0.14em; line-height:1.55; }
-    .er-hero-copy { font-size:15px; }
-    .er-hero-promise { font-size:13px; }
-    /* Compacta, no apilada: apilada empujaba el cotizador 200 px hacia
-       abajo, justo lo que se quería evitar en móvil. */
-    .er-hero-wait { margin-top:16px; font-size:13px; padding-left:11px; gap:8px; }
-    .er-proof { grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:24px; }
-    .er-proof-value { font-size:16px; }
-    .er-proof-label { font-size:11px; }
-    .er-main { margin:0; padding:0 18px 64px; }
-    .er-booking-card { padding:20px; }
-    .er-service-tabs { flex-direction:column; }
-    .er-svc-tab { border-right:none; border-bottom:1px solid rgba(200,164,107,0.24); }
-    .er-svc-tab:last-child { border-bottom:none; }
-    .er-vehicles { grid-template-columns:1fr; }
-    .er-vehicle, .er-vehicle-content { min-height:440px; }
-    .er-fleet-grid { grid-template-columns:1fr; gap:16px; }
-    .er-fleet-card--alt { display:block; }
-    .er-fleet-title { font-size:27px; }
-    .er-benefits { grid-template-columns:1fr; }
-    .er-contact-grid { grid-template-columns:1fr; }
-    /* Dieciséis rutas en una columna son una lista larguísima en el teléfono,
-       y dos tercios del tráfico es móvil: van en dos columnas. */
-    .er-routes-list { grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px 14px; }
-    .er-routes-title { font-size:26px; }
-    .er-comfort { padding:20px; }
-    .er-comfort-list { grid-template-columns:1fr; }
-    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
-  }
-
-  /* ── Sellos de pago ─────────────────────────────────────────────────
-     El cliente decide si deja su tarjeta mucho antes del paso 3, así que
-     el sello vive donde nace la duda (la tarjeta de cotización) y donde
-     todo el mundo busca legitimidad (el pie). */
-  .er-trust-line { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:#BFC3C8; font-size:12px; line-height:1.5; margin:0; }
-  .er-trust-line svg { flex-shrink:0; }
-  .er-booking-card .er-trust-line { margin:-8px 0 18px; }
-  .er-stripe-mark { display:inline-block; background:#635BFF; color:#fff; font-weight:700; font-size:12px; letter-spacing:-0.01em; padding:2px 8px 3px; border-radius:4px; line-height:1.35; }
-  .er-cardmarks { display:inline-flex; gap:6px; flex-wrap:wrap; }
-  .er-cardmark { font-family:var(--font-barlow-condensed),sans-serif; font-weight:600; font-size:10px; letter-spacing:0.12em; color:#B4B4AF; border:1px solid #333; border-radius:2px; padding:2px 6px 1px; line-height:1.5; }
-
-  /* ── Pie de página ─────────────────────────────────────────────────
-     El colchón inferior deja libre la esquina donde flota WhatsApp. */
-  .er-foot { border-top:1px solid rgba(200,164,107,0.28); padding:26px 28px 92px; }
-  .er-foot-pay { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid #191919; }
-  .er-foot-billing { color:#BFC3C8; font-size:13px; text-decoration:none; }
-  .er-foot-billing:hover { color:#C8A46B; }
-  /* #B4B4AF da 5.79:1 sobre el negro del sitio; #555 se quedaba en 2.66:1,
-     por debajo del 4.5:1 que pide la WCAG para texto pequeño. */
-  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:18px; font-style:normal; font-size:12.5px; line-height:1.6; color:#B4B4AF; }
-  .er-foot-id-name { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#BFC3C8; }
+  /* ── Pie ── */
+  .er-foot { border-top:1px solid var(--line); padding:34px 32px 96px; background:var(--bg); }
+  .er-foot > * { max-width:1320px; margin-left:auto; margin-right:auto; }
+  .er-foot-pay { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding-bottom:20px; border-bottom:1px solid var(--line); }
+  .er-foot-billing { color:var(--tx2); font-size:13px; text-decoration:none; }
+  .er-foot-billing:hover { color:var(--tx); }
+  .er-foot-id { display:flex; flex-direction:column; gap:5px; padding-top:20px; font-style:normal; font-size:13px; line-height:1.6; color:var(--tx2); }
+  .er-foot-id-name { font-weight:700; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--tx); }
   .er-foot-id-contact { display:flex; flex-wrap:wrap; gap:6px 18px; }
-  .er-foot-id-contact a { color:#BFC3C8; text-decoration:none; border-bottom:1px solid rgba(200,164,107,0.3); padding-bottom:1px; }
-  .er-foot-id-contact a:hover { color:#C8A46B; border-bottom-color:#C8A46B; }
-  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:18px; padding-top:16px; border-top:1px solid #191919; font-size:11px; color:#B4B4AF; letter-spacing:0.06em; }
-  .er-foot-links { display:flex; gap:24px; flex-wrap:wrap; }
-  .er-foot-links a { color:#C8A46B; text-decoration:none; }
-  .er-foot-links a:hover { color:#fff; }
+  .er-foot-id-contact a { color:var(--tx); text-decoration:none; border-bottom:1px solid var(--line); }
+  .er-foot-meta { display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:20px; padding-top:18px; border-top:1px solid var(--line); font-size:12px; color:var(--tx2); }
+  .er-foot-links { display:flex; gap:22px; flex-wrap:wrap; }
+  .er-foot-links a { color:var(--tx2); text-decoration:none; }
+  .er-foot-links a:hover { color:var(--tx); }
 
-  /* La media query general apila el pie en móvil, pero está declarada
-     ANTES que las reglas de arriba, así que con la misma especificidad
-     perdía y el align-items:center seguía aplicando: el nombre del
-     negocio salía centrado sobre unos enlaces alineados a la izquierda.
-     Va aquí, después, para que gane. */
-  @media (max-width:700px) {
-    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
-    .er-foot-meta { gap:12px; }
+  .er-root a:focus-visible, .er-root button:focus-visible, .er-root input:focus-visible, .er-root select:focus-visible, .er-wa-fab:focus-visible { outline:2px solid var(--gold); outline-offset:3px; border-radius:8px; }
+
+  /* ── 1024: el cotizador baja bajo el texto; la foto queda de fondo ── */
+  @media (max-width:1180px) {
+    .er-nav-links { gap:22px; }
+    .er-nav-tel-num { display:none; }
+  }
+  @media (max-width:1080px) {
+    .er-hero::before { left:auto; right:0; width:60%; opacity:0.55; }
+    .er-hero-inner { grid-template-columns:minmax(0,1fr) 432px; grid-template-areas:"lede card" "strip strip"; }
+    .er-strip { grid-template-columns:repeat(3, minmax(0,1fr)); row-gap:18px; }
+    .er-strip-item:nth-child(4) { border-left:none; }
+    .er-cat-row { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .er-tours-grid { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  }
+  @media (max-width:960px) {
+    .er-nav-links { display:none; }
+    .er-nav-links[data-open="1"] { display:flex; flex-direction:column; align-items:stretch; gap:0; position:absolute; top:100%; left:0; right:0; margin:0; padding:8px 20px 18px; background:#080D12; border-bottom:1px solid var(--line); box-shadow:0 24px 40px -12px rgba(0,0,0,0.7); z-index:70; }
+    .er-nav-links[data-open="1"] a { display:flex; align-items:center; min-height:52px; font-size:16px; color:var(--tx); border-bottom:1px solid var(--line); }
+    .er-nav-burger { display:inline-flex; }
+    .er-nav-right { margin-left:auto; gap:10px; }
+    .er-nav-cta { display:none; }
+    .er-hero::before { display:none; }
+    .er-hero-inner { grid-template-columns:1fr; grid-template-areas:"lede" "photo" "strip" "card"; padding-top:44px; }
+    .er-hero-lede { max-width:none; padding-top:0; }
+    .er-hero-photo { display:block; margin:28px -32px 0; aspect-ratio:4 / 3; background:var(--hero-photo) center 40% / cover no-repeat; -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%); mask-image:linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%); }
+    .er-strip { margin-top:8px; }
+    .er-booking-card { margin-top:28px; }
+    .er-comfort { grid-template-columns:1fr; }
   }
 
-  /* ── Foco de teclado ───────────────────────────────────────────────
-     Sin esto, quien navega con teclado no ve dónde está parado. */
-  .er-root a:focus-visible,
-  .er-root button:focus-visible,
-  .er-root input:focus-visible,
-  .er-root select:focus-visible,
-  .er-wa-fab:focus-visible { outline:2px solid #C8A46B; outline-offset:3px; border-radius:2px; }
+  /* ── Teléfono ── */
+  @media (max-width:700px) {
+    .er-nav { padding:0 16px; height:64px; gap:12px; }
+    .er-brand .er-brand-tagline { display:none; }
+    .er-nav-tel { width:44px; justify-content:center; border:1px solid var(--line); border-radius:10px; }
+    .er-nav-right { gap:8px; }
+    .er-topbar .lt-globe { display:none; }
+    .er-topbar .lt-btn { min-width:38px; padding-left:8px; padding-right:8px; }
+    .er-hero-inner { padding:32px 20px 0; }
+    .er-hero-title { font-size:46px; }
+    .er-hero-copy { font-size:15.5px; }
+    .er-hero-photo { margin:24px -20px 0; aspect-ratio:1 / 1; }
+    .er-strip { grid-template-columns:1fr 1fr; padding:18px 0; gap:16px 0; }
+    .er-strip-item { padding:0 10px 0 0; font-size:13.5px; }
+    .er-strip-item + .er-strip-item { border-left:none; }
+    .er-strip-item:last-child { grid-column:1 / -1; }
+    .er-booking-card { padding:20px 16px; border-radius:16px; }
+    .er-step-tab { font-size:11px; padding:6px 4px; }
+    .er-step-num { margin-right:5px; }
+    .er-main { padding:0 20px 80px; }
+    .er-vehicles { grid-template-columns:1fr; }
+    .er-fleet { padding-top:72px; }
+    /* Carrusel táctil: una tarjeta y se asoma la siguiente. */
+    .er-cat-row { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px; margin:0 -20px; padding:0 20px 8px; scrollbar-width:none; }
+    .er-cat-row::-webkit-scrollbar { display:none; }
+    .er-cat-row > li { flex:0 0 82%; scroll-snap-align:start; }
+    .er-corp { margin-top:72px; padding:32px 22px; }
+    .er-tours, .er-comfort { margin-top:72px; }
+    .er-tours-grid { grid-template-columns:1fr; }
+    .er-contact-grid { grid-template-columns:1fr; }
+    .er-routes-list { grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px 14px; }
+    .er-comfort-list { grid-template-columns:1fr; }
+    .er-foot { padding:30px 20px 96px; }
+    .er-foot-pay, .er-foot-meta { flex-direction:column; align-items:flex-start; }
+    .er-row--fecha { grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:580px) { .er-row { grid-template-columns:1fr; } .er-row.er-row--fecha { grid-template-columns:1fr 1fr; } }
+  .er-hero-inner > * { min-width:0; }
+  @media (max-width:400px) {
+    .er-nav { padding:0 12px; gap:8px; }
+    .er-nav-right { gap:6px; }
+    .er-topbar .lt-btn { min-width:34px; padding-left:6px; padding-right:6px; }
+    .er-nav-tel, .er-nav-burger { width:42px; }
+  }
 `;
+
+/** Íconos lineales de la franja de beneficios, en el orden de t.strip. Un solo trazo, sin relleno. */
+const STRIP_ICONS = [
+  <svg key="seguro" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.3 7.5 9.5 4.3-1.2 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>,
+  <svg key="chofer" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>,
+  <svg key="vuelo" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 15.5 21 9l-2.5-1.5-6 1.5L8 4.5 6.5 5l2.5 5-4 1L3 9.5 2 10l2 4z"/><path d="M3 20h18"/></svg>,
+  <svg key="precio" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5h.01M17.5 14.5h.01"/></svg>,
+  <svg key="atencion" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>,
+];
+
+/** Orden del catálogo de la portada (especificación de diseño, nov 2026). */
+const CATALOG_ORDER: readonly Category[] = ["suv", "executive", "minivan", "sedan"];
 
 /** Un enlace de ruta ya resuelto en el servidor. Ver `app/[lang]/page.tsx`. */
 export type EnlaceDeRuta = { key: string; href: string; label: string; foranea: boolean };
@@ -1134,6 +1097,7 @@ export default function HomeClient({
   }, []);
 
   const [step, setStep] = useState(1);
+  const [menuAbierto, setMenuAbierto] = useState(false);
   // El primer evento del embudo se manda una vez y no en cada tecla: sin
   // esto, "empezó a cotizar" contaría una vez por carácter escrito.
   const yaContadaLaIntencion = useRef(false);
@@ -1643,36 +1607,33 @@ export default function HomeClient({
       <style>{styles}</style>
       <div className="er-root">
         <div className="er-shell">
-          <section className="er-hero">
+          <header className="er-topbar">
             <nav className="er-nav" aria-label="Elite Route">
-              {/* Compuesto con las tipografías del sitio: cero bytes de red y
-                  nítido en cualquier pantalla. Ver app/BrandMark.tsx. */}
-              <a href="#quote" className="er-brand" aria-label="Elite Route">
+              <a href={path(lang, "home")} className="er-brand" aria-label="Elite Route">
                 <BrandMark size={19} compact={15} />
               </a>
+              <ul className="er-nav-links" id="er-menu" data-open={menuAbierto ? "1" : "0"} onClick={() => setMenuAbierto(false)}>
+                <li><a href={path(lang, "executive")}>{t.navServices}</a></li>
+                <li><a href="#rutas">{t.navRoutes}</a></li>
+                <li><a href="#flota">{t.navFleet}</a></li>
+                <li><a href={corporate}>{t.navCompanies}</a></li>
+                <li><a href="#contacto">{t.contact}</a></li>
+              </ul>
               <div className="er-nav-right">
-                <a href={corporate} className="er-nav-b2b-mobile" aria-label={t.corporate}>B2B</a>
-                <div className="er-nav-links">
-                  <button type="button" style={{background:"none",border:"none",padding:0,color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s",fontFamily:"inherit",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:"5px"}}
-                    onClick={() => { setServiceType("hour"); setStep(1); document.getElementById("quote")?.scrollIntoView({behavior:"smooth"}); }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    {t.services}
-                  </button>
-                  <button type="button" style={{background:"none",border:"none",padding:0,color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s",fontFamily:"inherit",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:"5px"}}
-                    onClick={() => { setServiceType("route"); setStep(1); document.getElementById("quote")?.scrollIntoView({behavior:"smooth"}); }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-                    {t.airports}
-                  </button>
-                  <a href={corporate} style={{color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s"}}>{t.corporate}</a>
-                  <a href="#contacto" style={{color:"#BFC3C8",textDecoration:"none",letterSpacing:"0.14em",textTransform:"uppercase",fontSize:"12px",transition:"color 0.2s"}}>{t.contact}</a>
-                  <button type="button" className="er-nav-chip" style={{fontFamily:"inherit",cursor:"pointer"}}
-                    onClick={() => { setStep(1); document.getElementById("quote")?.scrollIntoView({behavior:"smooth"}); }}>
-                    {t.reserveNow}
-                  </button>
-                </div>
+                <a className="er-nav-tel" href="tel:+525543582919" aria-label={t.navCall}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+                  <span className="er-nav-tel-num">+52 55 4358 2919</span>
+                </a>
                 <LangToggle lang={lang} page="home" />
+                <a className="er-nav-cta" href="#quote" onClick={() => setStep(1)}>{t.navQuote}</a>
+                <button type="button" className="er-nav-burger" aria-expanded={menuAbierto} aria-controls="er-menu" aria-label={t.navMenu} onClick={() => setMenuAbierto((v) => !v)}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">{menuAbierto ? <path d="M6 6l12 12M18 6 6 18"/> : <path d="M4 7h16M4 12h16M4 17h16"/>}</svg>
+                </button>
               </div>
             </nav>
+          </header>
+
+          <section className="er-hero">
 
             <div className="er-hero-inner">
               <div className="er-hero-lede">
@@ -1682,73 +1643,38 @@ export default function HomeClient({
                     nula para búsqueda, y la línea de arriba no decía más que
                     el nombre de la empresa, que ya está en el logotipo. */}
                 <h1 className="er-kicker er-hero-h1">{t.kicker}</h1>
-                <p className="er-hero-title">{t.heroTitle}</p>
+                <p className="er-hero-title">We move your level.</p>
                 <p className="er-hero-copy">{t.heroCopy}</p>
-
-                {/* LA PROMESA QUE DISTINGUE AL VIAJERO QUE LLEGA.
-                    Decisión del dueño, 19 oct 2026. El resto de la portada
-                    vende el servicio; esta línea vende la tranquilidad de
-                    tenerlo resuelto ANTES de aterrizar, que es lo que busca
-                    el extranjero —la mayoría de las reservas web del
-                    cotizador se hacen en inglés—. No dice nada que el sitio
-                    no cumpla ya: monitoreo de vuelo y coordinación de la
-                    llegada están en el servicio y en los términos. */}
-                <p className="er-hero-promise">{t.heroPromise}</p>
-
-                {/* El miedo de quien reserva un aeropuerto no es el precio,
-                    es aterrizar tarde y que el chofer ya no esté. La política
-                    de los 60 minutos existe desde el 20 sep 2026 y vivía sólo
-                    en los términos y el FAQ; aquí se dice donde se decide.
-                    Si cambia el plazo, cambiarlo también en /terminos,
-                    /terms, el FAQ de /tarifas y /rates, la nota de /b2b y
-                    /corporate y ESPERA_ES/ESPERA_EN de lib/routes.ts. */}
-                <p className="er-hero-wait">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8A46B" strokeWidth="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                  <span><strong>{t.heroWaitStrong}</strong> {t.heroWaitRest}</span>
-                </p>
-
-
-                {/* EL SEGUNDO BOTÓN ERA UN `mailto:` CON LA DIRECCIÓN A LA
-                    VISTA. Ahora lleva a WhatsApp, y no es estética: el 69 %
-                    de las reservas pagadas entre junio y octubre de 2026 se
-                    cotizaron a mano por WhatsApp, teléfono o convenio, y son
-                    el 75 % del dinero. El correo sigue estando en el pie y
-                    en la sección de contacto; lo que cambia es cuál de los
-                    dos caminos se ofrece en el primer vistazo. */}
-                <div className="er-hero-actions">
-                  <a className="er-hero-btn" href="#quote">{t.heroBtnReserve}</a>
-                  <a
-                    className="er-hero-btn er-hero-mail"
-                    href={`https://wa.me/${WHATSAPP_NUMBER}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => track("clic_whatsapp", { origen: "hero" })}
-                  >
-                    {t.heroBtnTalk}
-                  </a>
-                </div>
-
-                {/* Tres señales de confianza en el primer vistazo. Dos son
-                    cifras del negocio y la tercera la única promesa comercial
-                    que no se repite más arriba. El sello de Stripe salió de
-                    aquí: aparece seis veces más en la portada, y la que
-                    cuenta está en la tarjeta de cotización, justo donde el
-                    visitante va a poner su tarjeta. */}
-                <div className="er-proof">
-                  <div className="er-proof-item">
-                    <div className="er-proof-value">{t.proof1Value}</div>
-                    <div className="er-proof-label">{t.proof1Label}</div>
-                  </div>
-                  <div className="er-proof-item">
-                    <div className="er-proof-value">{t.proof2Value}</div>
-                    <div className="er-proof-label">{t.proof2Label}</div>
-                  </div>
-                  <div className="er-proof-item">
-                    <div className="er-proof-value">{t.proof3Value}</div>
-                    <div className="er-proof-label">{t.proof3Label}</div>
-                  </div>
-                </div>
+                <a className="er-hero-reviews" href={GOOGLE_PLACE_URL} target="_blank" rel="noopener noreferrer">
+                  <span className="er-hero-stars" aria-hidden="true">★★★★★</span>
+                  <span><strong>{GOOGLE_RATING}</strong> · {t.reviewsCount(GOOGLE_REVIEW_COUNT)}</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+                {/* WhatsApp sigue a un toque (69 % de las reservas pagadas se
+                    cotizan por ahí), pero discreto: el cotizador manda. */}
+                <a
+                  className="er-hero-wa"
+                  href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => track("clic_whatsapp", { origen: "hero" })}
+                >
+                  {t.heroBtnTalk}
+                </a>
               </div>
+
+              {/* La SUV protagonista: en escritorio es el fondo central del
+                  hero; en el teléfono, un bloque propio bajo el texto. */}
+              <div className="er-hero-photo" aria-hidden="true" />
+
+              <ul className="er-strip" aria-label={t.stripAria}>
+                {t.strip.map((txt, i) => (
+                  <li key={txt} className="er-strip-item">
+                    <span className="er-strip-icon" aria-hidden="true">{STRIP_ICONS[i]}</span>
+                    <span>{txt}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div className="er-booking-card" id="quote">
                 <h2 className="er-booking-title">{t.getQuote}</h2>
@@ -1921,7 +1847,7 @@ export default function HomeClient({
               </div>
             )}
 
-            <div className="er-row">
+            <div className="er-row er-row--fecha">
               <div className="er-field">
                 <label className="er-label" htmlFor="service-date-input">{t.date}</label>
                 <input id="service-date-input" className="er-input" type="date" min={getMinDate()}
@@ -2391,66 +2317,62 @@ export default function HomeClient({
           </div>
               </div>
 
-                <section className="er-comfort" aria-label="Comfort amenities">
-                  <h2 className="er-comfort-title">
-                    {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
-                  </h2>
-                  {/* La seguridad va PRIMERO: el título de la sección la
-                      promete y la lista arrancaba con la botella de agua.
-                      Las dos afirmaciones las confirmó el dueño el 22 sep
-                      2026 y están en su catálogo corporativo. No añadir aquí
-                      cobertura, monto ni proceso de selección de choferes:
-                      eso no está confirmado. */}
-                  <ul className="er-comfort-list">
-                    <li>
-                      <span className="er-comfort-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
-                          <path d="M12 3l7 3v6c0 4.2-2.9 7.8-7 9-4.1-1.2-7-4.8-7-9V6l7-3z" />
-                          <path d="M9 12l2 2 4-4" />
-                        </svg>
-                      </span>
-                      {t.insured}
-                    </li>
-                    <li>
-                      <span className="er-comfort-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
-                          <path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z" />
-                          <circle cx="12" cy="10" r="2.5" />
-                        </svg>
-                      </span>
-                      {t.gps}
-                    </li>
-                    <li>
-                      <span className="er-comfort-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
-                          <path d="M9 2h6" />
-                          <path d="M10 2v4l-2 3v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V2" />
-                          <path d="M8 13h8" />
-                          <path d="M8 18h8" />
-                        </svg>
-                      </span>
-                      {t.water}
-                    </li>
-                    <li><span className="er-comfort-icon">⚡</span>{t.chargers}</li>
-                    <li><span className="er-comfort-icon">♪</span>{t.music}</li>
-                    <li><span className="er-comfort-icon">❄</span>{t.ac}</li>
-                    <li><span className="er-comfort-icon">✦</span>{t.chauffeur}</li>
-                  </ul>
-                </section>
             </div>
           </section>
 
           <main className="er-main">
-            {/* Bienvenida para quien visita CDMX por primera vez: sólo en inglés. */}
-            {lang === "en" && <WelcomeEn origen="bienvenida_portada" />}
+            {/* CATÁLOGO. Fotos actuales de la flota, recortadas sobre un fondo
+                neutro (#24292D). Mismo tamaño de tarjeta para todas; sólo la
+                categoría elegida en el cotizador lleva la línea dorada. Tocar
+                una tarjeta la elige en el cotizador y lleva a él. En el
+                teléfono es un carrusel con la siguiente tarjeta asomada. */}
+            <section className="er-fleet" id="flota" aria-labelledby="flota-title">
+              <p className="er-sec-kicker">{t.fleetKicker}</p>
+              <h2 className="er-sec-title" id="flota-title">{t.fleetTitle}</h2>
+              <p className="er-sec-copy">{t.fleetCopy}</p>
+              <ul className="er-cat-row">
+                {CATALOG_ORDER.map((k) => (
+                  <li key={k}>
+                    <button
+                      type="button"
+                      className={`er-cat${category === k ? " is-selected" : ""}`}
+                      aria-pressed={category === k}
+                      onClick={() => { setCategory(k); setRentalHours((h) => Math.max(h, horasMinimas(serviceDate, HORAS_MIN, k))); document.getElementById("quote")?.scrollIntoView({ behavior: "smooth" }); }}
+                    >
+                      <img
+                        src={`/flota/${k === "suv" ? "high-suv" : k}.webp`}
+                        alt={t.fleetAlt(vehicles[k].name)}
+                        width={1400}
+                        height={788}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span className="er-cat-body">
+                        <span className="er-cat-name">{vehicles[k].name}</span>
+                        <span className="er-cat-tag">{vehicles[k].tag}</span>
+                        <span className="er-cat-specs">
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>{CAPACIDAD[k].pax} {t.catPax}</span>
+                          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="5" y="7" width="14" height="13" rx="2"/><path d="M9 7V4h6v3M9 20v1M15 20v1"/></svg>{CAPACIDAD[k].maletas} {t.catBags}</span>
+                        </span>
+                        <span className="er-cat-cta">{category === k ? t.catSelected : t.catSelect}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="er-bycat" style={{ textAlign: "left", marginTop: 18 }}>{t.byCategory}</p>
+            </section>
 
-            {/* Las cuatro categorías también viven en el paso 2 del
-                cotizador, pero ahí sólo se ven después de escribir origen y
-                destino: están detrás de un formulario y la mayoría de las
-                visitas no llegan. Aquí se ven sin pedir nada. Sin precio a
-                propósito: el precio depende de la ruta y lo da el cotizador,
-                que está justo arriba. Imágenes y datos son los mismos que
-                usa /b2b — /flota/*.webp y lib/vehicles.ts. */}
+            {/* Corporativo: presentación breve con acceso a /b2b o /corporate. */}
+            <section className="er-corp" aria-labelledby="corp-title">
+              <div className="er-corp-text">
+                <p className="er-sec-kicker">{t.corpKicker}</p>
+                <h2 className="er-sec-title" id="corp-title">{t.corpTitle}</h2>
+                <p className="er-sec-copy">{t.corpCopy}</p>
+                <a className="er-btn-outline" href={corporate}>{t.corpCta}</a>
+              </div>
+            </section>
+
             {/* TOURS Y EXCURSIONES. Antes de la flota para que se vea pronto.
                 Los enlaces a Valle de Bravo y Tepoztlán salen de `rutas`
                 (resueltas en el servidor); si una ruta desapareciera, su
@@ -2491,56 +2413,66 @@ export default function HomeClient({
               </div>
             </section>
 
-            <section className="er-fleet" id="flota" aria-label={t.fleetTitle}>
-              <p className="er-fleet-kicker">{t.fleetKicker}</p>
-              <h2 className="er-fleet-title">{t.fleetTitle}</h2>
-              <p className="er-fleet-copy">{t.fleetCopy}</p>
-              {/* Executive y SUV Lux primero y en grande; Sedan Lite y SUV Urban
-                  debajo, como alternativas. Sólo presentación: el orden sale
-                  de DISPLAY_ORDER en lib/vehicles.ts. */}
-              <div className="er-fleet-grid">
-                {DISPLAY_ORDER.map((k) => (
-                  <div className={`er-fleet-card${FEATURED.includes(k) ? " er-fleet-card--featured" : " er-fleet-card--alt"}`} key={k}>
-                    <img
-                      src={`/flota/${k === "suv" ? "high-suv" : k}.webp`}
-                      alt={t.fleetAlt(vehicles[k].name)}
-                      width={1400}
-                      height={788}
-                      loading="lazy"
-                    />
-                    <div className="er-fleet-meta">
-                      {FEATURED.includes(k) && <div className="er-fleet-badge">{t.fleetBilingual}</div>}
-                      {!FEATURED.includes(k) && <div className="er-fleet-badge er-fleet-badge--alt">{t.fleetAltKicker}</div>}
-                      <div className="er-fleet-name">{vehicles[k].name}</div>
-                      <div className="er-fleet-tag">{vehicles[k].tag}</div>
-                      <div className="er-fleet-cap">{capFor(k)}</div>
-                      {noteFor(k) && <div className="er-fleet-note">{noteFor(k)}</div>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="er-bycat" style={{ textAlign: "left", marginTop: 18 }}>{t.byCategory}</p>
-              <a className="er-fleet-cta" href="#quote">{t.fleetCta}</a>
+            <section className="er-comfort" aria-label="Comfort amenities">
+              <h2 className="er-comfort-title">
+                {t.comfortTitleA}<span>{t.comfortTitleB}</span>{t.comfortTitleC}
+              </h2>
+              {/* La seguridad va PRIMERO: el título de la sección la
+                  promete y la lista arrancaba con la botella de agua.
+                  Las dos afirmaciones las confirmó el dueño el 22 sep
+                  2026 y están en su catálogo corporativo. No añadir aquí
+                  cobertura, monto ni proceso de selección de choferes:
+                  eso no está confirmado. */}
+              <ul className="er-comfort-list">
+                <li>
+                  <span className="er-comfort-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                      <path d="M12 3l7 3v6c0 4.2-2.9 7.8-7 9-4.1-1.2-7-4.8-7-9V6l7-3z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  </span>
+                  {t.insured}
+                </li>
+                <li>
+                  <span className="er-comfort-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                      <path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11z" />
+                      <circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                  </span>
+                  {t.gps}
+                </li>
+                <li>
+                  <span className="er-comfort-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.7">
+                      <path d="M9 2h6" />
+                      <path d="M10 2v4l-2 3v11a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V9l-2-3V2" />
+                      <path d="M8 13h8" />
+                      <path d="M8 18h8" />
+                    </svg>
+                  </span>
+                  {t.water}
+                </li>
+                <li><span className="er-comfort-icon">⚡</span>{t.chargers}</li>
+                <li><span className="er-comfort-icon">♪</span>{t.music}</li>
+                <li><span className="er-comfort-icon">❄</span>{t.ac}</li>
+                <li><span className="er-comfort-icon">✦</span>{t.chauffeur}</li>
+              </ul>
             </section>
 
-            <section className="er-benefits" aria-label="Elite Route benefits">
-                <div className="er-benefit">
-                  <div className="er-benefit-title">{t.benefit1Title}</div>
-                  <div className="er-benefit-copy">{t.benefit1Copy}</div>
-                </div>
-                <div className="er-benefit">
-                  <div className="er-benefit-title">{t.benefit2Title}</div>
-                  <div className="er-benefit-copy">{t.benefit2Copy}</div>
-                </div>
-                <div className="er-benefit">
-                  <div className="er-benefit-title">{t.benefit3Title}</div>
-                  <div className="er-benefit-copy">{t.benefit3Copy}</div>
-                </div>
-                <div className="er-benefit">
-                  <div className="er-benefit-title">{t.benefit4Title}</div>
-                  <div className="er-benefit-copy">{t.benefit4Copy}</div>
-                </div>
-              </section>
+            {/* Bienvenida para quien visita CDMX por primera vez: sólo en inglés. */}
+            {lang === "en" && <WelcomeEn origen="bienvenida_portada" />}
+
+
+            {/* Las cuatro categorías también viven en el paso 2 del
+                cotizador, pero ahí sólo se ven después de escribir origen y
+                destino: están detrás de un formulario y la mayoría de las
+                visitas no llegan. Aquí se ven sin pedir nada. Sin precio a
+                propósito: el precio depende de la ruta y lo da el cotizador,
+                que está justo arriba. Imágenes y datos son los mismos que
+                usa /b2b — /flota/*.webp y lib/vehicles.ts. */}
+
+
 
               {/*
                 LAS 16 RUTAS, ENLAZADAS DESDE LA PORTADA.
@@ -2556,7 +2488,7 @@ export default function HomeClient({
                 privado" ve de un vistazo que su ruta concreta ya tiene precio
                 publicado, sin tener que cotizar para enterarse.
               */}
-              <section className="er-routes" aria-label={t.routesTitle}>
+              <section className="er-routes" id="rutas" aria-label={t.routesTitle}>
                 <h2 className="er-routes-title">{t.routesTitle}</h2>
                 <p className="er-routes-help">{t.routesHelp}</p>
                 {/* La nota del redondo cuelga SÓLO del grupo foráneo. Es el

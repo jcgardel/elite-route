@@ -1,4 +1,4 @@
-import { Barlow, Barlow_Condensed, Cormorant_Garamond } from "next/font/google";
+import { Barlow, Barlow_Condensed, Cormorant_Garamond, Manrope } from "next/font/google";
 
 /**
  * Las tres tipografías del sitio, en un solo sitio.
@@ -40,5 +40,13 @@ export const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-/** Las tres variables CSS juntas, para el className del <html>. */
-export const fontVars = `${barlow.variable} ${barlowCondensed.variable} ${cormorant.variable}`;
+// Sans serif de interfaz del rediseño oscuro (menús, campos, botones,
+// precios). Los títulos siguen en Cormorant. Variable: un archivo, 400–800.
+export const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+/** Las variables CSS juntas, para el className del <html>. */
+export const fontVars = `${barlow.variable} ${barlowCondensed.variable} ${cormorant.variable} ${manrope.variable}`;

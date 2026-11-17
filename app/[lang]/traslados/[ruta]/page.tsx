@@ -3,6 +3,7 @@ import RoutePage from "../../../_components/RoutePage";
 import { calculatePrice } from "@/lib/booking";
 import { CATEGORIES, type Category } from "@/lib/vehicles";
 import { isLang, path, SITE } from "@/lib/i18n";
+import { socialImage } from "@/lib/seo";
 import { ROUTE_KEYS, ROUTES, routeFromSlug, routePath, routeSlug } from "@/lib/routes";
 import { LEGS } from "@/lib/distances";
 
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props) {
       languages: {
         en: SITE + routePath("en", key),
         "es-MX": SITE + routePath("es", key),
-        "x-default": SITE,
+        "x-default": SITE + routePath("en", key),
       },
     },
     openGraph: {
@@ -44,6 +45,13 @@ export async function generateMetadata({ params }: Props) {
       locale: "es_MX",
       alternateLocale: "en_US",
       type: "website",
+      images: [socialImage(LANG)],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: c.metaTitle,
+      description: c.metaDescription,
+      images: [socialImage(LANG)],
     },
   };
 }

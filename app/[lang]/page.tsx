@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import HomeClient from "../_components/HomeClient";
 import { pageMetadata } from "@/lib/seo";
 import { tablasCotizador } from "@/lib/price-book";
-import { isLang, LANGS, path, SITE, type Lang } from "@/lib/i18n";
+import { isLang, LANGS, path, SITE, url, type Lang } from "@/lib/i18n";
 import { ROUTES, ROUTE_KEYS, routePath } from "@/lib/routes";
 
 export const dynamicParams = false;
@@ -98,7 +98,9 @@ function fichaDeNegocio(lang: Lang) {
     "@id": `${SITE}/#business`,
     name: "Elite Route",
     description: n.description,
-    url: SITE,
+    // La portada de su idioma, no la raíz: la raíz redirige (307) según el
+    // idioma del navegador, y Google prefiere una URL que responda 200.
+    url: url(lang, "home"),
     telephone: "+52-55-4358-2919",
     email: "business@eliteroute.mx",
     image: `${SITE}/flota/executive.webp`,

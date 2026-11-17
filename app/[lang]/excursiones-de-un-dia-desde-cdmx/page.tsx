@@ -39,8 +39,8 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
     headline: c.h1,
     description: c.description,
     inLanguage: "es-MX",
-    author: { "@type": "Organization", "@id": `${SITE}/#business`, name: "Elite Route" },
-    publisher: { "@type": "Organization", "@id": `${SITE}/#business`, name: "Elite Route" },
+    author: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
+    publisher: { "@type": "LocalBusiness", "@id": `${SITE}/#business`, name: "Elite Route" },
     mainEntityOfPage: self,
     url: self,
   };

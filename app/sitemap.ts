@@ -82,6 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           en: url("en", page),
           "es-MX": url("es", page),
+          "x-default": page === "home" ? SITE : url("en", page),
         },
       },
     })),
@@ -99,6 +100,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           en: SITE + routePath("en", key),
           "es-MX": SITE + routePath("es", key),
+          "x-default": SITE + routePath("en", key),
         },
       },
     })),

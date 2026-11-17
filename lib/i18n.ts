@@ -129,9 +129,14 @@ export function isLang(value: string): value is Lang {
 /**
  * El bloque de alternates de una página, listo para el `metadata` de Next.
  *
- * `x-default` apunta a la raíz porque es la única URL que negocia idioma: a
- * quien llegue sin preferencia declarada se le manda a la versión que le
- * corresponde en lugar de imponerle una.
+ * En la portada, `x-default` apunta a la raíz porque es la única URL que
+ * negocia idioma: a quien llegue sin preferencia declarada se le manda a la
+ * versión que le corresponde en lugar de imponerle una.
+ *
+ * En las demás páginas apunta a su versión en inglés. Antes apuntaba a la
+ * raíz en todas, y para una subpágina eso le decía a Google que su versión
+ * "por defecto" era la portada, que no es la misma página (auditoría del
+ * 16 nov 2026).
  */
 export function alternates(lang: Lang, page: Page) {
   return {
@@ -139,7 +144,7 @@ export function alternates(lang: Lang, page: Page) {
     languages: {
       en: url("en", page),
       "es-MX": url("es", page),
-      "x-default": SITE,
+      "x-default": page === "home" ? SITE : url("en", page),
     },
   };
 }

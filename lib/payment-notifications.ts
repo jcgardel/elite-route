@@ -588,7 +588,7 @@ export async function sendClientConfirmationEmail(session: Stripe.Checkout.Sessi
             <!-- Footer -->
             <tr><td style="padding:20px 40px;border-top:1px solid #1e1e1e;text-align:center">
               <p style="margin:0;font-size:11px;color:#444;line-height:1.8">
-                Elite Route CDMX · <a href="https://eliteroute.mx" style="color:#C8A46B;text-decoration:none">eliteroute.mx</a><br>
+                Elite Route CDMX · <a href="https://www.eliteroute.mx" style="color:#C8A46B;text-decoration:none">eliteroute.mx</a><br>
                 business@eliteroute.mx · +52 55 4358 2919
               </p>
             </td></tr>

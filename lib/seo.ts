@@ -263,6 +263,26 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
  * y se lee junto al texto que describe. Copiarlo aquí habría creado dos sitios
  * donde dice lo mismo, que es como empiezan a decir cosas distintas.
  */
+/**
+ * La tarjeta para compartir (1200×630) que genera app/[lang]/opengraph-image.tsx.
+ *
+ * Hay que declararla a mano en cada página: el `openGraph` de una página
+ * reemplaza entero al heredado, y con él se perdía la imagen. Hasta el 16 de
+ * noviembre de 2026 sólo las dos portadas la tenían; las otras 62 páginas se
+ * compartían en WhatsApp y redes sin vista previa.
+ */
+export function socialImage(lang: Lang) {
+  return {
+    url: `/${lang}/opengraph-image/card`,
+    width: 1200,
+    height: 630,
+    alt:
+      lang === "es"
+        ? "Elite Route — Chofer privado y transporte ejecutivo en Ciudad de México"
+        : "Elite Route — Private chauffeur and executive transfers in Mexico City",
+  };
+}
+
 export function metadataFrom(
   lang: Lang,
   page: Page,
@@ -281,11 +301,13 @@ export function metadataFrom(
       locale: lang === "es" ? "es_MX" : "en_US",
       alternateLocale: lang === "es" ? "en_US" : "es_MX",
       type: "website",
+      images: [socialImage(lang)],
     },
     twitter: {
       card: "summary_large_image",
       title: copy.title,
       description: copy.description,
+      images: [socialImage(lang)],
     },
   };
 }

@@ -1,6 +1,6 @@
 import LegalPage from "../../_components/LegalPage";
 import { pageMetadata } from "@/lib/seo";
-import { path } from "@/lib/i18n";
+import { path, url } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 
 export const dynamicParams = false;
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
       <h2>Who is responsible for your data</h2>
       <p>
         <strong>{LEGAL.responsable}</strong>, which operates{" "}
-        <a href={`https://${LEGAL.sitio}`}>{LEGAL.sitio}</a>, is responsible for
+        <a href={url("en", "home")}>{LEGAL.sitio}</a>, is responsible for
         processing the personal data you provide.
         {LEGAL.razonSocial ? ` Legal entity: ${LEGAL.razonSocial}.` : ""}
         {LEGAL.rfc ? ` Tax ID (RFC): ${LEGAL.rfc}.` : ""}

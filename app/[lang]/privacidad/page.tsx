@@ -1,3 +1,4 @@
+import { url } from "@/lib/i18n";
 import LegalPage from "../../_components/LegalPage";
 import { pageMetadata } from "@/lib/seo";
 import { LEGAL } from "@/lib/legal";
@@ -31,7 +32,7 @@ export default function PrivacidadPage() {
       <h2>Quién es responsable de tus datos</h2>
       <p>
         <strong>{LEGAL.responsable}</strong>, que opera el sitio{" "}
-        <a href={`https://${LEGAL.sitio}`}>{LEGAL.sitio}</a>, es responsable del
+        <a href={url("es", "home")}>{LEGAL.sitio}</a>, es responsable del
         tratamiento de los datos personales que nos proporciones.
         {LEGAL.razonSocial ? ` Razón social: ${LEGAL.razonSocial}.` : ""}
         {LEGAL.rfc ? ` RFC: ${LEGAL.rfc}.` : ""}

@@ -18,6 +18,10 @@ const WHATSAPP_NUMBER_DISPLAY = "+52 55 4358 2919";
 
 export const dynamic = "force-dynamic";
 
+// Página de recibo: no aporta nada en el buscador. robots.txt ya la bloquea,
+// pero eso no impide que Google indexe la URL si alguien la enlaza; noindex sí.
+export const metadata = { robots: { index: false, follow: false } };
+
 type SuccessPageProps = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ session_id?: string }>;

@@ -801,7 +801,7 @@ const styles = `
   .er-cat { width:100%; display:flex; flex-direction:column; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; padding:0; cursor:pointer; color:var(--tx); font-family:var(--sans); transition:border-color 0.18s var(--ease), transform 0.18s var(--ease); }
   .er-cat:hover { border-color:#4A535B; transform:translateY(-2px); }
   .er-cat.is-selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px rgba(200,167,110,0.6); }
-  .er-cat img { display:block; width:100%; height:auto; aspect-ratio:16 / 10; object-fit:cover; background:#24292D; }
+  .er-cat img { display:block; width:100%; height:auto; aspect-ratio:16 / 9; object-fit:cover; background:#24292D; }
   .er-cat-body { display:flex; flex-direction:column; gap:6px; padding:18px 18px 20px; flex:1; }
   .er-cat-name { font-family:var(--serif); font-size:27px; font-weight:500; line-height:1.05; }
   .er-cat-tag { font-size:12px; color:var(--tx2); letter-spacing:0.03em; min-height:2.6em; }

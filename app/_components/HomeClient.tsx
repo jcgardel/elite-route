@@ -896,6 +896,22 @@ const styles = `
   .er-testimonial-avatar { width:34px; height:34px; border-radius:50%; background:var(--field); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--tx); flex-shrink:0; }
   .er-testimonial-name { font-size:13.5px; font-weight:600; color:var(--tx); }
   .er-testimonial-role { font-size:12px; color:var(--tx2); margin-top:2px; }
+  /* Las tarjetas en los colores de la G de Google, en su orden (azul, rojo,
+     amarillo, verde). Tonos oficiales profundos de Google para que el texto
+     blanco cumpla contraste; en el amarillo el texto va oscuro. */
+  .er-testimonial-card[class*="er-g-"] { border:none; }
+  .er-g-blue { background:#1A73E8; }
+  .er-g-red { background:#D93025; }
+  .er-g-green { background:#188038; }
+  .er-g-yellow { background:#F9AB00; }
+  .er-g-blue .er-testimonial-quote, .er-g-red .er-testimonial-quote, .er-g-green .er-testimonial-quote,
+  .er-g-blue .er-testimonial-name, .er-g-red .er-testimonial-name, .er-g-green .er-testimonial-name { color:#FFFFFF; }
+  .er-g-blue .er-testimonial-role, .er-g-red .er-testimonial-role, .er-g-green .er-testimonial-role { color:rgba(255,255,255,0.86); }
+  .er-g-blue .er-testimonial-stars, .er-g-red .er-testimonial-stars, .er-g-green .er-testimonial-stars { color:#FFFFFF; }
+  .er-g-blue .er-testimonial-avatar, .er-g-red .er-testimonial-avatar, .er-g-green .er-testimonial-avatar { background:rgba(255,255,255,0.2); color:#FFFFFF; }
+  .er-g-yellow .er-testimonial-quote, .er-g-yellow .er-testimonial-name, .er-g-yellow .er-testimonial-stars { color:#202124; }
+  .er-g-yellow .er-testimonial-role { color:rgba(32,33,36,0.8); }
+  .er-g-yellow .er-testimonial-avatar { background:rgba(32,33,36,0.14); color:#202124; }
   .er-reviews-badge-row { display:flex; justify-content:center; margin-bottom:30px; }
   .er-reviews-badge { display:inline-flex; align-items:center; gap:13px; border:1px solid var(--line); background:var(--card); border-radius:12px; padding:12px 22px; text-decoration:none; }
   .er-reviews-badge:hover { border-color:#5A636B; }
@@ -2635,8 +2651,8 @@ export default function HomeClient({
             </div>
 
             <div className="er-testimonials-grid">
-              {REVIEWS.map((r) => (
-                <div className="er-testimonial-card" key={r.name}>
+              {REVIEWS.map((r, i) => (
+                <div className={`er-testimonial-card er-g-${["blue", "red", "yellow", "green"][i % 4]}`} key={r.name}>
                   <div className="er-testimonial-stars">★★★★★</div>
                   <blockquote className="er-testimonial-quote">“{r.quote}”</blockquote>
                   <div className="er-testimonial-author">

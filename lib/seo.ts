@@ -233,6 +233,18 @@ const COPY: Partial<Record<Page, Record<Lang, Copy>>> = {
         "Cómo Elite Route recaba, usa y protege los datos personales de quien reserva un traslado, y cómo ejercer los derechos ARCO.",
     },
   },
+  about: {
+    en: {
+      title: "About Elite Route | Private Chauffeurs in Mexico City",
+      description:
+        "Elite Route is a private chauffeur and executive transportation company in Mexico City: 6+ years, 1,200+ trips a year, an insured GPS-tracked fleet and fixed prices.",
+    },
+    es: {
+      title: "Nosotros | Elite Route, Transporte Ejecutivo en CDMX",
+      description:
+        "Elite Route es una empresa de transporte ejecutivo privado en Ciudad de México: más de 6 años, más de 1,200 viajes al año, flota asegurada con GPS y precio fijo.",
+    },
+  },
   terms: {
     en: {
       title: "Terms of Service | Elite Route",
@@ -332,6 +344,7 @@ const MIGA: Partial<Record<Page, Record<Lang, string>>> = {
   quote: { en: "Corporate quote", es: "Cotizador corporativo" },
   terms: { en: "Terms of service", es: "Términos y condiciones" },
   privacy: { en: "Privacy notice", es: "Aviso de privacidad" },
+  about: { en: "About us", es: "Nosotros" },
 };
 
 export function breadcrumbLd(lang: Lang, trail: Page[]) {

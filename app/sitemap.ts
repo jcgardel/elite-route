@@ -57,6 +57,7 @@ const PAGES: Array<{ page: Page; priority: number; changeFrequency: "weekly" | "
   // Más baja que las de servicio: la flota se consulta ANTES de reservar,
   // pero nadie busca "flota" con la tarjeta en la mano.
   { page: "fleet", priority: 0.7, changeFrequency: "monthly" },
+  { page: "about", priority: 0.5, changeFrequency: "yearly" },
   // LAS GUÍAS. Prioridad 0.8: por debajo de las páginas de servicio, que son
   // las que convierten, y por encima de la flota. No persiguen intención de
   // compra sino la búsqueda anterior —cómo salir del aeropuerto, qué cabe en

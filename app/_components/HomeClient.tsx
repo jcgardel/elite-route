@@ -208,7 +208,7 @@ const TX = {
     toursGuide: "What fits in one day? Read the day-trip guide",
     toursWa: "Plan my tour on WhatsApp",
     toursWaText: "Hi, I'd like a quote for a tour with a chauffeur at my disposal.",
-    navServices: "Services", navRoutes: "Routes", navFleet: "Fleet", navCompanies: "Companies",
+    navServices: "Services", navRoutes: "Routes", navFleet: "Fleet", navCompanies: "Companies", navAbout: "About",
     navCall: "Call +52 55 4358 2919", navQuote: "Get a quote", navMenu: "Menu",
     stripAria: "Why travel with Elite Route",
     strip: ["Insured vehicles", "Professional chauffeurs", "Flight tracking", "Fixed prices, VAT included", "Personal attention"],
@@ -394,7 +394,7 @@ const TX = {
     toursGuide: "¿Qué cabe en un día? Lee la guía de excursiones",
     toursWa: "Armar mi tour por WhatsApp",
     toursWaText: "Hola, quiero cotizar un tour con chofer a disposición.",
-    navServices: "Servicios", navRoutes: "Rutas", navFleet: "Flota", navCompanies: "Empresas",
+    navServices: "Servicios", navRoutes: "Rutas", navFleet: "Flota", navCompanies: "Empresas", navAbout: "Nosotros",
     navCall: "Llamar al +52 55 4358 2919", navQuote: "Cotizar", navMenu: "Menú",
     stripAria: "Por qué viajar con Elite Route",
     strip: ["Vehículos asegurados", "Conductores profesionales", "Seguimiento de vuelos", "Precios fijos con IVA incluido", "Atención personalizada"],
@@ -1617,6 +1617,7 @@ export default function HomeClient({
                 <li><a href="#rutas">{t.navRoutes}</a></li>
                 <li><a href="#flota">{t.navFleet}</a></li>
                 <li><a href={corporate}>{t.navCompanies}</a></li>
+                <li><a href={path(lang, "about")}>{t.navAbout}</a></li>
                 <li><a href="#contacto">{t.contact}</a></li>
               </ul>
               <div className="er-nav-right">
@@ -2663,6 +2664,7 @@ export default function HomeClient({
                 <a href={path(lang, "chauffeur")}>{t.footChauffeur}</a>
                 <a href={path(lang, "executive")}>{t.footExecutive}</a>
                 <a href={path(lang, "fleet")}>{t.footFleet}</a>
+                <a href={path(lang, "about")}>{t.navAbout}</a>
                 <a href={corporate}>{t.corporate}</a>
                 <a href={path(lang, "terms")}>{t.footTerms}</a>
                 <a href={path(lang, "privacy")}>{t.footPrivacy}</a>

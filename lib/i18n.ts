@@ -43,6 +43,7 @@ export type Page =
   | "quote"
   | "privacy"
   | "terms"
+  | "about"
   | "success"
   | "cancel";
 
@@ -101,6 +102,8 @@ const SLUGS: Record<Page, Record<Lang, string>> = {
   quote: { en: "corporate/quote", es: "b2b/cotizar" },
   privacy: { en: "privacy", es: "privacidad" },
   terms: { en: "terms", es: "terminos" },
+  // Quiénes somos (nov 2026). Sólo datos que el sitio ya sostiene.
+  about: { en: "about", es: "nosotros" },
   // Las páginas de resultado de pago no son contenido que se busque: no
   // necesitan una palabra distinta por idioma, sólo el prefijo.
   success: { en: "success", es: "success" },

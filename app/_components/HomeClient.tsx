@@ -837,11 +837,16 @@ const styles = `
   .er-tours-title { font-family:var(--serif); font-size:clamp(32px, 3.3vw, 44px); font-weight:400; line-height:1.08; margin:0 0 14px; }
   .er-tours-copy { margin:0 0 30px; max-width:620px; color:var(--tx2); font-size:16.5px; line-height:1.65; }
   .er-tours-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; }
-  .er-tour { display:flex; flex-direction:column; gap:10px; padding:22px; border:1px solid var(--line); border-radius:16px; background:var(--card); text-decoration:none; color:var(--tx); transition:border-color 0.18s var(--ease); }
+  /* Tarjeta con la foto del destino de fondo: el texto va abajo, sobre un
+     degradado oscuro que garantiza la lectura sin importar la foto. */
+  .er-tour { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; gap:10px; min-height:400px; padding:22px; border:1px solid var(--line); border-radius:16px; background:var(--card); text-decoration:none; color:var(--tx); transition:border-color 0.18s var(--ease); }
+  .er-tour::before { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(to top, rgba(8,13,18,0.96) 0%, rgba(8,13,18,0.82) 38%, rgba(8,13,18,0.25) 68%, rgba(8,13,18,0.05) 100%); }
+  .er-tour-img { position:absolute; inset:0; z-index:-2; width:100%; height:100%; object-fit:cover; transition:transform 0.4s var(--ease); }
   .er-tour:hover { border-color:#4A535B; }
-  .er-tour-tag { align-self:flex-start; font-size:11.5px; font-weight:600; color:var(--tx2); border:1px solid var(--line); border-radius:20px; padding:4px 10px; }
+  .er-tour:hover .er-tour-img { transform:scale(1.04); }
+  .er-tour-tag { align-self:flex-start; font-size:11.5px; font-weight:600; color:var(--tx); background:rgba(8,13,18,0.6); border:1px solid rgba(255,255,255,0.18); border-radius:20px; padding:4px 10px; backdrop-filter:blur(6px); }
   .er-tour-title { font-family:var(--serif); font-size:24px; font-weight:500; margin:0; }
-  .er-tour-copy { margin:0; color:var(--tx2); font-size:14px; line-height:1.6; flex:1; }
+  .er-tour-copy { margin:0; color:#D4D8DC; font-size:14px; line-height:1.6; }
   .er-tour-cta { color:var(--tx); font-size:13.5px; font-weight:600; }
   .er-tours-foot { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:24px; }
   .er-tours-guide { color:var(--tx2); font-size:14px; text-decoration:underline; text-underline-offset:4px; }
@@ -1012,6 +1017,9 @@ const STRIP_ICONS = [
   <svg key="precio" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5h.01M17.5 14.5h.01"/></svg>,
   <svg key="atencion" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>,
 ];
+
+/** Fotos de fondo de las tarjetas de tours, en el orden de t.tours. */
+const TOUR_IMAGES = ["/tours/teotihuacan.webp", "/tours/xochimilco.webp", "/tours/valle-de-bravo.webp", "/tours/tepoztlan.webp"];
 
 /** Orden del catálogo de la portada (especificación de diseño, nov 2026). */
 const CATALOG_ORDER: readonly Category[] = ["suv", "executive", "minivan", "sedan"];
@@ -2421,6 +2429,17 @@ export default function HomeClient({
                   ][i];
                   return (
                     <a key={tour.title} className="er-tour" href={href}>
+                      {/* Foto del destino de fondo (del dueño, nov 2026). img y no
+                          background para que se cargue sólo al llegar aquí. */}
+                      <img
+                        className="er-tour-img"
+                        src={TOUR_IMAGES[i]}
+                        alt=""
+                        width={720}
+                        height={460}
+                        loading="lazy"
+                        decoding="async"
+                      />
                       <span className="er-tour-tag">{tour.tag}</span>
                       <h3 className="er-tour-title">{tour.title}</h3>
                       <p className="er-tour-copy">{tour.copy}</p>

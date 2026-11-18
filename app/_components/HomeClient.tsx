@@ -568,7 +568,8 @@ const styles = `
     --serif:var(--font-cormorant), Georgia, serif;
     --sans:var(--font-manrope), system-ui, -apple-system, sans-serif;
     --r:12px; --ease:cubic-bezier(0.2, 0.7, 0.2, 1);
-    --hero-photo:url('/high-suv.webp');
+    --hero-photo:url('/portada.webp');
+    --hero-photo-sm:url('/portada-900.webp');
     background:var(--bg); color:var(--tx); min-height:100vh;
     font-family:var(--sans); font-weight:400; -webkit-font-smoothing:antialiased;
   }
@@ -597,13 +598,21 @@ const styles = `
 
   /* ── Portada: texto | fotografía | cotizador ── */
   .er-hero { position:relative; overflow:hidden; background:var(--bg); }
+  /* La foto aprobada (16 nov 2026): dos SUV a los lados y el Ángel al centro,
+     formato 2:1. Va de la orilla izquierda hasta donde empieza el cotizador,
+     apoyada sobre la franja de beneficios, para que las dos camionetas se vean
+     completas; el texto queda sobre el cielo. Bordes desvanecidos hacia el
+     fondo, sin halos. */
   .er-hero::before {
-    content:""; position:absolute; top:0; bottom:0; left:28%; width:46%;
-    background:var(--hero-photo) center 42% / cover no-repeat;
-    -webkit-mask-image:radial-gradient(ellipse 62% 70% at 50% 46%, #000 38%, transparent 78%);
-    mask-image:radial-gradient(ellipse 62% 70% at 50% 46%, #000 38%, transparent 78%);
-    opacity:0.92; pointer-events:none;
+    content:""; position:absolute; left:0; top:350px; width:calc(100% - 470px); max-width:1180px; aspect-ratio:2 / 1;
+    background:var(--hero-photo) center / cover no-repeat;
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 34%, #000 86%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 90%, transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(to bottom, transparent 0%, #000 34%, #000 86%, transparent 100%), linear-gradient(to right, transparent 0%, #000 8%, #000 90%, transparent 100%);
+    mask-composite:intersect;
+    pointer-events:none;
   }
+  .er-hero-lede { text-shadow:0 2px 18px rgba(8,13,18,0.85); }
   .er-hero-inner { position:relative; z-index:1; max-width:1320px; margin:0 auto; padding:72px 32px 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,0.8fr) 432px; grid-template-areas:"lede photo card" "strip strip strip"; column-gap:24px; align-items:start; }
   .er-hero-lede { grid-area:lede; padding-top:28px; max-width:470px; }
   .er-hero-photo { grid-area:photo; display:none; }
@@ -918,7 +927,7 @@ const styles = `
     .er-nav-tel-num { display:none; }
   }
   @media (max-width:1080px) {
-    .er-hero::before { left:auto; right:0; width:60%; opacity:0.55; }
+    .er-hero::before { width:calc(100% - 460px); }
     .er-hero-inner { grid-template-columns:minmax(0,1fr) 432px; grid-template-areas:"lede card" "strip strip"; }
     .er-strip { grid-template-columns:repeat(3, minmax(0,1fr)); row-gap:18px; }
     .er-strip-item:nth-child(4) { border-left:none; }
@@ -935,7 +944,7 @@ const styles = `
     .er-hero::before { display:none; }
     .er-hero-inner { grid-template-columns:1fr; grid-template-areas:"lede" "photo" "strip" "card"; padding-top:44px; }
     .er-hero-lede { max-width:none; padding-top:0; }
-    .er-hero-photo { display:block; margin:28px -32px 0; aspect-ratio:4 / 3; background:var(--hero-photo) center 40% / cover no-repeat; -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%); mask-image:linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%); }
+    .er-hero-photo { display:block; margin:24px -32px 0; aspect-ratio:2 / 1; background:var(--hero-photo-sm) center / cover no-repeat; -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%); mask-image:linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%); }
     .er-strip { margin-top:8px; }
     .er-booking-card { margin-top:28px; }
     .er-comfort { grid-template-columns:1fr; }
@@ -952,7 +961,7 @@ const styles = `
     .er-hero-inner { padding:32px 20px 0; }
     .er-hero-title { font-size:46px; }
     .er-hero-copy { font-size:15.5px; }
-    .er-hero-photo { margin:24px -20px 0; aspect-ratio:1 / 1; }
+    .er-hero-photo { margin:20px -20px 0; aspect-ratio:2 / 1; }
     .er-strip { grid-template-columns:1fr 1fr; padding:18px 0; gap:16px 0; }
     .er-strip-item { padding:0 10px 0 0; font-size:13.5px; }
     .er-strip-item + .er-strip-item { border-left:none; }

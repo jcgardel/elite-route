@@ -198,7 +198,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       />
       {/* La SUV de la portada vive en el CSS (fondo del hero), así que el
           navegador la descubre tarde; es lo primero grande que se pinta. */}
-      <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />
+      <link rel="preload" as="image" href="/portada.webp" imageSrcSet="/portada-900.webp 900w, /portada.webp 1774w" imageSizes="(max-width: 960px) 100vw, 70vw" fetchPriority="high" />
       {/* Los precios por horas y de día completo se resuelven aquí, en el
           servidor, y bajan ya calculados. El cotizador no puede calcularlos
           por su cuenta sin arrastrar el tarifario al navegador. */}

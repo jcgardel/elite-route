@@ -715,13 +715,13 @@ const styles = `
 
   /* Paso 2: mismas proporciones para todas; sólo la elegida con línea dorada. */
   .er-vehicles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-bottom:22px; }
-  .er-vehicle { position:relative; border-radius:14px; cursor:pointer; text-align:left; overflow:hidden; border:1px solid var(--line); min-height:300px; background:#24292D; transition:border-color 0.18s var(--ease), transform 0.18s var(--ease); }
+  .er-vehicle { position:relative; border-radius:14px; cursor:pointer; text-align:left; overflow:hidden; border:1px solid var(--line); min-height:330px; background:#24292D; transition:border-color 0.18s var(--ease), transform 0.18s var(--ease); }
   .er-vehicle:hover { border-color:#5A636B; }
   .er-vehicle.selected { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); }
   .er-vehicle.blocked { opacity:0.4; cursor:not-allowed; }
-  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; aspect-ratio:4 / 5; background-size:cover; background-position:center 30%; }
-  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(25,33,39,0.98) 0%, rgba(25,33,39,0.75) 38%, rgba(25,33,39,0) 62%); }
-  .er-vehicle-content { position:relative; z-index:1; padding:16px; display:flex; flex-direction:column; justify-content:flex-end; min-height:300px; }
+  .er-vehicle-bg { position:absolute; inset:0 0 auto 0; height:52%; background-size:cover; background-position:center 30%; }
+  .er-vehicle-overlay { position:absolute; inset:0; background:linear-gradient(to top, var(--card) 0%, var(--card) 46%, rgba(25,33,39,0) 56%); }
+  .er-vehicle-content { position:relative; z-index:1; padding:16px; display:flex; flex-direction:column; justify-content:flex-end; min-height:330px; }
   .er-vehicle-name { font-family:var(--serif); font-size:24px; font-weight:500; color:var(--tx); margin-bottom:2px; }
   .er-vehicle-tag { font-size:11.5px; color:var(--tx2); letter-spacing:0.04em; margin-bottom:6px; }
   .er-vehicle-cap { font-size:12.5px; color:var(--tx2); margin-bottom:8px; }

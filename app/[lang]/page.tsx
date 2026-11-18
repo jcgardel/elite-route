@@ -196,6 +196,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(fichaDeNegocio(lang)) }}
       />
+      {/* La SUV de la portada vive en el CSS (fondo del hero), así que el
+          navegador la descubre tarde; es lo primero grande que se pinta. */}
+      <link rel="preload" as="image" href="/high-suv.webp" fetchPriority="high" />
       {/* Los precios por horas y de día completo se resuelven aquí, en el
           servidor, y bajan ya calculados. El cotizador no puede calcularlos
           por su cuenta sin arrastrar el tarifario al navegador. */}

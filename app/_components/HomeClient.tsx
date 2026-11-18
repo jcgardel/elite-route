@@ -219,6 +219,7 @@ const TX = {
     corpTitle: "Executive transportation for companies and events.",
     corpCopy: "Coordination, invoicing and dedicated attention.",
     corpCta: "Learn more",
+    corpImgAlt: "Office towers on Paseo de la Reforma with the Angel of Independence at dusk",
     fleetKicker: "The fleet",
     fleetTitle: "Executive and SUV Lux, with a bilingual chauffeur",
     fleetCopy: "Our two executive categories, for business travel and airport pickups. Sedan Lite and SUV Urban remain available as alternatives. Every vehicle insured and GPS-monitored around the clock.",
@@ -405,6 +406,7 @@ const TX = {
     corpTitle: "Transporte ejecutivo para empresas y eventos.",
     corpCopy: "Coordinación, facturación y atención dedicada.",
     corpCta: "Conoce más",
+    corpImgAlt: "Torres de oficinas en Paseo de la Reforma con el Ángel de la Independencia al atardecer",
     fleetKicker: "La flota",
     fleetTitle: "Executive y SUV Lux, con chofer bilingüe",
     fleetCopy: "Nuestras dos categorías ejecutivas, para viajes de negocio y recepciones en aeropuerto. Sedan Lite y SUV Urban siguen disponibles como alternativas. Todas con seguro vigente y monitoreo GPS las 24 horas.",
@@ -824,8 +826,9 @@ const styles = `
   .er-cat:hover .er-cat-cta::after { transform:translateX(3px); }
 
   /* Corporativo */
-  .er-corp { margin-top:104px; border:1px solid var(--line); border-radius:20px; background:linear-gradient(120deg, var(--bg2) 0%, var(--card) 100%); padding:56px; display:grid; grid-template-columns:minmax(0,1fr); }
-  .er-corp-text { max-width:560px; }
+  .er-corp { margin-top:104px; border:1px solid var(--line); border-radius:20px; background:var(--card); overflow:hidden; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); align-items:stretch; }
+  .er-corp-text { padding:56px; align-self:center; max-width:560px; }
+  .er-corp-img { display:block; width:100%; height:100%; min-height:360px; object-fit:cover; object-position:center; }
   .er-corp .er-sec-copy { margin-bottom:26px; }
 
   /* Tours */
@@ -950,6 +953,8 @@ const styles = `
     .er-strip { margin-top:8px; }
     .er-booking-card { margin-top:28px; }
     .er-comfort { grid-template-columns:1fr; }
+    .er-corp { grid-template-columns:1fr; }
+    .er-corp-img { order:-1; min-height:0; height:auto; aspect-ratio:3 / 2; }
   }
 
   /* ── Teléfono ── */
@@ -978,7 +983,8 @@ const styles = `
     .er-cat-row { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px; margin:0 -20px; padding:0 20px 8px; scrollbar-width:none; }
     .er-cat-row::-webkit-scrollbar { display:none; }
     .er-cat-row > li { flex:0 0 82%; scroll-snap-align:start; }
-    .er-corp { margin-top:72px; padding:32px 22px; }
+    .er-corp { margin-top:72px; }
+    .er-corp-text { padding:28px 22px 32px; }
     .er-tours, .er-comfort { margin-top:72px; }
     .er-tours-grid { grid-template-columns:1fr; }
     .er-contact-grid { grid-template-columns:1fr; }
@@ -2383,6 +2389,18 @@ export default function HomeClient({
                 <p className="er-sec-copy">{t.corpCopy}</p>
                 <a className="er-btn-outline" href={corporate}>{t.corpCta}</a>
               </div>
+              {/* Foto arquitectónica (Reforma con el Ángel al fondo), del dueño. */}
+              <img
+                className="er-corp-img"
+                src="/corporativo.webp"
+                srcSet="/corporativo-720.webp 720w, /corporativo.webp 1200w"
+                sizes="(max-width: 980px) 100vw, 640px"
+                alt={t.corpImgAlt}
+                width={1200}
+                height={800}
+                loading="lazy"
+                decoding="async"
+              />
             </section>
 
             {/* TOURS Y EXCURSIONES. Antes de la flota para que se vea pronto.

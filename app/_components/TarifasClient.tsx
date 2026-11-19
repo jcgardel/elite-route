@@ -9,8 +9,7 @@ import {
   RUTAS_REDONDO,
   type TablasTarifas,
 } from "@/lib/rate-tables";
-import BrandMark from "./BrandMark";
-import LangToggle from "./LangToggle";
+import { SiteFooter, SiteHeader } from "./SiteChrome";
 import { path, type Lang } from "@/lib/i18n";
 import { RATES_FAQS } from "@/lib/rates-faqs";
 import { routePath, type RouteKey } from "@/lib/routes";
@@ -224,7 +223,7 @@ const styles = `
   .tf-subtitle { color: #BFC3C8; font-size: 17px; line-height: 1.7; max-width: 620px; margin: 0 auto 32px; }
   .tf-currency-note { color: #B4B4AF; font-size: 13.5px; line-height: 1.65; max-width: 620px; margin: -22px auto 32px; }
   .tf-badge { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
-  .tf-badge-item { font-size: 12px; color: #BFC3C8; letter-spacing: 0.1em; border-left: 2px solid #C8A46B; padding-left: 12px; text-align: left; }
+  .tf-badge-item { font-size: 12px; color: #BFC3C8; letter-spacing: 0.04em; border-left: 2px solid #343C43; padding-left: 12px; text-align: left; }
   .tf-badge-val { color: #fff; font-weight: 600; display: block; font-size: 14px; margin-bottom: 2px; }
 
   .tf-main { max-width: 1180px; margin: 0 auto; padding: 0 28px 100px; }
@@ -286,7 +285,7 @@ const styles = `
     .tf-hero { padding: 40px 18px 44px; }
     .tf-main { padding: 0 18px 64px; }
     .tf-cta { padding: 32px 20px; }
-    .tf-badge { gap: 16px; }
+    .tf-badge { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; justify-content: stretch; width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -310,22 +309,7 @@ export default function TarifasClient({
     <div className="tf-root">
       <style>{styles}</style>
 
-      <nav>
-        <div className="tf-nav">
-          <Link href={home} aria-label="Elite Route">
-            <BrandMark size={17} compact={14} />
-          </Link>
-          <div className="tf-nav-right">
-            <Link href={path(lang, "executive")} className="tf-nav-link">{t.services}</Link>
-            <Link href={path(lang, "corporate")} className="tf-nav-link">{t.corporate}</Link>
-            <Link className="tf-nav-cta" href={`${home}#quote`} aria-label={t.quoteNow}>
-              <span className="tf-cta-largo">{t.quoteNow}</span>
-              <span className="tf-cta-corto">{t.quoteShort}</span>
-            </Link>
-            <LangToggle lang={lang} page="rates" />
-          </div>
-        </div>
-      </nav>
+      <SiteHeader lang={lang} toggle={{ page: "rates" }} />
 
       <div className="tf-hero">
         <p className="tf-kicker">{t.kicker}</p>
@@ -555,11 +539,8 @@ export default function TarifasClient({
         </div>
       </main>
 
-      <footer className="tf-footer">
-        {t.footer}<br />
-        business@eliteroute.mx · contabilidad@eliteroute.mx<br />
-        <Link href={home} style={{ color: "#C8A46B", textDecoration: "none" }}>eliteroute.mx</Link>
-      </footer>
+      <SiteFooter lang={lang} />
+
 
       <a
         href="https://wa.me/525543582919?text=Hola%2C+quisiera+cotizar+un+traslado."

@@ -1,10 +1,8 @@
 import Link from "next/link";
-import BrandMark from "./BrandMark";
-import LangToggle from "./LangToggle";
+import { SiteFooter, SiteHeader } from "./SiteChrome";
 import { calculatePrice } from "@/lib/booking";
 import { vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
-import { LEGAL } from "@/lib/legal";
 import { ROUTE_KEYS, ROUTES, routePath, type RouteKey } from "@/lib/routes";
 import { LEGS, aeropuertoDeLeg } from "@/lib/distances";
 import {
@@ -325,19 +323,7 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
     <div className="rt-root">
       <style>{styles}</style>
 
-      <nav className="rt-nav">
-        <Link href={home} aria-label="Elite Route">
-          <BrandMark size={17} compact={14} />
-        </Link>
-        <div className="rt-nav-right">
-          <Link href={path(lang, "rates")} className="rt-nav-link">{t.navRates}</Link>
-          <Link href={quote} className="rt-nav-cta" aria-label={t.navQuoteFull}>{t.navQuote}</Link>
-          <LangToggle
-            lang={lang}
-            hrefs={{ es: routePath("es", routeKey), en: routePath("en", routeKey) }}
-          />
-        </div>
-      </nav>
+      <SiteHeader lang={lang} toggle={{ hrefs: { es: routePath("es", routeKey), en: routePath("en", routeKey) } }} />
 
       <main className="rt-wrap">
         <p className="rt-kicker">{t.kicker(c.airport, c.zone)}</p>
@@ -515,32 +501,8 @@ export default function RoutePage({ lang, routeKey }: { lang: Lang; routeKey: Ro
         {/* El pie eran dos enlaces. Quien llega aquí desde el buscador no
             ha visto la portada, así que esta es la única ocasión de decirle
             quién es el negocio y dónde encontrarlo. */}
-        <footer className="rt-foot">
-          <p className="rt-foot-pay">
-            <span>{t.footPay}</span>
-            <span className="rt-stripe-mark">stripe</span>
-            <span className="rt-cardmark">VISA</span>
-            <span className="rt-cardmark">MASTERCARD</span>
-            <span className="rt-cardmark">AMEX</span>
-          </p>
-
-          {/* Sin domicilio: es la casa del dueño. Ver el pie de HomeClient. */}
-          <address className="rt-foot-id">
-            <span className="rt-foot-name">{LEGAL.responsable}</span>
-            <span className="rt-foot-contact">
-              <a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a>
-              <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
-            </span>
-          </address>
-
-          <div className="rt-foot-links">
-            <Link href={path(lang, "rates")}>{t.allRates}</Link>
-            <Link href={path(lang, "terms")}>{t.footTerms}</Link>
-            <Link href={path(lang, "privacy")}>{t.footPrivacy}</Link>
-            <Link href={home}>eliteroute.mx</Link>
-          </div>
-        </footer>
       </main>
+      <SiteFooter lang={lang} />
     </div>
   );
 }

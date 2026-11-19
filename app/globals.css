@@ -3,36 +3,25 @@
    ninguna página, las variables de las fuentes Geist, que no existen en el
    proyecto, y un fondo blanco en modo claro. */
 
-/* Fondo de todas las páginas: degradado de negro a bronce con dos brillos
-   dorados (arriba a la derecha y abajo a la izquierda). Arranca en #0a0a0a
-   para empatar con el desvanecido inferior del hero. Se pinta en
-   body::before (ver abajo). Si se suben los brillos, revisar el contraste
-   del texto gris #B4B4AF: con más de ~0.35 deja de cumplir 4.5:1. */
-:root {
-  --er-bg:
-    radial-gradient(90vw 80vh at 100% 0%, rgba(200, 164, 107, 0.32), transparent 72%),
-    radial-gradient(85vw 75vh at 0% 100%, rgba(200, 164, 107, 0.26), transparent 72%),
-    linear-gradient(160deg, #0a0a0a 0%, #1b1916 40%, #2c2418 100%) #0a0a0a;
-}
+/* REDISEÑO OSCURO (nov 2026). El fondo bronce con brillos que vivía aquí
+   en body::before se retiró: la portada y las páginas migradas usan el
+   negro azulado #080D12 de la especificación. */
 
-/* El degradado va en una capa fija detrás de todo el contenido: así los
-   brillos se ven en toda la página mientras se desplaza. Antes se probó con
-   background-attachment: fixed en cada página, pero Chrome no lo pinta
-   cuando hay capas con transform (el zoom del hero) y Safari en iPhone lo
-   ignora. Los contenedores raíz (.er-root, .rt-root, …) son transparentes
-   para dejarla ver. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: var(--er-bg);
-  pointer-events: none;
+/* Capa común para las páginas internas que van pasando al diseño nuevo.
+   Cambia la tipografía de interfaz a Manrope sin tocar cada hoja de estilos
+   (las páginas usan var(--font-barlow) y var(--font-barlow-condensed); aquí
+   esas variables apuntan a Manrope) y pone el fondo de la especificación.
+   "body ." le gana a la regla de cada componente, que va en un style dentro
+   del body. */
+body :is(.rt-root, .ap-root, .tf-root) {
+  --font-barlow: var(--font-manrope);
+  --font-barlow-condensed: var(--font-manrope);
+  background: #080D12;
 }
 
 body {
   margin: 0;
-  background: #0a0a0a;
+  background: #080D12;
   color: #ededed;
   font-family: var(--font-barlow), system-ui, sans-serif;
 }

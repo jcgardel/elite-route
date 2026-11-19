@@ -1,11 +1,9 @@
 import Link from "next/link";
-import BrandMark from "./BrandMark";
-import LangToggle from "./LangToggle";
+import { SiteFooter, SiteHeader } from "./SiteChrome";
 import WelcomeEn from "./WelcomeEn";
 import { calculatePrice } from "@/lib/booking";
 import { CATEGORIES, vehicles, type Category } from "@/lib/vehicles";
 import { path, type Lang } from "@/lib/i18n";
-import { LEGAL } from "@/lib/legal";
 import { ROUTES, ROUTE_KEYS, routePath, type RouteKey } from "@/lib/routes";
 import { LEGS, aeropuertoDeLeg } from "@/lib/distances";
 import {
@@ -565,16 +563,7 @@ export default function AirportPage({ lang }: { lang: Lang }) {
     <div className="ap-root">
       <style>{styles}</style>
 
-      <nav className="ap-nav">
-        <Link href={home} aria-label="Elite Route">
-          <BrandMark size={17} compact={14} />
-        </Link>
-        <div className="ap-nav-right">
-          <Link href={path(lang, "rates")} className="ap-nav-link">{t.navRates}</Link>
-          <Link href={quote} className="ap-nav-cta" aria-label={t.navQuoteFull}>{t.navQuote}</Link>
-          <LangToggle lang={lang} page="airport" />
-        </div>
-      </nav>
+      <SiteHeader lang={lang} toggle={{ page: "airport" }} />
 
       <main className="ap-wrap">
         <p className="ap-kicker">{t.kicker}</p>
@@ -772,32 +761,8 @@ export default function AirportPage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <footer className="ap-foot">
-          <p className="ap-foot-pay">
-            <span>{t.footPay}</span>
-            <span className="ap-stripe-mark">stripe</span>
-            <span className="ap-cardmark">VISA</span>
-            <span className="ap-cardmark">MASTERCARD</span>
-            <span className="ap-cardmark">AMEX</span>
-          </p>
-
-          {/* Sin domicilio: es la casa del dueño. Ver el pie de HomeClient. */}
-          <address className="ap-foot-id">
-            <span className="ap-foot-name">{LEGAL.responsable}</span>
-            <span className="ap-foot-contact">
-              <a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a>
-              <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
-            </span>
-          </address>
-
-          <div className="ap-foot-links">
-            <Link href={path(lang, "rates")}>{t.alsoRates}</Link>
-            <Link href={path(lang, "terms")}>{t.footTerms}</Link>
-            <Link href={path(lang, "privacy")}>{t.footPrivacy}</Link>
-            <Link href={home}>eliteroute.mx</Link>
-          </div>
-        </footer>
       </main>
+      <SiteFooter lang={lang} />
     </div>
   );
 }

@@ -169,9 +169,10 @@ export function admiteRedondo(km: number, destinoEsAeropuerto: boolean) {
  * 20 oct 2026: SUV Lux bloqueada el fin de semana del GP de México
  * (30 oct – 1 nov 2026); esos servicios se cotizan aparte.
  * 26 oct 2026: se agrega el jueves 29 oct.
+ * 20 nov 2026: se agrega el domingo 22 nov (partido NFL, flota SUV Lux llena).
  */
 export const FECHAS_BLOQUEADAS: Partial<Record<Category, readonly string[]>> = {
-  suv: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01"],
+  suv: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01", "2026-11-22"],
 };
 
 export function categoriaBloqueada(cat: Category, fecha: string) {

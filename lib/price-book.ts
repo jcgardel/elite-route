@@ -19,6 +19,8 @@ import {
   RUTAS_DESDE,
   RUTAS_HACIA,
   RUTAS_REDONDO,
+  type PaquetesTours,
+  type PrecioPaquete,
   type PrecioPorCategoria,
   type TablasB2b,
   type TablasCotizador,
@@ -48,6 +50,29 @@ const redondo = (km: number, min: number) =>
 
 const bloque = (h: number) =>
   porCategoria((c) => calculatePrice(0, 0, c, h === 10 ? "day" : "hour", h));
+
+/**
+ * PAQUETES DESDE de los tours (25 nov 2026, decidido por el dueño), en Sedan
+ * Lite y SUV Urban, cada uno con el precio propio de su destino:
+ * - Teotihuacán: cotización de 6 horas + $800 de gastos foráneos.
+ * - Xochimilco: 6 horas por horas (dentro de la CDMX, sin gastos foráneos).
+ * - Valle de Bravo y Tepoztlán: el viaje redondo publicado en /tarifas.
+ */
+export const PAQUETE_HORAS = 6;
+export const GASTOS_FORANEOS_TEOTIHUACAN = 800;
+
+const paquete = (fn: (c: "sedan" | "minivan") => number): PrecioPaquete => ({ sedan: fn("sedan"), minivan: fn("minivan") });
+
+export function paquetesTours(): PaquetesTours {
+  const seis = bloque(PAQUETE_HORAS);
+  const red = (k: "vallebravo" | "tepoztlan") => redondo(LEGS[k].km, LEGS[k].min);
+  return {
+    teotihuacan: paquete((c) => seis[c] + GASTOS_FORANEOS_TEOTIHUACAN),
+    xochimilco: paquete((c) => seis[c]),
+    vallebravo: paquete((c) => red("vallebravo")[c]),
+    tepoztlan: paquete((c) => red("tepoztlan")[c]),
+  };
+}
 
 /** Las tres tablas de /tarifas y /rates. */
 export function tablasTarifas(): TablasTarifas {

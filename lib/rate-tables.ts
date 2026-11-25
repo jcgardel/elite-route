@@ -95,6 +95,10 @@ export const HORAS_MAX = 24;
 /** Precios ya calculados que el servidor entrega a la interfaz. */
 export type PrecioPorCategoria = Record<Category, number>;
 
+/** "Paquetes desde" de las tarjetas de tours: Sedan Lite y SUV Urban. */
+export type PrecioPaquete = { sedan: number; minivan: number };
+export type PaquetesTours = Record<"teotihuacan" | "xochimilco" | "vallebravo" | "tepoztlan", PrecioPaquete>;
+
 /** Las tablas que necesita /tarifas, con el precio ya resuelto. */
 export type TablasTarifas = {
   desde: Record<string, PrecioPorCategoria>;

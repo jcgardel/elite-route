@@ -2,7 +2,8 @@ import Link from "next/link";
 import BrandMark from "./BrandMark";
 import LangToggle from "./LangToggle";
 import { calculatePrice } from "@/lib/booking";
-import { vehicles, type Category } from "@/lib/vehicles";
+import { CAPACIDAD, vehicles, type Category } from "@/lib/vehicles";
+import { PAQUETE_HORAS, paquetesTours } from "@/lib/price-book";
 import { path, type Lang } from "@/lib/i18n";
 import { LEGAL } from "@/lib/legal";
 import { KM_POR_HORA as KM_HORA } from "@/lib/service-limits";
@@ -45,18 +46,11 @@ const BLOQUES = [9, 10] as const;
 /** Kilómetros incluidos por hora. Vive en lib/service-limits.ts. */
 const KM_POR_HORA = KM_HORA;
 
-/**
- * PAQUETES DESDE (25 nov 2026, decidido por el dueño): el "desde" es la
- * cotización de 6 horas del tarifario más $800 de gastos foráneos, sólo en
- * Sedan Lite y SUV Urban.
- */
-const PAQUETE_HORAS = 6;
-const GASTOS_FORANEOS = 800;
-const PAQUETES: ReadonlyArray<{ cat: Category; pax: number }> = [
-  { cat: "sedan", pax: 4 },
-  { cat: "minivan", pax: 6 },
+/** "Paquetes desde": el precio sale de lib/price-book.ts (`paquetesTours`). */
+const PAQUETES: ReadonlyArray<{ cat: "sedan" | "minivan"; pax: number }> = [
+  { cat: "sedan", pax: CAPACIDAD.sedan.pax },
+  { cat: "minivan", pax: CAPACIDAD.minivan.pax },
 ];
-const precioPaquete = (c: Category) => calculatePrice(0, 0, c, "hour", PAQUETE_HORAS) + GASTOS_FORANEOS;
 const mxn = (n: number) => `$${n.toLocaleString("en-US")} MXN`;
 
 /** Las dos categorías con chofer bilingüe. Confirmado por el dueño. */
@@ -393,7 +387,7 @@ export default function TeotihuacanPage({ lang }: { lang: Lang }) {
               <div className="tt-paq-card" key={cat}>
                 <div className="tt-paq-name">{vehicles[cat].name}</div>
                 <div className="tt-paq-pax">{t.paquetePax(pax)}</div>
-                <div className="tt-paq-price"><small>{t.paqueteDesde}</small>{mxn(precioPaquete(cat))}</div>
+                <div className="tt-paq-price"><small>{t.paqueteDesde}</small>{mxn(paquetesTours().teotihuacan[cat])}</div>
               </div>
             ))}
           </div>

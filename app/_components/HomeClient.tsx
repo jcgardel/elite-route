@@ -33,7 +33,7 @@ import { CAPACIDAD,
   type ServiceType,
   type Zone,
 } from "@/lib/vehicles";
-import { HORAS_MIN, type PrecioPorCategoria, type TablasCotizador, type TablasRedondo } from "@/lib/rate-tables";
+import { HORAS_MIN, type PaquetesTours, type PrecioPorCategoria, type TablasCotizador, type TablasRedondo } from "@/lib/rate-tables";
 import { MIN_ADVANCE_HOURS, VUELO_MAX, esVueloValido, NOTAS_MAX } from "@/lib/booking-form";
 import { identidadGa, track } from "@/lib/analytics";
 import { DESPUES_DE_PAGAR } from "@/lib/booking-status";
@@ -848,6 +848,10 @@ const styles = `
   .er-tour-title { font-family:var(--serif); font-size:24px; font-weight:500; margin:0; }
   .er-tour-copy { margin:0; color:#D4D8DC; font-size:14px; line-height:1.6; }
   .er-tour-cta { color:var(--tx); font-size:13.5px; font-weight:600; }
+  .er-tour-paq { display:flex; flex-direction:column; gap:4px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.18); }
+  .er-tour-paq-h { color:#C7A46A; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; }
+  .er-tour-paq-row { display:flex; justify-content:space-between; gap:10px; font-size:13px; color:#D4D8DC; }
+  .er-tour-paq-row b { color:#fff; font-weight:700; white-space:nowrap; }
   .er-tours-foot { display:flex; flex-wrap:wrap; align-items:center; gap:14px 24px; margin-top:24px; }
   .er-tours-guide { color:var(--tx2); font-size:14px; text-decoration:underline; text-underline-offset:4px; }
   .er-tours-wa { display:inline-flex; min-height:48px; align-items:center; padding:0 20px; border-radius:12px; border:1px solid var(--line); color:var(--tx); font-size:14px; font-weight:600; text-decoration:none; }
@@ -1051,8 +1055,11 @@ export default function HomeClient({
   tablas,
   rutas,
   guias,
+  paquetes,
 }: {
   lang: Lang;
+  /** "Paquetes desde" de las tarjetas de tours, resueltos en el servidor. */
+  paquetes: PaquetesTours;
   /**
    * Precios por horas y de día completo, ya resueltos en el servidor. No se
    * calculan aquí porque hacerlo obligaba a importar el tarifario, y todo lo
@@ -2459,6 +2466,15 @@ export default function HomeClient({
                       <span className="er-tour-tag">{tour.tag}</span>
                       <h3 className="er-tour-title">{tour.title}</h3>
                       <p className="er-tour-copy">{tour.copy}</p>
+                      <div className="er-tour-paq">
+                        <span className="er-tour-paq-h">{lang === "es" ? "Paquetes desde" : "Packages from"}</span>
+                        {(["sedan", "minivan"] as const).map((c) => (
+                          <span className="er-tour-paq-row" key={c}>
+                            <span>{vehicles[c].name} · 1-{CAPACIDAD[c].pax} {lang === "es" ? "personas" : "pax"}</span>
+                            <b>${paquetes[(["teotihuacan", "xochimilco", "vallebravo", "tepoztlan"] as const)[i]][c].toLocaleString("en-US")}</b>
+                          </span>
+                        ))}
+                      </div>
                       <span className="er-tour-cta">{tour.cta} →</span>
                     </a>
                   );

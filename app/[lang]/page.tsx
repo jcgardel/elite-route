@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import HomeClient from "../_components/HomeClient";
 import { pageMetadata } from "@/lib/seo";
-import { tablasCotizador } from "@/lib/price-book";
+import { paquetesTours, tablasCotizador } from "@/lib/price-book";
 import { isLang, LANGS, path, SITE, url, type Lang } from "@/lib/i18n";
 import { ROUTES, ROUTE_KEYS, routePath } from "@/lib/routes";
 
@@ -207,6 +207,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         tablas={tablasCotizador()}
         rutas={enlacesDeRuta(lang)}
         guias={enlacesDeGuia(lang)}
+        paquetes={paquetesTours()}
       />
     </>
   );

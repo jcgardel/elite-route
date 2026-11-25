@@ -23,7 +23,7 @@ const TX = {
   es: {
     services: "Servicios", routes: "Rutas", fleet: "Flota", companies: "Empresas",
     about: "Nosotros", contact: "Contacto", quote: "Cotizar", menu: "Menú",
-    call: "Llamar al +52 55 4358 2919",
+    call: "Llamar al +52 55 4130 1651",
     pay: "Pagos procesados por", billing: "Facturación CFDI", rights: "Elite Route MX · Ciudad de México",
     rates: "Tarifas", hourly: "Chofer por horas", airport: "Traslados de aeropuerto",
     chauffeur: "Chofer privado", executive: "Transporte ejecutivo", terms: "Términos", privacy: "Aviso de privacidad",
@@ -31,14 +31,14 @@ const TX = {
   en: {
     services: "Services", routes: "Routes", fleet: "Fleet", companies: "Companies",
     about: "About", contact: "Contact", quote: "Get a quote", menu: "Menu",
-    call: "Call +52 55 4358 2919",
+    call: "Call +52 55 4130 1651",
     pay: "Payments processed by", billing: "CFDI invoicing", rights: "Elite Route MX · Mexico City",
     rates: "Rates", hourly: "Hourly chauffeur", airport: "Airport transfers",
     chauffeur: "Private chauffeur", executive: "Executive transportation", terms: "Terms", privacy: "Privacy",
   },
 } as const;
 
-const TEL = "+525543582919";
+const TEL = LEGAL.telefonoTel;
 
 const styles = `
   .sc-top { position:sticky; top:0; z-index:60; background:rgba(8,13,18,0.86); backdrop-filter:saturate(140%) blur(14px); -webkit-backdrop-filter:saturate(140%) blur(14px); border-bottom:1px solid rgba(52,60,67,0.7); font-family:var(--font-manrope), system-ui, sans-serif; }
@@ -124,7 +124,7 @@ export function SiteHeader({ lang, toggle }: { lang: Lang; toggle: Toggle }) {
           <div className="sc-right">
             <a className="sc-tel" href={`tel:${TEL}`} aria-label={t.call}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
-              <span className="sc-tel-num">{LEGAL.whatsapp}</span>
+              <span className="sc-tel-num">{LEGAL.telefono}</span>
             </a>
             <LangToggle lang={lang} page={toggle.page} hrefs={toggle.hrefs} />
             <Link className="sc-cta" href={`${home}#quote`}>{t.quote}</Link>
@@ -156,7 +156,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
       <address className="sc-foot-id">
         <span className="sc-foot-name">{LEGAL.responsable}</span>
         <span className="sc-foot-contact">
-          <a href={`tel:${TEL}`}>{LEGAL.whatsapp}</a>
+          <a href={`tel:${TEL}`}>{LEGAL.telefono}</a>
           <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
         </span>
       </address>

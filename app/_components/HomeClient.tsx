@@ -211,7 +211,7 @@ const TX = {
     toursWa: "Plan my tour on WhatsApp",
     toursWaText: "Hi, I'd like a quote for a tour with a chauffeur at my disposal.",
     navServices: "Services", navRoutes: "Routes", navFleet: "Fleet", navCompanies: "Companies", navAbout: "About",
-    navCall: "Call +52 55 4358 2919", navQuote: "Get a quote", navMenu: "Menu",
+    navCall: "Call +52 55 4130 1651", navQuote: "Get a quote", navMenu: "Menu",
     stripAria: "Why travel with Elite Route",
     strip: ["Insured vehicles", "Professional chauffeurs", "Flight tracking", "Fixed prices, VAT included", "Personal attention"],
     catPax: "passengers", catBags: "bags", catSelect: "Select", catSelected: "Selected",
@@ -398,7 +398,7 @@ const TX = {
     toursWa: "Armar mi tour por WhatsApp",
     toursWaText: "Hola, quiero cotizar un tour con chofer a disposición.",
     navServices: "Servicios", navRoutes: "Rutas", navFleet: "Flota", navCompanies: "Empresas", navAbout: "Nosotros",
-    navCall: "Llamar al +52 55 4358 2919", navQuote: "Cotizar", navMenu: "Menú",
+    navCall: "Llamar al +52 55 4130 1651", navQuote: "Cotizar", navMenu: "Menú",
     stripAria: "Por qué viajar con Elite Route",
     strip: ["Vehículos asegurados", "Conductores profesionales", "Seguimiento de vuelos", "Precios fijos con IVA incluido", "Atención personalizada"],
     catPax: "pasajeros", catBags: "maletas", catSelect: "Seleccionar", catSelected: "Seleccionado",
@@ -1662,9 +1662,9 @@ export default function HomeClient({
                 <li><a href="#contacto">{t.contact}</a></li>
               </ul>
               <div className="er-nav-right">
-                <a className="er-nav-tel" href="tel:+525543582919" aria-label={t.navCall}>
+                <a className="er-nav-tel" href={`tel:${LEGAL.telefonoTel}`} aria-label={t.navCall}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
-                  <span className="er-nav-tel-num">+52 55 4358 2919</span>
+                  <span className="er-nav-tel-num">{LEGAL.telefono}</span>
                 </a>
                 <LangToggle lang={lang} page="home" />
                 <a className="er-nav-cta" href="#quote" onClick={() => setStep(1)}>{t.navQuote}</a>
@@ -2708,7 +2708,7 @@ export default function HomeClient({
             <address className="er-foot-id">
               <span className="er-foot-id-name">{LEGAL.responsable}</span>
               <span className="er-foot-id-contact">
-                <a href={`tel:+${WHATSAPP_NUMBER}`}>{LEGAL.whatsapp}</a>
+                <a href={`tel:${LEGAL.telefonoTel}`}>{LEGAL.telefono}</a>
                 <a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a>
               </span>
             </address>

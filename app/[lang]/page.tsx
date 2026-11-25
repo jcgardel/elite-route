@@ -101,7 +101,7 @@ function fichaDeNegocio(lang: Lang) {
     // La portada de su idioma, no la raíz: la raíz redirige (307) según el
     // idioma del navegador, y Google prefiere una URL que responda 200.
     url: url(lang, "home"),
-    telephone: "+52-55-4358-2919",
+    telephone: "+52-55-4130-1651",
     email: "business@eliteroute.mx",
     image: `${SITE}/flota/executive.webp`,
     logo: `${SITE}/icon.svg`,

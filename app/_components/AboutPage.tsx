@@ -243,7 +243,8 @@ export default function AboutPage({ lang }: { lang: Lang }) {
             </div>
           </div>
           <ul className="ab-data">
-            <li><span>WhatsApp</span><a href="tel:+525543582919">{LEGAL.whatsapp}</a></li>
+            <li><span>WhatsApp</span><a href={LEGAL.whatsappUrl} target="_blank" rel="noopener noreferrer">{LEGAL.whatsapp}</a></li>
+            <li><span>{lang === "es" ? "Teléfono" : "Phone"}</span><a href={`tel:${LEGAL.telefonoTel}`}>{LEGAL.telefono}</a></li>
             <li><span>Email</span><a href={`mailto:${LEGAL.correoComercial}`}>{LEGAL.correoComercial}</a></li>
             <li><span>{lang === "es" ? "Base" : "Based in"}</span>{t.city}</li>
           </ul>

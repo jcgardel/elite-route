@@ -43,6 +43,9 @@ export const LEGAL = {
   correoComercial: "business@eliteroute.mx",
   whatsapp: "+52 55 4358 2919",
   whatsappUrl: "https://wa.me/525543582919",
+  /** Línea para llamadas (el WhatsApp es solo mensajes). */
+  telefono: "+52 55 4130 1651",
+  telefonoTel: "+525541301651",
 
   /** Fecha de la última revisión de los textos legales. */
   actualizado: "7 de septiembre de 2026",

@@ -45,6 +45,20 @@ const BLOQUES = [9, 10] as const;
 /** Kilómetros incluidos por hora. Vive en lib/service-limits.ts. */
 const KM_POR_HORA = KM_HORA;
 
+/**
+ * PAQUETES DESDE (25 nov 2026, decidido por el dueño): el "desde" es la
+ * cotización de 6 horas del tarifario más $800 de gastos foráneos, sólo en
+ * Sedan Lite y SUV Urban.
+ */
+const PAQUETE_HORAS = 6;
+const GASTOS_FORANEOS = 800;
+const PAQUETES: ReadonlyArray<{ cat: Category; pax: number }> = [
+  { cat: "sedan", pax: 4 },
+  { cat: "minivan", pax: 6 },
+];
+const precioPaquete = (c: Category) => calculatePrice(0, 0, c, "hour", PAQUETE_HORAS) + GASTOS_FORANEOS;
+const mxn = (n: number) => `$${n.toLocaleString("en-US")} MXN`;
+
 /** Las dos categorías con chofer bilingüe. Confirmado por el dueño. */
 const BILINGUES: Category[] = ["executive", "suv"];
 
@@ -64,6 +78,11 @@ const TX = {
     factKmLabel: "por WhatsApp, con precio cerrado antes de confirmar",
     factPrecioValue: "Precio fijo",
     factPrecioLabel: "IVA incluido, sin cargos sorpresa",
+
+    paquetesTitle: "Paquetes desde",
+    paquetePax: (n: number) => `1 a ${n} personas`,
+    paqueteDesde: "desde",
+    paqueteNota: `Cotización de ${PAQUETE_HORAS} horas con gastos foráneos agregados. IVA incluido.`,
 
     quesTitle: "Qué es, y qué no",
     esTitle: "Lo que sí incluye",
@@ -156,6 +175,11 @@ const TX = {
     factKmLabel: "on WhatsApp, with a fixed price before you confirm",
     factPrecioValue: "Fixed price",
     factPrecioLabel: "VAT included, no surprise charges",
+
+    paquetesTitle: "Packages from",
+    paquetePax: (n: number) => `1 to ${n} passengers`,
+    paqueteDesde: "from",
+    paqueteNota: `Based on a ${PAQUETE_HORAS}-hour quote with out-of-town expenses added. VAT included.`,
 
     quesTitle: "What it is, and what it is not",
     esTitle: "What is included",
@@ -265,6 +289,15 @@ const styles = `
   .tt-fact-value { font-family:var(--font-barlow-condensed),sans-serif; font-size:21px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
   .tt-fact-label { color:#BFC3C8; font-size:12px; line-height:1.4; margin-top:4px; }
 
+  .tt-paq { margin-top:40px; max-width:680px; }
+  .tt-paq-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  .tt-paq-card { border:1px solid rgba(200,164,107,0.45); border-radius:2px; padding:16px 18px; }
+  .tt-paq-name { font-family:var(--font-barlow-condensed),sans-serif; font-size:18px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#fff; }
+  .tt-paq-pax { color:#BFC3C8; font-size:13px; margin-top:2px; }
+  .tt-paq-price { margin-top:12px; color:#C8A46B; font-family:var(--font-barlow-condensed),sans-serif; font-size:24px; font-weight:700; letter-spacing:0.02em; }
+  .tt-paq-price small { font-size:12px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-right:6px; color:#BFC3C8; }
+  @media (max-width:560px) { .tt-paq-grid { grid-template-columns:1fr; } }
+
   .tt-section { margin-top:64px; }
   .tt-h2 { font-family:var(--font-cormorant),Georgia,serif; font-weight:300; font-size:clamp(26px,3.4vw,34px); line-height:1.15; margin:0 0 18px; color:#fff; text-wrap:balance; }
   .tt-h3 { font-family:var(--font-barlow-condensed),sans-serif; font-weight:700; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#C8A46B; margin:0 0 12px; }
@@ -352,6 +385,20 @@ export default function TeotihuacanPage({ lang }: { lang: Lang }) {
             <div className="tt-fact-label">{t.factPrecioLabel}</div>
           </div>
         </div>
+
+        <section className="tt-paq">
+          <h3 className="tt-h3">{t.paquetesTitle}</h3>
+          <div className="tt-paq-grid">
+            {PAQUETES.map(({ cat, pax }) => (
+              <div className="tt-paq-card" key={cat}>
+                <div className="tt-paq-name">{vehicles[cat].name}</div>
+                <div className="tt-paq-pax">{t.paquetePax(pax)}</div>
+                <div className="tt-paq-price"><small>{t.paqueteDesde}</small>{mxn(precioPaquete(cat))}</div>
+              </div>
+            ))}
+          </div>
+          <p className="tt-fact-label" style={{ marginTop: 10 }}>{t.paqueteNota}</p>
+        </section>
 
         <section className="tt-section">
           <h2 className="tt-h2">{t.quesTitle}</h2>

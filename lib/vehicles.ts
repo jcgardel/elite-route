@@ -60,7 +60,7 @@ export const FEATURED: readonly Category[] = ["executive", "suv"];
  * ahora en un número que se puede comprobar.
  */
 export const CAPACIDAD: Record<Category, { pax: number; maletas: number; maxConEquipaje?: number }> = {
-  sedan: { pax: 3, maletas: 2 },
+  sedan: { pax: 4, maletas: 2 }, // 25 nov 2026: el dueño la subió de 3 a 4.
   executive: { pax: 3, maletas: 3 },
   minivan: { pax: 6, maletas: 4, maxConEquipaje: 4 },
   suv: { pax: 6, maletas: 6, maxConEquipaje: 4 },

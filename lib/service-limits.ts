@@ -191,12 +191,29 @@ export function categoriaBloqueada(cat: Category, fecha: string) {
  * +20 % en todas las categorías, encima de la tarifa del día (incluida la
  * hora de temporada); el mínimo por horas no cambia.
  */
+/*
+ * 24 nov 2026: conciertos de Bruno Mars en el Estadio GNP Seguros (3, 4, 7,
+ * 8 y 11 dic 2026, 21:00). +25 % en todas las categorías, pero SÓLO si la
+ * recogida es en el GNP o sus alrededores (`origenes`); el resto de la ciudad
+ * paga normal. Como la salida del concierto cae pasada la medianoche, también
+ * aplica a recogidas del día siguiente antes de las 05:00 (`madrugada`).
+ */
+const ZONA_GNP = [
+  "gnp", "foro sol", "autodromo", "hermanos rodriguez", "palacio de los deportes",
+  "granjas mexico", "ciudad deportiva", "magdalena mixhuca", "magdalena mixiuhca",
+  "velodromo", "08400", "15860",
+];
+
 export const TARIFAS_EVENTO: ReadonlyArray<{
   fechas: readonly string[];
   factor: Partial<Record<Category, number>>;
   horasMin?: number;
   /** En el GP el evento sustituye a la hora de temporada en vez de sumarse. */
   reemplazaTemporada?: boolean;
+  /** Si existe, el evento sólo aplica cuando la recogida contiene alguno de estos textos. */
+  origenes?: readonly string[];
+  /** También aplica al día siguiente con recogida antes de las 05:00. */
+  madrugada?: boolean;
 }> = [
   {
     fechas: ["2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01"],
@@ -208,18 +225,43 @@ export const TARIFAS_EVENTO: ReadonlyArray<{
     fechas: ["2026-11-22"],
     factor: { sedan: 1.2, executive: 1.2, minivan: 1.2, suv: 1.2 },
   },
+  {
+    fechas: ["2026-12-03", "2026-12-04", "2026-12-07", "2026-12-08", "2026-12-11"],
+    factor: { sedan: 1.25, executive: 1.25, minivan: 1.25, suv: 1.25 },
+    origenes: ZONA_GNP,
+    madrugada: true,
+  },
 ];
 
-function eventoDe(fecha: string) {
-  return TARIFAS_EVENTO.find((e) => e.fechas.includes(fecha));
+function normalizar(s: string) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
 
-export function esFechaEvento(fecha: string) {
-  return !!eventoDe(fecha);
+function diaAnterior(fecha: string) {
+  const d = new Date(`${fecha}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
 }
 
-export function factorEvento(cat: Category, fecha: string) {
-  return eventoDe(fecha)?.factor[cat] ?? 1;
+/**
+ * Evento que aplica a la fecha. Los eventos con `origenes` sólo cuentan si se
+ * pasa la recogida y coincide; sin recogida (p. ej. horasMinimas) se ignoran.
+ */
+function eventoDe(fecha: string, origen?: string, hora?: string) {
+  const o = origen ? normalizar(origen) : "";
+  return TARIFAS_EVENTO.find((e) => {
+    if (e.origenes && !(o && e.origenes.some((k) => o.includes(k)))) return false;
+    if (e.fechas.includes(fecha)) return true;
+    return !!(e.madrugada && hora && hora < "05:00" && e.fechas.includes(diaAnterior(fecha)));
+  });
+}
+
+export function esFechaEvento(fecha: string, origen?: string, hora?: string) {
+  return !!eventoDe(fecha, origen, hora);
+}
+
+export function factorEvento(cat: Category, fecha: string, origen?: string, hora?: string) {
+  return eventoDe(fecha, origen, hora)?.factor[cat] ?? 1;
 }
 
 /**
@@ -245,10 +287,13 @@ export function precioHoraTemporada(cat: Category, fecha: string) {
  * `horas` va sólo en servicios por horas o por día (10 en día completo): con
  * él se aplica la tarifa por hora de temporada si la fecha la tiene.
  */
-export function precioConEvento(precio: number, cat: Category, fecha: string, horas?: number) {
+export function precioConEvento(
+  precio: number, cat: Category, fecha: string, horas?: number, origen?: string, horaServicio?: string,
+) {
+  const f = factorEvento(cat, fecha, origen, horaServicio);
   const hora = horas ? precioHoraTemporada(cat, fecha) : null;
-  if (hora && horas) return Math.round(horas * hora * factorEvento(cat, fecha));
-  return Math.round(precio * factorEvento(cat, fecha));
+  if (hora && horas) return Math.round(horas * hora * f);
+  return Math.round(precio * f);
 }
 
 /**

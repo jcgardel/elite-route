@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { telDeChofer } from "@/lib/choferes";
 import { COOKIE_EQUIPO, asignarChofer, reservasEquipo, subirImagenChofer } from "@/lib/reservas";
+import { avisarChofer } from "@/lib/aviso-chofer";
 
 const TIPOS = ["image/jpeg", "image/png", "image/webp"];
 
@@ -25,7 +26,15 @@ export async function guardarChofer(formData: FormData) {
   const chofer = String(formData.get("chofer") || "");
   // Sin teléfono escrito, se toma el del directorio.
   const tel = String(formData.get("tel") || "").trim() || telDeChofer(chofer);
-  if (clave && folio) await asignarChofer(clave, folio, chofer, tel);
+  if (clave && folio && (await asignarChofer(clave, folio, chofer, tel)) && chofer && tel) {
+    // Aviso por WhatsApp al chofer. Si falla, la asignación ya quedó.
+    try {
+      const servicio = (await reservasEquipo(clave))?.find((r) => r.folio === folio);
+      if (servicio) await avisarChofer(chofer, tel, servicio);
+    } catch (error) {
+      console.error("Aviso al chofer por WhatsApp:", error);
+    }
+  }
   redirect(`/${lang}/equipo#${folio}`);
 }
 

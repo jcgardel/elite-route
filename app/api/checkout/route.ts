@@ -1,47 +1,12 @@
 import { NextResponse, after } from "next/server";
-import { registrarReserva } from "@/lib/reservas";
-import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { getCheckoutLimiter, getIp } from "@/lib/rate-limit";
-import {
-  airportCodeOf,
-  calculatePrice,
-  precioRedondo,
-  detectZone,
-  isAirportAddress,
-  serviceTypeLabel,
-  serviceTypeLabelEs,
-  vehicles,
-  CATEGORIES,
-  type Category,
-  type ServiceType,
-} from "@/lib/booking";
-import { getStripe } from "@/lib/stripe";
-import { CAPACIDAD } from "@/lib/vehicles";
-import { escaladeLibre, hayHueco, ventanaDeOcupacion } from "@/lib/agenda";
-import { DEFAULT_LANG, isLang, path } from "@/lib/i18n";
-import { MIN_ADVANCE_HOURS, NOTAS_MAX, VUELO_MAX, esVueloValido } from "@/lib/booking-form";
-import { lookupRouteDistance, RouteLookupError } from "@/lib/distance";
-import { HORAS_MAX, HORAS_MIN } from "@/lib/rate-tables";
-import {
-  CENTRO_CDMX,
-  dentroDeZonaPorHoras,
-  RADIO_POR_HORAS_KM,
-  admiteRedondo,
-  REDONDO_HORAS_CORTESIA,
-  REDONDO_HORAS_MAX,
-  categoriaBloqueada,
-  horasMinimas,
-  precioConEvento,
-  precioConEscalade,
-} from "@/lib/service-limits";
+import { RouteLookupError } from "@/lib/distance";
+import { contactoValido, cotizar, crearPago } from "@/lib/cotizacion";
 
-const categories = CATEGORIES;
-const serviceTypes: ServiceType[] = ["route", "hour", "day"];
-
-function trimMetadata(value: string) {
-  return value.slice(0, 500);
-}
-
+/**
+ * Pago del cotizador de la web. Las reglas de precio y disponibilidad viven
+ * en lib/cotizacion.ts, compartidas con el agente de WhatsApp.
+ */
 export async function POST(req: Request) {
   const limiter = getCheckoutLimiter();
   if (limiter) {
@@ -53,329 +18,30 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const category = body.category as Category;
-    const serviceType = body.serviceType as ServiceType;
-    const rentalHours = Number(body.rentalHours);
     const fullName = String(body.fullName || "").trim();
     const phone = String(body.phone || "").trim();
-    const origin = String(body.origin || "").trim();
-    const destination = String(body.destination || "").trim();
-    const serviceDate = String(body.serviceDate || "").trim();
-    const serviceTime = String(body.serviceTime || "").trim();
-    // Solicitudes extra del cliente. Opcional y sin validar contra nada: es
-    // texto libre a propósito. Se recorta aquí y no sólo en el navegador
-    // porque el límite del formulario no obliga a nadie que llame a la API
-    // directamente, y de aquí sale hacia Stripe, el correo y WhatsApp.
-    const notes = String(body.notes || "").trim().slice(0, NOTAS_MAX);
-    // Viaje redondo foráneo. Se lee aquí y se valida más abajo, cuando ya se
-    // conocen los kilómetros que midió el servidor.
-    const quiereRedondo = Boolean(body.redondo);
-    const horasEspera = Number(body.horasEspera);
-    const flightNumber = String(body.flightNumber || "").trim().toUpperCase().slice(0, VUELO_MAX);
-    // Garantizar Cadillac Escalade 2027 (+20 %): sólo existe dentro de SUV Lux.
-    const escalade = Boolean(body.escalade) && category === "suv";
 
-    // km, minutes y zone se calculan server-side — no se aceptan del cliente
-    if (!categories.includes(category) || !serviceTypes.includes(serviceType)) {
-      return NextResponse.json({ error: "Datos de cotización inválidos" }, { status: 400 });
-    }
-
-    if (!fullName || !phone || !isValidPhoneNumber(phone)) {
+    // Antes de cotizar: la cotización consulta Google Maps.
+    if (!contactoValido(fullName, phone)) {
       return NextResponse.json({ error: "Datos de contacto inválidos" }, { status: 400 });
     }
 
-    if (!origin || (serviceType === "route" && !destination) || !serviceDate || !serviceTime) {
-      return NextResponse.json({ error: "Faltan datos del servicio" }, { status: 400 });
-    }
-
-    if (!Number.isFinite(rentalHours) || rentalHours < HORAS_MIN || rentalHours > HORAS_MAX) {
-      return NextResponse.json({ error: "Duración inválida" }, { status: 400 });
-    }
-
-    // El recargo de aeropuerto se vuelve a verificar aquí sobre la dirección:
-    // el cliente puede detectarlo por el tipo de lugar de Google (que el
-    // servidor no ve), pero no puede quitarlo mandando false.
-    const airportPickup = isAirportAddress(origin) || Boolean(body.airportPickup);
-
-    // La LLEGADA a una terminal SÍ toca el precio desde el 12 oct 2026: lleva
-    // un alza propia —12 % en Sedan y Minivan, 18 % en Executive y High SUV—
-    // topada para que recoger en el aeropuerto siga costando al menos un 5 %
-    // más. Ver `ALZA_HACIA_AEROPUERTO` en lib/booking.ts. Hasta esa fecha
-    // servía sólo para exigir el número de vuelo.
-    const airportDropoff =
-      serviceType === "route" && (isAirportAddress(destination) || Boolean(body.airportDropoff));
-
-    // Sin número de vuelo no se puede monitorear el vuelo, que es lo que el
-    // sitio promete en el hero, en el FAQ y en las páginas de ruta. Se
-    // comprueba también aquí porque la validación del navegador no obliga a
-    // quien llame a la API directamente.
-    // PASAJEROS Y MALETAS, comprobados contra la capacidad real.
-    //
-    // Se repite aquí y no sólo en el navegador porque la lista desplegable
-    // no obliga a quien llame a la API directamente, y porque el coste de
-    // equivocarse lo paga el chofer en la puerta: una reserva de cinco
-    // personas en un Sedan Lite no se puede servir.
-    const pasajeros = Number(body.pasajeros);
-    const maletas = Number(body.maletas);
-    if (airportPickup || airportDropoff) {
-      const cabe = CAPACIDAD[category];
-      const paxOk = !Number.isFinite(pasajeros) || (pasajeros >= 1 && pasajeros <= cabe.pax);
-      const malOk = !Number.isFinite(maletas) || (maletas >= 0 && maletas <= cabe.maletas);
-      if (!paxOk || !malOk) {
-        return NextResponse.json(
-          { error: `La categoría elegida admite ${cabe.pax} pasajeros y ${cabe.maletas} maletas` },
-          { status: 400 },
-        );
-      }
-    }
-
-    if ((airportPickup || airportDropoff) && !esVueloValido(flightNumber)) {
-      return NextResponse.json(
-        { error: "El número de vuelo es obligatorio en traslados de aeropuerto" },
-        { status: 400 },
-      );
-    }
-
-    const startsAt = new Date(`${serviceDate}T${serviceTime}`);
-    const hoursUntilService = (startsAt.getTime() - Date.now()) / 3600000;
-    if (!Number.isFinite(hoursUntilService) || hoursUntilService < MIN_ADVANCE_HOURS) {
-      return NextResponse.json({ error: `El servicio requiere al menos ${MIN_ADVANCE_HOURS} horas de anticipación` }, { status: 400 });
-    }
-
-    if (categoriaBloqueada(category, serviceDate)) {
-      return NextResponse.json(
-        { error: `${vehicles[category].name} no está disponible en esa fecha. Elige otra categoría o escríbenos por WhatsApp.` },
-        { status: 400 },
-      );
-    }
-
-    const horasMin = horasMinimas(serviceDate, HORAS_MIN, category);
-    if (serviceType === "hour" && rentalHours < horasMin) {
-      return NextResponse.json(
-        { error: `El servicio por horas en ${vehicles[category].name} es de mínimo ${horasMin} horas.` },
-        { status: 400 },
-      );
-    }
-
-    // La distancia se vuelve a consultar aquí: el precio depende de los km, así
-    // que aceptarlos del cliente permitiría cobrarse la tarifa mínima.
-    // Por horas y por día no hay destino: se mide la recogida contra el
-    // centro de la ciudad, porque el servicio sólo aplica dentro de la CDMX.
-    // Antes se medía del origen al mismo origen (0 km) y nada se validaba.
-    const { km, minutes } = await lookupRouteDistance(
-      origin,
-      serviceType === "route" ? destination : CENTRO_CDMX,
-    );
-
-    if (serviceType !== "route" && !dentroDeZonaPorHoras(km)) {
-      return NextResponse.json(
-        {
-          error: `El servicio por horas aplica sólo dentro de la Ciudad de México (hasta ${RADIO_POR_HORAS_KM} km del centro; tu recogida está a ${km} km). Para salir de la CDMX solicita una cotización especial.`,
-        },
-        { status: 400 },
-      );
-    }
-
-    // EL VIAJE REDONDO, validado contra los kilómetros del servidor.
-    //
-    // Se RECHAZA en vez de caer al traslado sencillo, y la dirección importa:
-    // caer al sencillo cobraría la mitad del servicio a quien cree haber
-    // reservado ida y vuelta, y eso se descubre con el chofer ya en la puerta.
-    // Un 400 se descubre antes de pagar.
-    if (quiereRedondo) {
-      if (serviceType !== "route") {
-        return NextResponse.json(
-          { error: "El viaje redondo sólo aplica a traslados" },
-          { status: 400 },
-        );
-      }
-      // `airportDropoff` ya combina el texto del destino con lo que el cliente
-      // confirmó en el autocompletado, unas líneas más arriba. Reusarlo evita
-      // que esta regla y la del vuelo obligatorio se contesten distinto.
-      if (!admiteRedondo(km, airportDropoff)) {
-        return NextResponse.json(
-          { error: "El viaje redondo no aplica a este destino" },
-          { status: 400 },
-        );
-      }
-      if (
-        !Number.isInteger(horasEspera) ||
-        horasEspera < REDONDO_HORAS_CORTESIA ||
-        horasEspera > REDONDO_HORAS_MAX
-      ) {
-        return NextResponse.json(
-          { error: `La espera debe ser de entre ${REDONDO_HORAS_CORTESIA} y ${REDONDO_HORAS_MAX} horas` },
-          { status: 400 },
-        );
-      }
-    }
-
-    // ¿QUEDA UNIDAD DE ESTA CATEGORÍA A ESTA HORA?
-    //
-    // Sólo muerde en las categorías con flota limitada (hoy SUV Lux). Se
-    // comprueba aquí y no sólo en el formulario porque el formulario no
-    // obliga a quien llame a la API directamente.
-    //
-    // NO CIERRA LA PUERTA: devuelve 409 con `whatsapp: true` para que el
-    // cotizador mande al cliente a WhatsApp. Esta agenda sólo ve las
-    // reservas del sitio —el 69 % se cotiza a mano— así que un bloqueo
-    // puede ser falso, y perder la venta por un dato incompleto sería peor
-    // que pasarla a un humano. Ver lib/agenda.ts.
-    const ventana = ventanaDeOcupacion({
-      serviceDate, serviceTime, serviceType, minutes, rentalHours, km,
-      redondo: quiereRedondo, horasEspera, airportPickup,
-    });
-    if (ventana) {
-      const hueco = await hayHueco(category, ventana);
-      if (!hueco.libre || (escalade && !(await escaladeLibre(ventana)))) {
-        return NextResponse.json(
-          { error: "sin_unidades", whatsapp: true, categoria: category },
-          { status: 409 },
-        );
-      }
-    }
-
-    const zone = detectZone(km);
-    // Si el viaje SALE de una terminal manda el recargo de salida y la ida no
-    // entra: un AICM -> AIFA no puede cobrar las dos cosas.
-    const haciaAeropuerto = !airportPickup && airportDropoff;
-
-    const price = precioConEscalade(precioConEvento(
-      quiereRedondo
-        ? precioRedondo(km, minutes, category, horasEspera, airportPickup)
-        : calculatePrice(
-            km, minutes, category, serviceType, rentalHours, airportPickup, haciaAeropuerto,
-            airportCodeOf(airportPickup ? origin : destination),
-          ),
-      category,
-      serviceDate,
-      serviceType === "day" ? 10 : serviceType === "hour" ? rentalHours : undefined,
-      origin,
-      serviceTime,
-    ), category, escalade);
-    if (price <= 0) {
-      return NextResponse.json({ error: "No se pudo calcular el total" }, { status: 400 });
+    const cot = await cotizar(body);
+    if (!cot.ok) {
+      const { ok: _ok, status, ...resto } = cot;
+      void _ok;
+      return NextResponse.json(resto, { status });
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
-    // Stripe devuelve al cliente al idioma en el que reservó. Si el cuerpo no
-    // trae idioma —una petición vieja o manipulada— cae al de por defecto en
-    // lugar de fallar: nadie debe perder un pago por esto.
-    const lang = isLang(String(body.lang)) ? (body.lang as "en" | "es") : DEFAULT_LANG;
-    // "SUV Lux" se queda tal cual: con ese nombre cruza la agenda de Supabase.
-    // La Escalade viaja en `escalade` y al frente de las notas, que es lo que
-    // leen el equipo, el chofer y el correo del cliente.
-    const vehicle = vehicles[category].name;
-    const notasConEscalade = escalade
-      ? `Cadillac Escalade 2027 garantizada${notes ? ` · ${notes}` : ""}`
-      : notes;
-    // EL NOMBRE DEL SERVICIO LO DICE TODO, y no es cosmético: esta cadena es
-    // la que viaja a Stripe, al correo del cliente, al aviso de Telegram y al
-    // de WhatsApp. Si un redondo llega rotulado "Traslado punto a punto", el
-    // chofer deja al pasajero y se va. Lleva las horas dentro por lo mismo:
-    // saber que espera no basta, hay que saber cuánto.
-    const serviceLabel = quiereRedondo
-      ? `Viaje redondo foráneo · ${horasEspera} h de espera`
-      : serviceTypeLabelEs(serviceType, rentalHours);
-
-    /**
-     * EL MISMO RÓTULO EN INGLÉS, para el correo del cliente.
-     *
-     * Son dos cadenas y no una traducida al vuelo porque sirven a dos públicos
-     * con necesidades opuestas: `serviceLabel` va al equipo —Telegram,
-     * WhatsApp, el aviso corto— y ahí el español no se negocia. Ésta va al
-     * correo de confirmación del cliente, que desde el 3 de octubre de 2026 se
-     * manda en el idioma en el que reservó.
-     */
-    const serviceLabelEn = quiereRedondo
-      ? `Out-of-town round trip · ${horasEspera} h waiting`
-      : serviceTypeLabel(serviceType, rentalHours);
-
-    const stripe = getStripe();
-    /** Todo lo que hace falta para operar el servicio, en un solo sitio. */
-    const reserva = {
-      fullName: trimMetadata(fullName),
-      phone: trimMetadata(phone),
-      serviceType,
-      serviceLabel: trimMetadata(serviceLabel),
-      serviceLabelEn: trimMetadata(serviceLabelEn),
-      serviceDate,
-      serviceTime,
-      origin: trimMetadata(origin),
-      destination: trimMetadata(serviceType === "route" ? destination : "Disposición libre"),
-      vehicle,
-      category,
-      zone,
-      km: String(km),
-      minutes: String(minutes),
-      // Para que el webhook pueda atribuir la conversión en GA4.
-      // Ver lib/analytics-server.ts. Se recortan por si llegan raros.
-      ...(Number.isFinite(pasajeros) ? { pasajeros: String(pasajeros) } : {}),
-      ...(Number.isFinite(maletas) ? { maletas: String(maletas) } : {}),
+    // Para que el webhook pueda atribuir la conversión en GA4.
+    // Ver lib/analytics-server.ts. Se recortan por si llegan raros.
+    const extra: Record<string, string> = {
       ...(body.gaClientId ? { gaClientId: String(body.gaClientId).slice(0, 40) } : {}),
       ...(body.gaSessionId ? { gaSessionId: String(body.gaSessionId).slice(0, 20) } : {}),
-      airportPickup: String(airportPickup),
-      airportDropoff: String(airportDropoff),
-      /**
-       * EL IDIOMA EN EL QUE RESERVÓ, guardado aquí y no sólo usado para las
-       * URLs de retorno.
-       *
-       * Hasta el 3 de octubre de 2026 `lang` servía para mandar al cliente a
-       * /es/success o /en/success y ahí se perdía. El correo de confirmación
-       * lo manda el webhook a partir de esta metadata, así que sin este campo
-       * no tenía forma de saber en qué idioma escribirle —y salía en español
-       * para todos—. Lo que lo volvió urgente está escrito en
-       * lib/payment-notifications.ts: todos los clientes que han pagado hasta
-       * hoy son extranjeros.
-       */
-      lang,
-      redondo: String(quiereRedondo),
-      horasEspera: quiereRedondo ? String(horasEspera) : "",
-      flightNumber: trimMetadata(flightNumber),
-      notes: trimMetadata(notasConEscalade),
-      escalade: String(escalade),
-      priceMxn: String(price),
     };
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      customer_creation: "if_required",
-      phone_number_collection: { enabled: true },
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: "mxn",
-            unit_amount: price * 100,
-            product_data: {
-              name: `Elite Route · ${vehicle}${escalade ? " · Cadillac Escalade 2027 garantizada" : ""}`,
-              description: `${serviceLabel} · ${serviceDate} ${serviceTime}`,
-            },
-          },
-        },
-      ],
-      success_url: `${appUrl}${path(lang, "success")}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}${path(lang, "cancel")}`,
-      // La MISMA reserva se guarda en DOS sitios de Stripe, y no es
-      // duplicar por duplicar: la sesión de Checkout y el cobro son objetos
-      // distintos, y la pantalla de "Pagos" —que es donde se mira cuando
-      // entra dinero— sólo enseña la del cobro. Sin `payment_intent_data`
-      // hay que ir a Desarrolladores → Eventos y leer un JSON para saber qué
-      // reservó el cliente. Eso es exactamente lo que pasó el 28 de
-      // septiembre de 2026 con cuatro reservas reales.
-      payment_intent_data: { metadata: reserva },
-      metadata: reserva,
-    });
-
-    // La cotización queda registrada como "pendiente de pago" desde ya, para
-    // darle seguimiento aunque no se pague. Va después de la respuesta para
-    // no hacer esperar al cliente; si falla, el pago la registra igual.
-    after(() =>
-      registrarReserva(session, { pendiente: true }).catch((error) =>
-        console.error("Elite Route registro pendiente error:", error),
-      ),
-    );
-
+    const session = await crearPago(cot, { fullName, phone }, appUrl, extra, (p) => after(() => p));
     return NextResponse.json({ url: session.url });
   } catch (error) {
     // Sin distancia confiable no se cobra: mejor pedir que reintente.
